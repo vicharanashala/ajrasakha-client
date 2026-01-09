@@ -143,7 +143,7 @@ endpoints:
       apiKey: "vllm"
       baseURL: "http://100.100.108.100:8080/v1"
       models:
-        default: ['Qwen/Qwen3-30B-A3B']
+        default: ['openai/gpt-oss-120b']
         fetch: true
       titleConvo: true
       titleModel: "current_model"
@@ -164,7 +164,7 @@ modelSpecs:
       iconURL: "https://storage.googleapis.com/annam-temp-images/logo-icon.png"
       preset:
         endpoint: "vLLM"
-        model: "Qwen/Qwen3-30B-A3B"
+        model: "openai/gpt-oss-120b"
         modelLabel: "AjraSakha"
         promptPrefix: |
           You are AjraSakha, an AI expert helping Indian farmers only.
