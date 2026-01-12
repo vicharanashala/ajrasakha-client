@@ -94,27 +94,27 @@ registration:
 mcpServers:
   golden:
     type: streamable-http # type can optionally be omitted
-    url: http://100.100.108.13:9001/mcp
+    url: http://100.100.108.43:9001/mcp
     timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
     initTimeout: 120000
   pop:
     type: streamable-http # type can optionally be omitted
-    url: http://100.100.108.13:9002/mcp
+    url: http://100.100.108.43:9002/mcp
     timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
     initTimeout: 120000
   market:
     type: streamable-http # type can optionally be omitted
-    url: http://100.100.108.13:9003/mcp
+    url: http://100.100.108.43:9003/mcp
     timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
     initTimeout: 120000
   weather:
     type: streamable-http # type can optionally be omitted
-    url: http://100.100.108.13:9004/mcp
+    url: http://100.100.108.43:9004/mcp
     timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
     initTimeout: 120000
   faq-videos:
     type: streamable-http # type can optionally be omitted
-    url: http://100.100.108.13:9005/mcp
+    url: http://100.100.108.43:9005/mcp
     timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
     initTimeout: 120000
 
@@ -122,7 +122,7 @@ mcpServers:
 speech:
   stt:
     openai:
-      url: 'http://100.100.108.29:5020/v1/audio/transcriptions'
+      url: 'http://100.100.108.43:5020/v1/audio/transcriptions'
       apiKey: ''
       model: 'whisper-1'
   speechTab:
