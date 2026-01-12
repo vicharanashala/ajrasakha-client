@@ -94,7 +94,7 @@ registration:
 mcpServers:
   golden:
     type: streamable-http # type can optionally be omitted
-    url: http://100.100.108.43:9001/mcp
+    url: http://100.100.108.43:9006/mcp
     timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
     initTimeout: 120000
   pop:
