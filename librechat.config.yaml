@@ -5,14 +5,18 @@ cache: true
 
 interface:
   mcpServers:
-    placeholder: "Sources"
+    placeholder: 
+      en: "Sources"
+      pa: "ਸਰੋਤ ਚੁਣੋ"
     use: true
     create: true
     share: true
     trustCheckbox:
       label: "I trust this server"
       subLabel: "Only enable servers you trust"
-  customWelcome: 'Welcome to AjraSakha!'
+  customWelcome: 
+    en: 'Welcome to AjraSakha!'
+    pa: 'ਅਜਰਾ ਸਾਖਾ ਵਿੱਚ ਤੁਹਾਡਾ ਸਵਾਗਤ ਹੈ'
   fileSearch: false
   webSearch: false
   privacyPolicy:
