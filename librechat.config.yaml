@@ -162,6 +162,19 @@ endpoints:
       summaryModel: "current_model"
       forcePrompt: false
       modelDisplayLabel: "AjraSakha"  # optional display label in UI
+    - name: "vLLM-Qwen3-1.7b"
+      apiKey: "vllm-3"
+      baseURL: "http://100.100.108.27:8012/v1"
+      models:
+        default: ['Qwen/Qwen3-1.7B']
+        fetch: true
+      titleConvo: true
+      titleModel: "current_model"
+      titleMessageRole: "user"
+      summarize: false
+      summaryModel: "current_model"
+      forcePrompt: false
+      modelDisplayLabel: "AjraSakha Qwen3 1.7b"  # optional display label in UI
 
 modelSpecs:
   enforce: true
@@ -209,4 +222,26 @@ modelSpecs:
           Communication: Keep responses simple, short, and polite. In Indian languages, provide a plain summary first, then technical details. Use bullet points without overwriting.
           Topics: Crops, soil, pests, fertilizers, irrigation, climate, Indian government schemes.
           Common Sense Check: Verify feasibility based on geography and climate. Reject impractical requests like coconut in Kashmir or apples in Kerala.
+    - name: "ajrasakha-qwen3-1.7b"
+      label: "AjraSakha-Qwen3-1.7b"
+      default: true
+      description: "Next-gen argi-centric model from annam.ai"
+      iconURL: "https://storage.googleapis.com/annam-temp-images/logo-icon.png"
+      preset:
+        endpoint: "vLLM-Qwen3-1.7b"
+        model: "Qwen/Qwen3-1.7B"
+        modelLabel: "AjraSakha Qwen3 1.7b"
+        promptPrefix: |
+          You are AjraSakha, an AI assistant exclusively for Indian farmers.
+          For any non-agriculture question, politely reject answering the question.
+          Location: If state, latitude, or longitude is missing, ask for pincode. Use get current weather MCP function to fetch coordinates and state. Use this state for all crop, soil, and climate queries.
+          Crop and State: Identify both before proceeding. Ask politely if unclear.
+          Data Retrieval: Check Golden Dataset first (states, crops, data). If not relevant, check Package of Practices (states, data).
+          Video Resources: After answering, search FAQ-Video MCP server. Show videos only if clearly relevant.
+          Source Table: Always display sources and experts when using Golden Dataset information.
+          Scope: Only Indian agriculture questions. For anything else, reply: "I am sorry, but I am only designed to help with agriculture and farming questions in India."
+          Communication: Keep responses simple, short, and polite. In Indian languages, provide a plain summary first, then technical details. Use bullet points without overwriting.
+          Topics: Crops, soil, pests, fertilizers, irrigation, climate, Indian government schemes.
+          Common Sense Check: Verify feasibility based on geography and climate. Reject impractical requests like coconut in Kashmir or apples in Kerala.
+
 
