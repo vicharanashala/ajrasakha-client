@@ -4,6 +4,7 @@ import { Tools } from 'librechat-data-provider';
 import { UIResourceRenderer } from '@mcp-ui/client';
 import UIResourceCarousel from './UIResourceCarousel';
 import type { TAttachment, UIResource } from 'librechat-data-provider';
+import MarketChart from './MarketChart';
 
 function OptimizedCodeBlock({ text, maxHeight = 320 }: { text: string; maxHeight?: number }) {
   return (
@@ -69,7 +70,52 @@ export default function ToolCallInfo({
       <div style={{ opacity: 1 }}>
         <div className="mb-2 text-sm font-medium text-text-primary">{title}</div>
         <div>
-          <OptimizedCodeBlock text={formatText(input)} maxHeight={250} />
+          {(() => {
+            if (!output || output.toLowerCase().includes('error')) {
+              // Demo Mode: If it's a market call but failed (e.g. no API key), show mock data for verification
+              if (function_name.toLowerCase().includes('market')) {
+                const mockData = [
+                  { date: '2024-03-17', price: 2100 },
+                  { date: '2024-03-18', price: 2150 },
+                  { date: '2024-03-19', price: 2120 },
+                  { date: '2024-03-20', price: 2180 },
+                  { date: '2024-03-21', price: 2210 },
+                  { date: '2024-03-22', price: 2200 },
+                  { date: '2024-03-23', price: 2250 }
+                ];
+                return (
+                  <div className="relative">
+                    <div className="absolute top-2 right-2 z-10 bg-yellow-100 text-yellow-800 text-[10px] px-2 py-0.5 rounded font-bold border border-yellow-200 shadow-sm animate-pulse">
+                      DEMO MODE
+                    </div>
+                    <MarketChart
+                      data={mockData}
+                      crop="Demo Wheat"
+                      market="Mumbai Mandi"
+                      unit="₹/Quintal"
+                    />
+                  </div>
+                );
+              }
+              return <OptimizedCodeBlock text={formatText(input)} maxHeight={250} />;
+            }
+            try {
+              const parsed = JSON.parse(output);
+              if (parsed.market_data && Array.isArray(parsed.market_data)) {
+                return (
+                  <MarketChart
+                    data={parsed.market_data}
+                    crop={parsed.crop}
+                    market={parsed.market}
+                    unit={parsed.unit}
+                  />
+                );
+              }
+            } catch (e) {
+              /* Not JSON or invalid format */
+            }
+            return <OptimizedCodeBlock text={formatText(input)} maxHeight={250} />;
+          })()}
         </div>
         {output && (
           <>
@@ -77,7 +123,15 @@ export default function ToolCallInfo({
               {localize('com_ui_result')}
             </div>
             <div>
-              <OptimizedCodeBlock text={formatText(output)} maxHeight={250} />
+              {(() => {
+                try {
+                  const parsed = JSON.parse(output);
+                  if (parsed.market_data && Array.isArray(parsed.market_data)) {
+                    return null; // Don't show raw JSON if chart is rendered above
+                  }
+                } catch (e) { /* ignore */ }
+                return <OptimizedCodeBlock text={formatText(output)} maxHeight={250} />;
+              })()}
             </div>
             {uiResources.length > 0 && (
               <div className="my-2 text-sm font-medium text-text-primary">

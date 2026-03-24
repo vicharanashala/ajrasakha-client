@@ -20,6 +20,7 @@ import ShareRoute from './ShareRoute';
 import ChatRoute from './ChatRoute';
 import Search from './Search';
 import Root from './Root';
+import MarketDemo from './MarketDemo';
 
 const AuthLayout = () => (
   <AuthContextProvider>
@@ -75,6 +76,10 @@ export const router = createBrowserRouter(
       path: 'verify',
       element: <VerifyEmail />,
       errorElement: <RouteErrorBoundary />,
+    },
+    {
+      path: 'market-demo',
+      element: <MarketDemo />,
     },
     {
       element: <AuthLayout />,
