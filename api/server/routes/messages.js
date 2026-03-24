@@ -30,6 +30,7 @@ router.get('/', async (req, res) => {
       conversationId,
       messageId,
       search,
+      history,
     } = req.query;
     const pageSize = parseInt(pageSizeRaw, 10) || 25;
 
@@ -57,6 +58,37 @@ router.get('/', async (req, res) => {
         .lean();
       const nextCursor = messages.length > pageSize ? messages.pop()[sortField] : null;
       response = { messages, nextCursor };
+    } else if (history === 'true') {
+      const filter = { user: user, isCreatedByUser: true };
+      if (cursor) {
+        filter['createdAt'] = sortOrder === 1 ? { $gt: new Date(cursor) } : { $lt: new Date(cursor) };
+      }
+      
+      const pipeline = [
+        { $match: filter },
+        { $sort: { createdAt: -1 } },
+        {
+          $group: {
+            _id: '$text',
+            messageId: { $first: '$messageId' },
+            conversationId: { $first: '$conversationId' },
+            createdAt: { $first: '$createdAt' },
+            text: { $first: '$text' },
+          }
+        },
+        { $sort: { createdAt: -1 } },
+        { $limit: pageSize + 1 }
+      ];
+      
+      const historyMessages = await Message.aggregate(pipeline);
+      const activeMessages = historyMessages.map(m => ({
+        ...m,
+         isCreatedByUser: true,
+      }));
+      
+      const nextCursor = activeMessages.length > pageSize ? activeMessages.pop().createdAt : null;
+      console.log('HISTORY ROUTE RETURNING', activeMessages.length, 'ITEMS FOR USER', user);
+      response = { messages: activeMessages, nextCursor };
     } else if (search) {
       const searchResults = await Message.meiliSearch(search, { filter: `user = "${user}"` }, true);
 

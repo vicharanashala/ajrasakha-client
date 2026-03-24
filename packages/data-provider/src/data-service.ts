@@ -731,6 +731,10 @@ export const listMessages = (params?: q.MessagesListParams): Promise<q.MessagesL
   return request.get(endpoints.messages(params ?? {}));
 };
 
+export const getUserMessageHistory = (params?: { cursor?: string, pageSize?: number }): Promise<q.MessagesListResponse> => {
+  return request.get(endpoints.messages({ ...params, history: true } as any));
+};
+
 export function updateMessage(payload: t.TUpdateMessageRequest): Promise<unknown> {
   const { conversationId, messageId, text } = payload;
   if (!conversationId) {
