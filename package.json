@@ -1,6 +1,10 @@
 {
   "name": "LibreChat",
   "version": "v0.8.2-rc1",
+  "_moduleAliases": {
+    "server": "api/server",
+    "~": "api"
+  },
   "description": "",
   "workspaces": [
     "api",
@@ -161,5 +165,9 @@
       "admin/",
       "packages/"
     ]
+  },
+  "dependencies": {
+    "module-alias": "^2.3.4",
+    "mongodb": "^7.1.0"
   }
 }

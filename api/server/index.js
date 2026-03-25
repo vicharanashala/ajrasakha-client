@@ -1,3 +1,4 @@
+require('module-alias/register');
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
@@ -41,6 +42,11 @@ const host = HOST || 'localhost';
 const trusted_proxy = Number(TRUST_PROXY) || 1; /* trust first proxy by default */
 
 const app = express();
+
+app.use((req, res, next) => {
+  console.log(" API HIT:", req.method, req.url);
+  next();
+});
 
 const startServer = async () => {
   if (typeof Bun !== 'undefined') {
@@ -162,6 +168,16 @@ const startServer = async () => {
 
   app.use(ErrorController);
 
+  app.get("/test-pop", async (req, res) => {
+    console.log("TEST POP HIT");
+
+    const { searchPop } = require('./services/popSearch');
+
+    const result = await searchPop("How to control rice pests?");
+
+    res.json(result);
+  });
+
   app.use((req, res) => {
     res.set({
       'Cache-Control': process.env.INDEX_CACHE_CONTROL || 'no-cache, no-store, must-revalidate',
@@ -176,6 +192,8 @@ const startServer = async () => {
     res.type('html');
     res.send(updatedIndexHtml);
   });
+
+  
 
   app.listen(port, host, async (err) => {
     if (err) {

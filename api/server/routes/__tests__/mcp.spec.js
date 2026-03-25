@@ -361,7 +361,7 @@ describe('MCP Routes', () => {
       };
       require('~/config').getMCPManager.mockReturnValue(mockMcpManager);
 
-      const { getCachedTools, setCachedTools } = require('~/server/services/Config');
+      const { getCachedTools, setCachedTools } = require('server/services/Config');
       const { Constants } = require('librechat-data-provider');
       getCachedTools.mockResolvedValue({
         [`existing-tool${Constants.mcp_delimiter}test-server`]: { type: 'function' },
@@ -484,7 +484,7 @@ describe('MCP Routes', () => {
       };
       require('~/config').getMCPManager.mockReturnValue(mockMcpManager);
 
-      const { getCachedTools, setCachedTools } = require('~/server/services/Config');
+      const { getCachedTools, setCachedTools } = require('server/services/Config');
       getCachedTools.mockResolvedValue({});
       setCachedTools.mockResolvedValue();
 
@@ -915,7 +915,7 @@ describe('MCP Routes', () => {
       require('~/config').getMCPManager.mockReturnValue(mockMcpManager);
       require('~/config').getFlowStateManager.mockReturnValue({});
       require('~/cache').getLogStores.mockReturnValue({});
-      require('~/server/services/Tools/mcp').reinitMCPServer.mockResolvedValue({
+      require('server/services/Tools/mcp').reinitMCPServer.mockResolvedValue({
         success: true,
         message: "MCP server 'oauth-server' ready for OAuth authentication",
         serverName: 'oauth-server',
@@ -946,7 +946,7 @@ describe('MCP Routes', () => {
       require('~/config').getMCPManager.mockReturnValue(mockMcpManager);
       require('~/config').getFlowStateManager.mockReturnValue({});
       require('~/cache').getLogStores.mockReturnValue({});
-      require('~/server/services/Tools/mcp').reinitMCPServer.mockResolvedValue(null);
+      require('server/services/Tools/mcp').reinitMCPServer.mockResolvedValue(null);
 
       const response = await request(app).post('/api/mcp/error-server/reinitialize');
 
@@ -1007,13 +1007,13 @@ describe('MCP Routes', () => {
       require('~/config').getFlowStateManager.mockReturnValue({});
       require('~/cache').getLogStores.mockReturnValue({});
 
-      const { getCachedTools, setCachedTools } = require('~/server/services/Config');
-      const { updateMCPServerTools } = require('~/server/services/Config/mcp');
+      const { getCachedTools, setCachedTools } = require('server/services/Config');
+      const { updateMCPServerTools } = require('server/services/Config/mcp');
       getCachedTools.mockResolvedValue({});
       setCachedTools.mockResolvedValue();
       updateMCPServerTools.mockResolvedValue();
 
-      require('~/server/services/Tools/mcp').reinitMCPServer.mockResolvedValue({
+      require('server/services/Tools/mcp').reinitMCPServer.mockResolvedValue({
         success: true,
         message: "MCP server 'test-server' reinitialized successfully",
         serverName: 'test-server',
@@ -1065,13 +1065,13 @@ describe('MCP Routes', () => {
         { key: 'API_KEY', value: 'api-key-value' },
       ]);
 
-      const { getCachedTools, setCachedTools } = require('~/server/services/Config');
-      const { updateMCPServerTools } = require('~/server/services/Config/mcp');
+      const { getCachedTools, setCachedTools } = require('server/services/Config');
+      const { updateMCPServerTools } = require('server/services/Config/mcp');
       getCachedTools.mockResolvedValue({});
       setCachedTools.mockResolvedValue();
       updateMCPServerTools.mockResolvedValue();
 
-      require('~/server/services/Tools/mcp').reinitMCPServer.mockResolvedValue({
+      require('server/services/Tools/mcp').reinitMCPServer.mockResolvedValue({
         success: true,
         message: "MCP server 'test-server' reinitialized successfully",
         serverName: 'test-server',
@@ -1092,7 +1092,7 @@ describe('MCP Routes', () => {
   });
 
   describe('GET /connection/status', () => {
-    const { getMCPSetupData, getServerConnectionStatus } = require('~/server/services/MCP');
+    const { getMCPSetupData, getServerConnectionStatus } = require('server/services/MCP');
 
     it('should return connection status for all servers', async () => {
       const mockMcpConfig = {
@@ -1173,7 +1173,7 @@ describe('MCP Routes', () => {
   });
 
   describe('GET /connection/status/:serverName', () => {
-    const { getMCPSetupData, getServerConnectionStatus } = require('~/server/services/MCP');
+    const { getMCPSetupData, getServerConnectionStatus } = require('server/services/MCP');
 
     it('should return connection status for OAuth-required server', async () => {
       const mockMcpConfig = {
@@ -1256,7 +1256,7 @@ describe('MCP Routes', () => {
   });
 
   describe('GET /:serverName/auth-values', () => {
-    const { getUserPluginAuthValue } = require('~/server/services/PluginService');
+    const { getUserPluginAuthValue } = require('server/services/PluginService');
     // mockRegistryInstance is defined at the top of the file
 
     it('should return auth value flags for server', async () => {
@@ -1414,7 +1414,7 @@ describe('MCP Routes', () => {
     });
 
     it('should handle null cached tools in OAuth callback (triggers || {} fallback)', async () => {
-      const { getCachedTools } = require('~/server/services/Config');
+      const { getCachedTools } = require('server/services/Config');
       getCachedTools.mockResolvedValue(null);
       const { MCPOAuthHandler, MCPTokenStorage } = require('@librechat/api');
       const mockTokens = {

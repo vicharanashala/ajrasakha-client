@@ -19,14 +19,14 @@ const {
   processFileUpload,
   processDeleteRequest,
   processAgentFileUpload,
-} = require('~/server/services/Files/process');
+} = require('server/services/Files/process');
 const { fileAccess } = require('~/server/middleware/accessResources/fileAccess');
-const { getStrategyFunctions } = require('~/server/services/Files/strategies');
+const { getStrategyFunctions } = require('server/services/Files/strategies');
 const { getOpenAIClient } = require('~/server/controllers/assistants/helpers');
-const { checkPermission } = require('~/server/services/PermissionService');
-const { loadAuthValues } = require('~/server/services/Tools/credentials');
-const { refreshS3FileUrls } = require('~/server/services/Files/S3/crud');
-const { hasAccessToFilesViaAgent } = require('~/server/services/Files');
+const { checkPermission } = require('server/services/PermissionService');
+const { loadAuthValues } = require('server/services/Tools/credentials');
+const { refreshS3FileUrls } = require('server/services/Files/S3/crud');
+const { hasAccessToFilesViaAgent } = require('server/services/Files');
 const { getFiles, batchUpdateFiles } = require('~/models');
 const { cleanFileName } = require('~/server/utils/files');
 const { getAssistant } = require('~/models/Assistant');

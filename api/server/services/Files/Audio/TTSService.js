@@ -4,7 +4,7 @@ const { HttpsProxyAgent } = require('https-proxy-agent');
 const { genAzureEndpoint, logAxiosError } = require('@librechat/api');
 const { extractEnvVariable, TTSProviders } = require('librechat-data-provider');
 const { getRandomVoiceId, createChunkProcessor, splitTextIntoChunks } = require('./streamAudio');
-const { getAppConfig } = require('~/server/services/Config');
+const { getAppConfig } = require('server/services/Config');
 
 /**
  * Service class for handling Text-to-Speech (TTS) operations.

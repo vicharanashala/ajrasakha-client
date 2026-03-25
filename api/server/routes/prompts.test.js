@@ -54,7 +54,7 @@ beforeAll(async () => {
   User = dbModels.User;
 
   // Import permission service
-  const permissionService = require('~/server/services/PermissionService');
+  const permissionService = require('server/services/PermissionService');
   grantPermission = permissionService.grantPermission;
 
   // Create test data

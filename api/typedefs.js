@@ -906,13 +906,13 @@
 
 /**
  * @exports uploadImageBuffer
- * @typedef {import('~/server/services/Files/process').uploadImageBuffer} uploadImageBuffer
+ * @typedef {import('server/services/Files/process.js').uploadImageBuffer} uploadImageBuffer
  * @memberof typedefs
  */
 
 /**
  * @exports processFileURL
- * @typedef {import('~/server/services/Files/process').processFileURL} processFileURL
+ * @typedef {import('server/services/Files/process.js').processFileURL} processFileURL
  * @memberof typedefs
  */
 
@@ -933,7 +933,7 @@
  *   signal?: AbortSignal,
  *   memory?: ConversationSummaryBufferMemory,
  *   tool_resources?: AgentToolResources,
- *   web_search?: ReturnType<typeof import('~/server/services/Tools/search').createOnSearchResults>,
+ *   web_search?: ReturnType<typeof import('server/services/Tools/search.js').createOnSearchResults>,
  * }} LoadToolOptions
  * @memberof typedefs
  */

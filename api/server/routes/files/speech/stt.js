@@ -1,5 +1,5 @@
 const express = require('express');
-const { speechToText } = require('~/server/services/Files/Audio');
+const { speechToText } = require('server/services/Files/Audio');
 
 const router = express.Router();
 

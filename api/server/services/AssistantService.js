@@ -12,10 +12,10 @@ const {
   EModelEndpoint,
   defaultOrderQuery,
 } = require('librechat-data-provider');
-const { retrieveAndProcessFile } = require('~/server/services/Files/process');
-const { processRequiredActions } = require('~/server/services/ToolService');
-const { RunManager, waitForRun } = require('~/server/services/Runs');
-const { processMessages } = require('~/server/services/Threads');
+const { retrieveAndProcessFile } = require('server/services/Files/process');
+const { processRequiredActions } = require('server/services/ToolService');
+const { RunManager, waitForRun } = require('server/services/Runs');
+const { processMessages } = require('server/services/Threads');
 const { createOnProgress } = require('~/server/utils');
 const { TextStream } = require('~/app/clients');
 

@@ -8,9 +8,9 @@ const {
   buildEndpointOption,
   canAccessAgentFromBody,
 } = require('~/server/middleware');
-const { initializeClient } = require('~/server/services/Endpoints/agents');
+const { initializeClient } = require('server/services/Endpoints/agents');
 const AgentController = require('~/server/controllers/agents/request');
-const addTitle = require('~/server/services/Endpoints/agents/title');
+const addTitle = require('server/services/Endpoints/agents/title');
 const { getRoleByName } = require('~/models/Role');
 
 const router = express.Router();
@@ -31,9 +31,41 @@ router.use(checkAgentResourceAccess);
 router.use(validateConvoAccess);
 router.use(buildEndpointOption);
 
+const { searchPop } = require('../../services/popSearch');
+
 const controller = async (req, res, next) => {
-  await AgentController(req, res, next, initializeClient, addTitle);
+  try {
+    const userMessage = req.body?.text || "";
+
+    console.log(" ROUTE QUERY:", userMessage);
+
+    const popResult = await searchPop(userMessage);
+
+    if (popResult) {
+      console.log("POP HIT (ROUTE)");
+
+      return res.status(200).send({
+        message: {
+          content: [
+            {
+              type: "text",
+              text: popResult.answer
+            }
+          ],
+          role: "assistant"
+        },
+        final: true
+      });
+    }
+
+    await AgentController(req, res, next, initializeClient, addTitle);
+
+  } catch (err) {
+    console.error("Route error:", err);
+    next(err);
+  }
 };
+
 
 /**
  * @route POST / (regular endpoint)

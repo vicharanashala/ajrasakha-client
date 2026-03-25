@@ -1,5 +1,8 @@
 const { v4 } = require('uuid');
+console.log("CHATV1 FILE IS RUNNING");
 const { sleep } = require('@librechat/agents');
+const { searchGolden } = require('../../services/goldenSearch');
+const { searchPop } = require('../../services/popSearch');
 const { logger } = require('@librechat/data-schemas');
 const { sendEvent, getBalanceConfig, getModelMaxTokens, countTokens } = require('@librechat/api');
 const {
@@ -22,14 +25,14 @@ const {
   checkMessageGaps,
   addThreadMetadata,
   saveAssistantMessage,
-} = require('~/server/services/Threads');
-const { runAssistant, createOnTextProgress } = require('~/server/services/AssistantService');
+} = require('server/services/Threads');
+const { runAssistant, createOnTextProgress } = require('server/services/AssistantService');
 const validateAuthor = require('~/server/middleware/assistants/validateAuthor');
 const { formatMessage, createVisionPrompt } = require('~/app/clients/prompts');
-const { encodeAndFormat } = require('~/server/services/Files/images/encode');
-const { createRun, StreamRunManager } = require('~/server/services/Runs');
-const { addTitle } = require('~/server/services/Endpoints/assistants');
-const { createRunBody } = require('~/server/services/createRunBody');
+const { encodeAndFormat } = require('server/services/Files/images/encode');
+const { createRun, StreamRunManager } = require('server/services/Runs');
+const { addTitle } = require('server/services/Endpoints/assistants');
+const { createRunBody } = require('server/services/createRunBody');
 const { sendResponse } = require('~/server/middleware/error');
 const { getTransactions } = require('~/models/Transaction');
 const { checkBalance } = require('~/models/balanceMethods');
@@ -98,6 +101,10 @@ const chatV1 = async (req, res) => {
 
   /** @type {Run | undefined} - The completed run, undefined if incomplete */
   let completedRun;
+
+  if (error.message === "STOP_EXECUTION") {
+    return;
+  }
 
   const handleError = async (error) => {
     const defaultErrorMessage =
@@ -294,12 +301,37 @@ const chatV1 = async (req, res) => {
     });
 
     openai = _openai;
-    await validateAuthor({ req, openai });
+  await validateAuthor({ req, openai });
+  console.log(" USER QUERY:", text);
+
+  const goldenResult = await searchGolden(text);
+  console.log("GOLDEN RESULT:", goldenResult);
+
+  if (goldenResult) {
+    console.log(" GOLDEN HIT");
+
+    return sendResponse(req, res, {
+      text: goldenResult.answer,
+    });
+  }
+  console.log("STEP 1 PASSED");
+
+  const popResult = await searchPop(text);
+  console.log("STEP 2 PASSED");
+  console.log(" POP RESULT:", popResult);
+
+  if (popResult) {
+    console.log(" POP HIT");
+
+    return sendResponse(req, res, {
+      text: popResult.answer,
+    });
+  }
 
     if (previousMessages.length) {
       parentMessageId = previousMessages[previousMessages.length - 1].messageId;
     }
-
+   
     let userMessage = {
       role: 'user',
       content: text,
@@ -307,6 +339,7 @@ const chatV1 = async (req, res) => {
         messageId: userMessageId,
       },
     };
+   
 
     /** @type {CreateRunBody | undefined} */
     const body = createRunBody({

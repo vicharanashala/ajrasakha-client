@@ -7,7 +7,7 @@ const {
   filterFile,
   processImageFile,
   processAgentFileUpload,
-} = require('~/server/services/Files/process');
+} = require('server/services/Files/process');
 
 const router = express.Router();
 

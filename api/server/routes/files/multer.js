@@ -8,7 +8,7 @@ const {
   getEndpointFileConfig,
   fileConfig: defaultFileConfig,
 } = require('librechat-data-provider');
-const { getAppConfig } = require('~/server/services/Config');
+const { getAppConfig } = require('server/services/Config');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

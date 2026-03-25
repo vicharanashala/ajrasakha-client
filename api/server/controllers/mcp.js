@@ -12,7 +12,7 @@ const {
   MCPErrorCodes,
 } = require('@librechat/api');
 const { Constants, MCPServerUserInputSchema } = require('librechat-data-provider');
-const { cacheMCPServerTools, getMCPServerTools } = require('~/server/services/Config');
+const { cacheMCPServerTools, getMCPServerTools } = require('server/services/Config');
 const { getMCPManager, getMCPServersRegistry } = require('~/config');
 
 /**

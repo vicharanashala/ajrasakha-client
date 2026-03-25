@@ -32,12 +32,12 @@ const {
   Token,
   User,
 } = require('~/db/models');
-const { updateUserPluginAuth, deleteUserPluginAuth } = require('~/server/services/PluginService');
-const { verifyEmail, resendVerificationEmail } = require('~/server/services/AuthService');
+const { updateUserPluginAuth, deleteUserPluginAuth } = require('server/services/PluginService');
+const { verifyEmail, resendVerificationEmail } = require('server/services/AuthService');
 const { getMCPManager, getFlowStateManager, getMCPServersRegistry } = require('~/config');
-const { needsRefresh, getNewS3URL } = require('~/server/services/Files/S3/crud');
-const { processDeleteRequest } = require('~/server/services/Files/process');
-const { getAppConfig } = require('~/server/services/Config');
+const { needsRefresh, getNewS3URL } = require('server/services/Files/S3/crud');
+const { processDeleteRequest } = require('server/services/Files/process');
+const { getAppConfig } = require('server/services/Config');
 const { deleteToolCalls } = require('~/models/ToolCall');
 const { deleteUserPrompts } = require('~/models/Prompt');
 const { deleteUserAgents } = require('~/models/Agent');

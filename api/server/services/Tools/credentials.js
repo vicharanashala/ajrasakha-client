@@ -1,4 +1,4 @@
-const { getUserPluginAuthValue } = require('~/server/services/PluginService');
+const { getUserPluginAuthValue } = require('server/services/PluginService');
 
 /**
  *

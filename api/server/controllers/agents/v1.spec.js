@@ -63,7 +63,7 @@ const {
 const {
   findAccessibleResources,
   findPubliclyAccessibleResources,
-} = require('~/server/services/PermissionService');
+} = require('server/services/PermissionService');
 
 /**
  * @type {import('mongoose').Model<import('@librechat/data-schemas').IAgent>}

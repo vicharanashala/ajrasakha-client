@@ -5,7 +5,7 @@ const {
   verifyBackupCode,
   getTOTPSecret,
   verifyTOTP,
-} = require('~/server/services/twoFactorService');
+} = require('server/services/twoFactorService');
 const { getUserById, updateUser } = require('~/models');
 
 const safeAppTitle = (process.env.APP_TITLE || 'LibreChat').replace(/\s+/g, '');

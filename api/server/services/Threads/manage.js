@@ -7,7 +7,7 @@ const {
   AnnotationTypes,
   defaultOrderQuery,
 } = require('librechat-data-provider');
-const { retrieveAndProcessFile } = require('~/server/services/Files/process');
+const { retrieveAndProcessFile } = require('server/services/Files/process');
 const { recordMessage, getMessages } = require('~/models/Message');
 const { spendTokens } = require('~/models/spendTokens');
 const { saveConvo } = require('~/models/Conversation');

@@ -11,9 +11,9 @@ const {
   imageExtRegex,
   EToolResources,
 } = require('librechat-data-provider');
-const { filterFilesByAgentAccess } = require('~/server/services/Files/permissions');
-const { getStrategyFunctions } = require('~/server/services/Files/strategies');
-const { convertImage } = require('~/server/services/Files/images/convert');
+const { filterFilesByAgentAccess } = require('server/services/Files/permissions');
+const { getStrategyFunctions } = require('server/services/Files/strategies');
+const { convertImage } = require('server/services/Files/images/convert');
 const { createFile, getFiles, updateFile } = require('~/models');
 
 /**

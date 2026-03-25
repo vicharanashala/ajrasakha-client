@@ -1,5 +1,6 @@
 require('events').EventEmitter.defaultMaxListeners = 100;
 const { logger } = require('@librechat/data-schemas');
+const {searchGolden } = require('../../services/goldenSearch');
 const { DynamicStructuredTool } = require('@langchain/core/tools');
 const { getBufferString, HumanMessage } = require('@langchain/core/messages');
 const {
@@ -42,7 +43,7 @@ const {
   removeNullishValues,
 } = require('librechat-data-provider');
 const { spendTokens, spendStructuredTokens } = require('~/models/spendTokens');
-const { encodeAndFormat } = require('~/server/services/Files/images/encode');
+const { encodeAndFormat } = require('server/services/Files/images/encode');
 const { createContextHandlers } = require('~/app/clients/prompts');
 const { getConvoFiles } = require('~/models/Conversation');
 const BaseClient = require('~/app/clients/BaseClient');
@@ -753,18 +754,52 @@ class AgentClient extends BaseClient {
   }
 
   /** @type {sendCompletion} */
-  async sendCompletion(payload, opts = {}) {
-    await this.chatCompletion({
-      payload,
-      onProgress: opts.onProgress,
-      userMCPAuthMap: opts.userMCPAuthMap,
-      abortController: opts.abortController,
-    });
+    
 
-    const completion = filterMalformedContentParts(this.contentParts);
-    return { completion };
-  }
+    async sendCompletion(payload, opts = {}) {
 
+      console.log("FULL PAYLOAD:", JSON.stringify(payload, null, 2));
+
+      const userQuery = payload?.[payload.length - 1]?.content;
+
+      console.log("User query:", userQuery);
+
+      if (!userQuery){
+        console.log("User query is EMPTY");
+      }
+
+      const goldenResult = await searchGolden(userQuery);
+
+      console.log("Golden result FULL:", JSON.stringify(goldenResult));
+
+      //  STRONG CHECK
+      if (goldenResult && goldenResult.answer) {
+        console.log("Returning golden answer");
+
+        this.contentParts = [
+          {
+            type: "text",
+            text: {
+              value: goldenResult.answer
+            }
+          }
+        ];
+
+        return {
+          completion: this.contentParts
+        };
+      }
+      
+      await this.chatCompletion({
+        payload,
+        onProgress: opts.onProgress,
+        userMCPAuthMap: opts.userMCPAuthMap,
+        abortController: opts.abortController,
+      });
+
+      const completion = filterMalformedContentParts(this.contentParts);
+      return { completion };
+    }
   /**
    * @param {Object} params
    * @param {string} [params.model]

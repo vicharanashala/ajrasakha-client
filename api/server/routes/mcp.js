@@ -21,12 +21,12 @@ const {
   getOAuthReconnectionManager,
   getMCPServersRegistry,
 } = require('~/config');
-const { getMCPSetupData, getServerConnectionStatus } = require('~/server/services/MCP');
+const { getMCPSetupData, getServerConnectionStatus } = require('server/services/MCP');
 const { requireJwtAuth, canAccessMCPServerResource } = require('~/server/middleware');
 const { findToken, updateToken, createToken, deleteTokens } = require('~/models');
-const { getUserPluginAuthValue } = require('~/server/services/PluginService');
-const { updateMCPServerTools } = require('~/server/services/Config/mcp');
-const { reinitMCPServer } = require('~/server/services/Tools/mcp');
+const { getUserPluginAuthValue } = require('server/services/PluginService');
+const { updateMCPServerTools } = require('server/services/Config/mcp');
+const { reinitMCPServer } = require('server/services/Tools/mcp');
 const { getMCPTools } = require('~/server/controllers/mcp');
 const { findPluginAuthsByKeys } = require('~/models');
 const { getRoleByName } = require('~/models/Role');

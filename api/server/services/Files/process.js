@@ -24,14 +24,14 @@ const {
   convertImage,
   resizeAndConvert,
   resizeImageBuffer,
-} = require('~/server/services/Files/images');
+} = require('server/services/Files/images');
 const { addResourceFileId, deleteResourceFileId } = require('~/server/controllers/assistants/v2');
 const { addAgentResourceFile, removeAgentResourceFiles } = require('~/models/Agent');
 const { getOpenAIClient } = require('~/server/controllers/assistants/helpers');
-const { loadAuthValues } = require('~/server/services/Tools/credentials');
+const { loadAuthValues } = require('server/services/Tools/credentials');
 const { createFile, updateFileUsage, deleteFiles } = require('~/models');
 const { getFileStrategy } = require('~/server/utils/getFileStrategy');
-const { checkCapability } = require('~/server/services/Config');
+const { checkCapability } = require('server/services/Config');
 const { LB_QueueAsyncCall } = require('~/server/utils/queue');
 const { getStrategyFunctions } = require('./strategies');
 const { determineFileType } = require('~/server/utils');

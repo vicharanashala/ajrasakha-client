@@ -25,8 +25,8 @@ jest.mock('@librechat/api', () => ({
   })),
 }));
 
-const { getStrategyFunctions } = require('~/server/services/Files/strategies');
-const { resizeAvatar } = require('~/server/services/Files/images/avatar');
+const { getStrategyFunctions } = require('server/services/Files/strategies');
+const { resizeAvatar } = require('server/services/Files/images/avatar');
 const { updateUser } = require('~/models');
 
 describe('handleExistingUser', () => {

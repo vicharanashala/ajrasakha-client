@@ -30,8 +30,8 @@ const {
   removeAgentResourceFiles,
   generateActionMetadataHash,
 } = require('./Agent');
-const permissionService = require('~/server/services/PermissionService');
-const { getCachedTools, getMCPServerTools } = require('~/server/services/Config');
+const permissionService = require('server/services/PermissionService');
+const { getCachedTools, getMCPServerTools } = require('server/services/Config');
 const { AclEntry } = require('~/db/models');
 
 /**

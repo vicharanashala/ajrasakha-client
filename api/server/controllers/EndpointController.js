@@ -1,4 +1,4 @@
-const { getEndpointsConfig } = require('~/server/services/Config');
+const { getEndpointsConfig } = require('server/services/Config');
 
 async function endpointController(req, res) {
   const endpointsConfig = await getEndpointsConfig(req);

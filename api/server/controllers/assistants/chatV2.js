@@ -19,13 +19,13 @@ const {
   saveUserMessage,
   addThreadMetadata,
   saveAssistantMessage,
-} = require('~/server/services/Threads');
-const { runAssistant, createOnTextProgress } = require('~/server/services/AssistantService');
+} = require('server/services/Threads');
+const { runAssistant, createOnTextProgress } = require('server/services/AssistantService');
 const { createErrorHandler } = require('~/server/controllers/assistants/errors');
 const validateAuthor = require('~/server/middleware/assistants/validateAuthor');
-const { createRun, StreamRunManager } = require('~/server/services/Runs');
-const { addTitle } = require('~/server/services/Endpoints/assistants');
-const { createRunBody } = require('~/server/services/createRunBody');
+const { createRun, StreamRunManager } = require('server/services/Runs');
+const { addTitle } = require('server/services/Endpoints/assistants');
+const { createRunBody } = require('server/services/createRunBody');
 const { getTransactions } = require('~/models/Transaction');
 const { checkBalance } = require('~/models/balanceMethods');
 const { getConvo } = require('~/models/Conversation');

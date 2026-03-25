@@ -1,6 +1,6 @@
 const { CacheKeys } = require('librechat-data-provider');
 const { logger, AppService } = require('@librechat/data-schemas');
-const { loadAndFormatTools } = require('~/server/services/start/tools');
+const { loadAndFormatTools } = require('server/services/start/tools');
 const loadCustomConfig = require('./loadCustomConfig');
 const { setCachedTools } = require('./getCachedTools');
 const getLogStores = require('~/cache/getLogStores');

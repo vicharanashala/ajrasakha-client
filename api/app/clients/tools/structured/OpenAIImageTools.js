@@ -8,7 +8,7 @@ const { logger } = require('@librechat/data-schemas');
 const { HttpsProxyAgent } = require('https-proxy-agent');
 const { ContentTypes, EImageOutputType } = require('librechat-data-provider');
 const { logAxiosError, oaiToolkit, extractBaseURL } = require('@librechat/api');
-const { getStrategyFunctions } = require('~/server/services/Files/strategies');
+const { getStrategyFunctions } = require('server/services/Files/strategies');
 const { getFiles } = require('~/models');
 
 const displayMessage =

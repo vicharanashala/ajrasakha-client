@@ -2,7 +2,7 @@ const multer = require('multer');
 const express = require('express');
 const { logger } = require('@librechat/data-schemas');
 const { CacheKeys } = require('librechat-data-provider');
-const { getVoices, streamAudio, textToSpeech } = require('~/server/services/Files/Audio');
+const { getVoices, streamAudio, textToSpeech } = require('server/services/Files/Audio');
 const { getLogStores } = require('~/cache');
 
 const router = express.Router();

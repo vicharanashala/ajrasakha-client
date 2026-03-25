@@ -1,4 +1,4 @@
-const { retrieveAndProcessFile } = require('~/server/services/Files/process');
+const { retrieveAndProcessFile } = require('server/services/Files/process');
 const { processMessages } = require('./manage');
 
 jest.mock('~/server/services/Files/process', () => ({

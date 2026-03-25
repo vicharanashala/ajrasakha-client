@@ -206,7 +206,12 @@ endpoints:
       summaryModel: "current_model"
       forcePrompt: false
       modelDisplayLabel: "AjraSakha"  # optional display label in UI
-     
+    - name: "Ollama"
+      apiKey: "ollama"
+      baseURL: "http://localhost:11434/v1"
+      models:
+        default: ["llama3"]
+      modelDisplayLabel: "Ollama"
 fileConfig:
   endpoints:
     default:

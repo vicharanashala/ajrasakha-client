@@ -49,6 +49,7 @@ const ResumableAgentController = async (req, res, next, initializeClient, addTit
     responseMessageId: editedResponseMessageId = null,
   } = req.body;
 
+
   const userId = req.user.id;
 
   const { allowed, pendingRequests, limit } = await checkAndIncrementPendingRequest(userId);
@@ -577,9 +578,38 @@ const _LegacyAgentController = async (req, res, next, initializeClient, addTitle
       },
     };
 
-    let response = await client.sendMessage(text, messageOptions);
+    const { searchGolden } = require('../../services/goldenSearch');
+    const { searchPop } = require('../../services/popSearch');
 
-    // Extract what we need and immediately break reference
+    let finalText = text;
+
+    const goldenResult = await searchGolden(text);
+    if (goldenResult) {
+      console.log(" GOLDEN HIT (INJECTED)");
+
+      finalText = `
+    User Question: ${text}
+
+    Answer strictly using this verified data:
+    ${goldenResult.answer}
+    `;
+    }
+
+    else {
+      const popResult = await searchPop(text);
+      if (popResult) {
+        console.log(" POP HIT (INJECTED)");
+
+        finalText = `
+    User Question: ${text}
+
+    Answer strictly using this verified data:
+    ${popResult.answer}
+    `;
+      }
+    }
+
+    let response = await client.sendMessage(finalText, messageOptions);
     const messageId = response.messageId;
     const endpoint = endpointOption.endpoint;
     response.endpoint = endpoint;

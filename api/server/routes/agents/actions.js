@@ -12,8 +12,8 @@ const {
   validateActionDomain,
   validateAndParseOpenAPISpec,
 } = require('librechat-data-provider');
-const { encryptMetadata, domainParser } = require('~/server/services/ActionService');
-const { findAccessibleResources } = require('~/server/services/PermissionService');
+const { encryptMetadata, domainParser } = require('server/services/ActionService');
+const { findAccessibleResources } = require('server/services/PermissionService');
 const { getAgent, updateAgent, getListAgentsByAccess } = require('~/models/Agent');
 const { updateAction, getActions, deleteAction } = require('~/models/Action');
 const { canAccessAgentResource } = require('~/server/middleware');
