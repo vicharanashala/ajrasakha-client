@@ -290,39 +290,6 @@ router.get('/:conversationId', validateMessageReq, async (req, res) => {
 
 router.post('/:conversationId', validateMessageReq, async (req, res) => {
   try {
-    const { searchGolden } = require('../services/goldenSearch');
-    const { searchPop } = require('../services/popSearch');
-
-    const userMessage =
-      req.body?.text ||
-      req.body?.message?.text ||
-      "";
-
-    console.log("🔥 USER:", userMessage);
-
-    // 1️⃣ GOLDEN
-    const goldenResult = await searchGolden(userMessage);
-    if (goldenResult) {
-      console.log("✅ GOLDEN HIT");
-      return res.json({
-        message: goldenResult.answer,
-        source: "golden_dataset"
-      });
-    }
-
-    // 2️⃣ POP
-    const popResult = await searchPop(userMessage);
-    if (popResult) {
-      console.log("✅ POP HIT");
-      return res.json({
-        message: popResult.answer,
-        source: "pop_dataset"
-      });
-    }
-
-    // 3️⃣ SAVE MESSAGE (only if no dataset match)
-    const message = req.body;
-
     const savedMessage = await saveMessage(
       req,
       { ...message, user: req.user.id },

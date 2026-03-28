@@ -33,6 +33,9 @@ async function searchPop(userQuery) {
       return dbQuestion === cleanQuery;
     });
 
+    //  ADD THIS LOG HERE
+    console.log("POP MATCH RESULT:", result);
+
     return result || null;
 
   } catch (error) {

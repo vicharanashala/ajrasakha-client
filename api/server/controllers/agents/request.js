@@ -578,38 +578,47 @@ const _LegacyAgentController = async (req, res, next, initializeClient, addTitle
       },
     };
 
+
+
+    const { translateText } = require('../../services/sarvamTranslate');
     const { searchGolden } = require('../../services/goldenSearch');
     const { searchPop } = require('../../services/popSearch');
 
-    let finalText = text;
+    const englishText = await translateText(text, "en");
 
-    const goldenResult = await searchGolden(text);
+    let finalText = englishText;
+
+
+    let response;
+
     if (goldenResult) {
-      console.log(" GOLDEN HIT (INJECTED)");
+      console.log(" USING GOLDEN DIRECT");
 
-      finalText = `
-    User Question: ${text}
-
-    Answer strictly using this verified data:
-    ${goldenResult.answer}
-    `;
+      response = {
+        text: goldenResult.answer
+      };
     }
-
     else {
-      const popResult = await searchPop(text);
+      const popResult = await searchPop(englishText);
+
       if (popResult) {
-        console.log(" POP HIT (INJECTED)");
+        console.log(" USING POP DIRECT");
 
-        finalText = `
-    User Question: ${text}
-
-    Answer strictly using this verified data:
-    ${popResult.answer}
-    `;
+        response = {
+          text: popResult.answer
+        };
+      } 
+      else {
+        
+        response = await client.sendMessage(finalText, messageOptions);
       }
     }
 
-    let response = await client.sendMessage(finalText, messageOptions);
+    const finalAnswer = response.text;
+
+    const translatedAnswer = await translateText(finalAnswer, "te");
+
+    response.text = translatedAnswer;
     const messageId = response.messageId;
     const endpoint = endpointOption.endpoint;
     response.endpoint = endpoint;
