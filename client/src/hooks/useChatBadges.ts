@@ -1,26 +1,49 @@
 import { useMemo } from 'react';
 import { useRecoilCallback } from 'recoil';
 import { useRecoilValue } from 'recoil';
-import { MessageCircleDashed, Box } from 'lucide-react';
+import { Box, ZapOff, Sigma, Brain, Shuffle } from 'lucide-react';
 import type { BadgeItem } from '~/common';
 import { useLocalize, TranslationKeys } from '~/hooks';
 import store from '~/store';
 
 interface ChatBadgeConfig {
   id: string;
-  icon: typeof Box;
+  icon: any;
   label: string;
   atom?: any;
 }
 
 const badgeConfig: ReadonlyArray<ChatBadgeConfig> = [
-  // {
-  //   id: '1',
-  //   icon: Box,
-  //   label: 'com_ui_artifacts',
-  //   atom: store.codeArtifacts,
-  // },
-  // TODO: add more badges here (missing store atoms)
+  {
+    id: '1',
+    icon: Box,
+    label: 'com_ui_artifacts',
+    atom: store.artifactsVisibility,
+  },
+  {
+    id: '2',
+    icon: ZapOff,
+    label: 'com_nav_default_temporary_chat',
+    atom: store.isTemporary,
+  },
+  {
+    id: '3',
+    icon: Sigma,
+    label: 'com_nav_latex_parsing',
+    atom: store.LaTeXParsing,
+  },
+  {
+    id: '4',
+    icon: Brain,
+    label: 'com_nav_show_thinking',
+    atom: store.showThinking,
+  },
+  {
+    id: '5',
+    icon: Shuffle,
+    label: 'com_nav_modular_chat',
+    atom: store.modularChat,
+  },
 ];
 
 export default function useChatBadges(): BadgeItem[] {
