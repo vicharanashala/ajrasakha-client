@@ -18,6 +18,8 @@ const {
   getTransactionsConfig,
   createMemoryProcessor,
   filterMalformedContentParts,
+  formatAgricultureMemoryHints,
+  isAgricultureMemoryConfig,
 } = require('@librechat/api');
 const {
   Callback,
@@ -523,7 +525,9 @@ class AgentClient extends BaseClient {
 
     const withoutKeys = await this.useMemory();
     if (withoutKeys) {
-      systemContent += `${memoryInstructions}\n\n# Existing memory about the user:\n${withoutKeys}`;
+      systemContent = [systemContent, `${memoryInstructions}\n\n${withoutKeys}`]
+        .filter(Boolean)
+        .join('\n\n');
     }
 
     if (systemContent) {
@@ -658,6 +662,8 @@ class AgentClient extends BaseClient {
       instructions: agent.instructions,
       llmConfig,
       tokenLimit: memoryConfig.tokenLimit,
+      autoExtract: memoryConfig.autoExtract,
+      injection: memoryConfig.injection,
     };
 
     const userId = this.options.req.user.id + '';
@@ -674,6 +680,7 @@ class AgentClient extends BaseClient {
         setMemory: db.setMemory,
         deleteMemory: db.deleteMemory,
         getFormattedMemories: db.getFormattedMemories,
+        getAllUserMemories: db.getAllUserMemories,
       },
       res: this.options.res,
     });
@@ -745,7 +752,14 @@ class AgentClient extends BaseClient {
 
       const filteredMessages = messagesToProcess.map((msg) => this.filterImageUrls(msg));
       const bufferString = getBufferString(filteredMessages);
-      const bufferMessage = new HumanMessage(`# Current Chat:\n\n${bufferString}`);
+      const extractionHints = isAgricultureMemoryConfig(memoryConfig)
+        ? formatAgricultureMemoryHints(bufferString)
+        : '';
+      const sections = [`# Current Chat:\n\n${bufferString}`];
+      if (extractionHints) {
+        sections.push(extractionHints);
+      }
+      const bufferMessage = new HumanMessage(sections.join('\n\n'));
       return await this.processMemory([bufferMessage]);
     } catch (error) {
       logger.error('Memory Agent failed to process memory', error);

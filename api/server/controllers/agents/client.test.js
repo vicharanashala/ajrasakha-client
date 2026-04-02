@@ -2,6 +2,45 @@ const { Providers } = require('@librechat/agents');
 const { Constants, EModelEndpoint } = require('librechat-data-provider');
 const AgentClient = require('./client');
 
+jest.mock('@librechat/data-schemas', () => ({
+  createModels: jest.fn(() => ({})),
+  createMethods: jest.fn(() => ({})),
+  logger: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
+}));
+
+jest.mock('winston', () => ({
+  addColors: jest.fn(),
+  createLogger: jest.fn(() => ({
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  })),
+  format: Object.assign(
+    jest.fn((transformer) => {
+      return typeof transformer === 'function' ? transformer : jest.fn();
+    }),
+    {
+      combine: jest.fn(),
+      colorize: jest.fn(),
+      simple: jest.fn(),
+      timestamp: jest.fn(),
+      printf: jest.fn(),
+      errors: jest.fn(),
+      json: jest.fn(),
+    },
+  ),
+  transports: {
+    Console: jest.fn(),
+    DailyRotateFile: jest.fn(),
+  },
+}));
+
 jest.mock('@librechat/agents', () => ({
   ...jest.requireActual('@librechat/agents'),
   createMetadataAggregator: () => ({
@@ -1509,6 +1548,34 @@ describe('AgentClient - titleConvo', () => {
       expect(processedMessage.content).toContain('Hello, how are you?');
       expect(processedMessage.content).toContain('I am doing well, thank you!');
       expect(processedMessage.content).toContain('That is great to hear.');
+    });
+
+    it('should append agriculture extraction hints when agriculture memory is enabled', async () => {
+      const { HumanMessage } = require('@langchain/core/messages');
+      mockReq.config = {
+        memory: {
+          messageWindowSize: 3,
+          autoExtract: {
+            enabled: true,
+            domain: 'agriculture',
+          },
+          injection: {
+            format: 'structured_profile',
+          },
+          validKeys: ['crop', 'state', 'pincode', 'district', 'soil_type', 'farm_size'],
+        },
+      };
+      client.options.req = mockReq;
+
+      await client.runMemory([
+        new HumanMessage("I'm from Ropar, Punjab. My pincode is 140001 and I grow wheat on 3 acres."),
+      ]);
+
+      const processedMessage = mockProcessMemory.mock.calls[0][0][0];
+      expect(processedMessage.content).toContain('# Agriculture Profile Hints');
+      expect(processedMessage.content).toContain('Pincode -> 140001');
+      expect(processedMessage.content).toContain('Crop -> Wheat');
+      expect(processedMessage.content).toContain('Farm Size -> 3 acres');
     });
 
     it('should handle mixed content types correctly', async () => {
