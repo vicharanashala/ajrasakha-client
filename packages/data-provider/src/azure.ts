@@ -5,10 +5,10 @@ import type {
   TAzureModelGroupMap,
   TValidatedAzureConfig,
   TAzureConfigValidationResult,
-} from '../src/config';
-import { extractEnvVariable, envVarRegex } from '../src/utils';
-import { azureGroupConfigsSchema } from '../src/config';
-import { errorsToString } from '../src/parsers';
+} from './config';
+import { extractEnvVariable, envVarRegex } from './utils';
+import { azureGroupConfigsSchema } from './config';
+import { errorsToString } from './parsers';
 
 export function validateAzureGroups(configs: TAzureGroups): TAzureConfigValidationResult {
   let isValid = true;

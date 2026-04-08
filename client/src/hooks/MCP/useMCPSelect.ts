@@ -36,8 +36,9 @@ export function useMCPSelect({
     const mcps = ephemeralAgent?.mcp ?? [];
     if (mcps.length === 1 && mcps[0] === Constants.mcp_clear) {
       setMCPValuesRaw([]);
-    } else if (mcps.length > 0) {
-      // Strip out servers that are not available in the startup config
+    } else if (mcps.length > 0 && configuredServers.size > 0) {
+      // Only filter when real servers are configured (Tailscale reachable)
+      // If configuredServers is empty, skip to preserve mock selections
       const activeMcps = mcps.filter((mcp) => configuredServers.has(mcp));
       setMCPValuesRaw(activeMcps);
     }
@@ -59,10 +60,12 @@ export function useMCPSelect({
     }
   }, [mcpValues, key]);
 
-  /** Deliberately swallows clicks so servers can NEVER be unselected */
-  const setMCPValues = useCallback(() => {
-    // Locked on purpose
-  }, []);
+  const setMCPValues = useCallback(
+    (values: string[]) => {
+      setMCPValuesRaw(values);
+    },
+    [setMCPValuesRaw],
+  );
 
   return {
     isPinned,
