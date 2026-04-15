@@ -1,6 +1,6 @@
 const { logger } = require('@librechat/data-schemas');
 const { isEmailDomainAllowed } = require('@librechat/api');
-const { getAppConfig } = require('~/server/services/Config');
+const { getAppConfig } = require('server/services/Config');
 
 /**
  * Checks the domain's social login is allowed

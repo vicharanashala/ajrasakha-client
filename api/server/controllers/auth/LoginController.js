@@ -1,6 +1,6 @@
 const { logger } = require('@librechat/data-schemas');
-const { generate2FATempToken } = require('~/server/services/twoFactorService');
-const { setAuthTokens } = require('~/server/services/AuthService');
+const { generate2FATempToken } = require('server/services/twoFactorService');
+const { setAuthTokens } = require('server/services/AuthService');
 
 const loginController = async (req, res) => {
   try {

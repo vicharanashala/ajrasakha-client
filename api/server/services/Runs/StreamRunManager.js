@@ -9,9 +9,9 @@ const {
   MessageContentTypes,
   AssistantStreamEvents,
 } = require('librechat-data-provider');
-const { retrieveAndProcessFile } = require('~/server/services/Files/process');
-const { processRequiredActions } = require('~/server/services/ToolService');
-const { processMessages } = require('~/server/services/Threads');
+const { retrieveAndProcessFile } = require('server/services/Files/process');
+const { processRequiredActions } = require('server/services/ToolService');
+const { processMessages } = require('server/services/Threads');
 const { createOnProgress } = require('~/server/utils');
 
 /**

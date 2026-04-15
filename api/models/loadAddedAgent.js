@@ -8,7 +8,7 @@ const {
   appendAgentIdSuffix,
   encodeEphemeralAgentId,
 } = require('librechat-data-provider');
-const { getMCPServerTools } = require('~/server/services/Config');
+const { getMCPServerTools } = require('server/services/Config');
 
 const { mcp_all, mcp_delimiter } = Constants;
 

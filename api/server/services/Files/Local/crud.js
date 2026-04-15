@@ -4,7 +4,7 @@ const axios = require('axios');
 const { logger } = require('@librechat/data-schemas');
 const { EModelEndpoint } = require('librechat-data-provider');
 const { generateShortLivedToken } = require('@librechat/api');
-const { resizeImageBuffer } = require('~/server/services/Files/images/resize');
+const { resizeImageBuffer } = require('../images/resize');
 const { getBufferMetadata } = require('~/server/utils');
 const paths = require('~/config/paths');
 

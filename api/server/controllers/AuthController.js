@@ -9,7 +9,7 @@ const {
   resetPassword,
   setAuthTokens,
   registerUser,
-} = require('~/server/services/AuthService');
+} = require('server/services/AuthService');
 const {
   deleteAllUserSessions,
   getUserById,
@@ -17,7 +17,7 @@ const {
   updateUser,
   findUser,
 } = require('~/models');
-const { getGraphApiToken } = require('~/server/services/GraphTokenService');
+const { getGraphApiToken } = require('server/services/GraphTokenService');
 const { getOAuthReconnectionManager } = require('~/config');
 const { getOpenIdConfig } = require('~/strategies');
 

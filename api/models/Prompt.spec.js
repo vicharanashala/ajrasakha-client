@@ -39,7 +39,7 @@ beforeAll(async () => {
   Project = dbModels.Project;
 
   promptFns = require('~/models/Prompt');
-  permissionService = require('~/server/services/PermissionService');
+  permissionService = require('server/services/PermissionService');
 
   // Create test data
   await setupTestData();

@@ -1,9 +1,9 @@
 const { logger } = require('@librechat/data-schemas');
 const { CacheKeys } = require('librechat-data-provider');
 const { getToolkitKey, checkPluginAuth, filterUniquePlugins } = require('@librechat/api');
-const { getCachedTools, setCachedTools } = require('~/server/services/Config');
+const { getCachedTools, setCachedTools } = require('server/services/Config');
 const { availableTools, toolkits } = require('~/app/clients/tools');
-const { getAppConfig } = require('~/server/services/Config');
+const { getAppConfig } = require('server/services/Config');
 const { getLogStores } = require('~/cache');
 
 const getAvailablePluginsController = async (req, res) => {

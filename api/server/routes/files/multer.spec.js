@@ -315,7 +315,7 @@ describe('Multer Configuration', () => {
     });
 
     it('should use real config merging', async () => {
-      const { getAppConfig } = require('~/server/services/Config');
+      const { getAppConfig } = require('server/services/Config');
 
       const multerInstance = await createMulterInstance();
 
@@ -511,7 +511,7 @@ describe('Multer Configuration', () => {
 
   describe('Real Configuration Testing', () => {
     it('should handle missing custom config gracefully with real mergeFileConfig', async () => {
-      const { getAppConfig } = require('~/server/services/Config');
+      const { getAppConfig } = require('server/services/Config');
 
       // Mock getAppConfig to return undefined
       getAppConfig.mockResolvedValueOnce(undefined);
@@ -522,7 +522,7 @@ describe('Multer Configuration', () => {
     });
 
     it('should properly integrate real fileConfig with custom endpoints', async () => {
-      const { getAppConfig } = require('~/server/services/Config');
+      const { getAppConfig } = require('server/services/Config');
 
       // Mock appConfig with fileConfig
       getAppConfig.mockResolvedValueOnce({

@@ -9,10 +9,10 @@ const {
   ToolCallTypes,
   PermissionTypes,
 } = require('librechat-data-provider');
-const { processFileURL, uploadImageBuffer } = require('~/server/services/Files/process');
-const { processCodeOutput } = require('~/server/services/Files/Code/process');
+const { processFileURL, uploadImageBuffer } = require('server/services/Files/process');
+const { processCodeOutput } = require('server/services/Files/Code/process');
 const { createToolCall, getToolCallsByConvo } = require('~/models/ToolCall');
-const { loadAuthValues } = require('~/server/services/Tools/credentials');
+const { loadAuthValues } = require('server/services/Tools/credentials');
 const { loadTools } = require('~/app/clients/tools/util');
 const { getRoleByName } = require('~/models/Role');
 const { getMessage } = require('~/models/Message');

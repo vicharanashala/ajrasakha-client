@@ -19,8 +19,8 @@ const {
   addAgentIdsToProject,
   getProjectByName,
 } = require('./Project');
-const { removeAllPermissions } = require('~/server/services/PermissionService');
-const { getMCPServerTools } = require('~/server/services/Config');
+const { removeAllPermissions } = require('server/services/PermissionService');
+const { getMCPServerTools } = require('server/services/Config');
 const { Agent, AclEntry } = require('~/db/models');
 const { getActions } = require('./Action');
 

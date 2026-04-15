@@ -4,8 +4,8 @@ const {
   verifyTOTP,
   getTOTPSecret,
   verifyBackupCode,
-} = require('~/server/services/twoFactorService');
-const { setAuthTokens } = require('~/server/services/AuthService');
+} = require('server/services/twoFactorService');
+const { setAuthTokens } = require('server/services/AuthService');
 const { getUserById } = require('~/models');
 
 /**

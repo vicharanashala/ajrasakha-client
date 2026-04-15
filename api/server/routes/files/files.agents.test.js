@@ -62,7 +62,7 @@ jest.mock('fs', () => {
   };
 });
 
-const { processAgentFileUpload } = require('~/server/services/Files/process');
+const { processAgentFileUpload } = require('server/services/Files/process');
 
 // Import the router
 const router = require('~/server/routes/files/files');
@@ -219,7 +219,7 @@ describe('File Routes - Agent Files Endpoint', () => {
       });
 
       // Grant EDIT permission to user on the agent using PermissionService
-      const { grantPermission } = require('~/server/services/PermissionService');
+      const { grantPermission } = require('server/services/PermissionService');
       await grantPermission({
         principalType: PrincipalType.USER,
         principalId: otherUserId,
@@ -274,7 +274,7 @@ describe('File Routes - Agent Files Endpoint', () => {
       });
 
       // Grant only VIEW permission to user on the agent
-      const { grantPermission } = require('~/server/services/PermissionService');
+      const { grantPermission } = require('server/services/PermissionService');
       await grantPermission({
         principalType: PrincipalType.USER,
         principalId: otherUserId,
@@ -475,7 +475,7 @@ describe('File Routes - Agent Files Endpoint', () => {
       });
 
       // Grant EDIT permission to otherUserId
-      const { grantPermission } = require('~/server/services/PermissionService');
+      const { grantPermission } = require('server/services/PermissionService');
       await grantPermission({
         principalType: PrincipalType.USER,
         principalId: otherUserId,
@@ -509,7 +509,7 @@ describe('File Routes - Agent Files Endpoint', () => {
       });
 
       // Grant only VIEW permission to otherUserId
-      const { grantPermission } = require('~/server/services/PermissionService');
+      const { grantPermission } = require('server/services/PermissionService');
       await grantPermission({
         principalType: PrincipalType.USER,
         principalId: otherUserId,

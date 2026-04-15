@@ -1,6 +1,6 @@
 const { logger } = require('@librechat/data-schemas');
 const { SystemRoles } = require('librechat-data-provider');
-const { checkPermission } = require('~/server/services/PermissionService');
+const { checkPermission } = require('server/services/PermissionService');
 
 /**
  * Generic base middleware factory that creates middleware to check resource access permissions.

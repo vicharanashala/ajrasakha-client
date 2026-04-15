@@ -1,5 +1,5 @@
 const { TTSProviders } = require('librechat-data-provider');
-const { getAppConfig } = require('~/server/services/Config');
+const { getAppConfig } = require('server/services/Config');
 const { getProvider } = require('./TTSService');
 
 /**

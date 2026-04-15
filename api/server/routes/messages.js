@@ -1,4 +1,6 @@
 const express = require('express');
+const { searchGolden } = require("../services/goldenSearch");
+const { searchPop } = require('../services/popSearch');
 const { v4: uuidv4 } = require('uuid');
 const { logger } = require('@librechat/data-schemas');
 const { ContentTypes } = require('librechat-data-provider');
@@ -11,7 +13,7 @@ const {
   updateMessage,
   deleteMessages,
 } = require('~/models');
-const { findAllArtifacts, replaceArtifactContent } = require('~/server/services/Artifacts/update');
+const { findAllArtifacts, replaceArtifactContent } = require('server/services/Artifacts/update');
 const { requireJwtAuth, validateMessageReq } = require('~/server/middleware');
 const { getConvosQueried } = require('~/models/Conversation');
 const { Message } = require('~/db/models');
@@ -288,86 +290,22 @@ router.get('/:conversationId', validateMessageReq, async (req, res) => {
 
 router.post('/:conversationId', validateMessageReq, async (req, res) => {
   try {
-    const message = req.body;
     const savedMessage = await saveMessage(
       req,
       { ...message, user: req.user.id },
       { context: 'POST /api/messages/:conversationId' },
     );
+
     if (!savedMessage) {
       return res.status(400).json({ error: 'Message not saved' });
     }
+
     await saveConvo(req, savedMessage, { context: 'POST /api/messages/:conversationId' });
+
     res.status(201).json(savedMessage);
+
   } catch (error) {
     logger.error('Error saving message:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-router.get('/:conversationId/:messageId', validateMessageReq, async (req, res) => {
-  try {
-    const { conversationId, messageId } = req.params;
-    const message = await getMessages({ conversationId, messageId }, '-_id -__v -user');
-    if (!message) {
-      return res.status(404).json({ error: 'Message not found' });
-    }
-    res.status(200).json(message);
-  } catch (error) {
-    logger.error('Error fetching message:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-router.put('/:conversationId/:messageId', validateMessageReq, async (req, res) => {
-  try {
-    const { conversationId, messageId } = req.params;
-    const { text, index, model } = req.body;
-
-    if (index === undefined) {
-      const tokenCount = await countTokens(text, model);
-      const result = await updateMessage(req, { messageId, text, tokenCount });
-      return res.status(200).json(result);
-    }
-
-    if (typeof index !== 'number' || index < 0) {
-      return res.status(400).json({ error: 'Invalid index' });
-    }
-
-    const message = (await getMessages({ conversationId, messageId }, 'content tokenCount'))?.[0];
-    if (!message) {
-      return res.status(404).json({ error: 'Message not found' });
-    }
-
-    const existingContent = message.content;
-    if (!Array.isArray(existingContent) || index >= existingContent.length) {
-      return res.status(400).json({ error: 'Invalid index' });
-    }
-
-    const updatedContent = [...existingContent];
-    if (!updatedContent[index]) {
-      return res.status(400).json({ error: 'Content part not found' });
-    }
-
-    const currentPartType = updatedContent[index].type;
-    if (currentPartType !== ContentTypes.TEXT && currentPartType !== ContentTypes.THINK) {
-      return res.status(400).json({ error: 'Cannot update non-text content' });
-    }
-
-    const oldText = updatedContent[index][currentPartType];
-    updatedContent[index] = { type: currentPartType, [currentPartType]: text };
-
-    let tokenCount = message.tokenCount;
-    if (tokenCount !== undefined) {
-      const oldTokenCount = await countTokens(oldText, model);
-      const newTokenCount = await countTokens(text, model);
-      tokenCount = Math.max(0, tokenCount - oldTokenCount) + newTokenCount;
-    }
-
-    const result = await updateMessage(req, { messageId, content: updatedContent, tokenCount });
-    return res.status(200).json(result);
-  } catch (error) {
-    logger.error('Error updating message:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

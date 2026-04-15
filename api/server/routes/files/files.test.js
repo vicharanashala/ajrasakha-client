@@ -52,7 +52,7 @@ jest.mock('~/config', () => ({
   },
 }));
 
-const { processDeleteRequest } = require('~/server/services/Files/process');
+const { processDeleteRequest } = require('server/services/Files/process');
 
 // Import the router after mocks
 const router = require('./files');
@@ -232,7 +232,7 @@ describe('File Routes - Delete with Agent Access', () => {
       });
 
       // Grant EDIT permission to user on the agent
-      const { grantPermission } = require('~/server/services/PermissionService');
+      const { grantPermission } = require('server/services/PermissionService');
       await grantPermission({
         principalType: PrincipalType.USER,
         principalId: otherUserId,
@@ -286,7 +286,7 @@ describe('File Routes - Delete with Agent Access', () => {
       });
 
       // Grant EDIT permission to user on the agent
-      const { grantPermission } = require('~/server/services/PermissionService');
+      const { grantPermission } = require('server/services/PermissionService');
       await grantPermission({
         principalType: PrincipalType.USER,
         principalId: otherUserId,
@@ -352,7 +352,7 @@ describe('File Routes - Delete with Agent Access', () => {
       });
 
       // Grant EDIT permission to user on the agent
-      const { grantPermission } = require('~/server/services/PermissionService');
+      const { grantPermission } = require('server/services/PermissionService');
       await grantPermission({
         principalType: PrincipalType.USER,
         principalId: otherUserId,
@@ -395,7 +395,7 @@ describe('File Routes - Delete with Agent Access', () => {
       });
 
       // Grant only VIEW permission to user on the agent
-      const { grantPermission } = require('~/server/services/PermissionService');
+      const { grantPermission } = require('server/services/PermissionService');
       await grantPermission({
         principalType: PrincipalType.USER,
         principalId: otherUserId,

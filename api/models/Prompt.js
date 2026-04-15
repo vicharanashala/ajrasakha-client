@@ -13,7 +13,7 @@ const {
   addGroupIdsToProject,
   getProjectByName,
 } = require('./Project');
-const { removeAllPermissions } = require('~/server/services/PermissionService');
+const { removeAllPermissions } = require('server/services/PermissionService');
 const { PromptGroup, Prompt, AclEntry } = require('~/db/models');
 
 /**

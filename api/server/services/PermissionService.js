@@ -8,7 +8,7 @@ const {
   getUserEntraGroups,
   getGroupMembers,
   getGroupOwners,
-} = require('~/server/services/GraphApiService');
+} = require('server/services/GraphApiService');
 const {
   findAccessibleResources: findAccessibleResourcesACL,
   getEffectivePermissions: getEffectivePermissionsACL,

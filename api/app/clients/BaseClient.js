@@ -29,7 +29,7 @@ const {
   getConvo,
   getFiles,
 } = require('~/models');
-const { getStrategyFunctions } = require('~/server/services/Files/strategies');
+const { getStrategyFunctions } = require('server/services/Files/strategies');
 const { checkBalance } = require('~/models/balanceMethods');
 const { truncateToolCallOutputs } = require('./prompts');
 const TextStream = require('./TextStream');

@@ -13,7 +13,7 @@ const {
   getAvailableRoles,
   findAccessibleResources,
   getResourcePermissionsMap,
-} = require('~/server/services/PermissionService');
+} = require('server/services/PermissionService');
 const { AclEntry } = require('~/db/models');
 const {
   searchPrincipals: searchLocalPrincipals,
@@ -23,7 +23,7 @@ const {
 const {
   entraIdPrincipalFeatureEnabled,
   searchEntraIdPrincipals,
-} = require('~/server/services/GraphApiService');
+} = require('server/services/GraphApiService');
 
 /**
  * Generic controller for resource permission endpoints

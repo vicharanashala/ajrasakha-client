@@ -37,12 +37,12 @@ const {
   TavilySearchResults,
   createOpenAIImageTools,
 } = require('../');
-const { primeFiles: primeCodeFiles } = require('~/server/services/Files/Code/process');
+const { primeFiles: primeCodeFiles } = require('server/services/Files/Code/process');
 const { createFileSearchTool, primeFiles: primeSearchFiles } = require('./fileSearch');
-const { getUserPluginAuthValue } = require('~/server/services/PluginService');
-const { createMCPTool, createMCPTools } = require('~/server/services/MCP');
-const { loadAuthValues } = require('~/server/services/Tools/credentials');
-const { getMCPServerTools } = require('~/server/services/Config');
+const { getUserPluginAuthValue } = require('server/services/PluginService');
+const { createMCPTool, createMCPTools } = require('server/services/MCP');
+const { loadAuthValues } = require('server/services/Tools/credentials');
+const { getMCPServerTools } = require('server/services/Config');
 const { getRoleByName } = require('~/models/Role');
 
 /**

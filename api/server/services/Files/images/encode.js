@@ -10,7 +10,7 @@ const {
   mergeFileConfig,
   getEndpointFileConfig,
 } = require('librechat-data-provider');
-const { getStrategyFunctions } = require('~/server/services/Files/strategies');
+const { getStrategyFunctions } = require('server/services/Files/strategies');
 
 /**
  * Converts a readable stream to a base64 encoded string.

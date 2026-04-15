@@ -6,7 +6,7 @@ const { logger } = require('@librechat/data-schemas');
 const { HttpsProxyAgent } = require('https-proxy-agent');
 const { genAzureEndpoint, logAxiosError } = require('@librechat/api');
 const { extractEnvVariable, STTProviders } = require('librechat-data-provider');
-const { getAppConfig } = require('~/server/services/Config');
+const { getAppConfig } = require('server/services/Config');
 
 /**
  * Maps MIME types to their corresponding file extensions for audio files.

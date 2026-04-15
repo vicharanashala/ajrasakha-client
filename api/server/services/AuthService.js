@@ -25,7 +25,7 @@ const {
   generateRefreshToken,
 } = require('~/models');
 const { registerSchema } = require('~/strategies/validators');
-const { getAppConfig } = require('~/server/services/Config');
+const { getAppConfig } = require('server/services/Config');
 const { sendEmail } = require('~/server/utils');
 
 const domains = {

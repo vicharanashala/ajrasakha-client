@@ -20,8 +20,8 @@ const { deleteToolCalls } = require('~/models/ToolCall');
 const getLogStores = require('~/cache/getLogStores');
 
 const assistantClients = {
-  [EModelEndpoint.azureAssistants]: require('~/server/services/Endpoints/azureAssistants'),
-  [EModelEndpoint.assistants]: require('~/server/services/Endpoints/assistants'),
+  [EModelEndpoint.azureAssistants]: require('server/services/Endpoints/azureAssistants'),
+  [EModelEndpoint.assistants]: require('server/services/Endpoints/assistants'),
 };
 
 const router = express.Router();

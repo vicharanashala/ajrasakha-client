@@ -28,11 +28,11 @@ const {
   loadActionSets,
   domainParser,
 } = require('./ActionService');
-const { processFileURL, uploadImageBuffer } = require('~/server/services/Files/process');
-const { getEndpointsConfig, getCachedTools } = require('~/server/services/Config');
+const { processFileURL, uploadImageBuffer } = require('server/services/Files/process');
+const { getEndpointsConfig, getCachedTools } = require('server/services/Config');
 const { manifestToolMap, toolkits } = require('~/app/clients/tools/manifest');
-const { createOnSearchResults } = require('~/server/services/Tools/search');
-const { recordUsage } = require('~/server/services/Threads');
+const { createOnSearchResults } = require('server/services/Tools/search');
+const { recordUsage } = require('server/services/Threads');
 const { loadTools } = require('~/app/clients/tools/util');
 const { redactMessage } = require('~/config/parsers');
 const { findPluginAuthsByKeys } = require('~/models');

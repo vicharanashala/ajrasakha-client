@@ -1,5 +1,5 @@
 const { logger } = require('@librechat/data-schemas');
-const { getAppConfig } = require('~/server/services/Config');
+const { getAppConfig } = require('server/services/Config');
 
 /**
  * This function retrieves the speechTab settings from the custom configuration

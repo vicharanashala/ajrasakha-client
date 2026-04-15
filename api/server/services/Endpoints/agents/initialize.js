@@ -19,7 +19,7 @@ const {
   getDefaultHandlers,
 } = require('~/server/controllers/agents/callbacks');
 const { getModelsConfig } = require('~/server/controllers/ModelController');
-const { loadAgentTools } = require('~/server/services/ToolService');
+const { loadAgentTools } = require('server/services/ToolService');
 const AgentClient = require('~/server/controllers/agents/client');
 const { getConvoFiles } = require('~/models/Conversation');
 const { processAddedConvo } = require('./addedConvo');

@@ -1,4 +1,4 @@
-const { getCachedTools, getAppConfig } = require('~/server/services/Config');
+const { getCachedTools, getAppConfig } = require('server/services/Config');
 const { getLogStores } = require('~/cache');
 
 jest.mock('@librechat/data-schemas', () => ({
@@ -447,7 +447,7 @@ describe('PluginController', () => {
       };
 
       // Mock setCachedTools to verify it's called to re-initialize
-      const { setCachedTools } = require('~/server/services/Config');
+      const { setCachedTools } = require('server/services/Config');
 
       await getAvailableTools(mockReq, mockRes);
 

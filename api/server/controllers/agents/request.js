@@ -1,3 +1,4 @@
+//PR test change
 const { logger } = require('@librechat/data-schemas');
 const { Constants, ViolationTypes } = require('librechat-data-provider');
 const {
@@ -48,6 +49,7 @@ const ResumableAgentController = async (req, res, next, initializeClient, addTit
     overrideParentMessageId = null,
     responseMessageId: editedResponseMessageId = null,
   } = req.body;
+
 
   const userId = req.user.id;
 
@@ -577,9 +579,47 @@ const _LegacyAgentController = async (req, res, next, initializeClient, addTitle
       },
     };
 
-    let response = await client.sendMessage(text, messageOptions);
 
-    // Extract what we need and immediately break reference
+
+    const { translateText } = require('../../services/sarvamTranslate');
+    const { searchGolden } = require('../../services/goldenSearch');
+    const { searchPop } = require('../../services/popSearch');
+
+    const englishText = await translateText(text, "en");
+
+    let finalText = englishText;
+
+
+    let response;
+
+    if (goldenResult) {
+      console.log(" USING GOLDEN DIRECT");
+
+      response = {
+        text: goldenResult.answer
+      };
+    }
+    else {
+      const popResult = await searchPop(englishText);
+
+      if (popResult) {
+        console.log(" USING POP DIRECT");
+
+        response = {
+          text: popResult.answer
+        };
+      } 
+      else {
+        
+        response = await client.sendMessage(finalText, messageOptions);
+      }
+    }
+
+    const finalAnswer = response.text;
+
+    const translatedAnswer = await translateText(finalAnswer, "te");
+
+    response.text = translatedAnswer;
     const messageId = response.messageId;
     const endpoint = endpointOption.endpoint;
     response.endpoint = endpoint;

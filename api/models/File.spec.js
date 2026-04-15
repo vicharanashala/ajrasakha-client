@@ -8,7 +8,7 @@ const {
   AccessRoleIds,
   PrincipalType,
 } = require('librechat-data-provider');
-const { grantPermission } = require('~/server/services/PermissionService');
+const { grantPermission } = require('server/services/PermissionService');
 const { createAgent } = require('./Agent');
 
 let File;
@@ -137,7 +137,7 @@ describe('File Access Control', () => {
       });
 
       // Check access for all files
-      const { hasAccessToFilesViaAgent } = require('~/server/services/Files/permissions');
+      const { hasAccessToFilesViaAgent } = require('server/services/Files/permissions');
       const accessMap = await hasAccessToFilesViaAgent({
         userId: userId,
         role: SystemRoles.USER,
@@ -180,7 +180,7 @@ describe('File Access Control', () => {
       });
 
       // Check access as the author
-      const { hasAccessToFilesViaAgent } = require('~/server/services/Files/permissions');
+      const { hasAccessToFilesViaAgent } = require('server/services/Files/permissions');
       const accessMap = await hasAccessToFilesViaAgent({
         userId: authorId,
         role: SystemRoles.USER,
@@ -206,7 +206,7 @@ describe('File Access Control', () => {
         provider: 'local',
       });
 
-      const { hasAccessToFilesViaAgent } = require('~/server/services/Files/permissions');
+      const { hasAccessToFilesViaAgent } = require('server/services/Files/permissions');
       const accessMap = await hasAccessToFilesViaAgent({
         userId: userId,
         role: SystemRoles.USER,
@@ -265,7 +265,7 @@ describe('File Access Control', () => {
       });
 
       // Check access for files
-      const { hasAccessToFilesViaAgent } = require('~/server/services/Files/permissions');
+      const { hasAccessToFilesViaAgent } = require('server/services/Files/permissions');
       const accessMap = await hasAccessToFilesViaAgent({
         userId: userId,
         role: SystemRoles.USER,
@@ -325,7 +325,7 @@ describe('File Access Control', () => {
       });
 
       // Check access for files
-      const { hasAccessToFilesViaAgent } = require('~/server/services/Files/permissions');
+      const { hasAccessToFilesViaAgent } = require('server/services/Files/permissions');
       const accessMap = await hasAccessToFilesViaAgent({
         userId: userId,
         role: SystemRoles.USER,
@@ -423,7 +423,7 @@ describe('File Access Control', () => {
       );
 
       // Then filter by access control
-      const { filterFilesByAgentAccess } = require('~/server/services/Files/permissions');
+      const { filterFilesByAgentAccess } = require('server/services/Files/permissions');
       const files = await filterFilesByAgentAccess({
         files: allFiles,
         userId: userId,
@@ -525,7 +525,7 @@ describe('File Access Control', () => {
       });
 
       // Check access with role provided (should avoid DB query)
-      const { hasAccessToFilesViaAgent } = require('~/server/services/Files/permissions');
+      const { hasAccessToFilesViaAgent } = require('server/services/Files/permissions');
       const accessMapWithRole = await hasAccessToFilesViaAgent({
         userId: userId,
         role: 'ADMIN',
@@ -605,7 +605,7 @@ describe('File Access Control', () => {
         grantedBy: authorId,
       });
 
-      const { hasAccessToFilesViaAgent } = require('~/server/services/Files/permissions');
+      const { hasAccessToFilesViaAgent } = require('server/services/Files/permissions');
 
       // Check with EDITOR role - should have access
       const accessAsEditor = await hasAccessToFilesViaAgent({

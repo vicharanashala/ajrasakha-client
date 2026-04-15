@@ -33,7 +33,7 @@ jest.mock('~/server/services/Config', () => ({
 const { Calculator } = require('@librechat/agents');
 
 const { User } = require('~/db/models');
-const PluginService = require('~/server/services/PluginService');
+const PluginService = require('server/services/PluginService');
 const { validateTools, loadTools, loadToolWithAuth } = require('./handleTools');
 const { StructuredSD, availableTools, DALLE3 } = require('../');
 

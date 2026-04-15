@@ -40,7 +40,7 @@ const {
   getEffectivePermissions,
   findAccessibleResources,
   grantPermission,
-} = require('~/server/services/PermissionService');
+} = require('server/services/PermissionService');
 const { getRoleByName } = require('~/models/Role');
 
 const router = express.Router();

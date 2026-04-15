@@ -4,7 +4,7 @@ const { tool } = require('@langchain/core/tools');
 const { logger } = require('@librechat/data-schemas');
 const { generateShortLivedToken } = require('@librechat/api');
 const { Tools, EToolResources } = require('librechat-data-provider');
-const { filterFilesByAgentAccess } = require('~/server/services/Files/permissions');
+const { filterFilesByAgentAccess } = require('server/services/Files/permissions');
 const { getFiles } = require('~/models');
 
 /**

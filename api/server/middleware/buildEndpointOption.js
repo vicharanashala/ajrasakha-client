@@ -6,9 +6,9 @@ const {
   isAgentsEndpoint,
   parseCompactConvo,
 } = require('librechat-data-provider');
-const azureAssistants = require('~/server/services/Endpoints/azureAssistants');
-const assistants = require('~/server/services/Endpoints/assistants');
-const agents = require('~/server/services/Endpoints/agents');
+const azureAssistants = require('server/services/Endpoints/azureAssistants');
+const assistants = require('server/services/Endpoints/assistants');
+const agents = require('server/services/Endpoints/agents');
 const { updateFilesUsage } = require('~/models');
 
 const buildFunction = {

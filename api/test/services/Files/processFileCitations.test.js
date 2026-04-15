@@ -3,7 +3,7 @@ const {
   processFileCitations,
   applyCitationLimits,
   enhanceSourcesWithMetadata,
-} = require('~/server/services/Files/Citations');
+} = require('server/services/Files/Citations');
 
 // Mock dependencies
 jest.mock('~/models', () => ({
