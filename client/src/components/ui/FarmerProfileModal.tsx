@@ -213,10 +213,16 @@ const FarmerProfileModal = ({
 
   const onSubmit = (data: FarmerProfileForm) => {
     const resolvedDistrict =
-      data.district === 'Other' ? data.customDistrict : data.district;
+      data.district === 'Other' ? data.customDistrict.trim() : data.district.trim();
 
     const profile: IFarmerProfile = {
       ...data,
+      farmerName: data.farmerName.trim(),
+      blockName: data.blockName.trim(),
+      villageName: data.villageName.trim(),
+      phoneNo: data.phoneNo.trim(),
+      primaryCrop: data.primaryCrop.trim(),
+      secondaryCrop: data.secondaryCrop.trim(),
       district: resolvedDistrict,
       age: Number(data.age),
       yearsOfExperience: Number(data.yearsOfExperience),
@@ -450,7 +456,10 @@ const FarmerProfileModal = ({
                   id="blockName"
                   placeholder="Enter block name"
                   className={inputClass}
-                  {...register('blockName', { required: 'Block name is required' })}
+                  {...register('blockName', {
+                    required: 'Block name is required',
+                    validate: (v) => v.trim().length > 0 || 'Block name is required',
+                  })}
                 />
                 {errors.blockName && <p className={errorClass}>{errors.blockName.message}</p>}
               </div>
@@ -461,7 +470,10 @@ const FarmerProfileModal = ({
                   id="villageName"
                   placeholder="Enter village name"
                   className={inputClass}
-                  {...register('villageName', { required: 'Village name is required' })}
+                  {...register('villageName', {
+                    required: 'Village name is required',
+                    validate: (v) => v.trim().length > 0 || 'Village name is required',
+                  })}
                 />
                 {errors.villageName && <p className={errorClass}>{errors.villageName.message}</p>}
               </div>
@@ -474,6 +486,7 @@ const FarmerProfileModal = ({
                   className={inputClass}
                   {...register('phoneNo', {
                     required: 'Phone number is required',
+                    validate: (v) => v.trim().length > 0 || 'Phone number is required',
                     pattern: { value: /^[0-9+\- ]{7,15}$/, message: 'Invalid phone number' },
                   })}
                 />
@@ -531,7 +544,10 @@ const FarmerProfileModal = ({
                   id="cropsCultivated"
                   placeholder="e.g. Wheat, Rice, Maize (comma separated)"
                   className={inputClass}
-                  {...register('cropsCultivated', { required: 'Crops cultivated is required' })}
+                  {...register('cropsCultivated', {
+                    required: 'Crops cultivated is required',
+                    validate: (v) => v.trim().length > 0 || 'Crops cultivated is required',
+                  })}
                 />
                 {errors.cropsCultivated && (
                   <p className={errorClass}>{errors.cropsCultivated.message}</p>
@@ -545,7 +561,10 @@ const FarmerProfileModal = ({
                     id="primaryCrop"
                     placeholder="e.g. Wheat"
                     className={inputClass}
-                    {...register('primaryCrop', { required: 'Primary crop is required' })}
+                    {...register('primaryCrop', {
+                      required: 'Primary crop is required',
+                      validate: (v) => v.trim().length > 0 || 'Primary crop is required',
+                    })}
                   />
                   {errors.primaryCrop && (
                     <p className={errorClass}>{errors.primaryCrop.message}</p>
@@ -558,7 +577,10 @@ const FarmerProfileModal = ({
                     id="secondaryCrop"
                     placeholder="e.g. Rice"
                     className={inputClass}
-                    {...register('secondaryCrop', { required: 'Secondary crop is required' })}
+                    {...register('secondaryCrop', {
+                      required: 'Secondary crop is required',
+                      validate: (v) => v.trim().length > 0 || 'Secondary crop is required',
+                    })}
                   />
                   {errors.secondaryCrop && (
                     <p className={errorClass}>{errors.secondaryCrop.message}</p>
