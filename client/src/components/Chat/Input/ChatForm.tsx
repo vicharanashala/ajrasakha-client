@@ -1,3 +1,4 @@
+import useOfflineDispatcher from '~/hooks/Generic/useOfflineDispatcher';
 import { memo, useRef, useMemo, useEffect, useState, useCallback } from 'react';
 import { useWatch } from 'react-hook-form';
 import { TextareaAutosize } from '@librechat/client';
@@ -133,6 +134,8 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   });
 
   const { submitMessage, submitPrompt } = useSubmitMessage();
+
+  useOfflineDispatcher(submitMessage);
 
   const handleKeyUp = useHandleKeyUp({
     index,

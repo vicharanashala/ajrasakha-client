@@ -14,15 +14,13 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noImplicitAny": false,
-    "noEmit": false,
-    "declaration": true,
-    "declarationDir": "./types",
+    "noEmit": true,
+   
     "jsx": "preserve",
     "baseUrl": "..",
     "paths": {
       "~/*": ["./client/src/*"],
       "test/*": ["./client/test/*"],
-      "*": ["./client/*", "../node_modules/*"],
       "librechat-data-provider/*": ["./packages/data-provider/*"]
     }
   },
@@ -35,7 +33,7 @@
     "test/setupTests.js",
     "env.d.ts",
     "../config/translations/**/*.ts",
-    "../packages/client/src/hooks/useDelayedRender.tsx",
-    "../packages/client/src/components/InfoHoverCard.tsx"
+    "src/hooks/useDelayedRender.tsx",
+    "src/components/InfoHoverCard.tsx"
   ]
 }

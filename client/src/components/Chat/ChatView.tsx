@@ -1,4 +1,7 @@
+/*import useOfflineDispatcher from '~/hooks/Generic/useOfflineDispatcher';*/
+
 import { memo, useCallback } from 'react';
+
 import { useRecoilValue } from 'recoil';
 import { useForm } from 'react-hook-form';
 import { Spinner } from '@librechat/client';

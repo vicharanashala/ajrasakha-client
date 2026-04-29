@@ -20,6 +20,9 @@ import { globalAudioId } from '~/common';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
 
+import useNetwork from '../Generic/useNetwork';
+import { saveToQueue } from '../../utils/queueManager';
+
 type KeyEvent = KeyboardEvent<HTMLTextAreaElement>;
 
 export default function useTextarea({
@@ -42,6 +45,8 @@ export default function useTextarea({
   const checkHealth = useInteractionHealthCheck();
   const enterToSend = useRecoilValue(store.enterToSend);
 
+  const isOnline = useNetwork();
+
   const { index, conversation, isSubmitting, filesLoading, latestMessage, setFilesLoading } =
     useChatContext();
   const [activePrompt, setActivePrompt] = useRecoilState(store.activePromptByIndex(index));
@@ -57,7 +62,6 @@ export default function useTextarea({
   const entityName = entity?.name ?? '';
 
   const isNotAppendable = latestMessage?.error === true && !isAssistant;
-  // && (conversationId?.length ?? 0) > 6; // also ensures that we don't show the wrong placeholder
 
   useEffect(() => {
     const prompt = activePrompt ?? '';
@@ -153,7 +157,6 @@ export default function useTextarea({
       const isNonShiftEnter = e.key === 'Enter' && !e.shiftKey;
       const isCtrlEnter = e.key === 'Enter' && (e.ctrlKey || e.metaKey);
 
-      // NOTE: isComposing and e.key behave differently in Safari compared to other browsers, forcing us to use e.keyCode instead
       const isComposingInput = isComposing.current || e.key === 'Process' || e.keyCode === 229;
 
       if (isNonShiftEnter && filesLoading) {
@@ -183,6 +186,25 @@ export default function useTextarea({
           console.log('Unmuting global audio');
           globalAudio.muted = false;
         }
+
+        // Intercept message and save to offline queue if network is down
+        if (!isOnline || !navigator.onLine) {
+          const currentText = textAreaRef.current?.value;
+          if (currentText && currentText.trim() !== '') {
+            saveToQueue({
+              text: currentText,
+              conversationId: conversation?.conversationId,
+            });
+
+            if (textAreaRef.current) {
+              textAreaRef.current.value = ''; // Clear UI
+              forceResize(textAreaRef.current); // Reset box height
+            }
+            console.log('[Interceptor] Network offline. Message intercepted and cached.');
+            return;
+          }
+        }
+
         submitButtonRef.current?.click();
       }
     },
@@ -194,6 +216,8 @@ export default function useTextarea({
       setIsScrollable,
       textAreaRef,
       submitButtonRef,
+      isOnline,
+      conversation?.conversationId,
     ],
   );
 
