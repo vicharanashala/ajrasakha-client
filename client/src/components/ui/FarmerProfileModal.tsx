@@ -1,6 +1,12 @@
+import { useEffect, useCallback } from 'react';
+import Cookies from 'js-cookie';
+import { useRecoilState } from 'recoil';
 import { useForm, Controller } from 'react-hook-form';
 import useGeolocation from '~/hooks/useGeolocation';
+import { useLocalize } from '~/hooks';
+import store from '~/store';
 import { SearchableSelect } from '~/components/ui';
+import { LangSelector } from '~/components/Nav/SettingsTabs/General/General';
 import {
   OGDialog,
   OGDialogContent,
@@ -11,9 +17,7 @@ import {
 } from '@librechat/client';
 import type { IFarmerProfile } from 'librechat-data-provider';
 import { useSaveFarmerProfileMutation } from '~/data-provider';
-import { STATES, DISTRICTS, BLOCKS, VILLAGES, CROPS, INDIAN_LANGUAGES } from '~/utils/metaData';
-
-// ── Form Types ───────────────────────────────────────────────────────────────
+import { STATES, DISTRICTS, BLOCKS, VILLAGES } from '~/utils/metaData';
 
 type FarmerProfileForm = {
   farmerName: string;
@@ -43,19 +47,20 @@ type FarmerProfileForm = {
   landhold: string;
 };
 
-// ── Component ────────────────────────────────────────────────────────────────
-
 const FarmerProfileModal = ({
   open,
   onOpenChange,
   onComplete,
-  onDecline,
+  onDecline: _onDecline,
 }: {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
   onComplete: () => void;
   onDecline: () => void;
 }) => {
+  const localize = useLocalize();
+  const [langcode, setLangcode] = useRecoilState(store.lang);
+
   const {
     register,
     handleSubmit,
@@ -65,6 +70,36 @@ const FarmerProfileModal = ({
     setValue,
     formState: { errors, isValid },
   } = useForm<FarmerProfileForm>({ mode: 'onChange' });
+
+  const resolveLanguageCode = useCallback((value: string) => {
+    if (value !== 'auto') {
+      return value;
+    }
+    return (
+      (typeof navigator !== 'undefined' ? navigator.language || navigator.languages?.[0] : null) ??
+      'en-US'
+    );
+  }, []);
+
+  const handleLanguageChange = useCallback(
+    (value: string) => {
+      const userLang = resolveLanguageCode(value);
+      requestAnimationFrame(() => {
+        document.documentElement.lang = userLang;
+      });
+      setLangcode(userLang);
+      Cookies.set('lang', userLang, { expires: 365 });
+      localStorage.setItem('lang_selected', 'true');
+      setValue('languagePreference', userLang, { shouldValidate: true });
+    },
+    [resolveLanguageCode, setLangcode, setValue],
+  );
+
+  useEffect(() => {
+    if (!watch('languagePreference')) {
+      setValue('languagePreference', langcode, { shouldValidate: true });
+    }
+  }, [langcode, setValue, watch]);
 
   const { isLocating, locationError, getLocation } = useGeolocation({
     onSuccess: (latitude, longitude) => {
@@ -103,12 +138,10 @@ const FarmerProfileModal = ({
   const districtOptions = selectedState
     ? [...(DISTRICTS[selectedState] ?? []), 'Other']
     : ['Other'];
-
   const blockOptions =
     selectedDistrict && selectedDistrict !== 'Other'
       ? [...(BLOCKS[selectedDistrict] ?? []), 'Other']
       : ['Other'];
-
   const villageOptions =
     selectedBlock && selectedBlock !== 'Other'
       ? [...(VILLAGES[selectedBlock] ?? []), 'Other']
@@ -146,7 +179,7 @@ const FarmerProfileModal = ({
     const resolvedBlock = data.blockName === 'Other' ? data.customBlock : data.blockName;
     const resolvedVillage = data.villageName === 'Other' ? data.customVillage : data.villageName;
 
-    const profile: IFarmerProfile = {
+    const profile = {
       ...data,
       district: resolvedDistrict,
       blockName: resolvedBlock,
@@ -170,7 +203,7 @@ const FarmerProfileModal = ({
             }
           : undefined,
     };
-    saveMutation.mutate(profile);
+    saveMutation.mutate(profile as IFarmerProfile);
   };
 
   const inputClass =
@@ -178,7 +211,7 @@ const FarmerProfileModal = ({
   const errorClass = 'mt-1 text-xs text-red-500';
   const sectionClass = 'mb-6';
   const sectionTitleClass =
-    'mb-3 text-base font-semibold text-text-primary border-b border-border-heavy pb-1';
+    'mb-3 border-b border-border-heavy pb-1 text-base font-semibold text-text-primary';
   const fieldClass = 'mb-4';
 
   return (
@@ -191,7 +224,7 @@ const FarmerProfileModal = ({
       >
         <OGDialogHeader>
           <OGDialogTitle className="text-lg font-bold text-text-primary">
-            Farmer Profile Registration
+            {localize('com_farmer_profile_registration')}
           </OGDialogTitle>
         </OGDialogHeader>
 
@@ -199,41 +232,67 @@ const FarmerProfileModal = ({
           <input type="hidden" {...register('location.latitude')} />
           <input type="hidden" {...register('location.longitude')} />
 
-          {/* ── Notice — pinned above the scrollable area ── */}
+          <div className="shrink-0 px-1 pb-3">
+            <Controller
+              name="languagePreference"
+              control={control}
+              rules={{ required: localize('com_farmer_validation_language_required') }}
+              render={({ field }) => (
+                <LangSelector
+                  langcode={field.value ?? langcode}
+                  onChange={(value) => {
+                    handleLanguageChange(value);
+                    field.onChange(resolveLanguageCode(value));
+                  }}
+                  portal={false}
+                />
+              )}
+            />
+            {errors.languagePreference && (
+              <p className={errorClass}>{errors.languagePreference.message}</p>
+            )}
+          </div>
+
           <p className="shrink-0 px-1 pb-3 text-sm font-medium text-red-500">
-            * Please fill in all the details below to complete your registration.
+            {localize('com_farmer_profile_fill_all_required')}
           </p>
 
           <div className="flex-1 overflow-y-auto px-1 py-2">
-            {/* ── Section 1: Demographic Details ── */}
             <div className={sectionClass}>
-              <h3 className={sectionTitleClass}>Demographic Details</h3>
+              <h3 className={sectionTitleClass}>
+                {localize('com_farmer_profile_demographic_details')}
+              </h3>
 
               <div className={fieldClass}>
-                <Label htmlFor="farmerName">Farmer Name</Label>
+                <Label htmlFor="farmerName">{localize('com_farmer_label_farmer_name')}</Label>
                 <Input
                   id="farmerName"
-                  placeholder="Enter full name"
+                  placeholder={localize('com_farmer_placeholder_full_name')}
                   className={inputClass}
-                  {...register('farmerName', { required: 'Farmer name is required' })}
+                  {...register('farmerName', {
+                    required: localize('com_farmer_validation_farmer_name_required'),
+                  })}
                 />
                 {errors.farmerName && <p className={errorClass}>{errors.farmerName.message}</p>}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className={fieldClass}>
-                  <Label htmlFor="age">Age</Label>
+                  <Label htmlFor="age">{localize('com_farmer_label_age')}</Label>
                   <Input
                     id="age"
                     type="number"
-                    placeholder="Age"
+                    placeholder={localize('com_farmer_placeholder_age')}
                     defaultValue={18}
                     min={18}
                     max={120}
                     className={inputClass}
                     {...register('age', {
-                      required: 'Age is required',
-                      min: { value: 18, message: 'Must be at least 18' },
+                      required: localize('com_farmer_validation_age_required'),
+                      min: {
+                        value: 18,
+                        message: localize('com_farmer_validation_age_minimum'),
+                      },
                       valueAsNumber: true,
                     })}
                   />
@@ -241,17 +300,21 @@ const FarmerProfileModal = ({
                 </div>
 
                 <div className={fieldClass}>
-                  <Label>Gender</Label>
+                  <Label>{localize('com_farmer_label_gender')}</Label>
                   <Controller
                     name="gender"
                     control={control}
-                    rules={{ required: 'Gender is required' }}
+                    rules={{ required: localize('com_farmer_validation_gender_required') }}
                     render={({ field }) => (
                       <SearchableSelect
-                        options={['Male', 'Female', 'Other']}
+                        options={[
+                          localize('com_farmer_option_male'),
+                          localize('com_farmer_option_female'),
+                          localize('com_farmer_option_other'),
+                        ]}
                         value={field.value ?? ''}
                         onChange={field.onChange}
-                        placeholder="Select gender"
+                        placeholder={localize('com_farmer_placeholder_select_gender')}
                       />
                     )}
                   />
@@ -259,9 +322,8 @@ const FarmerProfileModal = ({
                 </div>
               </div>
 
-              {/* ── Location ── */}
               <div className={fieldClass}>
-                <Label>Current Location</Label>
+                <Label>{localize('com_farmer_label_current_location')}</Label>
                 <div className="mb-3 mt-2 rounded-md border border-blue-100 bg-blue-50/50 p-3 dark:border-blue-800 dark:bg-blue-900/10">
                   <div className="flex">
                     <div className="flex-shrink-0">
@@ -278,10 +340,7 @@ const FarmerProfileModal = ({
                       </svg>
                     </div>
                     <div className="ml-3 text-sm text-blue-700 dark:text-blue-400">
-                      <p>
-                        Please ensure you are currently located at your home before capturing your
-                        location to ensure accurate profile registration.
-                      </p>
+                      <p>{localize('com_farmer_helper_location_capture')}</p>
                     </div>
                   </div>
                 </div>
@@ -292,30 +351,31 @@ const FarmerProfileModal = ({
                     disabled={isLocating}
                     className="inline-flex items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface-active disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {isLocating ? 'Locating...' : 'Get Location'}
+                    {isLocating
+                      ? localize('com_farmer_button_locating')
+                      : localize('com_farmer_button_get_location')}
                   </button>
                   {watch('location.latitude') && watch('location.longitude') && (
                     <span className="text-sm font-medium text-green-600 dark:text-green-500">
-                      ✓ Location Captured Successfully
+                      {localize('com_farmer_location_captured_success')}
                     </span>
                   )}
                   {locationError && <span className="text-sm text-red-500">{locationError}</span>}
                 </div>
               </div>
 
-              {/* ── State → District → Block → Village ── */}
               <div className={fieldClass}>
-                <Label>State</Label>
+                <Label>{localize('com_farmer_label_state')}</Label>
                 <Controller
                   name="state"
                   control={control}
-                  rules={{ required: 'State is required' }}
+                  rules={{ required: localize('com_farmer_validation_state_required') }}
                   render={({ field }) => (
                     <SearchableSelect
                       options={STATES}
                       value={field.value ?? ''}
                       onChange={handleStateChange}
-                      placeholder="Select state"
+                      placeholder={localize('com_farmer_placeholder_select_state')}
                     />
                   )}
                 />
@@ -323,17 +383,21 @@ const FarmerProfileModal = ({
               </div>
 
               <div className={fieldClass}>
-                <Label>District</Label>
+                <Label>{localize('com_farmer_label_district')}</Label>
                 <Controller
                   name="district"
                   control={control}
-                  rules={{ required: 'District is required' }}
+                  rules={{ required: localize('com_farmer_validation_district_required') }}
                   render={({ field }) => (
                     <SearchableSelect
                       options={districtOptions}
                       value={field.value ?? ''}
                       onChange={handleDistrictChange}
-                      placeholder={selectedState ? 'Select district' : 'Select a state first'}
+                      placeholder={
+                        selectedState
+                          ? localize('com_farmer_placeholder_select_district')
+                          : localize('com_farmer_placeholder_select_state_first')
+                      }
                       disabled={!selectedState}
                     />
                   )}
@@ -341,16 +405,17 @@ const FarmerProfileModal = ({
                 {errors.district && <p className={errorClass}>{errors.district.message}</p>}
               </div>
 
-              {/* Custom district input – shown only when "Other" is selected */}
               {selectedDistrict === 'Other' && (
                 <div className={fieldClass}>
-                  <Label htmlFor="customDistrict">Enter Your District</Label>
+                  <Label htmlFor="customDistrict">
+                    {localize('com_farmer_label_custom_district')}
+                  </Label>
                   <Input
                     id="customDistrict"
-                    placeholder="Type your district name"
+                    placeholder={localize('com_farmer_placeholder_custom_district')}
                     className={inputClass}
                     {...register('customDistrict', {
-                      required: 'Please enter your district name',
+                      required: localize('com_farmer_validation_custom_district_required'),
                     })}
                   />
                   {errors.customDistrict && (
@@ -360,17 +425,21 @@ const FarmerProfileModal = ({
               )}
 
               <div className={fieldClass}>
-                <Label>Block Name</Label>
+                <Label>{localize('com_farmer_label_block_name')}</Label>
                 <Controller
                   name="blockName"
                   control={control}
-                  rules={{ required: 'Block name is required' }}
+                  rules={{ required: localize('com_farmer_validation_block_required') }}
                   render={({ field }) => (
                     <SearchableSelect
                       options={blockOptions}
                       value={field.value ?? ''}
                       onChange={handleBlockChange}
-                      placeholder={selectedDistrict ? 'Select block' : 'Select a district first'}
+                      placeholder={
+                        selectedDistrict
+                          ? localize('com_farmer_placeholder_select_block')
+                          : localize('com_farmer_placeholder_select_district_first')
+                      }
                       disabled={!selectedDistrict}
                     />
                   )}
@@ -380,13 +449,13 @@ const FarmerProfileModal = ({
 
               {selectedBlock === 'Other' && (
                 <div className={fieldClass}>
-                  <Label htmlFor="customBlock">Enter Your Block Name</Label>
+                  <Label htmlFor="customBlock">{localize('com_farmer_label_custom_block')}</Label>
                   <Input
                     id="customBlock"
-                    placeholder="Type your block name"
+                    placeholder={localize('com_farmer_placeholder_custom_block')}
                     className={inputClass}
                     {...register('customBlock', {
-                      required: 'Please enter your block name',
+                      required: localize('com_farmer_validation_custom_block_required'),
                     })}
                   />
                   {errors.customBlock && <p className={errorClass}>{errors.customBlock.message}</p>}
@@ -394,17 +463,21 @@ const FarmerProfileModal = ({
               )}
 
               <div className={fieldClass}>
-                <Label>Village Name</Label>
+                <Label>{localize('com_farmer_label_village_name')}</Label>
                 <Controller
                   name="villageName"
                   control={control}
-                  rules={{ required: 'Village name is required' }}
+                  rules={{ required: localize('com_farmer_validation_village_required') }}
                   render={({ field }) => (
                     <SearchableSelect
                       options={villageOptions}
                       value={field.value ?? ''}
                       onChange={field.onChange}
-                      placeholder={selectedBlock ? 'Select village' : 'Select a block first'}
+                      placeholder={
+                        selectedBlock
+                          ? localize('com_farmer_placeholder_select_village')
+                          : localize('com_farmer_placeholder_select_block_first')
+                      }
                       disabled={!selectedBlock}
                     />
                   )}
@@ -414,13 +487,15 @@ const FarmerProfileModal = ({
 
               {selectedBlock === 'Other' || watch('villageName') === 'Other' ? (
                 <div className={fieldClass}>
-                  <Label htmlFor="customVillage">Enter Your Village Name</Label>
+                  <Label htmlFor="customVillage">
+                    {localize('com_farmer_label_custom_village')}
+                  </Label>
                   <Input
                     id="customVillage"
-                    placeholder="Type your village name"
+                    placeholder={localize('com_farmer_placeholder_custom_village')}
                     className={inputClass}
                     {...register('customVillage', {
-                      required: 'Please enter your village name',
+                      required: localize('com_farmer_validation_custom_village_required'),
                     })}
                   />
                   {errors.customVillage && (
@@ -430,56 +505,45 @@ const FarmerProfileModal = ({
               ) : null}
 
               <div className={fieldClass}>
-                <Label htmlFor="phoneNo">Phone No.</Label>
+                <Label htmlFor="phoneNo">{localize('com_farmer_label_phone_number')}</Label>
                 <Input
                   id="phoneNo"
-                  placeholder="Enter phone number"
+                  placeholder={localize('com_farmer_placeholder_phone_number')}
                   className={inputClass}
                   {...register('phoneNo', {
-                    required: 'Phone number is required',
-                    pattern: { value: /^[0-9+\- ]{7,15}$/, message: 'Invalid phone number' },
+                    required: localize('com_farmer_validation_phone_required'),
+                    pattern: {
+                      value: /^[0-9+\- ]{7,15}$/,
+                      message: localize('com_farmer_validation_phone_invalid'),
+                    },
                   })}
                 />
                 {errors.phoneNo && <p className={errorClass}>{errors.phoneNo.message}</p>}
               </div>
-
-              <div className={fieldClass}>
-                <Label>Language Preference</Label>
-                <Controller
-                  name="languagePreference"
-                  control={control}
-                  rules={{ required: 'Language preference is required' }}
-                  render={({ field }) => (
-                    <SearchableSelect
-                      options={INDIAN_LANGUAGES}
-                      value={field.value ?? ''}
-                      onChange={field.onChange}
-                      placeholder="Select language"
-                    />
-                  )}
-                />
-                {errors.languagePreference && (
-                  <p className={errorClass}>{errors.languagePreference.message}</p>
-                )}
-              </div>
             </div>
 
-            {/* ── Section 2: Agricultural Background ── */}
             <div className={sectionClass}>
-              <h3 className={sectionTitleClass}>Agricultural Background</h3>
+              <h3 className={sectionTitleClass}>
+                {localize('com_farmer_profile_agricultural_background')}
+              </h3>
 
               <div className={fieldClass}>
-                <Label htmlFor="yearsOfExperience">Years of Experience in Agriculture</Label>
+                <Label htmlFor="yearsOfExperience">
+                  {localize('com_farmer_label_years_experience')}
+                </Label>
                 <Input
                   id="yearsOfExperience"
                   type="number"
-                  placeholder="Years"
+                  placeholder={localize('com_farmer_placeholder_years')}
                   defaultValue={0}
                   min={0}
                   className={inputClass}
                   {...register('yearsOfExperience', {
-                    required: 'Years of experience is required',
-                    min: { value: 0, message: 'Cannot be negative' },
+                    required: localize('com_farmer_validation_experience_required'),
+                    min: {
+                      value: 0,
+                      message: localize('com_farmer_validation_non_negative'),
+                    },
                     valueAsNumber: true,
                   })}
                 />
@@ -489,25 +553,29 @@ const FarmerProfileModal = ({
               </div>
 
               <div className={fieldClass}>
-                <Label htmlFor="landhold">Total Agricultural Landholding (Specify your total farm size in Acres)</Label>
+                <Label htmlFor="landhold">{localize('com_farmer_label_landholding')}</Label>
                 <Input
                   id="landhold"
-                  placeholder="e.g. 5"
+                  placeholder={localize('com_farmer_placeholder_landholding')}
                   className={inputClass}
-                  {...register('landhold', { required: 'Landholding is required' })}
+                  {...register('landhold', {
+                    required: localize('com_farmer_validation_landholding_required'),
+                  })}
                 />
-                {errors.landhold && (
-                  <p className={errorClass}>{errors.landhold.message}</p>
-                )}
+                {errors.landhold && <p className={errorClass}>{errors.landhold.message}</p>}
               </div>
 
               <div className={fieldClass}>
-                <Label htmlFor="cropsCultivated">Crops Cultivated</Label>
+                <Label htmlFor="cropsCultivated">
+                  {localize('com_farmer_label_crops_cultivated')}
+                </Label>
                 <Input
                   id="cropsCultivated"
-                  placeholder="e.g. Wheat, Rice, Maize (comma separated)"
+                  placeholder={localize('com_farmer_placeholder_crops_cultivated')}
                   className={inputClass}
-                  {...register('cropsCultivated', { required: 'Crops cultivated is required' })}
+                  {...register('cropsCultivated', {
+                    required: localize('com_farmer_validation_crops_required'),
+                  })}
                 />
                 {errors.cropsCultivated && (
                   <p className={errorClass}>{errors.cropsCultivated.message}</p>
@@ -516,18 +584,20 @@ const FarmerProfileModal = ({
 
               <div className="grid grid-cols-2 gap-4">
                 <div className={fieldClass}>
-                  <Label>Primary Crop</Label>
+                  <Label>{localize('com_farmer_label_primary_crop')}</Label>
                   <Controller
                     name="primaryCrop"
                     control={control}
-                    rules={{ required: 'Primary crop is required' }}
+                    rules={{ required: localize('com_farmer_validation_primary_crop_required') }}
                     render={({ field }) => (
                       <SearchableSelect
                         options={selectedCropsList}
                         value={field.value ?? ''}
                         onChange={field.onChange}
                         placeholder={
-                          selectedCropsList.length ? 'Select primary crop' : 'Select crops first'
+                          selectedCropsList.length
+                            ? localize('com_farmer_placeholder_select_primary_crop')
+                            : localize('com_farmer_placeholder_select_crops_first')
                         }
                         disabled={!selectedCropsList.length}
                       />
@@ -537,18 +607,20 @@ const FarmerProfileModal = ({
                 </div>
 
                 <div className={fieldClass}>
-                  <Label>Secondary Crop</Label>
+                  <Label>{localize('com_farmer_label_secondary_crop')}</Label>
                   <Controller
                     name="secondaryCrop"
                     control={control}
-                    rules={{ required: 'Secondary crop is required' }}
+                    rules={{ required: localize('com_farmer_validation_secondary_crop_required') }}
                     render={({ field }) => (
                       <SearchableSelect
                         options={selectedCropsList}
                         value={field.value ?? ''}
                         onChange={field.onChange}
                         placeholder={
-                          selectedCropsList.length ? 'Select secondary crop' : 'Select crops first'
+                          selectedCropsList.length
+                            ? localize('com_farmer_placeholder_select_secondary_crop')
+                            : localize('com_farmer_placeholder_select_crops_first')
                         }
                         disabled={!selectedCropsList.length}
                       />
@@ -561,12 +633,13 @@ const FarmerProfileModal = ({
               </div>
             </div>
 
-            {/* ── Section 3: Awareness & Digital Adoption ── */}
             <div className={sectionClass}>
-              <h3 className={sectionTitleClass}>Awareness & Digital Adoption</h3>
+              <h3 className={sectionTitleClass}>
+                {localize('com_farmer_profile_awareness_section')}
+              </h3>
 
               <div className={fieldClass}>
-                <Label>Awareness of Kisan Call Centre (KCC)</Label>
+                <Label>{localize('com_farmer_label_awareness_kcc')}</Label>
                 <div className="mt-2 flex gap-6">
                   {['yes', 'no'].map((val) => (
                     <label
@@ -577,9 +650,11 @@ const FarmerProfileModal = ({
                         type="radio"
                         value={val}
                         className="accent-green-600"
-                        {...register('awarenessOfKCC', { required: 'This field is required' })}
+                        {...register('awarenessOfKCC', {
+                          required: localize('com_farmer_validation_field_required'),
+                        })}
                       />
-                      {val.charAt(0).toUpperCase() + val.slice(1)}
+                      {val === 'yes' ? localize('com_ui_yes') : localize('com_ui_no')}
                     </label>
                   ))}
                 </div>
@@ -589,7 +664,7 @@ const FarmerProfileModal = ({
               </div>
 
               <div className={fieldClass}>
-                <Label>Usage of Any Agricultural Mobile Applications</Label>
+                <Label>{localize('com_farmer_label_usage_agri_apps')}</Label>
                 <div className="mt-2 flex gap-6">
                   {['yes', 'no'].map((val) => (
                     <label
@@ -600,9 +675,11 @@ const FarmerProfileModal = ({
                         type="radio"
                         value={val}
                         className="accent-green-600"
-                        {...register('usesAgriApps', { required: 'This field is required' })}
+                        {...register('usesAgriApps', {
+                          required: localize('com_farmer_validation_field_required'),
+                        })}
                       />
-                      {val.charAt(0).toUpperCase() + val.slice(1)}
+                      {val === 'yes' ? localize('com_ui_yes') : localize('com_ui_no')}
                     </label>
                   ))}
                 </div>
@@ -610,22 +687,25 @@ const FarmerProfileModal = ({
               </div>
             </div>
 
-            {/* ── Section 4: Socio-Economic Indicator ── */}
             <div className={sectionClass}>
-              <h3 className={sectionTitleClass}>Socio-Economic Indicator</h3>
+              <h3 className={sectionTitleClass}>{localize('com_farmer_profile_socio_economic')}</h3>
 
               <div className={fieldClass}>
-                <Label>Highest Educated Person in the Family</Label>
+                <Label>{localize('com_farmer_label_highest_educated')}</Label>
                 <Controller
                   name="highestEducatedPerson"
                   control={control}
-                  rules={{ required: 'This field is required' }}
+                  rules={{ required: localize('com_farmer_validation_field_required') }}
                   render={({ field }) => (
                     <SearchableSelect
-                      options={['Under Graduate', 'Graduate', 'Post Graduate']}
+                      options={[
+                        localize('com_farmer_option_under_graduate'),
+                        localize('com_farmer_option_graduate'),
+                        localize('com_farmer_option_post_graduate'),
+                      ]}
                       value={field.value ?? ''}
                       onChange={field.onChange}
-                      placeholder="Select education level"
+                      placeholder={localize('com_farmer_placeholder_select_education_level')}
                     />
                   )}
                 />
@@ -635,17 +715,22 @@ const FarmerProfileModal = ({
               </div>
 
               <div className={fieldClass}>
-                <Label htmlFor="numberOfSmartphones">No. of Smart Phones in the Family</Label>
+                <Label htmlFor="numberOfSmartphones">
+                  {localize('com_farmer_label_smartphone_count')}
+                </Label>
                 <Input
                   id="numberOfSmartphones"
                   type="number"
-                  placeholder="Number of smartphones"
+                  placeholder={localize('com_farmer_placeholder_smartphone_count')}
                   defaultValue={0}
                   min={0}
                   className={inputClass}
                   {...register('numberOfSmartphones', {
-                    required: 'This field is required',
-                    min: { value: 0, message: 'Cannot be negative' },
+                    required: localize('com_farmer_validation_smartphones_required'),
+                    min: {
+                      value: 0,
+                      message: localize('com_farmer_validation_non_negative'),
+                    },
                     valueAsNumber: true,
                   })}
                 />
@@ -656,7 +741,6 @@ const FarmerProfileModal = ({
             </div>
           </div>
 
-          {/* ── Footer ── */}
           <div className="mt-2 flex shrink-0 justify-end gap-2 border-t border-border-heavy px-1 pt-4">
             <button
               type="button"
@@ -664,14 +748,14 @@ const FarmerProfileModal = ({
               disabled={saveMutation.isLoading}
               className="inline-flex items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-6 py-2 text-sm font-medium text-text-primary hover:bg-surface-active disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Reset
+              {localize('com_ui_reset')}
             </button>
             <button
               type="submit"
               disabled={!isValid || saveMutation.isLoading}
               className="inline-flex items-center justify-center rounded-lg bg-green-600 px-6 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-green-700 dark:hover:bg-green-800"
             >
-              {saveMutation.isLoading ? 'Submitting...' : 'Submit'}
+              {saveMutation.isLoading ? localize('com_ui_saving') : localize('com_ui_submit')}
             </button>
           </div>
         </form>
