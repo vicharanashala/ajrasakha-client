@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import Cookies from 'js-cookie';
 import { useRecoilState } from 'recoil';
 import { useForm, Controller } from 'react-hook-form';
@@ -17,7 +17,8 @@ import type { IFarmerProfile } from 'librechat-data-provider';
 import { useSaveFarmerProfileMutation } from '~/data-provider';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
-import { STATES, DISTRICTS, BLOCKS, VILLAGES, CROPS, KVKS } from '~/utils/metaData';
+import { STATES, DISTRICTS, BLOCKS, VILLAGES, KVKS } from '~/utils/metaData';
+import cropsData from '~/utils/crops-data.json';
 
 // ── Form Types ───────────────────────────────────────────────────────────────
 
@@ -47,6 +48,33 @@ type FarmerProfileForm = {
     longitude: number;
   };
   landhold: string;
+};
+
+type CropLanguageEntry = {
+  localName?: string;
+  localScript?: string;
+  state?: string;
+};
+
+type CropEntry = {
+  englishName?: string;
+  languages?: Record<string, CropLanguageEntry>;
+};
+
+const LANGUAGE_CODE_TO_CROP_LANGUAGES: Record<string, string[]> = {
+  'as-IN': ['Assamese'],
+  'bn-IN': ['Bengali'],
+  'gu-IN': ['Gujarati'],
+  'hi-IN': ['Hindi'],
+  'kn-IN': ['Kannada'],
+  'ml-IN': ['Malayalam'],
+  'mr-IN': ['Marathi'],
+  'or-IN': ['Odia'],
+  pa: ['Punjabi'],
+  'ta-IN': ['Tamil'],
+  'te-IN': ['Telugu'],
+  'ne-IN': ['Nepali'],
+  'mn-IN': ['Manipuri'],
 };
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -89,6 +117,67 @@ const FarmerProfileModal = ({
   const selectedSecondaryCrop = watch('secondaryCrop');
   const selectedLanguagePreference = watch('languagePreference');
   const otherOption = localize('com_farmer_option_other');
+  const normalizedSelectedState = selectedState?.trim().toLowerCase();
+
+  const cropOptions = useMemo(() => {
+    const crops = cropsData as Record<string, CropEntry>;
+    const selectedLanguageCode = selectedLanguagePreference || langcode;
+    const languageNames = LANGUAGE_CODE_TO_CROP_LANGUAGES[selectedLanguageCode] ?? [];
+
+    return Object.entries(crops)
+      .map(([cropKey, crop]) => {
+        const englishName = crop.englishName || cropKey;
+        const languageMap = crop.languages || {};
+        let selectedLabel = englishName;
+        let hasLocalizedLabel = false;
+
+        for (const languageName of languageNames) {
+          const localizedEntry = languageMap[languageName];
+          if (!localizedEntry) {
+            continue;
+          }
+
+          const localizedState = localizedEntry.state?.trim().toLowerCase();
+          if (
+            normalizedSelectedState &&
+            localizedState &&
+            localizedState !== normalizedSelectedState
+          ) {
+            continue;
+          }
+
+          selectedLabel = localizedEntry.localScript || localizedEntry.localName || englishName;
+          hasLocalizedLabel = selectedLabel !== englishName;
+          break;
+        }
+
+        if (selectedLabel === englishName) {
+          for (const languageName of languageNames) {
+            const localizedEntry = languageMap[languageName];
+            if (!localizedEntry) {
+              continue;
+            }
+            selectedLabel = localizedEntry.localScript || localizedEntry.localName || englishName;
+            hasLocalizedLabel = selectedLabel !== englishName;
+            break;
+          }
+        }
+
+        return { value: englishName, label: selectedLabel, hasLocalizedLabel };
+      })
+      .sort((a, b) => {
+        if (a.hasLocalizedLabel !== b.hasLocalizedLabel) {
+          return a.hasLocalizedLabel ? -1 : 1;
+        }
+        return a.label.localeCompare(b.label);
+      })
+      .map(({ value, label }) => ({ value, label }));
+  }, [langcode, normalizedSelectedState, selectedLanguagePreference]);
+
+  const cropLabelByValue = useMemo(
+    () => new Map(cropOptions.map((option) => [option.value, option.label])),
+    [cropOptions],
+  );
 
   const changeLang = useCallback(
     (value: string) => {
@@ -665,7 +754,7 @@ const FarmerProfileModal = ({
                 <div className={fieldClass}>
                   <Label htmlFor="primaryCrop">{localize('com_farmer_label_primary_crop')}</Label>
                   <SearchableMultiSelect
-                    options={CROPS}
+                    options={cropOptions}
                     value={selectedPrimaryCropList}
                     onChange={(selected) =>
                       setValue('primaryCrop', selected.join(', '), { shouldValidate: true })
@@ -679,7 +768,7 @@ const FarmerProfileModal = ({
                           key={crop}
                           className="inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800 dark:bg-green-900/30 dark:text-green-300"
                         >
-                          {crop}
+                          {cropLabelByValue.get(crop) ?? crop}
                           <button
                             type="button"
                             onClick={() => removePrimaryCrop(crop)}
@@ -704,7 +793,7 @@ const FarmerProfileModal = ({
                 <div className={fieldClass}>
                   <Label htmlFor="secondaryCrop">{localize('com_farmer_label_secondary_crop')}</Label>
                   <SearchableMultiSelect
-                    options={CROPS}
+                    options={cropOptions}
                     value={selectedSecondaryCropList}
                     onChange={(selected) =>
                       setValue('secondaryCrop', selected.join(', '), { shouldValidate: true })
@@ -718,7 +807,7 @@ const FarmerProfileModal = ({
                           key={crop}
                           className="inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800 dark:bg-green-900/30 dark:text-green-300"
                         >
-                          {crop}
+                          {cropLabelByValue.get(crop) ?? crop}
                           <button
                             type="button"
                             onClick={() => removeSecondaryCrop(crop)}

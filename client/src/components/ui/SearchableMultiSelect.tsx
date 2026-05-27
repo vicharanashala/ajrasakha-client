@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
+type SearchableMultiSelectOption = string | { value: string; label: string };
 
 interface SearchableMultiSelectProps {
-  options: string[];
+  options: SearchableMultiSelectOption[];
   value: string[]; // selected values
   onChange: (selected: string[]) => void;
   placeholder?: string;
@@ -19,10 +20,14 @@ const SearchableMultiSelect = ({
   const [search, setSearch] = useState('');
   const ref = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const normalizedOptions = options.map((option) =>
+    typeof option === 'string' ? { value: option, label: option } : option,
+  );
+  const valueLabelMap = new Map(normalizedOptions.map((option) => [option.value, option.label]));
 
   // filter options based on search term
-  const filtered = options.filter((o) =>
-    o.toLowerCase().includes(search.toLowerCase())
+  const filtered = normalizedOptions.filter((option) =>
+    option.label.toLowerCase().includes(search.toLowerCase()),
   );
 
   // determine which options to show: if searching show all filtered, else limit to 10
@@ -52,17 +57,19 @@ const SearchableMultiSelect = ({
     });
   };
 
-  const toggleOption = (opt: string) => {
+  const toggleOption = (optValue: string) => {
     let newSelected: string[];
-    if (value.includes(opt)) {
-      newSelected = value.filter((v) => v !== opt);
+    if (value.includes(optValue)) {
+      newSelected = value.filter((v) => v !== optValue);
     } else {
-      newSelected = [...value, opt];
+      newSelected = [...value, optValue];
     }
     onChange(newSelected);
   };
 
-  const selectedDisplay = value.length ? value.join(', ') : '';
+  const selectedDisplay = value.length
+    ? value.map((selectedValue) => valueLabelMap.get(selectedValue) ?? selectedValue).join(', ')
+    : '';
 
   return (
     <div ref={ref} className="relative mt-1">
@@ -104,15 +111,15 @@ const SearchableMultiSelect = ({
             ) : (
               displayOptions.map((opt) => (
                 <li
-                  key={opt}
-                  onMouseDown={() => toggleOption(opt)}
+                  key={opt.value}
+                  onMouseDown={() => toggleOption(opt.value)}
                   className={`cursor-pointer px-3 py-2 text-sm hover:bg-surface-active ${
-                    value.includes(opt)
+                    value.includes(opt.value)
                       ? 'bg-green-50 font-medium text-green-700 dark:bg-green-900/20 dark:text-green-400'
                       : 'text-text-primary'
                   }`}
                 >
-                  {opt}
+                  {opt.label}
                 </li>
               ))
             )}
