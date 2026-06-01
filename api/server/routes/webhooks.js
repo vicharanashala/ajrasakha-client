@@ -63,7 +63,7 @@ router.post('/notifications', async (req, res) => {
       return res.status(400).json({ message: 'Missing messageId' });
     }
 
-    if (!messageId && userId) {
+    if (!messageId && userid) {
       userId = new ObjectId(userid);
     }
 
@@ -93,21 +93,20 @@ router.post('/notifications', async (req, res) => {
     // const conversationId = message?.conversationId ?? null;
 
     // 🔔 Create in-app notification
-   try {
-    const notificationPayload =
-    type === 'COSTUM'
-      ? {
-          userId,
-          message: customMessage,
-          type,
-        }
-      : {
-          userId,
-          originalQuestion: displayQuestion,
-        };
+    try {
+      const notificationPayload =
+        type === 'COSTUM'
+          ? {
+              userId,
+              message: customMessage,
+              type,
+            }
+          : {
+              userId,
+              originalQuestion: displayQuestion,
+            };
 
-    await Notification.create(notificationPayload);
-
+      await Notification.create(notificationPayload);
     } catch (error) {
       logger.error('Failed to create in-app notification', {
         userId,
