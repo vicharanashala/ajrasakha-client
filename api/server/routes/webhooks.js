@@ -55,16 +55,12 @@ router.post('/notifications', async (req, res) => {
       return res.status(403).json({ message: 'Forbidden: Invalid API key' });
     }
 
-    const { messageId, question, originalQuestion, customMessage, userid, type } = req.body;
+    let { messageId, question, originalQuestion, customMessage, userId, type } = req.body;
 
     let message;
-    let userId;
-    if (originalQuestion && !messageId && !userid) {
-      return res.status(400).json({ message: 'Missing messageId' });
-    }
 
-    if (!messageId && userid) {
-      userId = new ObjectId(userid);
+    if (originalQuestion && !messageId && !userId) {
+      return res.status(400).json({ message: 'Missing messageId' });
     }
 
     if (messageId) {
@@ -95,7 +91,7 @@ router.post('/notifications', async (req, res) => {
     // 🔔 Create in-app notification
     try {
       const notificationPayload =
-        type === 'COSTUM'
+        type === 'CUSTOM'
           ? {
               userId,
               message: customMessage,
@@ -105,6 +101,8 @@ router.post('/notifications', async (req, res) => {
               userId,
               originalQuestion: displayQuestion,
             };
+
+      await Notification.create(notificationPayload);
 
       await Notification.create(notificationPayload);
     } catch (error) {
