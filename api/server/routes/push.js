@@ -15,6 +15,7 @@ router.get('/key', (req, res) => {
 router.get('/debug', (req, res) => {
   const publicVapidKey = process.env.VAPID_PUBLIC_KEY;
   const vapidEmail = process.env.VAPID_EMAIL;
+  const vapidSubject = process.env.VAPID_SUBJECT || vapidEmail;
   
   res.status(200).json({
     vapidPublicKeyConfigured: !!publicVapidKey,
@@ -22,6 +23,8 @@ router.get('/debug', (req, res) => {
     vapidPublicKeyLength: publicVapidKey ? publicVapidKey.length : 0,
     vapidEmailConfigured: !!vapidEmail,
     vapidEmailPreview: vapidEmail ? `${vapidEmail.slice(0, 5)}...` : null,
+    vapidSubjectConfigured: !!vapidSubject,
+    vapidSubjectPreview: vapidSubject ? `${vapidSubject.slice(0, 8)}...` : null,
     env: process.env.NODE_ENV,
   });
 });
