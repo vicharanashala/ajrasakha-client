@@ -91,26 +91,18 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           env_vars: |
             NODE_ENV=staging
-            PORT=3080
-            # Database
             DB_URL=${{ secrets.MONGO_URI }}
-            # Session & Security
             CREDS_KEY=${{ secrets.CREDS_KEY }}
             CREDS_IV=${{ secrets.CREDS_IV }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}
-            # Redis (optional - for caching and sessions)
             REDIS_URI=${{ secrets.REDIS_URI }}
-            # Search (optional)
             MEILI_HOST=${{ secrets.MEILI_HOST }}
             MEILI_MASTER_KEY=${{ secrets.MEILI_MASTER_KEY }}
-            # Domain
             DOMAIN_SERVER=${{ secrets.DOMAIN_SERVER_STAGING }}
             DOMAIN_CLIENT=${{ secrets.DOMAIN_CLIENT_STAGING }}
-            # LLM API Keys (for cloud-hosted models)
             OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
             ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
-            # Tailscale (for internal MCP server access)
             TAILSCALE_AUTHKEY=${{ secrets.TAILSCALE_AUTHKEY }}
             TS_HOSTNAME=ajrasakha-client-staging
             HTTP_PROXY=http://localhost:1055
@@ -142,26 +134,18 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           env_vars: |
             NODE_ENV=production
-            PORT=3080
-            # Database
             DB_URL=${{ secrets.MONGO_URI }}
-            # Session & Security
             CREDS_KEY=${{ secrets.CREDS_KEY }}
             CREDS_IV=${{ secrets.CREDS_IV }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}
-            # Redis (optional - for caching and sessions)
             REDIS_URI=${{ secrets.REDIS_URI }}
-            # Search (optional)
             MEILI_HOST=${{ secrets.MEILI_HOST }}
             MEILI_MASTER_KEY=${{ secrets.MEILI_MASTER_KEY }}
-            # Domain
             DOMAIN_SERVER=${{ secrets.DOMAIN_SERVER_PRODUCTION }}
             DOMAIN_CLIENT=${{ secrets.DOMAIN_CLIENT_PRODUCTION }}
-            # LLM API Keys (for cloud-hosted models)
             OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
             ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
-            # Tailscale (for internal MCP server access)
             TAILSCALE_AUTHKEY=${{ secrets.TAILSCALE_AUTHKEY }}
             TS_HOSTNAME=ajrasakha-client-production
             HTTP_PROXY=http://localhost:1055
