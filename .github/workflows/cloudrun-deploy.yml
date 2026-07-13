@@ -74,7 +74,6 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:staging
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:production
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ github.sha }}
           build-args: |
             NODE_ENV=production
 
@@ -98,7 +97,7 @@ jobs:
         with:
           service: ${{ env.GCP_STAGING_SERVICE }}
           region: ${{ env.GCP_REGION }}
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:staging
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           env_vars: |
             NODE_ENV=staging
@@ -195,10 +194,10 @@ jobs:
         with:
           service: ${{ env.GCP_PRODUCTION_SERVICE }}
           region: ${{ env.GCP_REGION }}
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:production
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           env_vars: |
-            NODE_ENV=staging
+            NODE_ENV=production
             ALLOW_EMAIL_LOGIN=${{ secrets.ALLOW_EMAIL_LOGIN }}
             ALLOW_PASSWORD_RESET=${{ secrets.ALLOW_PASSWORD_RESET }}
             ALLOW_REGISTRATION=${{ secrets.ALLOW_REGISTRATION }}
