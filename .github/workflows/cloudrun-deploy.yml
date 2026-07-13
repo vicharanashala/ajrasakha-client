@@ -3,6 +3,15 @@ name: Build & Deploy to Cloud Run (Staging & Production)
 on:
   workflow_dispatch:
     inputs:
+      should_build:
+        description: "Build and Push Image?"
+        required: true
+        default: "true"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
       deploy_staging:
         description: "Deploy to Staging?"
         required: true
@@ -11,6 +20,7 @@ on:
         options:
           - "false"
           - "true"
+
       deploy_production:
         description: "Deploy to Production?"
         required: true
@@ -34,9 +44,10 @@ env:
 
 jobs:
   build:
+    if: github.event.inputs.should_build == 'true'
     name: Build and Push Image
     runs-on: ubuntu-latest
-    # Always build - deployment requires a fresh image
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -245,7 +256,6 @@ jobs:
             MONGO_URI=${{ secrets.MONGO_URI }}
             NON_BROWSER_VIOLATION_SCORE=${{ secrets.NON_BROWSER_VIOLATION_SCORE }}
             NO_INDEX=${{ secrets.NO_INDEX }}
-            PORT=${{ secrets.PORT }}
             PROXY=${{ secrets.PROXY }}
             REFRESH_TOKEN_EXPIRY=${{ secrets.REFRESH_TOKEN_EXPIRY }}
             REGISTER_MAX=${{ secrets.REGISTER_MAX }}
