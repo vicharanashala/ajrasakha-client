@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-if [ -z "${TAILSCALE_AUTHKEY:-}" ]; then
-  echo "TAILSCALE_AUTHKEY is required"
+if [ -z "${TS_CLIENT_SECRET:-}" ]; then
+  echo "TS_CLIENT_SECRET is required"
   exit 1
 fi
 
@@ -36,7 +36,8 @@ fi
 HOSTNAME="${TAILSCALE_HOSTNAME:-ajrasakha-client}"
 echo "Bringing Tailscale up as ${HOSTNAME}..."
 tailscale --socket="${TS_SOCKET}" up \
-  --auth-key="${TAILSCALE_AUTHKEY}" \
+  --auth-key="${TS_CLIENT_SECRET}" \
+  --advertise-tags=tag:ci-cd \
   --hostname="${HOSTNAME}" \
   --accept-routes \
   --reset

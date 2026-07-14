@@ -172,7 +172,7 @@ jobs:
             VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}
             VITE_VERIFICATION_SERVICE_URL=${{ secrets.VITE_VERIFICATION_SERVICE_URL }}
             WEB_WEBHOOK_API_KEY=${{ secrets.WEB_WEBHOOK_API_KEY }}
-            TAILSCALE_AUTHKEY=${{ secrets.TAILSCALE_AUTHKEY }}
+            TS_CLIENT_SECRET=${{ secrets.TS_CLIENT_SECRET }}
             TAILSCALE_HOSTNAME=ajrasakha-client-staging
           flags: --allow-unauthenticated --port=3080 --memory=2Gi --min-instances=0 --timeout=300
 
@@ -271,6 +271,6 @@ jobs:
             VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}
             VITE_VERIFICATION_SERVICE_URL=${{ secrets.VITE_VERIFICATION_SERVICE_URL }}
             WEB_WEBHOOK_API_KEY=${{ secrets.WEB_WEBHOOK_API_KEY }}
-            TAILSCALE_AUTHKEY=${{ secrets.TAILSCALE_AUTHKEY }}
+            TS_CLIENT_SECRET=${{ secrets.TS_CLIENT_SECRET }}
             TAILSCALE_HOSTNAME=ajrasakha-client-production
           flags: --allow-unauthenticated --port=3080 --memory=2Gi --min-instances=0 --timeout=300
