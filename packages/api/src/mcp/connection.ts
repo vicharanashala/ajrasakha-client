@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import { logger } from '@librechat/data-schemas';
-import { fetch as undiciFetch, Agent } from 'undici';
+import { fetch as undiciFetch, Agent, ProxyAgent } from 'undici';
 import {
   StdioClientTransport,
   getDefaultEnvironment,
@@ -290,6 +290,25 @@ export class MCPConnection extends EventEmitter {
   }
 
   /**
+   * Undici dispatcher that honors PROXY / HTTP_PROXY (Tailscale userspace on :1055).
+   */
+  private createDispatcher(timeout?: number): Agent | ProxyAgent {
+    const effectiveTimeout = timeout || DEFAULT_TIMEOUT;
+    const options = {
+      bodyTimeout: effectiveTimeout,
+      headersTimeout: effectiveTimeout,
+    };
+    const proxyUrl = process.env.PROXY || process.env.HTTP_PROXY || process.env.HTTPS_PROXY;
+    if (proxyUrl) {
+      return new ProxyAgent({
+        uri: proxyUrl,
+        ...options,
+      });
+    }
+    return new Agent(options);
+  }
+
+  /**
    * Factory function to create fetch functions without capturing the entire `this` context.
    * This helps prevent memory leaks by only passing necessary dependencies.
    *
@@ -301,16 +320,13 @@ export class MCPConnection extends EventEmitter {
     getHeaders: () => Record<string, string> | null | undefined,
     timeout?: number,
   ): (input: UndiciRequestInfo, init?: UndiciRequestInit) => Promise<UndiciResponse> {
+    const createDispatcher = this.createDispatcher.bind(this);
     return function customFetch(
       input: UndiciRequestInfo,
       init?: UndiciRequestInit,
     ): Promise<UndiciResponse> {
       const requestHeaders = getHeaders();
-      const effectiveTimeout = timeout || DEFAULT_TIMEOUT;
-      const agent = new Agent({
-        bodyTimeout: effectiveTimeout,
-        headersTimeout: effectiveTimeout,
-      });
+      const agent = createDispatcher(timeout);
       if (!requestHeaders) {
         return undiciFetch(input, { ...init, dispatcher: agent });
       }
@@ -414,16 +430,9 @@ export class MCPConnection extends EventEmitter {
                 const fetchHeaders = new Headers(
                   Object.assign({}, SSE_REQUEST_HEADERS, init?.headers, headers),
                 );
-                const agent = new Agent({
-                  bodyTimeout: sseTimeout,
-                  headersTimeout: sseTimeout,
-                  /** Extended keep-alive for long-lived SSE connections */
-                  keepAliveTimeout: sseTimeout,
-                  keepAliveMaxTimeout: sseTimeout * 2,
-                });
                 return undiciFetch(url, {
                   ...init,
-                  dispatcher: agent,
+                  dispatcher: this.createDispatcher(sseTimeout),
                   headers: fetchHeaders,
                 });
               },

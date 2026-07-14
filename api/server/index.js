@@ -8,6 +8,7 @@ const express = require('express');
 const passport = require('passport');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
+const undici = require('undici');
 const { logger } = require('@librechat/data-schemas');
 const mongoSanitize = require('express-mongo-sanitize');
 const {
@@ -39,6 +40,27 @@ const { PORT, HOST, ALLOW_SOCIAL_LOGIN, DISABLE_COMPRESSION, TRUST_PROXY } = pro
 const port = isNaN(Number(PORT)) ? 3080 : Number(PORT);
 const host = HOST || 'localhost';
 const trusted_proxy = Number(TRUST_PROXY) || 1; /* trust first proxy by default */
+
+/**
+ * Honor PROXY / HTTP(S)_PROXY for undici (global fetch) and axios.
+ * Required for Tailscale userspace networking on Cloud Run (100.x via :1055).
+ */
+const outboundProxy =
+  process.env.PROXY || process.env.HTTP_PROXY || process.env.HTTPS_PROXY || '';
+if (outboundProxy) {
+  try {
+    undici.setGlobalDispatcher(new undici.ProxyAgent(outboundProxy));
+    const proxyUrl = new URL(outboundProxy);
+    axios.defaults.proxy = {
+      protocol: proxyUrl.protocol.replace(':', ''),
+      host: proxyUrl.hostname,
+      port: Number(proxyUrl.port || (proxyUrl.protocol === 'https:' ? 443 : 80)),
+    };
+    logger.info(`[proxy] Outbound HTTP via ${outboundProxy}`);
+  } catch (error) {
+    logger.warn(`[proxy] Failed to configure outbound proxy (${outboundProxy}): ${error.message}`);
+  }
+}
 
 const app = express();
 

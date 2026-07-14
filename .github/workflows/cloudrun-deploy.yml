@@ -158,7 +158,7 @@ jobs:
             MONGO_URI=${{ secrets.MONGO_URI }}
             NON_BROWSER_VIOLATION_SCORE=${{ secrets.NON_BROWSER_VIOLATION_SCORE }}
             NO_INDEX=${{ secrets.NO_INDEX }}
-            PROXY=${{ secrets.PROXY }}
+            PROXY=http://127.0.0.1:1055
             REFRESH_TOKEN_EXPIRY=${{ secrets.REFRESH_TOKEN_EXPIRY }}
             REGISTER_MAX=${{ secrets.REGISTER_MAX }}
             REGISTER_WINDOW=${{ secrets.REGISTER_WINDOW }}
@@ -257,7 +257,7 @@ jobs:
             MONGO_URI=${{ secrets.MONGO_URI }}
             NON_BROWSER_VIOLATION_SCORE=${{ secrets.NON_BROWSER_VIOLATION_SCORE }}
             NO_INDEX=${{ secrets.NO_INDEX }}
-            PROXY=${{ secrets.PROXY }}
+            PROXY=http://127.0.0.1:1055
             REFRESH_TOKEN_EXPIRY=${{ secrets.REFRESH_TOKEN_EXPIRY }}
             REGISTER_MAX=${{ secrets.REGISTER_MAX }}
             REGISTER_WINDOW=${{ secrets.REGISTER_WINDOW }}

@@ -45,12 +45,15 @@ tailscale --socket="${TS_SOCKET}" up \
 echo "Tailscale connected"
 tailscale --socket="${TS_SOCKET}" status || true
 
-# Proxy for clients that honor these (needed to reach Tailscale IPs from userspace mode)
-export ALL_PROXY="socks5://localhost:1055/"
-export HTTP_PROXY="http://localhost:1055/"
-export HTTPS_PROXY="http://localhost:1055/"
+# Userspace Tailscale: app must send traffic via local proxies (OS has no 100.x routes).
+# PROXY is LibreChat's own env; HTTP(S)_PROXY/ALL_PROXY cover other clients.
+export PROXY="http://127.0.0.1:1055"
+export HTTP_PROXY="${PROXY}"
+export HTTPS_PROXY="${PROXY}"
+export ALL_PROXY="socks5://127.0.0.1:1055"
 export http_proxy="${HTTP_PROXY}"
 export https_proxy="${HTTPS_PROXY}"
 export all_proxy="${ALL_PROXY}"
 
+echo "Outbound Tailscale userspace proxy: PROXY=${PROXY} ALL_PROXY=${ALL_PROXY}"
 exec npm run backend
