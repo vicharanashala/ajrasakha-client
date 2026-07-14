@@ -49,10 +49,18 @@ RUN \
     npm prune --production; \
     npm cache clean --force
 
-# Node API setup
+# Tailscale (userspace networking for Cloud Run — no /dev/net/tun)
+USER root
+COPY --from=docker.io/tailscale/tailscale:stable /usr/local/bin/tailscaled /usr/local/bin/tailscaled
+COPY --from=docker.io/tailscale/tailscale:stable /usr/local/bin/tailscale /usr/local/bin/tailscale
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh /usr/local/bin/tailscale /usr/local/bin/tailscaled
+USER node
+
+# Node API setup — connect to Tailscale first, then start the backend
 EXPOSE 3080
 ENV HOST=0.0.0.0
-CMD [ "npm", "run", "backend"]
+CMD ["/app/start.sh"]
 
 
 # Optional: for client with nginx routing
