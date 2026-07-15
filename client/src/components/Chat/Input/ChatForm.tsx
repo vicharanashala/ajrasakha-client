@@ -254,12 +254,27 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useRecoilState(
     store.isFeedbackDialogOpen,
   );
+  const [showFeedbackReminder, setShowFeedbackReminder] = useRecoilState(
+    store.showFeedbackReminder,
+  );
+  const { getMessages } = useChatContext();
+  const handleMessageSubmit = methods.handleSubmit((data) => {
+    const latestAssistantMessage = getMessages()
+      ?.slice()
+      .reverse()
+      .find((message) => !message.isCreatedByUser);
+
+    if (latestAssistantMessage && !latestAssistantMessage.feedback && !showFeedbackReminder) {
+      setShowFeedbackReminder(true);
+      return;
+    }
+
+    submitMessage(data, position ?? undefined);
+  });
 
   return (
     <form
-      onSubmit={methods.handleSubmit((data) =>
-        submitMessage(data, position ? position : undefined),
-      )}
+      onSubmit={handleMessageSubmit}
       className={cn(
         'mx-auto flex w-full flex-row gap-3 transition-[max-width] duration-300 sm:px-2',
         maximizeChatSpace ? 'max-w-full' : 'md:max-w-3xl xl:max-w-4xl',

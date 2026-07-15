@@ -1,4 +1,4 @@
-import React, { useState, useMemo, memo } from 'react';
+import React, { useState, useMemo, memo, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import type {
   TConversation,
@@ -14,6 +14,7 @@ import Feedback from './Feedback';
 import { cn } from '~/utils';
 import { logTtsPayload } from '~/utils/ttsDebug';
 import store from '~/store';
+import FeedbackReminderDialog from './FeedbackReminderDialog';
 
 type THoverButtons = {
   isEditing: boolean;
@@ -28,6 +29,7 @@ type THoverButtons = {
   isLast: boolean;
   index: number;
   handleFeedback?: ({ feedback }: { feedback: TFeedback | undefined }) => void;
+  feedback?: TFeedback;
 };
 
 type HoverButtonProps = {
@@ -108,7 +110,22 @@ const HoverButtons = ({
   latestMessage,
   isLast,
   handleFeedback,
+  feedback,
 }: THoverButtons) => {
+  const [showFeedbackReminder, setShowFeedbackReminder] = useRecoilState(
+    store.showFeedbackReminder,
+  );
+
+  const isLatestAssistantMessage =
+    !message.isCreatedByUser && message.messageId === latestMessage?.messageId;
+
+  const shouldShowFeedbackReminder =
+    showFeedbackReminder &&
+    isLatestAssistantMessage &&
+    // message?.requiresFeedback &&
+    !feedback &&
+    !isSubmitting;
+
   const localize = useLocalize();
   const [isCopied, setIsCopied] = useState(false);
   const [TextToSpeech] = useRecoilState<boolean>(store.textToSpeech);
@@ -237,6 +254,15 @@ const HoverButtons = ({
           icon={<ContinueIcon className="w-19 h-19 -rotate-180" />}
           isLast={isLast}
           className="active"
+        />
+      )}
+
+      {shouldShowFeedbackReminder && (
+        <FeedbackReminderDialog
+          open={showFeedbackReminder}
+          onOpenChange={setShowFeedbackReminder}
+          feedback={feedback}
+          handleFeedback={handleFeedback!}
         />
       )}
     </div>

@@ -288,7 +288,7 @@ export default function Feedback({
               rows={4}
               placeholder={localize('com_ui_feedback_placeholder')}
             />
-            <div className="mt-3 flex justify-center">
+            <div className="mt-1 flex justify-center">
               <button
                 type="button"
                 onClick={isListening ? stopRecording : startRecording}
@@ -312,13 +312,13 @@ export default function Feedback({
                       />
                     </div>
                   )}
-                  <div className="mt-2.5 text-sm">
+                  <div className="mt-2 text-sm">
                     {isListening ? localize('com_ui_stop') : localize('com_ui_use_micrphone')}
                   </div>
                 </div>
               </button>
             </div>
-            <div className="mt-4 flex items-end justify-between gap-2">
+            <div className="mt-1 flex items-end justify-between gap-2">
               <Button className="w-full" variant="destructive" onClick={handleDialogClear}>
                 {localize('com_ui_delete')}
               </Button>

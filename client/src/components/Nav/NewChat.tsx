@@ -24,7 +24,7 @@ export default function NewChat({
   const queryClient = useQueryClient();
   /** Note: this component needs an explicit index passed if using more than one */
   const { newConversation: newConvo } = useNewConvo(index);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const localize = useLocalize();
   const { conversation } = store.useCreateConversationAtom(index);
 
@@ -37,20 +37,20 @@ export default function NewChat({
   }, [toggleNav]);
 
   const clickHandler: React.MouseEventHandler<HTMLButtonElement> = useCallback(
-    (e) => {
+    async (e) => {
       if (e.button === 0 && (e.ctrlKey || e.metaKey)) {
         window.open('/c/new', '_blank');
         return;
       }
+      await newConvo();
       clearMessagesCache(queryClient, conversation?.conversationId);
       queryClient.invalidateQueries([QueryKeys.messages]);
-      newConvo();
-      navigate('/c/new', { state: { focusChat: true } });
+      // navigate('/c/new', { state: { focusChat: true } });
       if (isSmallScreen) {
         toggleNav();
       }
     },
-    [queryClient, conversation, newConvo, navigate, toggleNav, isSmallScreen],
+    [queryClient, conversation, newConvo, toggleNav, isSmallScreen],
   );
 
   return (

@@ -39,6 +39,9 @@ import { useApplyModelSpecEffects } from './Agents';
 import { usePauseGlobalAudio } from './Audio';
 import { useHasAccess } from '~/hooks';
 import store from '~/store';
+import { useQueryClient } from '@tanstack/react-query';
+import { QueryKeys } from 'librechat-data-provider';
+import type { TMessage } from 'librechat-data-provider';
 
 const useNewConvo = (index = 0) => {
   const navigate = useNavigate();
@@ -47,7 +50,7 @@ const useNewConvo = (index = 0) => {
   const applyModelSpecEffects = useApplyModelSpecEffects();
   const clearAllConversations = store.useClearConvoState();
   const defaultPreset = useRecoilValue(store.defaultPreset);
-  const { setConversation } = store.useCreateConversationAtom(index);
+  const { conversation: oldConversation, setConversation } = store.useCreateConversationAtom(index);
   const [files, setFiles] = useRecoilState(store.filesByIndex(index));
   const saveBadgesState = useRecoilValue<boolean>(store.saveBadgesState);
   const clearAllLatestMessages = store.useClearLatestMessages(`useNewConvo ${index}`);
@@ -64,7 +67,9 @@ const useNewConvo = (index = 0) => {
   const { pauseGlobalAudio } = usePauseGlobalAudio(index);
   const saveDrafts = useRecoilValue<boolean>(store.saveDrafts);
   const resetBadges = useResetChatBadges();
-
+  const setShowFeedbackReminder = useSetRecoilState(store.showFeedbackReminder);
+  const setPendingNewConversation = useSetRecoilState(store.pendingNewConversation);
+  const queryClient = useQueryClient();
   const { mutateAsync } = useDeleteFilesMutation({
     onSuccess: () => {
       console.log('Files deleted');
@@ -253,7 +258,7 @@ const useNewConvo = (index = 0) => {
   );
 
   const newConversation = useCallback(
-    function createNewConvo({
+    async function createNewConvo({
       template: _template = {},
       preset: _preset,
       modelsData,
@@ -262,6 +267,7 @@ const useNewConvo = (index = 0) => {
       keepLatestMessage = false,
       keepAddedConvos = false,
       disableParams,
+      skipFeedbackCheck = false,
     }: {
       template?: Partial<TConversation>;
       preset?: Partial<TPreset>;
@@ -271,7 +277,34 @@ const useNewConvo = (index = 0) => {
       keepLatestMessage?: boolean;
       keepAddedConvos?: boolean;
       disableParams?: boolean;
+      skipFeedbackCheck?: boolean;
     } = {}) {
+      if (!skipFeedbackCheck) {
+        const currentConversationId = oldConversation?.conversationId;
+
+        const messages = queryClient.getQueryData<TMessage[]>([
+          QueryKeys.messages,
+          currentConversationId,
+        ]);
+
+        const latestAssistantMessage = messages
+          ?.slice()
+          .reverse()
+          .find((message) => !message.isCreatedByUser);
+
+        const shouldRequestFeedback =
+          currentConversationId &&
+          currentConversationId !== Constants.NEW_CONVO &&
+          latestAssistantMessage &&
+          // latestAssistantMessage?.requiresFeedback === true &&
+          !latestAssistantMessage.feedback;
+
+        if (shouldRequestFeedback) {
+          setPendingNewConversation(true);
+          setShowFeedbackReminder(true);
+          return;
+        }
+      }
       pauseGlobalAudio();
       if (!saveBadgesState) {
         resetBadges();
@@ -352,6 +385,8 @@ const useNewConvo = (index = 0) => {
       );
     },
     [
+      oldConversation?.conversationId,
+      queryClient,
       files,
       setFiles,
       saveDrafts,
@@ -362,6 +397,8 @@ const useNewConvo = (index = 0) => {
       pauseGlobalAudio,
       switchToConversation,
       applyModelSpecEffects,
+      setPendingNewConversation,
+      setShowFeedbackReminder,
     ],
   );
 
