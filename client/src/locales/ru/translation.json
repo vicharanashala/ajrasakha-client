@@ -1390,5 +1390,9 @@
   "com_ui_feedback_tag_not_satisfied": "Не доволен",
   "com_ui_feedback_tag_will_not_recommend": "Не буду рекомендовать",
   "com_ui_feedback_tag_inappropriate_response": "Неуместный ответ",
-  "com_ui_feedback_tag_other_positive": "Другие"
+  "com_ui_feedback_tag_other_positive": "Другие",
+  "com_ui_feedback_enforce_reminder": "Пожалуйста, оставьте отзыв о предыдущем ответе, прежде чем начинать новый разговор.",
+  "com_ui_feedback_enforce_title": "Требуется обратная связь",
+  "com_ui_feedback_enforce_question": "Каким был предыдущий ответ?",
+  "com_ui_feedback_enforce_later": "Может быть, позже"
 }

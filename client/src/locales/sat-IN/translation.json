@@ -2048,5 +2048,9 @@
   "com_ui_feedback_tag_not_satisfied": "ᱵᱟᱹᱧ ᱥᱟᱱᱛᱚᱥᱟ",
   "com_ui_feedback_tag_will_not_recommend": "ᱯᱟᱹᱛᱭᱟᱹᱣ ᱵᱟᱹᱧ ᱮᱢᱟ",
   "com_ui_feedback_tag_inappropriate_response": "ᱵᱟᱭ ᱡᱩᱛᱟᱹᱜ ᱨᱩᱣᱟᱹᱲ",
-  "com_ui_feedback_tag_other_positive": "ᱮᱴᱟᱜᱼᱟᱜ"
+  "com_ui_feedback_tag_other_positive": "ᱮᱴᱟᱜᱼᱟᱜ",
+  "com_ui_feedback_enforce_reminder": "ᱱᱟᱶᱟ ᱜᱟᱞᱢᱟᱨᱟᱣ ᱮᱦᱚᱵ ᱢᱟᱲᱟᱝ ᱛᱟᱭᱚᱢ ᱥᱮᱫᱟᱜ ᱨᱚᱲ ᱨᱩᱣᱟᱹᱲ ᱵᱟᱵᱚᱛ ᱯᱷᱤᱰᱵᱮᱠ ᱮᱢ ᱢᱮ।",
+  "com_ui_feedback_enforce_title": "ᱯᱷᱤᱰᱵᱮᱠ ᱞᱟᱹᱠᱛᱤ",
+  "com_ui_feedback_enforce_question": "ᱛᱟᱭᱚᱢ ᱥᱮᱫᱟᱜ ᱨᱚᱲ ᱨᱩᱣᱟᱹᱲ ᱫᱚ ᱪᱮᱫ ᱞᱮᱠᱟ ᱛᱟᱦᱮᱸᱠᱟᱱᱟ?",
+  "com_ui_feedback_enforce_later": "ᱛᱟᱭᱚᱢ ᱦᱚᱸ"
 }

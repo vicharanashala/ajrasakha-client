@@ -2048,5 +2048,9 @@
   "com_ui_feedback_tag_not_satisfied": "مطمئن ناهيان",
   "com_ui_feedback_tag_will_not_recommend": "سفارش نه ڪندس",
   "com_ui_feedback_tag_inappropriate_response": "نامناسب جواب",
-  "com_ui_feedback_tag_other_positive": "ٻيا"
+  "com_ui_feedback_tag_other_positive": "ٻيا",
+  "com_ui_feedback_enforce_reminder": "نئين ڳالهه ٻولهه شروع ڪرڻ کان اڳ مهرباني ڪري پوئين جواب بابت راءِ ڏيو.",
+  "com_ui_feedback_enforce_title": "راءِ گهربل آهي",
+  "com_ui_feedback_enforce_question": "پوئين جواب بابت توهان جي راءِ ڇا هئي؟",
+  "com_ui_feedback_enforce_later": "شايد پوءِ"
 }

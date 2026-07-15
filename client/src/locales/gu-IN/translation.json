@@ -2049,5 +2049,9 @@
   "com_ui_feedback_tag_not_satisfied": "સંતુષ્ટ નથી",
   "com_ui_feedback_tag_will_not_recommend": "ભલામણ કરીશ નહીં",
   "com_ui_feedback_tag_inappropriate_response": "અયોગ્ય પ્રતિસાદ",
-  "com_ui_feedback_tag_other_positive": "અન્ય"
+  "com_ui_feedback_tag_other_positive": "અન્ય",
+  "com_ui_feedback_enforce_reminder": "નવી વાતચીત શરૂ કરતા પહેલાં કૃપા કરીને અગાઉના પ્રતિસાદ પર તમારો અભિપ્રાય આપો.",
+  "com_ui_feedback_enforce_title": "અભિપ્રાય જરૂરી",
+  "com_ui_feedback_enforce_question": "અગાઉનો પ્રતિસાદ કેવો હતો?",
+  "com_ui_feedback_enforce_later": "કદાચ પછી"
 }

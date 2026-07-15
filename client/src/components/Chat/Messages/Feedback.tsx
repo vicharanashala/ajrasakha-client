@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { TFeedback, TFeedbackTag, getTagsForRating } from 'librechat-data-provider';
+import { TFeedback, TFeedbackTag, getTagsForRating, getTagByKey } from 'librechat-data-provider';
 import {
   Button,
   OGDialog,
@@ -161,20 +161,6 @@ export default function Feedback({
     [propagateMinimal],
   );
 
-  // const handleOtherOpen = useCallback(() => setOpenDialog(true), []);
-  const handleDialogSave = useCallback(() => {
-    const text = methods.getValues('text');
-    const updatedFeedback = feedback
-      ? {
-          ...feedback,
-          text,
-        }
-      : undefined;
-    // handleFeedback({ feedback });
-    propagateMinimal(updatedFeedback);
-    setOpenDialog(false);
-  }, [feedback, propagateMinimal, methods]);
-
   const handleDialogClear = useCallback(() => {
     methods.reset({ text: '' });
     setFeedback(undefined);
@@ -196,6 +182,24 @@ export default function Feedback({
     }
     return getTagsForRating(selectedRating);
   }, [selectedRating]);
+
+  const handleDialogSave = useCallback(() => {
+    const text = methods.getValues('text').trim();
+    if (!selectedRating) {
+      return;
+    }
+    const otherTag = getTagByKey('other');
+    if (!otherTag) {
+      return;
+    }
+    const updatedFeedback: TFeedback = {
+      rating: selectedRating,
+      tag: feedback?.tag ?? otherTag,
+      text,
+    };
+    propagateMinimal(updatedFeedback);
+    setOpenDialog(false);
+  }, [feedback, selectedRating, propagateMinimal, methods]);
 
   const handleThumbClick = useCallback(
     (rating: 'thumbsUp' | 'thumbsDown') => {
@@ -271,14 +275,12 @@ export default function Feedback({
               {...textRegister}
               onChange={(e) => {
                 textRegister.onChange(e);
-                setFeedback((prev) =>
-                  prev
-                    ? {
-                        ...prev,
-                        text: e.target.value,
-                      }
-                    : prev,
-                );
+
+                setFeedback((prev) => ({
+                  rating: prev?.rating ?? selectedRating!,
+                  tag: prev?.tag,
+                  text: e.target.value,
+                }));
               }}
               ref={(el) => {
                 textAreaRef.current = el;

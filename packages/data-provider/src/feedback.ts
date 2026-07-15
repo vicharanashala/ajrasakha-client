@@ -26,6 +26,7 @@ export const FEEDBACK_REASON_KEYS = [
   'recommend_to_others',
   'user_friendly_language',
   // 'other_thumbsdown',
+  'other',
 ] as const;
 
 export type TFeedbackTagKey = (typeof FEEDBACK_REASON_KEYS)[number];
@@ -150,12 +151,12 @@ export const FEEDBACK_TAGS: TFeedbackTag[] = [
     direction: 'thumbsUp',
     icon: 'MessageCircle',
   },
-  // {
-  //   key: 'other_thumbsup',
-  //   label: 'com_ui_feedback_tag_other_positive',
-  //   direction: 'thumbsUp',
-  //   icon: 'HelpCircle',
-  // },
+  {
+    key: 'other',
+    label: 'com_ui_feedback_tag_other',
+    direction: 'thumbsUp',
+    icon: 'HelpCircle',
+  },
 ];
 
 export function getTagsForRating(rating: TFeedbackRating): TFeedbackTag[] {
