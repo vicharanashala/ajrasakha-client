@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-export type TFeedbackRating = 'thumbsUp' | 'thumbsDown';
-export const FEEDBACK_RATINGS = ['thumbsUp', 'thumbsDown'] as const;
+export type TFeedbackRating = 'thumbsUp' | 'thumbsDown' | 'other';
+export const FEEDBACK_RATINGS = ['thumbsUp', 'thumbsDown', 'other'] as const;
 
 export const FEEDBACK_REASON_KEYS = [
   // Down
@@ -154,7 +154,7 @@ export const FEEDBACK_TAGS: TFeedbackTag[] = [
   {
     key: 'other',
     label: 'com_ui_feedback_tag_other',
-    direction: 'thumbsUp',
+    direction: 'other',
     icon: 'HelpCircle',
   },
 ];
