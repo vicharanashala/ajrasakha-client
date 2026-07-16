@@ -258,7 +258,7 @@ const useNewConvo = (index = 0) => {
   );
 
   const newConversation = useCallback(
-    async function createNewConvo({
+    function createNewConvo({
       template: _template = {},
       preset: _preset,
       modelsData,
