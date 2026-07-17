@@ -42,6 +42,7 @@ import store from '~/store';
 import { useQueryClient } from '@tanstack/react-query';
 import { QueryKeys } from 'librechat-data-provider';
 import type { TMessage } from 'librechat-data-provider';
+import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
 
 const useNewConvo = (index = 0) => {
   const navigate = useNavigate();
@@ -258,7 +259,7 @@ const useNewConvo = (index = 0) => {
   );
 
   const newConversation = useCallback(
-    function createNewConvo({
+    async function createNewConvo({
       template: _template = {},
       preset: _preset,
       modelsData,
@@ -292,11 +293,14 @@ const useNewConvo = (index = 0) => {
           .reverse()
           .find((message) => !message.isCreatedByUser);
 
+        const toolCalled = await requiresFeedbackFromConversation(currentConversationId ?? '');
+        console.log('----toollcalled in newconvo----', toolCalled);
+
         const shouldRequestFeedback =
+          toolCalled &&
           currentConversationId &&
           currentConversationId !== Constants.NEW_CONVO &&
           latestAssistantMessage &&
-          // latestAssistantMessage?.requiresFeedback === true &&
           !latestAssistantMessage.feedback;
 
         if (shouldRequestFeedback) {

@@ -275,8 +275,13 @@ const dummJson = {
 };
 
 export async function requiresFeedbackFromConversation(conversationId: string): Promise<boolean> {
-  const response = await fetch(`http://100.100.108.44:2026/threads/${conversationId}/state`);
-
+  // alert('----alert from requiresFeedbackFromConversation---');
+  let response;
+  try {
+    response = await fetch(`http://100.100.108.44:2026/threads/${conversationId}/state`);
+  } catch (err) {
+    return false;
+  }
   if (!response.ok) {
     return false;
   }
@@ -314,53 +319,54 @@ export async function requiresFeedbackFromConversation(conversationId: string): 
   return requiresFeedback;
 }
 
-export async function requiresFeedbackForMessage(
-  conversationId: string,
-  messageId: string,
-): Promise<boolean> {
-  if (!conversationId || !messageId) {
-    return false;
-  }
-  const response = await fetch(`http://100.100.108.44:2026/threads/${conversationId}/state`);
+// export async function requiresFeedbackForMessage(
+//   conversationId: string,
+//   messageId: string,
+// ): Promise<boolean> {
+//   alert('----alert from requiresFeedbackForMessage---');
+//   if (!conversationId || !messageId) {
+//     return false;
+//   }
+//   const response = await fetch(`http://100.100.108.44:2026/threads/${conversationId}/state`);
 
-  if (!response.ok) {
-    return false;
-  }
+//   if (!response.ok) {
+//     return false;
+//   }
 
-  const conversation = await response.json();
-  // const conversation = dummyJson; // for testing
+//   const conversation = await response.json();
+//   // const conversation = dummyJson; // for testing
 
-  const messages = conversation?.values?.messages ?? [];
+//   const messages = conversation?.values?.messages ?? [];
 
-  let pendingTools: string[] = [];
+//   let pendingTools: string[] = [];
 
-  for (const message of messages) {
-    if (message.type === 'human') {
-      pendingTools = [];
-      continue;
-    }
+//   for (const message of messages) {
+//     if (message.type === 'human') {
+//       pendingTools = [];
+//       continue;
+//     }
 
-    if (message.type === 'ai' && message.tool_calls?.length > 0) {
-      pendingTools.push(...message.tool_calls.map((tool: any) => tool.name));
-      continue;
-    }
+//     if (message.type === 'ai' && message.tool_calls?.length > 0) {
+//       pendingTools.push(...message.tool_calls.map((tool: any) => tool.name));
+//       continue;
+//     }
 
-    if (
-      message.type === 'ai' &&
-      message.tool_calls?.length === 0 &&
-      typeof message.content === 'string' &&
-      message.content.trim() !== ''
-    ) {
-      const requiresFeedback = pendingTools.some((tool) => FEEDBACK_TOOLS.includes(tool));
+//     if (
+//       message.type === 'ai' &&
+//       message.tool_calls?.length === 0 &&
+//       typeof message.content === 'string' &&
+//       message.content.trim() !== ''
+//     ) {
+//       const requiresFeedback = pendingTools.some((tool) => FEEDBACK_TOOLS.includes(tool));
 
-      // This is the assistant message we're rendering.
-      if (message.id === messageId) {
-        return requiresFeedback;
-      }
+//       // This is the assistant message we're rendering.
+//       if (message.id === messageId) {
+//         return requiresFeedback;
+//       }
 
-      pendingTools = [];
-    }
-  }
+//       pendingTools = [];
+//     }
+//   }
 
-  return false;
-}
+//   return false;
+// }
