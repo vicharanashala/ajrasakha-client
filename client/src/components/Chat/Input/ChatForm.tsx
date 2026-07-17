@@ -35,6 +35,7 @@ import EditBadges from './EditBadges';
 import BadgeRow from './BadgeRow';
 import Mention from './Mention';
 import store from '~/store';
+import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
 
 const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
@@ -258,13 +259,21 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     store.showFeedbackReminder,
   );
   const { getMessages } = useChatContext();
-  const handleMessageSubmit = methods.handleSubmit((data) => {
+  const handleMessageSubmit = methods.handleSubmit(async (data) => {
     const latestAssistantMessage = getMessages()
       ?.slice()
       .reverse()
       .find((message) => !message.isCreatedByUser);
 
-    if (latestAssistantMessage && !latestAssistantMessage.feedback && !showFeedbackReminder) {
+    const toolCalled = await requiresFeedbackFromConversation(conversationId);
+    console.log('----toollcalled in chatform----', toolCalled);
+
+    if (
+      toolCalled &&
+      latestAssistantMessage &&
+      !latestAssistantMessage.feedback &&
+      !showFeedbackReminder
+    ) {
       setShowFeedbackReminder(true);
       return;
     }

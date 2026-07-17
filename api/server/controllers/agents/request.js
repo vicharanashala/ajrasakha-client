@@ -231,7 +231,6 @@ const ResumableAgentController = async (req, res, next, initializeClient, addTit
         };
 
         const response = await client.sendMessage(text, messageOptions);
-        // response.requiresFeedback = !!client.hasToolCalls;
         const messageId = response.messageId;
         const endpoint = endpointOption.endpoint;
         response.endpoint = endpoint;

@@ -68,10 +68,6 @@ class ModelEndHandler {
       }
 
       const toolCalls = data?.output?.tool_calls;
-      // if (Array.isArray(toolCalls) && toolCalls.length > 0) {
-      //   graph.hasToolCalls = true;
-      // }
-      // graph.hasToolCalls = true; // for tesing only
       let hasUnprocessedToolCalls = false;
       if (Array.isArray(toolCalls) && toolCalls.length > 0 && graph?.toolCallStepIds?.has) {
         try {

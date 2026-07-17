@@ -1049,7 +1049,6 @@ class AgentClient extends BaseClient {
             [Callback.TOOL_ERROR]: logToolError,
           },
         });
-        // this.hasToolCalls = !!run.Graph?.hasToolCalls;
 
         config.signal = null;
       };

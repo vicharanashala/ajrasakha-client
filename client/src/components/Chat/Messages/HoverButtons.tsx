@@ -15,6 +15,7 @@ import { cn } from '~/utils';
 import { logTtsPayload } from '~/utils/ttsDebug';
 import store from '~/store';
 import FeedbackReminderDialog from './FeedbackReminderDialog';
+import { requiresFeedbackForMessage } from '~/utils/requiresFeedback';
 
 type THoverButtons = {
   isEditing: boolean;
@@ -116,15 +117,35 @@ const HoverButtons = ({
     store.showFeedbackReminder,
   );
 
+  const [toolCalled, setToolCalled] = useState(false);
+
+  useEffect(() => {
+    if (!conversation?.conversationId || !message.messageId) {
+      setToolCalled(false);
+      return;
+    }
+    let cancelled = false;
+    const load = async () => {
+      const requires = await requiresFeedbackForMessage(
+        conversation.conversationId ?? '',
+        message.messageId,
+      );
+
+      if (!cancelled) {
+        setToolCalled(requires);
+      }
+    };
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [conversation?.conversationId, message.messageId]);
+
   const isLatestAssistantMessage =
     !message.isCreatedByUser && message.messageId === latestMessage?.messageId;
-
+  console.log('----toollcalled in hoverbuttons----', toolCalled);
   const shouldShowFeedbackReminder =
-    showFeedbackReminder &&
-    isLatestAssistantMessage &&
-    // message?.requiresFeedback &&
-    !feedback &&
-    !isSubmitting;
+    toolCalled && showFeedbackReminder && isLatestAssistantMessage && !feedback && !isSubmitting;
 
   const localize = useLocalize();
   const [isCopied, setIsCopied] = useState(false);
