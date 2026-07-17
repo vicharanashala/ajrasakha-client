@@ -281,8 +281,8 @@ export async function requiresFeedbackFromConversation(conversationId: string): 
     return false;
   }
 
-  let conversation = await response.json();
-  conversation = dummJson; // for local testing only
+  const conversation = await response.json();
+  // conversation = dummJson; // for local testing only
   const messages = conversation?.values?.messages ?? [];
 
   let pendingTools: string[] = [];
