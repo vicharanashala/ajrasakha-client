@@ -21,6 +21,7 @@ import type {
   TModelsConfig,
   TConversation,
   TEndpointsConfig,
+  TMessage,
 } from 'librechat-data-provider';
 import type { AssistantListItem } from '~/common';
 import {
@@ -41,7 +42,6 @@ import { useHasAccess } from '~/hooks';
 import store from '~/store';
 import { useQueryClient } from '@tanstack/react-query';
 import { QueryKeys } from 'librechat-data-provider';
-import type { TMessage } from 'librechat-data-provider';
 import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
 
 const useNewConvo = (index = 0) => {
@@ -80,7 +80,7 @@ const useNewConvo = (index = 0) => {
     },
   });
 
-  const switchToConversation = useRecoilCallback(
+      const switchToConversation = useRecoilCallback(
     () =>
       async (
         conversation: TConversation,
@@ -236,6 +236,37 @@ const useNewConvo = (index = 0) => {
           return;
         }
 
+        // Check feedback requirement when switching to an existing conversation
+        if (conversation.conversationId && conversation.conversationId !== Constants.NEW_CONVO) {
+          const messages = queryClient.getQueryData<TMessage[]>([
+            QueryKeys.messages,
+            conversation.conversationId,
+          ]);
+
+          // Check if messages are actually loaded in cache
+          const messagesLoaded = messages && messages.length > 0;
+
+          const latestAssistantMessage = messagesLoaded
+            ? messages
+                ?.slice()
+                .reverse()
+                .find((message) => !message.isCreatedByUser)
+            : null;
+
+          const toolCalled = await requiresFeedbackFromConversation(
+            conversation.conversationId ?? '',
+          );
+
+          // Only show modal if messages are loaded AND tool called AND no feedback given
+          const shouldRequestFeedback = messagesLoaded && toolCalled && !latestAssistantMessage?.feedback;
+
+          if (shouldRequestFeedback) {
+          setPendingNewConversation(false); // Not creating new, just switching
+            setShowFeedbackReminder(true);
+            return;
+          }
+        }
+
         const searchParamsString = searchParams?.toString();
         const getParams = () => (searchParamsString ? `?${searchParamsString}` : '');
 
@@ -255,7 +286,7 @@ const useNewConvo = (index = 0) => {
           state: disableFocus ? {} : { focusChat: true },
         });
       },
-    [endpointsConfig, defaultPreset, assistantsListMap, modelsQuery.data],
+    [endpointsConfig, defaultPreset, assistantsListMap, modelsQuery.data, queryClient],
   );
 
   const newConversation = useCallback(
@@ -288,20 +319,25 @@ const useNewConvo = (index = 0) => {
           currentConversationId,
         ]);
 
-        const latestAssistantMessage = messages
-          ?.slice()
-          .reverse()
-          .find((message) => !message.isCreatedByUser);
+        // Check if messages are actually loaded in cache
+        const messagesLoaded = messages && messages.length > 0;
+
+        const latestAssistantMessage = messagesLoaded
+          ? messages
+              ?.slice()
+              .reverse()
+              .find((message) => !message.isCreatedByUser)
+          : null;
 
         const toolCalled = await requiresFeedbackFromConversation(currentConversationId ?? '');
-        console.log('----toollcalled in newconvo----', toolCalled);
 
+        // Only show modal if messages are loaded AND tool called AND no feedback given
         const shouldRequestFeedback =
+          messagesLoaded &&
           toolCalled &&
           currentConversationId &&
           currentConversationId !== Constants.NEW_CONVO &&
-          latestAssistantMessage &&
-          !latestAssistantMessage.feedback;
+          !latestAssistantMessage?.feedback;
 
         if (shouldRequestFeedback) {
           setPendingNewConversation(true);

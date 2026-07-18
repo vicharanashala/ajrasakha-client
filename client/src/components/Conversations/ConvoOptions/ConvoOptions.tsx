@@ -52,7 +52,9 @@ function ConvoOptions({
 
   const duplicateConversation = useDuplicateConversationMutation({
     onSuccess: (data) => {
-      navigateToConvo(data.conversation);
+      navigateToConvo(data.conversation, {
+        currentConvoId: conversationId ?? undefined,
+      });
       showToast({
         message: localize('com_ui_duplication_success'),
         status: 'success',

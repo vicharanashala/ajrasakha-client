@@ -259,25 +259,47 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     store.showFeedbackReminder,
   );
   const { getMessages } = useChatContext();
-  const handleMessageSubmit = methods.handleSubmit(async (data) => {
-    const latestAssistantMessage = getMessages()
-      ?.slice()
-      .reverse()
-      .find((message) => !message.isCreatedByUser);
+
+  // Track if input was previously focused (to detect refocus after blur)
+  const wasPreviouslyFocusedRef = useRef(false);
+
+  // Check for feedback requirement
+  const checkFeedbackRequirement = useCallback(async () => {
+    const messages = getMessages();
+
+    // Check if messages are actually loaded
+    const messagesLoaded = messages && messages.length > 0;
+
+    const latestAssistantMessage = messagesLoaded
+      ? messages
+          ?.slice()
+          .reverse()
+          .find((message) => !message.isCreatedByUser)
+      : null;
 
     const toolCalled = await requiresFeedbackFromConversation(conversationId);
-    console.log('----toollcalled in chatform----', toolCalled);
 
-    if (
-      toolCalled &&
-      latestAssistantMessage &&
-      !latestAssistantMessage.feedback &&
-      !showFeedbackReminder
-    ) {
+    // Only show modal if messages are loaded AND tool called AND no feedback given
+    if (messagesLoaded && toolCalled && !latestAssistantMessage?.feedback) {
       setShowFeedbackReminder(true);
-      return;
     }
+  }, [conversationId, getMessages, setShowFeedbackReminder]);
 
+  // Reset focus tracking when conversation changes
+  useEffect(() => {
+    wasPreviouslyFocusedRef.current = false;
+  }, [conversationId]);
+
+  // Handle input focus - check feedback on refocus (after blur)
+  const handleInputFocus = useCallback(() => {
+    // Only check if this is a refocus (user previously had input focused and now focused again)
+    if (wasPreviouslyFocusedRef.current) {
+      checkFeedbackRequirement();
+    }
+    wasPreviouslyFocusedRef.current = true;
+  }, [checkFeedbackRequirement]);
+
+  const handleMessageSubmit = methods.handleSubmit(async (data) => {
     submitMessage(data, position ?? undefined);
   });
 
@@ -358,6 +380,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     rows={1}
                     onFocus={() => {
                       handleFocusOrClick();
+                      handleInputFocus();
                       setIsTextAreaFocused(true);
                     }}
                     onBlur={setIsTextAreaFocused.bind(null, false)}

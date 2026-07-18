@@ -50,7 +50,7 @@ type HoverButtonProps = {
 function ttsContentFromMessage(message: TMessage): string | TMessageContentParts[] {
   if (Array.isArray(message.content) && message.content.length > 0) {
     const parts = message.content as TMessageContentParts[];
-    logTtsPayload(message.messageId, parts);
+    // logTtsPayload(message.messageId, parts); // Commented out to remove TTS debug logs
     return parts;
   }
   if (typeof message.content === 'string') {
@@ -284,6 +284,8 @@ const HoverButtons = ({
           onOpenChange={setShowFeedbackReminder}
           feedback={feedback}
           handleFeedback={handleFeedback!}
+          conversation={conversation}
+          message={message}
         />
       )}
     </div>
