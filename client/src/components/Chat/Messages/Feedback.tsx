@@ -122,7 +122,7 @@ export default function Feedback({
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [, setIsFeedbackDialogOpen] = useRecoilState(store.isFeedbackDialogOpen);
 
-  const { isListening, isLoading, startRecording, stopRecording } = useSpeechToText(
+  const { isListening, startRecording, stopRecording, error } = useSpeechToText(
     (text) => {
       methods.setValue('text', text);
       setFeedback((prev) => (prev ? { ...prev, text } : prev));
@@ -138,7 +138,7 @@ export default function Feedback({
 
   useEffect(() => {
     setIsFeedbackDialogOpen(openDialog);
-  }, [openDialog]);
+  }, [openDialog, setIsFeedbackDialogOpen]);
 
   useEffect(() => {
     setFeedback(initialFeedback);
@@ -172,7 +172,7 @@ export default function Feedback({
     if (!openDialog) {
       stopRecording();
     }
-  }, [openDialog]);
+  }, [openDialog, stopRecording]);
 
   const [selectedRating, setSelectedRating] = useState<'thumbsUp' | 'thumbsDown' | null>(null);
 
@@ -320,6 +320,9 @@ export default function Feedback({
                 </div>
               </button>
             </div>
+            {error && (
+              <div className="mt-2 text-center text-sm font-medium text-red-500">{error}</div>
+            )}
             <div className="mt-1 flex items-end justify-between gap-2">
               <Button className="w-full" variant="destructive" onClick={handleDialogClear}>
                 {localize('com_ui_delete')}

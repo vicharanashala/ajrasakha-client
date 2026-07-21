@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef, useMemo, useState, useCallback } from 'react';
 import { useRecoilState } from 'recoil';
 import { useToastContext } from '@librechat/client';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
@@ -19,6 +19,7 @@ const useSpeechToTextBrowser = (
   const { data: speechConfig } = useGetCustomConfigSpeechQuery({ enabled: true });
   const sttExternal = Boolean(speechConfig?.sttExternal);
 
+  const [speechError, setSpeechError] = useState<string | undefined>(undefined);
   const lastTranscript = useRef<string | null>(null);
   const lastInterim = useRef<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>();
@@ -89,22 +90,27 @@ const useSpeechToTextBrowser = (
     };
   }, [enabled, setText, onTranscriptionComplete, resetTranscript, finalTranscript, autoSendText]);
 
-  const toggleListening = () => {
+  const toggleListening = useCallback(() => {
+    setSpeechError(undefined);
     if (!browserSupportsSpeechRecognition) {
+      const msg = sttExternal
+        ? localize('com_ui_speech_not_supported_use_external')
+        : localize('com_ui_speech_not_supported');
       showToast({
-        message: sttExternal
-          ? localize('com_ui_speech_not_supported_use_external')
-          : localize('com_ui_speech_not_supported'),
+        message: msg,
         status: 'error',
       });
+      setSpeechError(msg);
       return;
     }
 
     if (!isMicrophoneAvailable) {
+      const msg = localize('com_ui_microphone_unavailable');
       showToast({
-        message: localize('com_ui_microphone_unavailable'),
+        message: msg,
         status: 'error',
       });
+      setSpeechError(msg);
       return;
     }
 
@@ -116,7 +122,16 @@ const useSpeechToTextBrowser = (
         continuous: autoTranscribeAudio,
       });
     }
-  };
+  }, [
+    browserSupportsSpeechRecognition,
+    sttExternal,
+    isMicrophoneAvailable,
+    isListening,
+    languageSTT,
+    autoTranscribeAudio,
+    localize,
+    showToast,
+  ]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -127,7 +142,36 @@ const useSpeechToTextBrowser = (
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [isBrowserSTTEnabled, toggleListening]);
+
+  useEffect(() => {
+    if (!enabled) {
+      setSpeechError(undefined);
+    }
+  }, [enabled]);
+
+  useEffect(() => {
+    if (!isBrowserSTTEnabled) {
+      return;
+    }
+    const recognition = SpeechRecognition.getRecognition();
+    if (recognition) {
+      const handleError = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        if (event.error === 'not-allowed') {
+          setSpeechError(localize('com_ui_microphone_unavailable'));
+        } else if (event.error === 'no-speech') {
+          // No-speech is transient and not necessarily a blocking error
+        } else {
+          setSpeechError(`Speech recognition error: ${event.error}`);
+        }
+      };
+      recognition.addEventListener('error', handleError);
+      return () => {
+        recognition.removeEventListener('error', handleError);
+      };
+    }
+  }, [isBrowserSTTEnabled, localize]);
 
   return {
     isListening,
@@ -138,7 +182,9 @@ const useSpeechToTextBrowser = (
       resetTranscript();
       lastTranscript.current = null;
       lastInterim.current = null;
+      setSpeechError(undefined);
     },
+    error: speechError,
   };
 };
 
