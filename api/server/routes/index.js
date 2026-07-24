@@ -28,6 +28,7 @@ const mcp = require('./mcp');
 const webhooks = require('./webhooks');
 const push = require('./push');
 const notifications = require('./notifications');
+const diagnostics = require('./diagnostics');
 
 module.exports = {
   mcp,
@@ -60,4 +61,5 @@ module.exports = {
   webhooks,
   push,
   notifications,
+  diagnostics,
 };
