@@ -80,6 +80,17 @@ const startServer = async () => {
 
   app.get('/health', (_req, res) => res.status(200).send('OK'));
 
+  // Test external connectivity
+  app.get('/api/test-external', async (req, res) => {
+    try {
+      const response = await axios.get('https://jsonplaceholder.typicode.com/todos/1');
+      res.json({ success: true, data: response.data });
+    } catch (error) {
+      logger.error('[test-external] Error:', error.message);
+      res.json({ success: false, error: error.message, code: error.code });
+    }
+  });
+
   /* Middleware */
   app.use(noIndex);
   app.use(express.json({ limit: '3mb' }));
