@@ -1,3 +1,25 @@
+/**
+ * Tailscale SOCKS5 proxy - route internal service traffic through Tailscale
+ * ----------------------------------------------------------------------------
+ * Hijacks `globalThis.fetch` so any HTTP request to a Tailscale IP
+ * (`100.100.x.x` range) is sent through the SOCKS5 proxy exposed by
+ * `tailscaled` on port 1055. All other traffic (e.g. external APIs, callbacks)
+ * bypasses the proxy and goes via the normal routing table.
+ *
+ * Requires the Tailscale daemon to be running and connected before this file
+ * is evaluated. With s6-overlay, `tailscaled` is started before `node-run`,
+ * so by the time `npm run backend` runs, the proxy is ready.
+ */
+const { SocksProxyAgent } = require('socks-proxy-agent');
+const globalSocksAgent = new SocksProxyAgent('socks5://127.0.0.1:1055');
+const originalFetch = globalThis.fetch;
+globalThis.fetch = async (url, options = {}) => {
+  if (url && typeof url.toString === 'function' && url.toString().includes('100.100.')) {
+    return originalFetch(url, { ...options, agent: globalSocksAgent });
+  }
+  return originalFetch(url, options);
+};
+
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
@@ -34,6 +56,126 @@ const { seedDatabase } = require('~/models');
 const routes = require('./routes');
 
 const { PORT, HOST, ALLOW_SOCIAL_LOGIN, DISABLE_COMPRESSION, TRUST_PROXY } = process.env ?? {};
+
+/**
+ * Tailscale Network Status Check
+ * ----------------------------------------------------------------------------
+ * Runs `tailscale status` *before* the server starts so we can see every
+ * machine currently in the Tailscale network (this node + peers).
+ *
+ * Configuration:
+ *   - SKIP_TAILSCALE_STATUS=true   -> skip the check entirely (useful in CI / Cloud Run)
+ *   - TAILSCALE_BIN=/path/to/bin   -> override the binary path (default: `tailscale`)
+ *
+ * The check is non-fatal: if Tailscale is not installed or the command fails,
+ * the server still starts and a warning is logged.
+ */
+const { execSync } = require('child_process');
+
+/**
+ * Resolve the directory used to drop the on-disk proof file. This lets the
+ * operator `cat` the file even when stdout/stderr are detached (PM2, nohup,
+ * Cloud Run, etc.).
+ *
+ * Priority:
+ *   1. LIBRECHAT_LOG_DIR  -> use it
+ *   2. /app/logs          -> Docker convention used elsewhere in the codebase
+ *   3. /tmp               -> safe fallback for local dev / CI
+ */
+function resolveTailscaleProofDir() {
+  if (process.env.LIBRECHAT_LOG_DIR) {
+    try {
+      fs.mkdirSync(process.env.LIBRECHAT_LOG_DIR, { recursive: true });
+      return process.env.LIBRECHAT_LOG_DIR;
+    } catch (_) { /* fall through */ }
+  }
+  if (process.cwd() === '/app') {
+    try {
+      fs.mkdirSync('/app/logs', { recursive: true });
+      return '/app/logs';
+    } catch (_) { /* fall through */ }
+  }
+  return '/tmp';
+}
+
+const TAILSCALE_PROOF_PATH = path.join(resolveTailscaleProofDir(), 'tailscale-status.log');
+
+function writeTailscaleProof(contents) {
+  try {
+    fs.writeFileSync(
+      TAILSCALE_PROOF_PATH,
+      `${contents}\n`,
+      { flag: 'a', encoding: 'utf8' },
+    );
+  } catch (err) {
+    // Don't crash the server if the file can't be written.
+    console.warn('[Tailscale] Could not write proof file:', TAILSCALE_PROOF_PATH, err.message);
+  }
+}
+
+function checkTailscaleStatus() {
+  // Use console.* directly so the output is visible regardless of NODE_ENV /
+  // winston log level (production defaults to level=warn and would otherwise
+  // drop the happy-path info messages).
+  const log = (...args) => console.log('[Tailscale]', ...args);
+  const warn = (...args) => console.warn('[Tailscale]', ...args);
+
+  // Always write a STARTED marker first. If this file exists after startup,
+  // it proves the script ran -- even if stdout was redirected away.
+  const startedAt = new Date().toISOString();
+  writeTailscaleProof(`\n[${startedAt}] TAILSCALE CHECK STARTED (pid=${process.pid}, node=${process.version}, cwd=${process.cwd()})`);
+  log(`Proof file: ${TAILSCALE_PROOF_PATH}`);
+
+  if (isEnabled(process.env.SKIP_TAILSCALE_STATUS)) {
+    log('Status check skipped via SKIP_TAILSCALE_STATUS=true');
+    writeTailscaleProof(`[${new Date().toISOString()}] SKIPPED via SKIP_TAILSCALE_STATUS=true`);
+    return;
+  }
+
+  const binary = process.env.TAILSCALE_BIN || 'tailscale';
+
+  log('========================================');
+  log('Checking network status...');
+  log('========================================');
+
+  try {
+    const output = execSync(`${binary} status`, {
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: 10000,
+      encoding: 'utf8',
+    });
+
+    const lines = (output || '')
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    if (lines.length === 0) {
+      warn('`tailscale status` returned no output.');
+      writeTailscaleProof(`[${new Date().toISOString()}] RESULT: empty (0 peers)`);
+    } else {
+      log(`Discovered ${lines.length} network entries:\n${output}`);
+      writeTailscaleProof(
+        `[${new Date().toISOString()}] RESULT: success (${lines.length} peers)\n${output.trimEnd()}`,
+      );
+    }
+  } catch (error) {
+    const stderr = error?.stderr ? error.stderr.toString().trim() : '';
+    const message = error?.message ? error.message.toString().trim() : '';
+    const reason = `Unable to run "${binary} status". ` +
+      'Continuing server startup. ' +
+      'If this is unexpected, install Tailscale on the host or set SKIP_TAILSCALE_STATUS=true.\n' +
+      (stderr ? `stderr: ${stderr}\n` : '') +
+      (message ? `message: ${message}` : '');
+    warn(reason);
+    writeTailscaleProof(`[${new Date().toISOString()}] RESULT: error\n${reason}`);
+  } finally {
+    log('========================================');
+    writeTailscaleProof(`[${new Date().toISOString()}] TAILSCALE CHECK FINISHED`);
+  }
+}
+
+checkTailscaleStatus();
 
 // Allow PORT=0 to be used for automatic free port assignment
 const port = isNaN(Number(PORT)) ? 3080 : Number(PORT);
@@ -175,6 +317,7 @@ const startServer = async () => {
   app.use('/api/notifications', routes.notifications);
   app.use('/api/locations', routes.locations);
   app.use('/api/langgraph', routes.langgraph);
+  app.use('/api/diagnostics', routes.diagnostics);
 
   app.use(ErrorController);
 

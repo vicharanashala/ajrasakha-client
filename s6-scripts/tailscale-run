@@ -1,0 +1,40 @@
+#!/command/with-contenv sh
+set -x
+
+# Create directories just in case at runtime
+mkdir -p /var/run/tailscale /var/lib/tailscale
+
+echo "=== STARTING DAEMON ==="
+tailscaled \
+  --tun=userspace-networking \
+  --socks5-server=127.0.0.1:1055 \
+  --outbound-http-proxy-listen=127.0.0.1:1056 &
+DAEMON_PID=$!
+
+echo "=== WAITING FOR SOCKET FILE ==="
+WAIT_COUNT=0
+# tailscale status ke badle socket file check karenge
+until [ -S /var/run/tailscale/tailscaled.sock ]; do
+    WAIT_COUNT=$((WAIT_COUNT + 1))
+    echo "Waiting for tailscaled.sock... ($WAIT_COUNTs)"
+    if [ $WAIT_COUNT -gt 15 ]; then
+        echo "ERROR: tailscaled.sock was not created within 15 seconds!"
+        exit 1
+    fi
+    sleep 1
+done
+
+echo "=== DAEMON IS READY, RUNNING AUTHENTICATION ==="
+# Ab bina ruke seedhe login command chalegi
+tailscale up \
+  --reset \
+  --authkey=${TAILSCALE_AUTHKEY} \
+  --hostname=${TS_HOSTNAME:-ajrasakha-client} \
+  --accept-routes 2>&1
+UP_EXIT_CODE=$?
+echo "=== TAILSCALE UP FINISHED (EXIT CODE: $UP_EXIT_CODE) ==="
+
+# Print actual status details post-login
+tailscale status 2>&1
+
+wait $DAEMON_PID

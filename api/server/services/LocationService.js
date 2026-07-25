@@ -8,7 +8,7 @@ const { logger } = require('@librechat/data-schemas');
  * @returns {Promise<Array>} Array of records
  */
 const fetchLgdData = async (url, queryParams = {}) => {
-  const apiKey = process.env.LGD_API_KEY || process.env.LGD_VILLAGES_API_KEY;
+  const apiKey = process.env.LGD_API_KEY;
   logger.debug(`[fetchLgdData] Called with URL: ${url}`);
   logger.debug(`[fetchLgdData] Query params: ${JSON.stringify(queryParams)}`);
   logger.debug(`[fetchLgdData] API key configured: ${apiKey ? 'YES (length: ' + apiKey.length + ')' : 'NO'}`);

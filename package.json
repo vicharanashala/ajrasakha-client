@@ -164,6 +164,7 @@
     ]
   },
   "dependencies": {
+    "socks-proxy-agent": "^10.1.0",
     "web-push": "^3.6.7"
   }
 }
