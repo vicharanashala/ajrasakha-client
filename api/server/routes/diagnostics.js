@@ -1,9 +1,51 @@
 const express = require('express');
 const axios = require('axios');
+const { execFileSync } = require('child_process');
 const router = express.Router();
 
 const LGD_API_KEY = process.env.LGD_API_KEY || process.env.LGD_VILLAGES_API_KEY;
 const TEST_URL = 'https://api.data.gov.in/resource/a71e60f0-a21d-43de-a6c5-fa5d21600cdb';
+
+/**
+ * Run `tailscale status` (or `tailscale status --json`) and return the parsed result.
+ * Returns a structured object so the route can always respond with JSON, even if
+ * the binary is missing or the command fails.
+ */
+function runTailscaleStatus({ asJson = false } = {}) {
+  const binary = process.env.TAILSCALE_BIN || 'tailscale';
+  const args = ['status'];
+  if (asJson) {
+    args.push('--json');
+  }
+
+  try {
+    const stdout = execFileSync(binary, args, {
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: 10000,
+      encoding: 'utf8',
+    });
+
+    if (asJson) {
+      try {
+        return { success: true, reachable: true, parsed: JSON.parse(stdout), raw: stdout };
+      } catch (parseErr) {
+        return { success: true, reachable: true, parsed: null, raw: stdout, parseError: parseErr.message };
+      }
+    }
+
+    return { success: true, reachable: true, raw: stdout };
+  } catch (error) {
+    return {
+      success: false,
+      reachable: false,
+      error: {
+        code: error.code,
+        message: error.message,
+        stderr: error.stderr ? error.stderr.toString().trim() : '',
+      },
+    };
+  }
+}
 
 /**
  * GET /api/diagnostics/test-lgd
@@ -197,6 +239,37 @@ router.get('/full-test', async (req, res) => {
   console.log('[DIAGNOSTIC] Full test results:', JSON.stringify(results, null, 2));
 
   return res.json(results);
+});
+
+/**
+ * GET /api/diagnostics/tailscale-status
+ * Runs `tailscale status` on the host and returns the raw text output.
+ * Useful for seeing which machines are currently in your Tailscale network.
+ * Query `?json=1` to get a parsed JSON payload instead.
+ */
+router.get('/tailscale-status', (req, res) => {
+  const wantsJson = req.query.json === '1' || req.query.json === 'true';
+  const result = runTailscaleStatus({ asJson: wantsJson });
+
+  if (!result.success) {
+    return res.json({
+      success: false,
+      reachable: false,
+      message: 'Could not run `tailscale status` on this host. Is Tailscale installed?',
+      error: result.error,
+      hint: 'Set SKIP_TAILSCALE_STATUS=true to silence startup checks, or install Tailscale on the host.',
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  return res.json({
+    success: true,
+    reachable: true,
+    ...(wantsJson
+      ? { parsed: result.parsed, raw: result.raw, parseError: result.parseError || null }
+      : { raw: result.raw }),
+    timestamp: new Date().toISOString(),
+  });
 });
 
 function getDiagnosis(error) {

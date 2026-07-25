@@ -35,6 +35,67 @@ const routes = require('./routes');
 
 const { PORT, HOST, ALLOW_SOCIAL_LOGIN, DISABLE_COMPRESSION, TRUST_PROXY } = process.env ?? {};
 
+/**
+ * Tailscale Network Status Check
+ * ----------------------------------------------------------------------------
+ * Runs `tailscale status` *before* the server starts so we can see every
+ * machine currently in the Tailscale network (this node + peers).
+ *
+ * Configuration:
+ *   - SKIP_TAILSCALE_STATUS=true   -> skip the check entirely (useful in CI / Cloud Run)
+ *   - TAILSCALE_BIN=/path/to/bin   -> override the binary path (default: `tailscale`)
+ *
+ * The check is non-fatal: if Tailscale is not installed or the command fails,
+ * the server still starts and a warning is logged.
+ */
+const { execSync } = require('child_process');
+
+function checkTailscaleStatus() {
+  if (isEnabled(process.env.SKIP_TAILSCALE_STATUS)) {
+    logger.info('[Tailscale] Status check skipped via SKIP_TAILSCALE_STATUS=true');
+    return;
+  }
+
+  const binary = process.env.TAILSCALE_BIN || 'tailscale';
+
+  logger.info('========================================');
+  logger.info('[Tailscale] Checking network status...');
+  logger.info('========================================');
+
+  try {
+    const output = execSync(`${binary} status`, {
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: 10000,
+      encoding: 'utf8',
+    });
+
+    const lines = (output || '')
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    if (lines.length === 0) {
+      logger.warn('[Tailscale] `tailscale status` returned no output.');
+    } else {
+      logger.info(`[Tailscale] Discovered ${lines.length} network entries:\n${output}`);
+    }
+  } catch (error) {
+    const stderr = error?.stderr ? error.stderr.toString().trim() : '';
+    const message = error?.message ? error.message.toString().trim() : '';
+    logger.warn(
+      `[Tailscale] Unable to run "${binary} status". ` +
+        'Continuing server startup. ' +
+        'If this is unexpected, install Tailscale on the host or set SKIP_TAILSCALE_STATUS=true.\n' +
+        (stderr ? `stderr: ${stderr}\n` : '') +
+        (message ? `message: ${message}` : ''),
+    );
+  } finally {
+    logger.info('========================================');
+  }
+}
+
+checkTailscaleStatus();
+
 // Allow PORT=0 to be used for automatic free port assignment
 const port = isNaN(Number(PORT)) ? 3080 : Number(PORT);
 const host = HOST || 'localhost';
