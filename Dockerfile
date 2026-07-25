@@ -7,6 +7,19 @@ FROM node:20-alpine AS node
 RUN apk add --no-cache jemalloc
 RUN apk add --no-cache python3 py3-pip uv
 RUN apk add --no-cache bash curl sudo
+# Install Tailscale for mesh networking
+RUN apk update && apk add tailscale
+# Create essential runtime directories for the Tailscale daemon
+RUN mkdir -p /var/run/tailscale /var/lib/tailscale /dev/net
+# Install s6-overlay for process management
+ARG S6_OVERLAY_VERSION=3.2.3.0
+RUN curl -sL https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz -o /tmp/s6-overlay-noarch.tar.xz && \
+    tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz && \
+    curl -sL https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz -o /tmp/s6-overlay-x86_64.tar.xz && \
+    tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz && \
+    rm /tmp/s6-overlay-*.tar.xz
+# Create s6 service directories
+RUN mkdir -p /etc/services.d/tailscale /etc/services.d/node
 
 # Set environment variable to use jemalloc
 ENV LD_PRELOAD=/usr/lib/libjemalloc.so.2
@@ -19,17 +32,15 @@ RUN uv --version
 # Set configurable max-old-space-size with default
 ARG NODE_MAX_OLD_SPACE_SIZE=6144
 
-RUN mkdir -p /app && chown node:node /app
+RUN mkdir -p /app /app/client/public/images /app/logs /app/uploads
 WORKDIR /app
 
-USER node
-
-COPY --chown=node:node package.json package-lock.json ./
-COPY --chown=node:node api/package.json ./api/package.json
-COPY --chown=node:node client/package.json ./client/package.json
-COPY --chown=node:node packages/data-provider/package.json ./packages/data-provider/package.json
-COPY --chown=node:node packages/data-schemas/package.json ./packages/data-schemas/package.json
-COPY --chown=node:node packages/api/package.json ./packages/api/package.json
+COPY package.json package-lock.json ./
+COPY api/package.json ./api/package.json
+COPY client/package.json ./client/package.json
+COPY packages/data-provider/package.json ./packages/data-provider/package.json
+COPY packages/data-schemas/package.json ./packages/data-schemas/package.json
+COPY packages/api/package.json ./packages/api/package.json
 
 RUN \
     # Allow mounting of these files, which have no default
@@ -41,7 +52,7 @@ RUN \
     npm config set fetch-retry-mintimeout 15000 ; \
     npm ci --no-audit
 
-COPY --chown=node:node . .
+COPY . .
 
 RUN \
     # React client build with configurable memory
@@ -49,10 +60,23 @@ RUN \
     npm prune --production; \
     npm cache clean --force
 
+# Copy s6 service scripts
+COPY s6-scripts/tailscale-run /etc/services.d/tailscale/run
+COPY s6-scripts/node-run /etc/services.d/node/run
+
+# Make scripts executable
+RUN chmod +x /etc/services.d/tailscale/run /etc/services.d/node/run
+
 # Node API setup
 EXPOSE 3080
 ENV HOST=0.0.0.0
-CMD [ "npm", "run", "backend"]
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3080/health || exit 1
+
+# Use s6-overlay init binary as entrypoint
+ENTRYPOINT ["/init"]
 
 
 # Optional: for client with nginx routing

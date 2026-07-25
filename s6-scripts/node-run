@@ -1,0 +1,8 @@
+#!/command/with-contenv sh
+cd /app
+
+echo "=== TAILSCALE STATUS ==="
+tailscale status
+echo "========================"
+
+exec npm run backend
