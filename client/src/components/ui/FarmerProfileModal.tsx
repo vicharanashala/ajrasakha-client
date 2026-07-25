@@ -29,6 +29,7 @@ type FarmerProfileForm = {
   age: number;
   gender: string;
   state: string;
+  customState: string;
   district: string;
   customDistrict: string;
   blockName: string;
@@ -119,6 +120,9 @@ const FarmerProfileModal = ({
 
   const handleStateChange = (val: string) => {
     setValue('state', val, { shouldValidate: true });
+    if (val !== otherOption) {
+      setValue('customState', '', { shouldValidate: false });
+    }
     setValue('district', '', { shouldValidate: false });
     setValue('customDistrict', '', { shouldValidate: false });
     setValue('blockName', '', { shouldValidate: false });
@@ -277,6 +281,7 @@ const FarmerProfileModal = ({
   };
 
   const onSubmit = (data: FarmerProfileForm) => {
+    const resolvedState = data.state === otherOption ? data.customState : data.state;
     const resolvedDistrict = data.district === otherOption ? data.customDistrict : data.district;
     const resolvedBlock = data.blockName === otherOption ? data.customBlock : data.blockName;
     const resolvedVillage = data.villageName === otherOption ? data.customVillage : data.villageName;
@@ -291,6 +296,7 @@ const FarmerProfileModal = ({
 
     const profile: IFarmerProfile = {
       ...data,
+      state: resolvedState,
       district: resolvedDistrict,
       blockName: resolvedBlock,
       villageName: resolvedVillage,
@@ -990,6 +996,24 @@ const FarmerProfileModal = ({
                 />
                 {errors.state && <p className={errorClass}>{errors.state.message}</p>}
               </div>
+
+              {/* Custom state input – shown only when "Other" is selected */}
+              {selectedState === otherOption && (
+                <div className={fieldClass}>
+                  <Label htmlFor="customState">{localize('com_farmer_label_custom_state')}</Label>
+                  <Input
+                    id="customState"
+                    placeholder={localize('com_farmer_placeholder_custom_state')}
+                    className={inputClass}
+                    {...register('customState', {
+                      required: localize('com_farmer_validation_custom_state_required'),
+                    })}
+                  />
+                  {errors.customState && (
+                    <p className={errorClass}>{errors.customState.message}</p>
+                  )}
+                </div>
+              )}
 
               <div className={fieldClass}>
                 <Label>{localize('com_farmer_label_district')}</Label>
