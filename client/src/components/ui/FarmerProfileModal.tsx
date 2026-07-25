@@ -37,6 +37,7 @@ type FarmerProfileForm = {
   villageName: string;
   customVillage: string;
   nearestKVK: string;
+  customKVK: string;
   phoneNo: string;
   languagePreference: string;
   yearsOfExperience: number;
@@ -93,6 +94,7 @@ const FarmerProfileModal = ({
   const selectedPrimaryCrop = watch('primaryCrop');
   const selectedSecondaryCrop = watch('secondaryCrop');
   const selectedLanguagePreference = watch('languagePreference');
+  const selectedKVK = watch('nearestKVK');
   const otherOption = localize('com_farmer_option_other');
 
   const changeLang = useCallback(
@@ -128,6 +130,7 @@ const FarmerProfileModal = ({
     setValue('blockName', '', { shouldValidate: false });
     setValue('villageName', '', { shouldValidate: false });
     setValue('nearestKVK', '', { shouldValidate: false });
+    setValue('customKVK', '', { shouldValidate: false });
   };
 
   const handleDistrictChange = (val: string) => {
@@ -138,6 +141,7 @@ const FarmerProfileModal = ({
     setValue('blockName', '', { shouldValidate: false });
     setValue('villageName', '', { shouldValidate: false });
     setValue('nearestKVK', '', { shouldValidate: false });
+    setValue('customKVK', '', { shouldValidate: false });
   };
 
   const handleBlockChange = (val: string) => {
@@ -228,7 +232,7 @@ const FarmerProfileModal = ({
       ? [...villagesList.map((v) => v.name), otherOption]
       : [otherOption];
 
-  const kvkOptions =
+  const baseKvkOptions =
     selectedDistrict && selectedDistrict !== otherOption
       ? Array.isArray(KVKS[selectedDistrict])
         ? KVKS[selectedDistrict]
@@ -236,6 +240,11 @@ const FarmerProfileModal = ({
           ? (KVKS as any).Other
           : []
       : [];
+
+  const kvkOptions =
+    selectedDistrict && selectedDistrict !== otherOption
+      ? [...baseKvkOptions, otherOption]
+      : [otherOption];
 
   const selectedPrimaryCropList = selectedPrimaryCrop
     ? selectedPrimaryCrop
@@ -285,6 +294,7 @@ const FarmerProfileModal = ({
     const resolvedDistrict = data.district === otherOption ? data.customDistrict : data.district;
     const resolvedBlock = data.blockName === otherOption ? data.customBlock : data.blockName;
     const resolvedVillage = data.villageName === otherOption ? data.customVillage : data.villageName;
+    const resolvedKVK = data.nearestKVK === otherOption ? data.customKVK : data.nearestKVK;
     const primaryCrops = (data.primaryCrop ?? '')
       .split(',')
       .map((c) => c.trim())
@@ -300,6 +310,7 @@ const FarmerProfileModal = ({
       district: resolvedDistrict,
       blockName: resolvedBlock,
       villageName: resolvedVillage,
+      nearestKVK: resolvedKVK,
       age: Number(data.age),
       yearsOfExperience: Number(data.yearsOfExperience),
       numberOfSmartphones: Number(data.numberOfSmartphones),
@@ -1145,7 +1156,12 @@ const FarmerProfileModal = ({
                     <SearchableSelect
                       options={kvkOptions}
                       value={field.value ?? ''}
-                      onChange={field.onChange}
+                      onChange={(val) => {
+                        field.onChange(val);
+                        if (val !== otherOption) {
+                          setValue('customKVK', '', { shouldValidate: false });
+                        }
+                      }}
                       placeholder={
                         selectedDistrict
                           ? localize('com_farmer_placeholder_select_nearest_kvk')
@@ -1162,6 +1178,23 @@ const FarmerProfileModal = ({
                   </p>
                 )}
               </div>
+
+              {selectedKVK === otherOption && (
+                <div className={fieldClass}>
+                  <Label htmlFor="customKVK">{localize('com_farmer_label_custom_kvk')}</Label>
+                  <Input
+                    id="customKVK"
+                    placeholder={localize('com_farmer_placeholder_custom_kvk')}
+                    className={inputClass}
+                    {...register('customKVK', {
+                      required: localize('com_farmer_validation_custom_kvk_required'),
+                    })}
+                  />
+                  {errors.customKVK && (
+                    <p className={errorClass}>{errors.customKVK.message}</p>
+                  )}
+                </div>
+              )}
 
               <div className={fieldClass}>
                 <Label htmlFor="phoneNo">{localize('com_farmer_label_phone_number')}</Label>
