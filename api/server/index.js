@@ -6,21 +6,22 @@
  * `tailscaled` on port 1055. All other traffic (e.g. external APIs, callbacks)
  * bypasses the proxy and goes via the normal routing table.
  *
- * Requires the Tailscale daemon to be running and connected before this file
- * is evaluated. With s6-overlay, `tailscaled` is started before `node-run`,
- * so by the time `npm run backend` runs, the proxy is ready.
+ * The proxy agent is created eagerly (it's just an object — no connection is
+ * made until a request uses it). A diagnostic probe runs 15 seconds after boot
+ * to give Tailscale time to fully connect, matching the pattern used in
+ * wa-client.
  */
 const { SocksProxyAgent } = require('socks-proxy-agent');
 const SOCKS_PROXY_URL = 'socks5://127.0.0.1:1055';
 const globalSocksAgent = new SocksProxyAgent(SOCKS_PROXY_URL);
 const originalFetch = globalThis.fetch;
 
-// One-time proxy reachability probe (non-fatal). Logs whether Tailscale's
-// SOCKS5 proxy is up so we can spot a missing `tailscaled` early.
-try {
+// Deferred proxy reachability probe (non-fatal). Runs 15s after boot to give
+// Tailscale time to authenticate and fully open the SOCKS5 listener.
+setTimeout(() => {
   const net = require('net');
   const probe = net.createConnection({ host: '127.0.0.1', port: 1055 });
-  probe.setTimeout(2000);
+  probe.setTimeout(5000);
   probe.once('connect', () => {
     console.log('[SOCKS] ✅ Proxy reachable on 127.0.0.1:1055');
     probe.end();
@@ -30,21 +31,19 @@ try {
       '[SOCKS] ❌ Proxy NOT reachable on 127.0.0.1:1055 (' + err.code + ': ' + err.message + ')',
     );
     console.warn(
-      '[SOCKS]    Tailscale daemon is probably not running. Requests to 100.100.x.x will fail until it is.',
+      '[SOCKS]    Tailscale daemon is probably not running. Requests to 100.100.x.x will fail.',
     );
   });
   probe.once('timeout', () => {
-    console.warn('[SOCKS] ❌ Proxy probe timed out after 2000ms (127.0.0.1:1055)');
+    console.warn('[SOCKS] ❌ Proxy probe timed out after 5000ms (127.0.0.1:1055)');
     probe.destroy();
   });
-} catch (e) {
-  console.warn('[SOCKS] Could not probe proxy:', e.message);
-}
+}, 15000);
 
 console.log(
   '[SOCKS] Tailscale SOCKS5 interceptor installed. Proxy=' +
     SOCKS_PROXY_URL +
-    ' | Trigger: URLs containing "100.100."',
+    ' | Trigger: URLs containing "100.100." | Probe scheduled in 15s',
 );
 
 globalThis.fetch = async (url, options = {}) => {

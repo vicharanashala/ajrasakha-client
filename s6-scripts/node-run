@@ -1,25 +1,6 @@
 #!/command/with-contenv sh
 cd /app
 
-# Wait for the Tailscale SOCKS5 proxy to be ready before starting Node.
-# This prevents the "[SOCKS] Proxy probe timed out" race condition.
-echo "=== WAITING FOR TAILSCALE SOCKS5 PROXY (127.0.0.1:1055) ==="
-WAIT=0
-MAX_WAIT=30
-while ! nc -z 127.0.0.1 1055 2>/dev/null; do
-    WAIT=$((WAIT + 1))
-    if [ $WAIT -gt $MAX_WAIT ]; then
-        echo "WARNING: Tailscale SOCKS5 proxy not ready after ${MAX_WAIT}s, starting Node anyway."
-        break
-    fi
-    echo "Waiting for SOCKS5 proxy... (${WAIT}s)"
-    sleep 1
-done
-
-if [ $WAIT -le $MAX_WAIT ]; then
-    echo "=== SOCKS5 PROXY IS READY (waited ${WAIT}s) ==="
-fi
-
 echo "=== TAILSCALE STATUS ==="
 tailscale status
 echo "========================"
