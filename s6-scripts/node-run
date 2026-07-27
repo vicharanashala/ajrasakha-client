@@ -1,6 +1,27 @@
 #!/command/with-contenv sh
 cd /app
 
+# Wait for the Tailscale daemon to be fully online before starting the Node
+# backend. s6-overlay starts `tailscale-run` and `node-run` in parallel, but
+# `tailscale up` authentication can take 15-30s on a cold start, and the SOCKS5
+# proxy on 127.0.0.1:1055 only becomes usable once BackendState=Running.
+# Without this wait, `tailscale status` exits non-zero, node-run fails, s6
+# restarts it, and you get the "backend starts 2-3 times before settling"
+# cascade. Bounded to 120s so a broken Tailscale doesn't deadlock the container.
+echo "=== WAITING FOR TAILSCALE TO BE ONLINE ==="
+ATTEMPTS=0
+MAX_ATTEMPTS=120
+until tailscale status >/dev/null 2>&1; do
+    ATTEMPTS=$((ATTEMPTS + 1))
+    if [ $ATTEMPTS -gt $MAX_ATTEMPTS ]; then
+        echo "ERROR: Tailscale did not come online within ${MAX_ATTEMPTS}s."
+        echo "Node will start anyway; requests to 100.100.x.x will fail until Tailscale recovers."
+        break
+    fi
+    sleep 1
+done
+echo "=== TAILSCALE IS ONLINE (waited ${ATTEMPTS}s) ==="
+
 echo "=== TAILSCALE STATUS ==="
 tailscale status
 echo "========================"
