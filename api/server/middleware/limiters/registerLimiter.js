@@ -30,7 +30,6 @@ const limiterOptions = {
   store: limiterCache('register_limiter'),
 };
 
-// const registerLimiter = rateLimit(limiterOptions);
-const registerLimiter = (req, res, next) => next();
+const registerLimiter = rateLimit(limiterOptions);
 
 module.exports = registerLimiter;
