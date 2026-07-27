@@ -63,15 +63,17 @@ const userLimiterOptions = {
   store: limiterCache('message_user_limiter'),
 };
 
-/**
- * Message request rate limiter by IP
- */
-const messageIpLimiter = rateLimit(ipLimiterOptions);
+// /**
+//  * Message request rate limiter by IP
+//  */
+// const messageIpLimiter = rateLimit(ipLimiterOptions);
+const messageIpLimiter = (req, res, next) => next();
 
-/**
- * Message request rate limiter by userId
- */
-const messageUserLimiter = rateLimit(userLimiterOptions);
+// /**
+//  * Message request rate limiter by userId
+//  */
+// const messageUserLimiter = rateLimit(userLimiterOptions);
+const messageUserLimiter = (req, res, next) => next();
 
 module.exports = {
   messageIpLimiter,
