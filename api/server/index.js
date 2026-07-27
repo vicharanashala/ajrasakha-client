@@ -7,43 +7,19 @@
  * bypasses the proxy and goes via the normal routing table.
  *
  * The proxy agent is created eagerly (it's just an object — no connection is
- * made until a request uses it). A diagnostic probe runs 15 seconds after boot
- * to give Tailscale time to fully connect, matching the pattern used in
- * wa-client.
+ * made until a request actually uses it). No startup probe is performed;
+ * the proxy is validated implicitly when the first tailnet request goes through.
+ * This matches the wa-client pattern which works reliably in Cloud Run.
  */
 const { SocksProxyAgent } = require('socks-proxy-agent');
 const SOCKS_PROXY_URL = 'socks5://127.0.0.1:1055';
 const globalSocksAgent = new SocksProxyAgent(SOCKS_PROXY_URL);
 const originalFetch = globalThis.fetch;
 
-// Deferred proxy reachability probe (non-fatal). Runs 15s after boot to give
-// Tailscale time to authenticate and fully open the SOCKS5 listener.
-setTimeout(() => {
-  const net = require('net');
-  const probe = net.createConnection({ host: '127.0.0.1', port: 1055 });
-  probe.setTimeout(5000);
-  probe.once('connect', () => {
-    console.log('[SOCKS] ✅ Proxy reachable on 127.0.0.1:1055');
-    probe.end();
-  });
-  probe.once('error', (err) => {
-    console.warn(
-      '[SOCKS] ❌ Proxy NOT reachable on 127.0.0.1:1055 (' + err.code + ': ' + err.message + ')',
-    );
-    console.warn(
-      '[SOCKS]    Tailscale daemon is probably not running. Requests to 100.100.x.x will fail.',
-    );
-  });
-  probe.once('timeout', () => {
-    console.warn('[SOCKS] ❌ Proxy probe timed out after 5000ms (127.0.0.1:1055)');
-    probe.destroy();
-  });
-}, 15000);
-
 console.log(
   '[SOCKS] Tailscale SOCKS5 interceptor installed. Proxy=' +
     SOCKS_PROXY_URL +
-    ' | Trigger: URLs containing "100.100." | Probe scheduled in 15s',
+    ' | Trigger: URLs containing "100.100."',
 );
 
 globalThis.fetch = async (url, options = {}) => {
