@@ -24,7 +24,9 @@ console.log(
 
 /**
  * Classify a SOCKS/tailnet request failure so the log line tells you *why*
- * the request never reached its destination. Categories:
+ * the request never reached its destination. Node's built-in `fetch` (undici)
+ * wraps the real network error in `err.cause`, so we look at both levels.
+ * Categories:
  *   - SOCKS_HANDSHAKE   - SOCKS5 protocol negotiation failed (tailscaled not ready,
  *                         or auth/permissions issue on the tailnet peer)
  *   - SOCKS_REFUSED     - 127.0.0.1:1055 not accepting connections (tailscaled not running)
@@ -32,22 +34,64 @@ console.log(
  *   - DNS               - hostname didn't resolve (we should never see this for 100.100.x.x
  *                         since Tailscale uses IP literals, but keep the category for clarity)
  *   - NET_UNREACHABLE   - tailscaled answered SOCKS but the tailnet peer is offline
- *   - CONN_RESET        - peer accepted then closed (peer crashed mid-request)
+ *   - CONN_RESET        - peer accepted then closed mid-flight (commonly Tailscale wgengine
+ *                         reconfig tearing down in-flight TCP through the userspace netstack)
+ *   - PIPE              - local write side closed (peer hung up before we finished sending)
  *   - TLS               - TLS handshake failed after SOCKS (cert mismatch, peer downgraded)
- *   - HTTP_xxx          - peer responded with an HTTP error status
+ *   - HTTP_xxx          - peer responded with an HTTP error status (fetched successfully,
+ *                         this category is only used by the caller, not by us)
  *   - UNKNOWN           - anything else (printed verbatim)
  */
 function classifySocksError(err) {
-  const code = err?.code || '';
-  const msg = err?.message || '';
+  const code = err?.code || err?.cause?.code || '';
+  const msg = err?.message || err?.cause?.message || '';
   if (/SOCKS5|Socks5/i.test(msg)) return 'SOCKS_HANDSHAKE';
   if (code === 'ECONNREFUSED') return 'SOCKS_REFUSED';
-  if (code === 'ETIMEDOUT') return 'TIMEOUT';
+  if (code === 'ETIMEDOUT' || code === 'UND_ERR_HEADERS_TIMEOUT' || code === 'UND_ERR_BODY_TIMEOUT') return 'TIMEOUT';
   if (code === 'ENOTFOUND') return 'DNS';
   if (code === 'ENETUNREACH' || code === 'EHOSTUNREACH') return 'NET_UNREACHABLE';
   if (code === 'ECONNRESET') return 'CONN_RESET';
+  if (code === 'EPIPE') return 'PIPE';
   if (/TLS|certificate|handshake/i.test(msg)) return 'TLS';
   return 'UNKNOWN';
+}
+
+/**
+ * Whether a failure is worth retrying once. We only retry *connection-level*
+ * errors that look like transient tailscale/netstack teardown — never HTTP
+ * errors, never client-side validation errors, never anything else. Bounded
+ * to one retry to avoid amplifying load if the upstream is actually down.
+ */
+function isTransientSocksFailure(err) {
+  const code = err?.code || err?.cause?.code || '';
+  return code === 'ECONNRESET' || code === 'EPIPE' || code === 'ETIMEDOUT';
+}
+
+async function fetchThroughSocks(url, fetchOptions) {
+  // Tailscale wgengine reconfigs tear down in-flight TCP through the userspace
+  // netstack (we observed this as `wgengine: Reconfig: configuring userspace
+  // WireGuard config` immediately after a `[SOCKS] FAILED [CONN_RESET]`). One
+  // quick retry, with a short backoff, hides most of those incidents from users.
+  let lastErr;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      return await originalFetch(url, { ...fetchOptions, agent: globalSocksAgent });
+    } catch (err) {
+      lastErr = err;
+      if (attempt === 0 && isTransientSocksFailure(err)) {
+        const backoffMs = 750;
+        console.warn(
+          '[SOCKS] retrying in ' + backoffMs + 'ms after transient ' +
+          (err?.cause?.code || err?.code || '<unknown>') +
+          ' on attempt ' + (attempt + 1),
+        );
+        await new Promise((r) => setTimeout(r, backoffMs));
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw lastErr;
 }
 
 globalThis.fetch = async (url, options = {}) => {
@@ -62,27 +106,38 @@ globalThis.fetch = async (url, options = {}) => {
     } catch (_) { /* keep full urlStr */ }
     console.log('[SOCKS] → dest=' + dest + ' full=' + urlStr);
     try {
-      const response = await originalFetch(url, { ...options, agent: globalSocksAgent });
+      const response = await fetchThroughSocks(url, options);
       const ms = Date.now() - start;
       console.log('[SOCKS] ← OK ' + response.status + ' ' + dest + ' (' + ms + 'ms)');
       return response;
     } catch (err) {
       const ms = Date.now() - start;
       const category = classifySocksError(err);
+      const code = err?.code || '<none>';
+      const causeCode = err?.cause?.code || '<none>';
+      const causeMsg = (err?.cause?.message || '<none>').slice(0, 200);
       console.error(
         '[SOCKS] ← FAILED [' + category + '] ' + dest +
-        ' (' + ms + 'ms) ' +
-        'code=' + (err.code || '<none>') + ' ' +
-        'msg=' + (err.message || '<none>'),
+        ' (' + ms + 'ms)' +
+        ' uptime=' + Math.round(process.uptime()) + 's' +
+        ' code=' + code +
+        ' cause.code=' + causeCode +
+        ' cause.msg=' + causeMsg,
       );
-      // For SOCKS_HANDSHAKE failures, also note the tailscaled version so we can correlate
-      // with known issues in specific tailscaled releases.
       if (category === 'SOCKS_HANDSHAKE') {
         console.error(
           '[SOCKS]    HINT: SOCKS5 protocol negotiation with 127.0.0.1:1055 failed. ' +
           'Check that tailscaled is running and fully authenticated (`tailscale status`). ' +
           'If you recently changed `--reset` behaviour in tailscale-run, the SOCKS5 listener ' +
           'may not be accepting connections yet.',
+        );
+      }
+      if (category === 'CONN_RESET') {
+        console.error(
+          '[SOCKS]    HINT: Connection reset mid-flight. The most common cause on Cloud Run ' +
+          'is a tailscaled wgengine reconfig tearing down in-flight TCP through the userspace ' +
+          'netstack (look for `wgengine: Reconfig` lines near this timestamp). The retry ' +
+          'built into fetchThroughSocks should have already handled a single transient case.',
         );
       }
       throw err;
