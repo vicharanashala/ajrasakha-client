@@ -241,8 +241,6 @@ jobs:
             IMPORT_VIOLATION_SCORE=${{ secrets.IMPORT_VIOLATION_SCORE }}
             JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
-            LANGGRAPH_API_PORT=${{ secrets.LANGGRAPH_API_PORT }}
-            LANGGRAPH_API_HOST=${{ secrets.LANGGRAPH_API_HOST }}
             LGD_API_KEY=${{ secrets.LGD_API_KEY }}
             TAILSCALE_AUTHKEY=${{ secrets.TAILSCALE_AUTHKEY }}
             TS_HOSTNAME=ajrasakha-client-production
