@@ -11,11 +11,66 @@
  * so by the time `npm run backend` runs, the proxy is ready.
  */
 const { SocksProxyAgent } = require('socks-proxy-agent');
-const globalSocksAgent = new SocksProxyAgent('socks5://127.0.0.1:1055');
+const SOCKS_PROXY_URL = 'socks5://127.0.0.1:1055';
+const globalSocksAgent = new SocksProxyAgent(SOCKS_PROXY_URL);
 const originalFetch = globalThis.fetch;
+
+// One-time proxy reachability probe (non-fatal). Logs whether Tailscale's
+// SOCKS5 proxy is up so we can spot a missing `tailscaled` early.
+try {
+  const net = require('net');
+  const probe = net.createConnection({ host: '127.0.0.1', port: 1055 });
+  probe.setTimeout(2000);
+  probe.once('connect', () => {
+    console.log('[SOCKS] ✅ Proxy reachable on 127.0.0.1:1055');
+    probe.end();
+  });
+  probe.once('error', (err) => {
+    console.warn(
+      '[SOCKS] ❌ Proxy NOT reachable on 127.0.0.1:1055 (' + err.code + ': ' + err.message + ')',
+    );
+    console.warn(
+      '[SOCKS]    Tailscale daemon is probably not running. Requests to 100.100.x.x will fail until it is.',
+    );
+  });
+  probe.once('timeout', () => {
+    console.warn('[SOCKS] ❌ Proxy probe timed out after 2000ms (127.0.0.1:1055)');
+    probe.destroy();
+  });
+} catch (e) {
+  console.warn('[SOCKS] Could not probe proxy:', e.message);
+}
+
+console.log(
+  '[SOCKS] Tailscale SOCKS5 interceptor installed. Proxy=' +
+    SOCKS_PROXY_URL +
+    ' | Trigger: URLs containing "100.100."',
+);
+
 globalThis.fetch = async (url, options = {}) => {
   if (url && typeof url.toString === 'function' && url.toString().includes('100.100.')) {
-    return originalFetch(url, { ...options, agent: globalSocksAgent });
+    const urlStr = url.toString();
+    const start = Date.now();
+    console.log('[SOCKS] → Proxying tailnet request: ' + urlStr);
+    try {
+      const response = await originalFetch(url, { ...options, agent: globalSocksAgent });
+      console.log(
+        '[SOCKS] ← OK ' + response.status + ' ' + urlStr + ' (' + (Date.now() - start) + 'ms)',
+      );
+      return response;
+    } catch (err) {
+      console.error(
+        '[SOCKS] ← FAILED ' +
+          urlStr +
+          ' (' +
+          (Date.now() - start) +
+          'ms) ' +
+          (err.code || '') +
+          ' ' +
+          err.message,
+      );
+      throw err;
+    }
   }
   return originalFetch(url, options);
 };
@@ -87,13 +142,17 @@ function resolveTailscaleProofDir() {
     try {
       fs.mkdirSync(process.env.LIBRECHAT_LOG_DIR, { recursive: true });
       return process.env.LIBRECHAT_LOG_DIR;
-    } catch (_) { /* fall through */ }
+    } catch (_) {
+      /* fall through */
+    }
   }
   if (process.cwd() === '/app') {
     try {
       fs.mkdirSync('/app/logs', { recursive: true });
       return '/app/logs';
-    } catch (_) { /* fall through */ }
+    } catch (_) {
+      /* fall through */
+    }
   }
   return '/tmp';
 }
@@ -102,11 +161,7 @@ const TAILSCALE_PROOF_PATH = path.join(resolveTailscaleProofDir(), 'tailscale-st
 
 function writeTailscaleProof(contents) {
   try {
-    fs.writeFileSync(
-      TAILSCALE_PROOF_PATH,
-      `${contents}\n`,
-      { flag: 'a', encoding: 'utf8' },
-    );
+    fs.writeFileSync(TAILSCALE_PROOF_PATH, `${contents}\n`, { flag: 'a', encoding: 'utf8' });
   } catch (err) {
     // Don't crash the server if the file can't be written.
     console.warn('[Tailscale] Could not write proof file:', TAILSCALE_PROOF_PATH, err.message);
@@ -123,7 +178,9 @@ function checkTailscaleStatus() {
   // Always write a STARTED marker first. If this file exists after startup,
   // it proves the script ran -- even if stdout was redirected away.
   const startedAt = new Date().toISOString();
-  writeTailscaleProof(`\n[${startedAt}] TAILSCALE CHECK STARTED (pid=${process.pid}, node=${process.version}, cwd=${process.cwd()})`);
+  writeTailscaleProof(
+    `\n[${startedAt}] TAILSCALE CHECK STARTED (pid=${process.pid}, node=${process.version}, cwd=${process.cwd()})`,
+  );
   log(`Proof file: ${TAILSCALE_PROOF_PATH}`);
 
   if (isEnabled(process.env.SKIP_TAILSCALE_STATUS)) {
@@ -162,7 +219,8 @@ function checkTailscaleStatus() {
   } catch (error) {
     const stderr = error?.stderr ? error.stderr.toString().trim() : '';
     const message = error?.message ? error.message.toString().trim() : '';
-    const reason = `Unable to run "${binary} status". ` +
+    const reason =
+      `Unable to run "${binary} status". ` +
       'Continuing server startup. ' +
       'If this is unexpected, install Tailscale on the host or set SKIP_TAILSCALE_STATUS=true.\n' +
       (stderr ? `stderr: ${stderr}\n` : '') +
