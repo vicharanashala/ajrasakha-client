@@ -22,28 +22,69 @@ console.log(
     ' | Trigger: URLs containing "100.100."',
 );
 
+/**
+ * Classify a SOCKS/tailnet request failure so the log line tells you *why*
+ * the request never reached its destination. Categories:
+ *   - SOCKS_HANDSHAKE   - SOCKS5 protocol negotiation failed (tailscaled not ready,
+ *                         or auth/permissions issue on the tailnet peer)
+ *   - SOCKS_REFUSED     - 127.0.0.1:1055 not accepting connections (tailscaled not running)
+ *   - TIMEOUT           - connect/read took longer than the timeout
+ *   - DNS               - hostname didn't resolve (we should never see this for 100.100.x.x
+ *                         since Tailscale uses IP literals, but keep the category for clarity)
+ *   - NET_UNREACHABLE   - tailscaled answered SOCKS but the tailnet peer is offline
+ *   - CONN_RESET        - peer accepted then closed (peer crashed mid-request)
+ *   - TLS               - TLS handshake failed after SOCKS (cert mismatch, peer downgraded)
+ *   - HTTP_xxx          - peer responded with an HTTP error status
+ *   - UNKNOWN           - anything else (printed verbatim)
+ */
+function classifySocksError(err) {
+  const code = err?.code || '';
+  const msg = err?.message || '';
+  if (/SOCKS5|Socks5/i.test(msg)) return 'SOCKS_HANDSHAKE';
+  if (code === 'ECONNREFUSED') return 'SOCKS_REFUSED';
+  if (code === 'ETIMEDOUT') return 'TIMEOUT';
+  if (code === 'ENOTFOUND') return 'DNS';
+  if (code === 'ENETUNREACH' || code === 'EHOSTUNREACH') return 'NET_UNREACHABLE';
+  if (code === 'ECONNRESET') return 'CONN_RESET';
+  if (/TLS|certificate|handshake/i.test(msg)) return 'TLS';
+  return 'UNKNOWN';
+}
+
 globalThis.fetch = async (url, options = {}) => {
   if (url && typeof url.toString === 'function' && url.toString().includes('100.100.')) {
     const urlStr = url.toString();
     const start = Date.now();
-    console.log('[SOCKS] → Proxying tailnet request: ' + urlStr);
+    // Extract the destination host:port so each log line shows where we were trying to reach.
+    let dest = urlStr;
+    try {
+      const u = new URL(urlStr);
+      dest = u.host + u.pathname;
+    } catch (_) { /* keep full urlStr */ }
+    console.log('[SOCKS] → dest=' + dest + ' full=' + urlStr);
     try {
       const response = await originalFetch(url, { ...options, agent: globalSocksAgent });
-      console.log(
-        '[SOCKS] ← OK ' + response.status + ' ' + urlStr + ' (' + (Date.now() - start) + 'ms)',
-      );
+      const ms = Date.now() - start;
+      console.log('[SOCKS] ← OK ' + response.status + ' ' + dest + ' (' + ms + 'ms)');
       return response;
     } catch (err) {
+      const ms = Date.now() - start;
+      const category = classifySocksError(err);
       console.error(
-        '[SOCKS] ← FAILED ' +
-          urlStr +
-          ' (' +
-          (Date.now() - start) +
-          'ms) ' +
-          (err.code || '') +
-          ' ' +
-          err.message,
+        '[SOCKS] ← FAILED [' + category + '] ' + dest +
+        ' (' + ms + 'ms) ' +
+        'code=' + (err.code || '<none>') + ' ' +
+        'msg=' + (err.message || '<none>'),
       );
+      // For SOCKS_HANDSHAKE failures, also note the tailscaled version so we can correlate
+      // with known issues in specific tailscaled releases.
+      if (category === 'SOCKS_HANDSHAKE') {
+        console.error(
+          '[SOCKS]    HINT: SOCKS5 protocol negotiation with 127.0.0.1:1055 failed. ' +
+          'Check that tailscaled is running and fully authenticated (`tailscale status`). ' +
+          'If you recently changed `--reset` behaviour in tailscale-run, the SOCKS5 listener ' +
+          'may not be accepting connections yet.',
+        );
+      }
       throw err;
     }
   }
@@ -233,6 +274,41 @@ const startServer = async () => {
 
   await seedDatabase();
   const appConfig = await getAppConfig();
+
+  // Boot-time configuration dump for tailnet diagnostics. Logs which endpoints
+  // are configured and which URLs they resolved to. Catches the classic bug
+  // where a commented-out `speech:` block in librechat.config.yaml leaves the
+  // TTS/STT URLs as literal `undefined`, and where a `titleEndpoint` references
+  // an endpoint that doesn't exist. See TAILSCALE.md for context.
+  try {
+    const customEndpoints = appConfig?.endpoints?.custom || [];
+    console.log('[CONFIG] === Boot config dump (tailnet diagnostics) ===');
+    console.log('[CONFIG] NODE_ENV=' + (process.env.NODE_ENV || '<unset>'));
+    console.log('[CONFIG] CONFIG_PATH=' + (process.env.CONFIG_PATH || '<unset>'));
+    console.log('[CONFIG] endpoints.custom count=' + customEndpoints.length);
+    customEndpoints.forEach((ep, i) => {
+      console.log('[CONFIG]   [' + i + '] name=' + ep.name + ' baseURL=' + (ep.baseURL || '<unset>') +
+        ' titleEndpoint=' + (ep.titleEndpoint || '<unset>') +
+        ' titleModel=' + (ep.titleModel || '<unset>'));
+    });
+    const speech = appConfig?.speech;
+    console.log('[CONFIG] speech.stt.openai.url=' + (speech?.stt?.openai?.url || '<unset>'));
+    console.log('[CONFIG] speech.tts.openai.url=' + (speech?.tts?.openai?.url || '<unset>'));
+    console.log('[CONFIG] === End boot config dump ===');
+    if (!speech?.stt?.openai?.url || !speech?.tts?.openai?.url) {
+      console.warn('[CONFIG] WARNING: speech.stt.openai.url or speech.tts.openai.url is unset. ' +
+        'TTS/STT requests will fail with "url is undefined". Uncomment the `speech:` block in librechat.config.yaml.');
+    }
+    customEndpoints.forEach((ep) => {
+      if (ep.titleEndpoint && !customEndpoints.find((e) => e.name === ep.titleEndpoint)) {
+        console.warn('[CONFIG] WARNING: endpoint "' + ep.name + '" has titleEndpoint="' + ep.titleEndpoint +
+          '" but no such endpoint is configured. Title generation will fall back to the default endpoint.');
+      }
+    });
+  } catch (e) {
+    console.warn('[CONFIG] Boot config dump failed:', e.message);
+  }
+
   initializeFileStorage(appConfig);
   await performStartupChecks(appConfig);
   await updateInterfacePermissions(appConfig);
