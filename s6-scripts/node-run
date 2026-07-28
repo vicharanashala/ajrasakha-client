@@ -36,12 +36,21 @@ echo "=== TAILSCALE IS ONLINE (waited ${ATTEMPTS}s) ==="
 # ---------------------------------------------------------------------------
 BOOT_LOG=/app/logs/boot-diagnostics.log
 mkdir -p /app/logs
-# `exec` would replace this shell, so wrap in `tee` to fan out to file + console.
+# Run a command, fan its output to both stdout (Cloud Run logs) and the file
+# log. POSIX-portable: avoids `${PIPESTATUS[0]}` (bash-only) because the script
+# runs under `/bin/sh` on Alpine, which is busybox ash and treats the array
+# subscript as a bad substitution. The original command's exit status is
+# captured via a temp file so we can report it to the log.
 run_logged() {
     printf '\n===== %s @ %s =====\n' "$1" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" | tee -a "$BOOT_LOG"
     shift
-    "$@" 2>&1 | tee -a "$BOOT_LOG"
-    return ${PIPESTATUS[0]}
+    local tmp rc
+    tmp=$(mktemp)
+    "$@" >"$tmp" 2>&1
+    rc=$?
+    cat "$tmp" | tee -a "$BOOT_LOG"
+    rm -f "$tmp"
+    return $rc
 }
 
 TS_PING_TARGET=${TS_PING_TARGET:-100.100.108.44}
