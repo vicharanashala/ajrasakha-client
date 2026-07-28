@@ -59,6 +59,26 @@ tailscale up \
 UP_EXIT_CODE=$?
 echo "=== TAILSCALE UP FINISHED (EXIT CODE: $UP_EXIT_CODE) ==="
 
+# Lock Tailscale to a specific DERP relay region. Tailscale normally picks the
+# "nearest" region to the Cloud Run instance, which today is Frankfurt. But
+# Cloud Run's egress IP for the Frankfurt region can be blocked from reaching
+# Tailscale's Frankfurt DERP servers (we saw `health(warnable=no-derp-connection):
+# error: Tailscale could not connect to the 'Frankfurt' relay server`).
+#
+# Earlier today the boot log showed `pong from annam-4 via DERP(blr) in 65ms`
+# -- the Bangalore DERP relay *is* reachable. Forcing the region removes the
+# "which DERP is reachable from Cloud Run" variable and pins us to a known-
+# good region.
+#
+# This is a one-line change; if Tailscale's DERP map changes and blr goes
+# unreachable, just change the value below or remove the line entirely and
+# let Tailscale auto-select.
+#
+# To find the closest reachable region from your laptop:
+#     tailscale netcheck 2>&1 | grep -E '^\s*\*\s*"[a-z]+"'
+echo "=== LOCKING DERP REGION (workaround for Cloud Run egress restrictions) ==="
+tailscale set --derp-region=blr 2>&1 || echo "DERP region lock failed (non-fatal)"
+
 # Print actual status details post-login
 tailscale status 2>&1
 
