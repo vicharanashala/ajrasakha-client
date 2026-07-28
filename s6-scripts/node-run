@@ -10,7 +10,7 @@ cd /app
 # exceeded. If the timeout fires we exit 1 -- s6-overlay then restarts this
 # service, giving Tailscale a fresh chance to authenticate.
 echo "=== WAITING FOR SOCKS PROXY (127.0.0.1:1055) ==="
-node "$(dirname "$0")/wait-for-socks5.js" || exit 1
+node /app/s6-scripts/wait-for-socks5.js || exit 1
 echo "=== SOCKS PROXY READY ==="
 
 # ---------------------------------------------------------------------------
