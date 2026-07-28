@@ -1,45 +1,17 @@
 #!/command/with-contenv sh
 cd /app
 
-# RFC 1928 SOCKS5 protocol-level probe. Confirms the SOCKS5 server is actually
-# responding to the SOCKS5 protocol, not just listening on the port. A bare
-# TCP /dev/tcp probe would race a not-yet-fully-initialized SOCKS5 listener
-# (which we saw fire `[SOCKS] DOWN` even though production requests through
-# the proxy worked minutes later). Handshake: greeting + method-selection
-# response. We expect ver=5, method=0 (no auth).
-#
-# POSIX-portable: uses bash's /dev/tcp for the connect (already a dependency
-# of the LibreChat container), and `dd bs=1 count=2` for the byte read
-# instead of `read -n` (which is bash-only and would break `bash --posix -n`).
-probe_socks5() {
-    exec 9<>/dev/tcp/127.0.0.1/1055 || return 1
-    # Greeting: ver=5, nmethods=1, method=0 (no auth)
-    printf '\005\001\000' >&9 || { exec 9>&- 9<&-; return 1; }
-    # Read 2-byte server response. `dd` writes the captured bytes to stdout,
-    # stderr (status summary) is silenced. We then compare against \005\000.
-    _resp=$(dd bs=1 count=2 <&9 2>/dev/null) || { exec 9>&- 9<&-; return 1; }
-    exec 9>&- 9<&-
-    [ "$_resp" = $'\005\000' ]
-}
-
 # Wait for the Tailscale SOCKS5 listener to actually accept a SOCKS5
-# handshake. This is more reliable than `tailscale status`, which returns
-# success even when BackendState=Starting and the SOCKS port isn't bound
-# yet. Bumped from 120s to 300s so cold starts on a slow tailnet don't
-# trigger a spurious "SOCKS not online" error.
+# handshake (RFC 1928). Implemented in Node -- s6-scripts/wait-for-socks5.js
+# -- so we get portable byte handling (Buffer) and proper error propagation,
+# without having to coax `dd bs=1 count=2` through busybox ash or bash --posix.
+# The script polls every 1s, exits 0 once the server responds with the
+# expected greeting-method exchange, and exits 1 if the 5-minute timeout is
+# exceeded. If the timeout fires we exit 1 -- s6-overlay then restarts this
+# service, giving Tailscale a fresh chance to authenticate.
 echo "=== WAITING FOR SOCKS PROXY (127.0.0.1:1055) ==="
-ATTEMPTS=0
-MAX_ATTEMPTS=300
-until probe_socks5; do
-    ATTEMPTS=$((ATTEMPTS + 1))
-    if [ $ATTEMPTS -gt $MAX_ATTEMPTS ]; then
-        echo "ERROR: SOCKS5 did not come online within ${MAX_ATTEMPTS}s."
-        echo "Node will start anyway; requests to 100.100.x.x will fail until Tailscale recovers."
-        break
-    fi
-    sleep 1
-done
-echo "=== SOCKS PROXY IS ONLINE (waited ${ATTEMPTS}s) ==="
+node "$(dirname "$0")/wait-for-socks5.js" || exit 1
+echo "=== SOCKS PROXY READY ==="
 
 # ---------------------------------------------------------------------------
 # Boot diagnostics: dump every signal we have into BOTH Cloud Run logs
@@ -89,16 +61,9 @@ run_logged "tailscale status"               tailscale status
 run_logged "tailscale netcheck"             tailscale netcheck
 run_logged "tailscale ping $TS_PING_TARGET" tailscale ping --c=1 --timeout=10s "$TS_PING_TARGET"
 
-# SOCKS5 handshake probe at boot (after the wait loop above). Same probe_socks5
-# function -- confirms the listener is actually responding to SOCKS5, not just
-# accepting raw TCP. Bare TCP probes race the listener's initialization and
-# report false DOWN even when the proxy works in production.
-echo "----- SOCKS5 proxy probe 127.0.0.1:1055 -----" | tee -a "$BOOT_LOG"
-if probe_socks5; then
-    echo "[SOCKS] 127.0.0.1:1055 = REACHABLE (SOCKS5 handshake OK)" | tee -a "$BOOT_LOG"
-else
-    echo "[SOCKS] 127.0.0.1:1055 = DOWN (SOCKS5 handshake failed)" | tee -a "$BOOT_LOG"
-fi
+# SOCKS5 readiness is already proven by the wait-for-socks5.js script above
+# (it logs `[socks5] ready after Xs (attempt #N)` before exiting 0). No need
+# to re-probe here -- the end-to-end probe below is the real validation.
 
 # End-to-end probe: actually exercise the path the Node app uses. This curls
 # the LangGraph peer's /v1/models endpoint through the SOCKS proxy with a
