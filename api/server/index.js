@@ -47,7 +47,19 @@ function classifySocksError(err) {
   const msg = err?.message || err?.cause?.message || '';
   if (/SOCKS5|Socks5/i.test(msg)) return 'SOCKS_HANDSHAKE';
   if (code === 'ECONNREFUSED') return 'SOCKS_REFUSED';
-  if (code === 'ETIMEDOUT' || code === 'UND_ERR_HEADERS_TIMEOUT' || code === 'UND_ERR_BODY_TIMEOUT') return 'TIMEOUT';
+  // undici reports timeouts under three different error codes depending on
+  // *which* phase stalled: CONNECT (TCP three-way handshake), HEADERS (request
+  // sent, response headers not received), or BODY (headers OK, body stalled).
+  // Without all three, real-world Tailscale connect stalls show up as
+  // `UNd_ERR_CONNECT_TIMEOUT` and fall through to `UNKNOWN`.
+  if (
+    code === 'ETIMEDOUT' ||
+    code === 'UND_ERR_CONNECT_TIMEOUT' ||
+    code === 'UND_ERR_HEADERS_TIMEOUT' ||
+    code === 'UND_ERR_BODY_TIMEOUT'
+  ) {
+    return 'TIMEOUT';
+  }
   if (code === 'ENOTFOUND') return 'DNS';
   if (code === 'ENETUNREACH' || code === 'EHOSTUNREACH') return 'NET_UNREACHABLE';
   if (code === 'ECONNRESET') return 'CONN_RESET';
@@ -61,10 +73,20 @@ function classifySocksError(err) {
  * errors that look like transient tailscale/netstack teardown — never HTTP
  * errors, never client-side validation errors, never anything else. Bounded
  * to one retry to avoid amplifying load if the upstream is actually down.
+ *
+ * `UND_ERR_CONNECT_TIMEOUT` is included because Tailscale peers that are mid
+ * WireGuard reconfig routinely fail the very first TCP connection attempt
+ * with a connect-timeout, then succeed on the retry once the netstack has
+ * settled. Hiding that one-off is the whole point of the retry.
  */
 function isTransientSocksFailure(err) {
   const code = err?.code || err?.cause?.code || '';
-  return code === 'ECONNRESET' || code === 'EPIPE' || code === 'ETIMEDOUT';
+  return (
+    code === 'ECONNRESET' ||
+    code === 'EPIPE' ||
+    code === 'ETIMEDOUT' ||
+    code === 'UND_ERR_CONNECT_TIMEOUT'
+  );
 }
 
 async function fetchThroughSocks(url, fetchOptions) {

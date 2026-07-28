@@ -367,6 +367,85 @@ router.get('/tailscale-status', (req, res) => {
   });
 });
 
+/**
+ * Run `tailscale ping <ip>` from inside the container. Cloud Run gives us no
+ * shell access, so this is the only way to ask Tailscale "can you reach
+ * peer X?" without redeploying or adding a sidecar. Returns the raw output
+ * plus a reachability flag and a classification hint.
+ *
+ * `tailscale ping` exits non-zero if the peer is unreachable; we treat any
+ * non-zero exit as `reachable: false` rather than throwing.
+ */
+function runTailscalePing(ip, { timeoutMs = 15000 } = {}) {
+  const binary = process.env.TAILSCALE_BIN || 'tailscale';
+  const startedAt = Date.now();
+  try {
+    const raw = execFileSync(binary, ['ping', '--c=1', '--timeout=10s', ip], {
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: timeoutMs,
+      encoding: 'utf8',
+    });
+    const via = raw.match(/via (\S+)/)?.[1] || null;
+    return {
+      success: true,
+      reachable: true,
+      raw: (raw || '').trim(),
+      via,
+      duration_ms: Date.now() - startedAt,
+    };
+  } catch (error) {
+    const stderr = (error?.stderr || '').toString().trim();
+    const message = (error?.message || '').toString().trim();
+    // `tailscale ping` distinguishes "unreachable" from other failures by
+    // message wording. Surface both so the operator doesn't have to guess.
+    const isUnreachable = /unreachable|no peer|no matching/i.test(stderr + message);
+    return {
+      success: true,
+      reachable: !isUnreachable,
+      raw: stderr || message || 'tailscale ping failed',
+      error: { code: error?.code || null, message, stderr },
+      duration_ms: Date.now() - startedAt,
+    };
+  }
+}
+
+/**
+ * Diagnostic endpoint: ping a tailnet peer from inside this container.
+ *
+ * Examples:
+ *   curl https://<cloudrun-host>/api/diagnostics/tailscale-ping?ip=100.100.108.44
+ *
+ * Only accepts Tailscale IP literals (`100.x`, `fd7a:115c:a1e0::/48` v6 range,
+ * etc.). Refuses hostnames so an operator can't accidentally use this to make
+ * the container ping arbitrary internet hosts.
+ */
+router.get('/tailscale-ping', (req, res) => {
+  const ip = String(req.query.ip || '').trim();
+  // Tailscale IPv4 range is 100.64.0.0/10 and the "site-local" prefix is
+  // 100.100.100.0/24 -- but in practice every peer we hit uses 100.x. Accept
+  // the full 100.0.0.0/8 to keep the regex simple; if anyone needs to ping
+  // a non-Tailscale IP later we can loosen it then.
+  if (!/^100\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(ip)) {
+    return res.status(400).json({
+      success: false,
+      reachable: false,
+      error: 'ip query parameter must be a 100.x.x.x Tailscale IP literal',
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  const result = runTailscalePing(ip);
+  return res.json({
+    success: true,
+    ip,
+    ...result,
+    hint: result.reachable
+      ? `Peer ${ip} is reachable via Tailscale. If requests through SOCKS still fail with UND_ERR_CONNECT_TIMEOUT, the LangGraph service on the peer is down, not Tailscale.`
+      : `Peer ${ip} is NOT reachable via Tailscale. Check that the peer's tailscaled is running and authenticated, and that this container's tailscaled can reach it directly or via DERP relay.`,
+    timestamp: new Date().toISOString(),
+  });
+});
+
 function getDiagnosis(error) {
   if (error.code === 'ECONNRESET') {
     return '🚨 ECONNRESET: The server actively closed the connection. This typically means data.gov.in is BLOCKING this Cloud Run IP address. The TCP connection was established but the server forcibly closed it before sending data.';
