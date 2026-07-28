@@ -6,20 +6,46 @@
  * `tailscaled` on port 1055. All other traffic (e.g. external APIs, callbacks)
  * bypasses the proxy and goes via the normal routing table.
  *
- * The proxy agent is created eagerly (it's just an object — no connection is
- * made until a request actually uses it). No startup probe is performed;
- * the proxy is validated implicitly when the first tailnet request goes through.
- * This matches the wa-client pattern which works reliably in Cloud Run.
+ * Implementation note: Node 20+'s `globalThis.fetch` is undici, and undici's
+ * `fetch()` accepts a `dispatcher:` (undici Dispatcher class), **not** an
+ * `agent:` (Node https.Agent class). Passing `agent: socksProxyAgent` here
+ * used to be a silent no-op -- undici ignored the option, fetch tried to
+ * connect directly to the Tailscale IP from Cloud Run's egress IP, and every
+ * tailnet request failed with `UND_ERR_CONNECT_TIMEOUT`. The fix is to build
+ * a proper undici `Agent` whose `connect` function performs the SOCKS5
+ * handshake directly with the local tailscaled listener and returns the
+ * resulting TCP socket back to undici. undici then speaks HTTP over that
+ * socket exactly as if it had connected itself.
+ *
+ * The proxy is created eagerly (it's just a Dispatcher object -- no connection
+ * is made until a request actually uses it). No startup probe is performed;
+ * the proxy is validated implicitly when the first tailnet request goes
+ * through. This matches the wa-client pattern which works reliably in Cloud
+ * Run.
  */
-const { SocksProxyAgent } = require('socks-proxy-agent');
-const SOCKS_PROXY_URL = 'socks5://127.0.0.1:1055';
-const globalSocksAgent = new SocksProxyAgent(SOCKS_PROXY_URL);
+const { Agent } = require('undici');
+const { SocksClient } = require('socks');
+
+const SOCKS_PROXY_HOST = process.env.SOCKS_PROXY_HOST || '127.0.0.1';
+const SOCKS_PROXY_PORT = parseInt(process.env.SOCKS_PROXY_PORT || '1055', 10);
+
+const socksDispatcher = new Agent({
+  connect: async ({ hostname, port }) => {
+    const { socket } = await SocksClient.createConnection({
+      proxy: { host: SOCKS_PROXY_HOST, port: SOCKS_PROXY_PORT, type: 5 },
+      command: 'connect',
+      destination: { host: hostname, port: port },
+    });
+    return socket;
+  },
+});
+
 const originalFetch = globalThis.fetch;
 
 console.log(
-  '[SOCKS] Tailscale SOCKS5 interceptor installed. Proxy=' +
-    SOCKS_PROXY_URL +
-    ' | Trigger: URLs containing "100.100."',
+  '[SOCKS] Tailscale SOCKS5 interceptor installed. Proxy=socks5://' +
+    SOCKS_PROXY_HOST + ':' + SOCKS_PROXY_PORT +
+    ' via undici.Agent | Trigger: URLs containing "100.100."',
 );
 
 /**
@@ -97,7 +123,11 @@ async function fetchThroughSocks(url, fetchOptions) {
   let lastErr;
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      return await originalFetch(url, { ...fetchOptions, agent: globalSocksAgent });
+      // `dispatcher:` (undici) is the CORRECT option for an undici.Agent; the
+      // older `agent:` option (Node https.Agent) is silently ignored by undici,
+      // which is why the previous version of this file routed Cloud Run traffic
+      // straight past SOCKS and into Tailscale's IP space from the wrong egress.
+      return await originalFetch(url, { ...fetchOptions, dispatcher: socksDispatcher });
     } catch (err) {
       lastErr = err;
       if (attempt === 0 && isTransientSocksFailure(err)) {
