@@ -31,10 +31,33 @@ const SOCKS_PROXY_PORT = parseInt(process.env.SOCKS_PROXY_PORT || '1055', 10);
 
 const socksDispatcher = new Agent({
   connect: async ({ hostname, port }) => {
+    // Defensive parse. undici *should* always pass a valid hostname (string)
+    // and port (number) here, but if it ever passes something malformed --
+    // undefined, empty string, or a URL object instead of a string -- we
+    // surface a clean, classified error instead of letting it crash out of
+    // undici internals and trip our uncaughtException handler (which would
+    // process.exit(1) the whole chat server). Previously this fired as
+    // `error: There was an uncaught error: An invalid destination host was
+    // provided.` after every SOCKS hiccup, killing the container.
+    const host = typeof hostname === 'string'
+      ? hostname
+      : (hostname && typeof hostname === 'object' && typeof hostname.hostname === 'string'
+          ? hostname.hostname
+          : '');
+    const portNum = typeof port === 'number' && port > 0
+      ? port
+      : (typeof port === 'string' && port.length > 0
+          ? parseInt(port, 10)
+          : 0);
+    if (!host || !portNum) {
+      const err = new Error('Invalid destination host: hostname=' + JSON.stringify(hostname) + ' port=' + JSON.stringify(port));
+      err.code = 'INVALID_DESTINATION';
+      throw err;
+    }
     const { socket } = await SocksClient.createConnection({
       proxy: { host: SOCKS_PROXY_HOST, port: SOCKS_PROXY_PORT, type: 5 },
       command: 'connect',
-      destination: { host: hostname, port: port },
+      destination: { host: host, port: portNum },
     });
     return socket;
   },
@@ -580,6 +603,15 @@ startServer();
 
 let messageCount = 0;
 process.on('uncaughtException', (err) => {
+  // INVALID_DESTINATION errors come from our SOCKS interceptor when undici
+  // passes a malformed hostname/port. Swallow them: they're already surfaced
+  // to the caller as a normal fetch error (our [SOCKS] interceptor logs the
+  // full context), and we don't want them to tear down the whole chat server.
+  if (err && (err.code === 'INVALID_DESTINATION' || /invalid destination/i.test(err.message || ''))) {
+    console.error('[uncaughtException] swallowed INVALID_DESTINATION:', err.message);
+    return;
+  }
+
   if (!err.message.includes('fetch failed')) {
     logger.error('There was an uncaught error:', err);
   }
