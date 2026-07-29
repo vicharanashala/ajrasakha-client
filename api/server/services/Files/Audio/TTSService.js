@@ -267,8 +267,18 @@ class TTSService {
 
     const options = { headers, responseType: stream ? 'stream' : 'arraybuffer' };
 
-    if (process.env.PROXY) {
-      options.httpsAgent = new HttpsProxyAgent(process.env.PROXY);
+    /** Resolve proxy for TTS endpoint - mirrors custom endpoint behavior in initializeCustom.ts */
+    const endpointProxy = ttsSchema?.proxy;
+    let resolvedProxy = null;
+    if (endpointProxy === undefined || endpointProxy === true) {
+      resolvedProxy = process.env.PROXY || null;
+    } else if (endpointProxy === false) {
+      resolvedProxy = null;
+    } else {
+      resolvedProxy = endpointProxy;
+    }
+    if (resolvedProxy) {
+      options.httpsAgent = new HttpsProxyAgent(resolvedProxy);
     }
 
     try {
