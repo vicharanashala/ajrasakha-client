@@ -14,7 +14,7 @@ import type { IFarmerProfile } from 'librechat-data-provider';
 import { useSaveFarmerProfileMutation } from '~/data-provider';
 import useGeolocation from '~/hooks/useGeolocation';
 import { useLocalize } from '~/hooks';
-import { INDIAN_LANGUAGES, CROPS, KVKS } from '~/utils/metaData';
+import { INDIAN_LANGUAGES, CROPS, KVKS, STATES, DISTRICTS } from '~/utils/metaData';
 import SearchableSelect from './SearchableSelect';
 import SearchableMultiSelect from './SearchableMultiSelect';
 
@@ -126,9 +126,14 @@ const FarmerLocationModal = ({
   const { data: statesList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['states'],
     queryFn: async () => {
-      const res = await fetch('/api/locations/states');
-      const data = await res.json();
-      return Array.isArray(data) ? data : [];
+      try {
+        const res = await fetch('/api/locations/states');
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) return data;
+      } catch (error) {
+        console.error('Failed to fetch states, using fallback', error);
+      }
+      return STATES.map((name, index) => ({ code: index, name }));
     },
     enabled: open,
     staleTime: Infinity,
@@ -140,13 +145,23 @@ const FarmerLocationModal = ({
 
   const stateObj = statesList.find((s) => s.name === selectedState);
   const { data: districtsList = [] } = useQuery<{ code: number | string; name: string }[]>({
-    queryKey: ['districts', stateObj?.code],
+    queryKey: ['districts', stateObj?.code, selectedState],
     queryFn: async () => {
-      const res = await fetch(`/api/locations/districts?stateCode=${stateObj?.code}`);
-      const data = await res.json();
-      return Array.isArray(data) ? data : [];
+      try {
+        if (stateObj?.code !== undefined) {
+          const res = await fetch(`/api/locations/districts?stateCode=${stateObj?.code}`);
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) return data;
+        }
+      } catch (error) {
+        console.error('Failed to fetch districts, using fallback', error);
+      }
+      if (selectedState && DISTRICTS[selectedState]) {
+        return DISTRICTS[selectedState].map((name, index) => ({ code: index, name }));
+      }
+      return [];
     },
-    enabled: !!stateObj && selectedState !== localize('com_farmer_option_other'),
+    enabled: !!selectedState && selectedState !== localize('com_farmer_option_other'),
     staleTime: Infinity,
   });
 
