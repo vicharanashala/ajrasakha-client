@@ -218,6 +218,12 @@ endpoints:
     - name: "Sarvam"
       apiKey: "sarvam"
       baseURL: "https://ungleaming-christiana-uncognizant.ngrok-free.dev/v1/"
+      # Sarvam's baseURL is an external ngrok hostname. Tailscale's HTTP proxy
+      # (process.env.PROXY) only knows tailnet IPs, so Sarvam requests must
+      # bypass PROXY entirely. Setting `proxy: false` here makes
+      # `initializeCustom` pass `proxy: null` to getOpenAIConfig, which skips
+      # the dispatcher in packages/api/src/endpoints/openai/config.ts:141.
+      proxy: false
       models:
         default: [
           "sarvam-30b-Q4_K_M.gguf-00001-of-00006.gguf"

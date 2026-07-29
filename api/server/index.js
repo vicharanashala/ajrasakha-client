@@ -1,24 +1,28 @@
-/* ----------------------------------------------------------------------------
- * DISABLED: process.env.PROXY is now the routing mechanism.
+/**
+ * Tailscale SOCKS5 proxy - route tailnet HTTP traffic through Tailscale
+ * ----------------------------------------------------------------------------
+ * Hijacks `globalThis.fetch` so any HTTP request to a Tailscale IP
+ * (`100.100.x.x` range) is sent through the SOCKS5 proxy exposed by
+ * `tailscaled` on port 1055. All other traffic (Sarvam's ngrok URL,
+ * Claude's Anthropic API, etc.) bypasses the proxy and goes via the normal
+ * routing table -- which is what we want now that `process.env.PROXY` is
+ * unset (PROXY would have routed non-tailnet destinations through
+ * Tailscale's HTTP proxy, which only knows tailnet IPs).
  *
- * The custom SOCKS5 interceptor that follows was a poor reinvention of
- * LibreChat's built-in PROXY support. With PROXY=http://127.0.0.1:1056 set in
- * the environment, LibreChat's axios/undici clients route automatically
- * through Tailscale's HTTP proxy (the `--outbound-http-proxy-listen` flag in
- * tailscale-run). No code-side hijack needed.
+ * Implementation note: Node 20+'s `globalThis.fetch` is undici, and undici's
+ * `fetch()` accepts a `dispatcher:` (undici Dispatcher class), **not** an
+ * `agent:` (Node https.Agent class). We build a proper undici `Agent` whose
+ * `connect` function performs the SOCKS5 handshake directly with the local
+ * tailscaled listener and returns the resulting TCP socket back to undici.
+ * undici then speaks HTTP over that socket exactly as if it had connected
+ * itself.
  *
- * The code below is COMMENTED OUT (not deleted) as a safety net for one
- * deploy cycle. If PROXY routing has issues in production, uncommenting this
- * block restores the manual SOCKS routing while we debug. After we're
- * confident PROXY is stable, delete this whole block in a follow-up PR.
- *
- * What this block did before disable:
- *   - constructed an undici.Agent with a custom SOCKS5 `connect` function
- *   - hijacked globalThis.fetch so 100.100.x.x requests went through it
- *   - classified SOCKS failures, retried transients, classified errors
- * ------------------------------------------------------------------------- */
-/* === DISABLED CODE START (commented out) === */
-/*
+ * The proxy is created eagerly (it's just a Dispatcher object -- no connection
+ * is made until a request actually uses it). No startup probe is performed;
+ * the proxy is validated implicitly when the first tailnet request goes
+ * through. This matches the wa-client pattern which works reliably in Cloud
+ * Run.
+ */
 const { Agent } = require('undici');
 const { SocksClient } = require('socks');
 
@@ -64,7 +68,7 @@ const originalFetch = globalThis.fetch;
 console.log(
   '[SOCKS] Tailscale SOCKS5 interceptor installed. Proxy=socks5://' +
     SOCKS_PROXY_HOST + ':' + SOCKS_PROXY_PORT +
-    ' via undici.Agent | Trigger: URLs containing "100.100."',
+    ' via undici.Agent | Trigger: URLs containing "100.100." | All other URLs go direct.',
 );
 
 function classifySocksError(err) {
@@ -72,6 +76,11 @@ function classifySocksError(err) {
   const msg = err?.message || err?.cause?.message || '';
   if (/SOCKS5|Socks5/i.test(msg)) return 'SOCKS_HANDSHAKE';
   if (code === 'ECONNREFUSED') return 'SOCKS_REFUSED';
+  // undici reports timeouts under three different error codes depending on
+  // *which* phase stalled: CONNECT (TCP three-way handshake), HEADERS (request
+  // sent, response headers not received), or BODY (headers OK, body stalled).
+  // Without all three, real-world Tailscale connect stalls show up as
+  // `UNd_ERR_CONNECT_TIMEOUT` and fall through to `UNKNOWN`.
   if (
     code === 'ETIMEDOUT' ||
     code === 'UND_ERR_CONNECT_TIMEOUT' ||
@@ -88,6 +97,17 @@ function classifySocksError(err) {
   return 'UNKNOWN';
 }
 
+/**
+ * Whether a failure is worth retrying once. We only retry *connection-level*
+ * errors that look like transient tailscale/netstack teardown — never HTTP
+ * errors, never client-side validation errors, never anything else. Bounded
+ * to one retry to avoid amplifying load if the upstream is actually down.
+ *
+ * `UND_ERR_CONNECT_TIMEOUT` is included because Tailscale peers that are mid
+ * WireGuard reconfig routinely fail the very first TCP connection attempt
+ * with a connect-timeout, then succeed on the retry once the netstack has
+ * settled. Hiding that one-off is the whole point of the retry.
+ */
 function isTransientSocksFailure(err) {
   const code = err?.code || err?.cause?.code || '';
   return (
@@ -99,9 +119,17 @@ function isTransientSocksFailure(err) {
 }
 
 async function fetchThroughSocks(url, fetchOptions) {
+  // Tailscale wgengine reconfigs tear down in-flight TCP through the userspace
+  // netstack (we observed this as `wgengine: Reconfig: configuring userspace
+  // WireGuard config` immediately after a `[SOCKS] FAILED [CONN_RESET]`). One
+  // quick retry, with a short backoff, hides most of those incidents from users.
   let lastErr;
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
+      // `dispatcher:` (undici) is the CORRECT option for an undici.Agent; the
+      // older `agent:` option (Node https.Agent) is silently ignored by undici,
+      // which is why the previous version of this file routed Cloud Run traffic
+      // straight past SOCKS and into Tailscale's IP space from the wrong egress.
       return await originalFetch(url, { ...fetchOptions, dispatcher: socksDispatcher });
     } catch (err) {
       lastErr = err;
@@ -125,11 +153,12 @@ globalThis.fetch = async (url, options = {}) => {
   if (url && typeof url.toString === 'function' && url.toString().includes('100.100.')) {
     const urlStr = url.toString();
     const start = Date.now();
+    // Extract the destination host:port so each log line shows where we were trying to reach.
     let dest = urlStr;
     try {
       const u = new URL(urlStr);
       dest = u.host + u.pathname;
-    } catch (_) { }
+    } catch (_) { /* keep full urlStr */ }
     console.log('[SOCKS] → dest=' + dest + ' full=' + urlStr);
     try {
       const response = await fetchThroughSocks(url, options);
@@ -152,12 +181,18 @@ globalThis.fetch = async (url, options = {}) => {
       );
       if (category === 'SOCKS_HANDSHAKE') {
         console.error(
-          '[SOCKS]    HINT: SOCKS5 protocol negotiation with 127.0.0.1:1055 failed.',
+          '[SOCKS]    HINT: SOCKS5 protocol negotiation with 127.0.0.1:1055 failed. ' +
+          'Check that tailscaled is running and fully authenticated (`tailscale status`). ' +
+          'If you recently changed `--reset` behaviour in tailscale-run, the SOCKS5 listener ' +
+          'may not be accepting connections yet.',
         );
       }
       if (category === 'CONN_RESET') {
         console.error(
-          '[SOCKS]    HINT: Connection reset mid-flight (Tailscale wgengine reconfig).',
+          '[SOCKS]    HINT: Connection reset mid-flight. The most common cause on Cloud Run ' +
+          'is a tailscaled wgengine reconfig tearing down in-flight TCP through the userspace ' +
+          'netstack (look for `wgengine: Reconfig` lines near this timestamp). The retry ' +
+          'built into fetchThroughSocks should have already handled a single transient case.',
         );
       }
       throw err;
@@ -165,16 +200,6 @@ globalThis.fetch = async (url, options = {}) => {
   }
   return originalFetch(url, options);
 };
-*/
-
-/* === DISABLED CODE END === */
-
-// PROXY-based routing is now active. LibreChat reads process.env.PROXY and
-// automatically routes all HTTP traffic (axios, undici fetch) through the
-// configured proxy. With PROXY=http://127.0.0.1:1056, that's Tailscale's
-// HTTP proxy, which tunnels HTTPS via the tailnet to AjraSakha-Agent on
-// annam-4. No code-level hijack needed; no SOCKS5 setup at the JS layer.
-console.log('[PROXY] Tailscale HTTP proxy routing active. PROXY=' + (process.env.PROXY || '<unset>') + '. Replaces the SOCKS interceptor (now commented out above).');
 
 require('dotenv').config();
 const fs = require('fs');

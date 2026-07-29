@@ -329,6 +329,15 @@ export const endpointSchema = baseEndpointSchema.merge(
     customOrder: z.number().optional(),
     directEndpoint: z.boolean().optional(),
     titleMessageRole: z.string().optional(),
+    /**
+     * Per-endpoint proxy override.
+     *  - undefined (or true): use process.env.PROXY (default LibreChat behaviour)
+     *  - false: do not route this endpoint through any proxy (skips PROXY env)
+     *  - string: route this endpoint through the given proxy URL instead of PROXY env
+     * Useful when most endpoints should reach the tailnet via PROXY but a specific
+     * one (e.g. an external ngrok URL) must bypass the proxy entirely.
+     */
+    proxy: z.union([z.boolean(), z.string()]).optional(),
   }),
 );
 
