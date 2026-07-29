@@ -1,3 +1,181 @@
+/* ----------------------------------------------------------------------------
+ * DISABLED: process.env.PROXY is now the routing mechanism.
+ *
+ * The custom SOCKS5 interceptor that follows was a poor reinvention of
+ * LibreChat's built-in PROXY support. With PROXY=http://127.0.0.1:1056 set in
+ * the environment, LibreChat's axios/undici clients route automatically
+ * through Tailscale's HTTP proxy (the `--outbound-http-proxy-listen` flag in
+ * tailscale-run). No code-side hijack needed.
+ *
+ * The code below is COMMENTED OUT (not deleted) as a safety net for one
+ * deploy cycle. If PROXY routing has issues in production, uncommenting this
+ * block restores the manual SOCKS routing while we debug. After we're
+ * confident PROXY is stable, delete this whole block in a follow-up PR.
+ *
+ * What this block did before disable:
+ *   - constructed an undici.Agent with a custom SOCKS5 `connect` function
+ *   - hijacked globalThis.fetch so 100.100.x.x requests went through it
+ *   - classified SOCKS failures, retried transients, classified errors
+ * ------------------------------------------------------------------------- */
+/* === DISABLED CODE START (commented out) === */
+/*
+const { Agent } = require('undici');
+const { SocksClient } = require('socks');
+
+const SOCKS_PROXY_HOST = process.env.SOCKS_PROXY_HOST || '127.0.0.1';
+const SOCKS_PROXY_PORT = parseInt(process.env.SOCKS_PROXY_PORT || '1055', 10);
+
+const socksDispatcher = new Agent({
+  connect: async ({ hostname, port }) => {
+    // Defensive parse. undici *should* always pass a valid hostname (string)
+    // and port (number) here, but if it ever passes something malformed --
+    // undefined, empty string, or a URL object instead of a string -- we
+    // surface a clean, classified error instead of letting it crash out of
+    // undici internals and trip our uncaughtException handler (which would
+    // process.exit(1) the whole chat server). Previously this fired as
+    // `error: There was an uncaught error: An invalid destination host was
+    // provided.` after every SOCKS hiccup, killing the container.
+    const host = typeof hostname === 'string'
+      ? hostname
+      : (hostname && typeof hostname === 'object' && typeof hostname.hostname === 'string'
+          ? hostname.hostname
+          : '');
+    const portNum = typeof port === 'number' && port > 0
+      ? port
+      : (typeof port === 'string' && port.length > 0
+          ? parseInt(port, 10)
+          : 0);
+    if (!host || !portNum) {
+      const err = new Error('Invalid destination host: hostname=' + JSON.stringify(hostname) + ' port=' + JSON.stringify(port));
+      err.code = 'INVALID_DESTINATION';
+      throw err;
+    }
+    const { socket } = await SocksClient.createConnection({
+      proxy: { host: SOCKS_PROXY_HOST, port: SOCKS_PROXY_PORT, type: 5 },
+      command: 'connect',
+      destination: { host: host, port: portNum },
+    });
+    return socket;
+  },
+});
+
+const originalFetch = globalThis.fetch;
+
+console.log(
+  '[SOCKS] Tailscale SOCKS5 interceptor installed. Proxy=socks5://' +
+    SOCKS_PROXY_HOST + ':' + SOCKS_PROXY_PORT +
+    ' via undici.Agent | Trigger: URLs containing "100.100."',
+);
+
+function classifySocksError(err) {
+  const code = err?.code || err?.cause?.code || '';
+  const msg = err?.message || err?.cause?.message || '';
+  if (/SOCKS5|Socks5/i.test(msg)) return 'SOCKS_HANDSHAKE';
+  if (code === 'ECONNREFUSED') return 'SOCKS_REFUSED';
+  if (
+    code === 'ETIMEDOUT' ||
+    code === 'UND_ERR_CONNECT_TIMEOUT' ||
+    code === 'UND_ERR_HEADERS_TIMEOUT' ||
+    code === 'UND_ERR_BODY_TIMEOUT'
+  ) {
+    return 'TIMEOUT';
+  }
+  if (code === 'ENOTFOUND') return 'DNS';
+  if (code === 'ENETUNREACH' || code === 'EHOSTUNREACH') return 'NET_UNREACHABLE';
+  if (code === 'ECONNRESET') return 'CONN_RESET';
+  if (code === 'EPIPE') return 'PIPE';
+  if (/TLS|certificate|handshake/i.test(msg)) return 'TLS';
+  return 'UNKNOWN';
+}
+
+function isTransientSocksFailure(err) {
+  const code = err?.code || err?.cause?.code || '';
+  return (
+    code === 'ECONNRESET' ||
+    code === 'EPIPE' ||
+    code === 'ETIMEDOUT' ||
+    code === 'UND_ERR_CONNECT_TIMEOUT'
+  );
+}
+
+async function fetchThroughSocks(url, fetchOptions) {
+  let lastErr;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      return await originalFetch(url, { ...fetchOptions, dispatcher: socksDispatcher });
+    } catch (err) {
+      lastErr = err;
+      if (attempt === 0 && isTransientSocksFailure(err)) {
+        const backoffMs = 750;
+        console.warn(
+          '[SOCKS] retrying in ' + backoffMs + 'ms after transient ' +
+          (err?.cause?.code || err?.code || '<unknown>') +
+          ' on attempt ' + (attempt + 1),
+        );
+        await new Promise((r) => setTimeout(r, backoffMs));
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw lastErr;
+}
+
+globalThis.fetch = async (url, options = {}) => {
+  if (url && typeof url.toString === 'function' && url.toString().includes('100.100.')) {
+    const urlStr = url.toString();
+    const start = Date.now();
+    let dest = urlStr;
+    try {
+      const u = new URL(urlStr);
+      dest = u.host + u.pathname;
+    } catch (_) { }
+    console.log('[SOCKS] → dest=' + dest + ' full=' + urlStr);
+    try {
+      const response = await fetchThroughSocks(url, options);
+      const ms = Date.now() - start;
+      console.log('[SOCKS] ← OK ' + response.status + ' ' + dest + ' (' + ms + 'ms)');
+      return response;
+    } catch (err) {
+      const ms = Date.now() - start;
+      const category = classifySocksError(err);
+      const code = err?.code || '<none>';
+      const causeCode = err?.cause?.code || '<none>';
+      const causeMsg = (err?.cause?.message || '<none>').slice(0, 200);
+      console.error(
+        '[SOCKS] ← FAILED [' + category + '] ' + dest +
+        ' (' + ms + 'ms)' +
+        ' uptime=' + Math.round(process.uptime()) + 's' +
+        ' code=' + code +
+        ' cause.code=' + causeCode +
+        ' cause.msg=' + causeMsg,
+      );
+      if (category === 'SOCKS_HANDSHAKE') {
+        console.error(
+          '[SOCKS]    HINT: SOCKS5 protocol negotiation with 127.0.0.1:1055 failed.',
+        );
+      }
+      if (category === 'CONN_RESET') {
+        console.error(
+          '[SOCKS]    HINT: Connection reset mid-flight (Tailscale wgengine reconfig).',
+        );
+      }
+      throw err;
+    }
+  }
+  return originalFetch(url, options);
+};
+*/
+
+/* === DISABLED CODE END === */
+
+// PROXY-based routing is now active. LibreChat reads process.env.PROXY and
+// automatically routes all HTTP traffic (axios, undici fetch) through the
+// configured proxy. With PROXY=http://127.0.0.1:1056, that's Tailscale's
+// HTTP proxy, which tunnels HTTPS via the tailnet to AjraSakha-Agent on
+// annam-4. No code-level hijack needed; no SOCKS5 setup at the JS layer.
+console.log('[PROXY] Tailscale HTTP proxy routing active. PROXY=' + (process.env.PROXY || '<unset>') + '. Replaces the SOCKS interceptor (now commented out above).');
+
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
@@ -35,6 +213,129 @@ const routes = require('./routes');
 
 const { PORT, HOST, ALLOW_SOCIAL_LOGIN, DISABLE_COMPRESSION, TRUST_PROXY } = process.env ?? {};
 
+/**
+ * Tailscale Network Status Check
+ * ----------------------------------------------------------------------------
+ * Runs `tailscale status` *before* the server starts so we can see every
+ * machine currently in the Tailscale network (this node + peers).
+ *
+ * Configuration:
+ *   - SKIP_TAILSCALE_STATUS=true   -> skip the check entirely (useful in CI / Cloud Run)
+ *   - TAILSCALE_BIN=/path/to/bin   -> override the binary path (default: `tailscale`)
+ *
+ * The check is non-fatal: if Tailscale is not installed or the command fails,
+ * the server still starts and a warning is logged.
+ */
+const { execSync } = require('child_process');
+
+/**
+ * Resolve the directory used to drop the on-disk proof file. This lets the
+ * operator `cat` the file even when stdout/stderr are detached (PM2, nohup,
+ * Cloud Run, etc.).
+ *
+ * Priority:
+ *   1. LIBRECHAT_LOG_DIR  -> use it
+ *   2. /app/logs          -> Docker convention used elsewhere in the codebase
+ *   3. /tmp               -> safe fallback for local dev / CI
+ */
+function resolveTailscaleProofDir() {
+  if (process.env.LIBRECHAT_LOG_DIR) {
+    try {
+      fs.mkdirSync(process.env.LIBRECHAT_LOG_DIR, { recursive: true });
+      return process.env.LIBRECHAT_LOG_DIR;
+    } catch (_) {
+      /* fall through */
+    }
+  }
+  if (process.cwd() === '/app') {
+    try {
+      fs.mkdirSync('/app/logs', { recursive: true });
+      return '/app/logs';
+    } catch (_) {
+      /* fall through */
+    }
+  }
+  return '/tmp';
+}
+
+const TAILSCALE_PROOF_PATH = path.join(resolveTailscaleProofDir(), 'tailscale-status.log');
+
+function writeTailscaleProof(contents) {
+  try {
+    fs.writeFileSync(TAILSCALE_PROOF_PATH, `${contents}\n`, { flag: 'a', encoding: 'utf8' });
+  } catch (err) {
+    // Don't crash the server if the file can't be written.
+    console.warn('[Tailscale] Could not write proof file:', TAILSCALE_PROOF_PATH, err.message);
+  }
+}
+
+function checkTailscaleStatus() {
+  // Use console.* directly so the output is visible regardless of NODE_ENV /
+  // winston log level (production defaults to level=warn and would otherwise
+  // drop the happy-path info messages).
+  const log = (...args) => console.log('[Tailscale]', ...args);
+  const warn = (...args) => console.warn('[Tailscale]', ...args);
+
+  // Always write a STARTED marker first. If this file exists after startup,
+  // it proves the script ran -- even if stdout was redirected away.
+  const startedAt = new Date().toISOString();
+  writeTailscaleProof(
+    `\n[${startedAt}] TAILSCALE CHECK STARTED (pid=${process.pid}, node=${process.version}, cwd=${process.cwd()})`,
+  );
+  log(`Proof file: ${TAILSCALE_PROOF_PATH}`);
+
+  if (isEnabled(process.env.SKIP_TAILSCALE_STATUS)) {
+    log('Status check skipped via SKIP_TAILSCALE_STATUS=true');
+    writeTailscaleProof(`[${new Date().toISOString()}] SKIPPED via SKIP_TAILSCALE_STATUS=true`);
+    return;
+  }
+
+  const binary = process.env.TAILSCALE_BIN || 'tailscale';
+
+  log('========================================');
+  log('Checking network status...');
+  log('========================================');
+
+  try {
+    const output = execSync(`${binary} status`, {
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: 10000,
+      encoding: 'utf8',
+    });
+
+    const lines = (output || '')
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    if (lines.length === 0) {
+      warn('`tailscale status` returned no output.');
+      writeTailscaleProof(`[${new Date().toISOString()}] RESULT: empty (0 peers)`);
+    } else {
+      log(`Discovered ${lines.length} network entries:\n${output}`);
+      writeTailscaleProof(
+        `[${new Date().toISOString()}] RESULT: success (${lines.length} peers)\n${output.trimEnd()}`,
+      );
+    }
+  } catch (error) {
+    const stderr = error?.stderr ? error.stderr.toString().trim() : '';
+    const message = error?.message ? error.message.toString().trim() : '';
+    const reason =
+      `Unable to run "${binary} status". ` +
+      'Continuing server startup. ' +
+      'If this is unexpected, install Tailscale on the host or set SKIP_TAILSCALE_STATUS=true.\n' +
+      (stderr ? `stderr: ${stderr}\n` : '') +
+      (message ? `message: ${message}` : '');
+    warn(reason);
+    writeTailscaleProof(`[${new Date().toISOString()}] RESULT: error\n${reason}`);
+  } finally {
+    log('========================================');
+    writeTailscaleProof(`[${new Date().toISOString()}] TAILSCALE CHECK FINISHED`);
+  }
+}
+
+checkTailscaleStatus();
+
 // Allow PORT=0 to be used for automatic free port assignment
 const port = isNaN(Number(PORT)) ? 3080 : Number(PORT);
 const host = HOST || 'localhost';
@@ -58,6 +359,41 @@ const startServer = async () => {
 
   await seedDatabase();
   const appConfig = await getAppConfig();
+
+  // Boot-time configuration dump for tailnet diagnostics. Logs which endpoints
+  // are configured and which URLs they resolved to. Catches the classic bug
+  // where a commented-out `speech:` block in librechat.config.yaml leaves the
+  // TTS/STT URLs as literal `undefined`, and where a `titleEndpoint` references
+  // an endpoint that doesn't exist. See TAILSCALE.md for context.
+  try {
+    const customEndpoints = appConfig?.endpoints?.custom || [];
+    console.log('[CONFIG] === Boot config dump (tailnet diagnostics) ===');
+    console.log('[CONFIG] NODE_ENV=' + (process.env.NODE_ENV || '<unset>'));
+    console.log('[CONFIG] CONFIG_PATH=' + (process.env.CONFIG_PATH || '<unset>'));
+    console.log('[CONFIG] endpoints.custom count=' + customEndpoints.length);
+    customEndpoints.forEach((ep, i) => {
+      console.log('[CONFIG]   [' + i + '] name=' + ep.name + ' baseURL=' + (ep.baseURL || '<unset>') +
+        ' titleEndpoint=' + (ep.titleEndpoint || '<unset>') +
+        ' titleModel=' + (ep.titleModel || '<unset>'));
+    });
+    const speech = appConfig?.speech;
+    console.log('[CONFIG] speech.stt.openai.url=' + (speech?.stt?.openai?.url || '<unset>'));
+    console.log('[CONFIG] speech.tts.openai.url=' + (speech?.tts?.openai?.url || '<unset>'));
+    console.log('[CONFIG] === End boot config dump ===');
+    if (!speech?.stt?.openai?.url || !speech?.tts?.openai?.url) {
+      console.warn('[CONFIG] WARNING: speech.stt.openai.url or speech.tts.openai.url is unset. ' +
+        'TTS/STT requests will fail with "url is undefined". Uncomment the `speech:` block in librechat.config.yaml.');
+    }
+    customEndpoints.forEach((ep) => {
+      if (ep.titleEndpoint && !customEndpoints.find((e) => e.name === ep.titleEndpoint)) {
+        console.warn('[CONFIG] WARNING: endpoint "' + ep.name + '" has titleEndpoint="' + ep.titleEndpoint +
+          '" but no such endpoint is configured. Title generation will fall back to the default endpoint.');
+      }
+    });
+  } catch (e) {
+    console.warn('[CONFIG] Boot config dump failed:', e.message);
+  }
+
   initializeFileStorage(appConfig);
   await performStartupChecks(appConfig);
   await updateInterfacePermissions(appConfig);
@@ -79,6 +415,17 @@ const startServer = async () => {
   }
 
   app.get('/health', (_req, res) => res.status(200).send('OK'));
+
+  // Test external connectivity
+  app.get('/api/test-external', async (req, res) => {
+    try {
+      const response = await axios.get('https://jsonplaceholder.typicode.com/todos/1');
+      res.json({ success: true, data: response.data });
+    } catch (error) {
+      logger.error('[test-external] Error:', error.message);
+      res.json({ success: false, error: error.message, code: error.code });
+    }
+  });
 
   /* Middleware */
   app.use(noIndex);
@@ -164,6 +511,7 @@ const startServer = async () => {
   app.use('/api/notifications', routes.notifications);
   app.use('/api/locations', routes.locations);
   app.use('/api/langgraph', routes.langgraph);
+  app.use('/api/diagnostics', routes.diagnostics);
 
   app.use(ErrorController);
 
@@ -211,6 +559,15 @@ startServer();
 
 let messageCount = 0;
 process.on('uncaughtException', (err) => {
+  // INVALID_DESTINATION errors come from our SOCKS interceptor when undici
+  // passes a malformed hostname/port. Swallow them: they're already surfaced
+  // to the caller as a normal fetch error (our [SOCKS] interceptor logs the
+  // full context), and we don't want them to tear down the whole chat server.
+  if (err && (err.code === 'INVALID_DESTINATION' || /invalid destination/i.test(err.message || ''))) {
+    console.error('[uncaughtException] swallowed INVALID_DESTINATION:', err.message);
+    return;
+  }
+
   if (!err.message.includes('fetch failed')) {
     logger.error('There was an uncaught error:', err);
   }

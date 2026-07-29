@@ -72,8 +72,8 @@ jobs:
           no-cache: true
           platforms: linux/amd64
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:staging
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:production
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:staging-${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:production-${{ github.sha }}
           build-args: |
             NODE_ENV=production
 
@@ -97,7 +97,7 @@ jobs:
         with:
           service: ${{ env.GCP_STAGING_SERVICE }}
           region: ${{ env.GCP_REGION }}
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:staging
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:staging-${{ github.sha }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           env_vars: |
             NODE_ENV=staging
@@ -143,6 +143,8 @@ jobs:
             LANGGRAPH_API_PORT=${{ secrets.LANGGRAPH_API_PORT }}
             LANGGRAPH_API_HOST=${{ secrets.LANGGRAPH_API_HOST }}
             LGD_API_KEY=${{ secrets.LGD_API_KEY }}
+            TAILSCALE_AUTHKEY=${{ secrets.TAILSCALE_AUTHKEY }}
+            TS_HOSTNAME=ajrasakha-client-staging
             LGD_DISTRICTS_API_URL=${{ secrets.LGD_DISTRICTS_API_URL }}
             LGD_STATES_API_URL=${{ secrets.LGD_STATES_API_URL }}
             LGD_SUBDISTRICTS_API_URL=${{ secrets.LGD_SUBDISTRICTS_API_URL }}
@@ -182,6 +184,7 @@ jobs:
     if: |
       always() &&
       github.event.inputs.deploy_production == 'true' &&
+      github.event.inputs.should_build == 'true' &&
       (needs.build.result == 'success' || needs.build.result == 'skipped' || needs.build.result == null)
     needs: [build]
     runs-on: ubuntu-latest
@@ -197,7 +200,7 @@ jobs:
         with:
           service: ${{ env.GCP_PRODUCTION_SERVICE }}
           region: ${{ env.GCP_REGION }}
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:production
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:production-${{ github.sha }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           env_vars: |
             NODE_ENV=production
@@ -240,6 +243,8 @@ jobs:
             JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             LGD_API_KEY=${{ secrets.LGD_API_KEY }}
+            TAILSCALE_AUTHKEY=${{ secrets.TAILSCALE_AUTHKEY }}
+            TS_HOSTNAME=ajrasakha-client-production
             LGD_DISTRICTS_API_URL=${{ secrets.LGD_DISTRICTS_API_URL }}
             LGD_STATES_API_URL=${{ secrets.LGD_STATES_API_URL }}
             LGD_SUBDISTRICTS_API_URL=${{ secrets.LGD_SUBDISTRICTS_API_URL }}

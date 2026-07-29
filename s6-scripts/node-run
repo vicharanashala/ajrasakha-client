@@ -1,0 +1,111 @@
+#!/command/with-contenv sh
+cd /app
+
+# SOCKS readiness wait -- DISABLED (commented out, not deleted).
+#
+# Previously this blocked Node startup until tailscaled's SOCKS5 listener
+# was ready. With PROXY=http://127.0.0.1:1056 in place, production traffic
+# uses Tailscale's HTTP proxy (not SOCKS), so SOCKS readiness is no longer
+# on the critical path. The boot smoke test below still uses SOCKS for
+# diagnostics -- if SOCKS isn't up at the time of the smoke test, that one
+# probe fails but the chat server still works.
+#
+# To re-enable if PROXY has problems: uncomment the two `node` + `echo` lines
+# below. Original intent was that s6-overlay would restart the service if
+# the 5-minute SOCKS readiness wait timed out.
+#
+# echo "=== WAITING FOR SOCKS PROXY (127.0.0.1:1055) ==="
+# node /app/s6-scripts/wait-for-socks5.js || exit 1
+# echo "=== SOCKS PROXY READY ==="
+echo "=== SOCKS PROXY READINESS SKIPPED (PROXY-based routing is active; SOCKS is only used by boot diagnostics below) ==="
+
+# ---------------------------------------------------------------------------
+# Boot diagnostics: dump every signal we have into BOTH Cloud Run logs
+# (`stdout`) and `/app/logs/boot-diagnostics.log`. Cloud Run gives us no shell
+# access, so the deploy-time logs are the only durable record of what the
+# tailnet looked like at the moment the container came up. If a future deploy
+# fails with UNd_ERR_CONNECT_TIMEOUT, this file + these log lines let us tell
+# whether Tailscale, the SOCKS proxy, or the LangGraph peer is the culprit.
+#
+# Override targets via env: TS_PING_TARGET (default 100.100.108.44) and
+# TS_PING_PORT (default 9019) -- this is the AjraSakha-Agent endpoint the
+# Node app routes through tailnet.
+# ---------------------------------------------------------------------------
+BOOT_LOG=/app/logs/boot-diagnostics.log
+mkdir -p /app/logs
+# Run a command, fan its output to both stdout (Cloud Run logs) and the file
+# log. POSIX-portable: avoids `${PIPESTATUS[0]}` (bash-only) because the script
+# runs under `/bin/sh` on Alpine, which is busybox ash and treats the array
+# subscript as a bad substitution. The original command's exit status is
+# captured via a temp file so we can report it to the log.
+run_logged() {
+    printf '\n===== %s @ %s =====\n' "$1" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" | tee -a "$BOOT_LOG"
+    shift
+    local tmp rc
+    tmp=$(mktemp)
+    "$@" >"$tmp" 2>&1
+    rc=$?
+    cat "$tmp" | tee -a "$BOOT_LOG"
+    rm -f "$tmp"
+    return $rc
+}
+
+TS_PING_TARGET=${TS_PING_TARGET:-100.100.108.44}
+TS_PING_PORT=${TS_PING_PORT:-9019}
+echo "Boot diagnostics writing to $BOOT_LOG (peer ${TS_PING_TARGET}:${TS_PING_PORT})" | tee -a "$BOOT_LOG"
+
+# Keep the human-readable status on stdout (always small), but redirect
+# `tailscale status --json` to the file log ONLY. The JSON for a tailnet
+# with 100+ peers is hundreds of KB and floods Cloud Run's stdout log,
+# tripping the 100KB-per-line limit and hiding the rest of the boot output
+# (including any Node startup errors). If anyone wants the full JSON,
+# it's in /app/logs/boot-diagnostics.log.
+printf '\n===== tailscale status --json @ %s =====\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" | tee -a "$BOOT_LOG"
+tailscale status --json >>"$BOOT_LOG" 2>&1 || true
+
+run_logged "tailscale status"               tailscale status
+run_logged "tailscale netcheck"             tailscale netcheck
+run_logged "tailscale ping $TS_PING_TARGET" tailscale ping --c=1 --timeout=10s "$TS_PING_TARGET"
+
+# SOCKS5 readiness is already proven by the wait-for-socks5.js script above
+# (it logs `[socks5] ready after Xs (attempt #N)` before exiting 0). No need
+# to re-probe here -- the end-to-end probe below is the real validation.
+
+# End-to-end probe: actually exercise the path the Node app uses. This curls
+# the LangGraph peer's /v1/models endpoint through the SOCKS proxy with a
+# 12-second budget. Outcome is the single most useful line in this log when
+# debugging 'unreachable peer' symptoms.
+echo "----- End-to-end probe via SOCKS to ${TS_PING_TARGET}:${TS_PING_PORT} -----" | tee -a "$BOOT_LOG"
+curl --silent --show-error --output /dev/null \
+    --max-time 12 \
+    --proxy "socks5h://127.0.0.1:1055" \
+    "http://${TS_PING_TARGET}:${TS_PING_PORT}/v1/models" \
+    -w "  http_code=%{http_code} time=%{time_total}s resolved_via=%{remote_ip}\n" \
+    2>&1 | tee -a "$BOOT_LOG" || true
+echo "[SOCKS] end-to-end probe done" | tee -a "$BOOT_LOG"
+
+# Deeper smoke test: hit the actual chat-completions endpoint with a real
+# agriculture prompt, through SOCKS. This catches failures the /v1/models
+# probe misses (LangGraph process up but model not loaded, API key expired,
+# upstream LLM provider down, etc.). Budget 25s -- real LLM inference can
+# take 10-15s on cold start. Captures the response body so a 200/non-200
+# distinction is obvious in the boot log.
+echo "----- AjraSakha-Agent chat-completions smoke test -----" | tee -a "$BOOT_LOG"
+curl --silent --show-error \
+    --max-time 25 \
+    --proxy "socks5h://127.0.0.1:1055" \
+    -H "Content-Type: application/json" \
+    -d '{
+          "model": "ajrasakha",
+          "messages": [
+            {"role": "system", "content": "You are AjraSakha, a helpful farming assistant."},
+            {"role": "user",   "content": "What is the best time to sow wheat in Punjab?"}
+          ],
+          "stream": false
+        }' \
+    -w "\n  http_code=%{http_code} time=%{time_total}s\n" \
+    "http://${TS_PING_TARGET}:${TS_PING_PORT}/v1/ajrasakha/chat/completions" \
+    2>&1 | tee -a "$BOOT_LOG" || true
+echo "[AGENT] chat-completions smoke test done" | tee -a "$BOOT_LOG"
+
+exec npm run backend
