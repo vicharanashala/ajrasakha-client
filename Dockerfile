@@ -63,9 +63,15 @@ RUN \
 # Copy s6 service scripts
 COPY s6-scripts/tailscale-run /etc/services.d/tailscale/run
 COPY s6-scripts/node-run /etc/services.d/node/run
+# Copy the Node-based SOCKS5 readiness probe that node-run calls. Lives at
+# a known absolute path inside the container (NOT derived from $0, which
+# under s6-overlay is `/etc/services.d/node/run` -- dirname would point
+# at the wrong directory).
+COPY s6-scripts/wait-for-socks5.js /app/s6-scripts/wait-for-socks5.js
 
 # Make scripts executable
 RUN chmod +x /etc/services.d/tailscale/run /etc/services.d/node/run
+RUN mkdir -p /app/s6-scripts
 
 # Node API setup
 EXPOSE 3080
