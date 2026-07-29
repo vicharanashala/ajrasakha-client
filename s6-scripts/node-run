@@ -1,17 +1,23 @@
 #!/command/with-contenv sh
 cd /app
 
-# Wait for the Tailscale SOCKS5 listener to actually accept a SOCKS5
-# handshake (RFC 1928). Implemented in Node -- s6-scripts/wait-for-socks5.js
-# -- so we get portable byte handling (Buffer) and proper error propagation,
-# without having to coax `dd bs=1 count=2` through busybox ash or bash --posix.
-# The script polls every 1s, exits 0 once the server responds with the
-# expected greeting-method exchange, and exits 1 if the 5-minute timeout is
-# exceeded. If the timeout fires we exit 1 -- s6-overlay then restarts this
-# service, giving Tailscale a fresh chance to authenticate.
-echo "=== WAITING FOR SOCKS PROXY (127.0.0.1:1055) ==="
-node /app/s6-scripts/wait-for-socks5.js || exit 1
-echo "=== SOCKS PROXY READY ==="
+# SOCKS readiness wait -- DISABLED (commented out, not deleted).
+#
+# Previously this blocked Node startup until tailscaled's SOCKS5 listener
+# was ready. With PROXY=http://127.0.0.1:1056 in place, production traffic
+# uses Tailscale's HTTP proxy (not SOCKS), so SOCKS readiness is no longer
+# on the critical path. The boot smoke test below still uses SOCKS for
+# diagnostics -- if SOCKS isn't up at the time of the smoke test, that one
+# probe fails but the chat server still works.
+#
+# To re-enable if PROXY has problems: uncomment the two `node` + `echo` lines
+# below. Original intent was that s6-overlay would restart the service if
+# the 5-minute SOCKS readiness wait timed out.
+#
+# echo "=== WAITING FOR SOCKS PROXY (127.0.0.1:1055) ==="
+# node /app/s6-scripts/wait-for-socks5.js || exit 1
+# echo "=== SOCKS PROXY READY ==="
+echo "=== SOCKS PROXY READINESS SKIPPED (PROXY-based routing is active; SOCKS is only used by boot diagnostics below) ==="
 
 # ---------------------------------------------------------------------------
 # Boot diagnostics: dump every signal we have into BOTH Cloud Run logs
