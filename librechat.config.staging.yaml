@@ -88,11 +88,11 @@ registration:
   - "annam.ai"
   - "vicharanashala.ai"
 
-mcpServers:
-  reviewer:
-    type: streamable-http
-    url: http://100.100.108.44:9015/mcp
-    timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
+# mcpServers:
+#   reviewer:
+#     type: streamable-http
+#     url: http://100.100.108.44:9015/mcp
+#     timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
    #  chatMenu: false
 
   # golden:
@@ -101,77 +101,77 @@ mcpServers:
   #   timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
   #   initTimeout: 120000
   #  #  chatMenu: false
-  pop:
-    type: streamable-http # type can optionally be omitted
-    url: http://100.100.108.44:9018/mcp
-    timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
-    initTimeout: 120000
+#   pop:
+#     type: streamable-http # type can optionally be omitted
+#     url: http://100.100.108.44:9018/mcp
+#     timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
+#     initTimeout: 120000
    #  chatMenu: false
-  ajrasakha-enam:
-    type: streamable-http # type can optionally be omitted
-    url: http://100.100.108.44:9002/mcp
-    timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
-    initTimeout: 120000
+#   ajrasakha-enam:
+#     type: streamable-http # type can optionally be omitted
+#     url: http://100.100.108.44:9002/mcp
+#     timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
+#     initTimeout: 120000
 
-  ajrasakha-imd:
-    type: streamable-http # type can optionally be omitted
-    url: http://100.100.108.41:9017/mcp
-    timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
-    initTimeout: 120000
+#   ajrasakha-imd:
+#     type: streamable-http # type can optionally be omitted
+#     url: http://100.100.108.41:9017/mcp
+#     timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
+#     initTimeout: 120000
 
-  ajrasakha-location:
-    type: streamable-http # type can optionally be omitted
-    url: http://100.100.108.44:9000/mcp
-    timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
-    initTimeout: 120000
+#   ajrasakha-location:
+#     type: streamable-http # type can optionally be omitted
+#     url: http://100.100.108.44:9000/mcp
+#     timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
+#     initTimeout: 120000
 
-  ajrasakha-agmarknet:
-    type: streamable-http # type can optionally be omitted
-    url: http://100.100.108.44:9006/mcp
-    timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
-    initTimeout: 120000
+#   ajrasakha-agmarknet:
+#     type: streamable-http # type can optionally be omitted
+#     url: http://100.100.108.44:9006/mcp
+#     timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
+#     initTimeout: 120000
    #  chatMenu: false
-  faq-videos:
-    type: streamable-http # type can optionally be omitted
-    url: http://100.100.108.44:9012/mcp
-    timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
-    initTimeout: 120000
+#   faq-videos:
+#     type: streamable-http # type can optionally be omitted
+#     url: http://100.100.108.44:9012/mcp
+#     timeout: 60000  # 1 minute timeout for this server, this is the default timeout for MCP servers.
+#     initTimeout: 120000
    #  chatMenu: false
    
-  ajrasakha-soilhealth:
-    type: streamable-http
-    url: http://100.100.108.44:9008/mcp
-    timeout: 60000
-    initTimeout: 120000
+#   ajrasakha-soilhealth:
+#     type: streamable-http
+#     url: http://100.100.108.44:9008/mcp
+#     timeout: 60000
+#     initTimeout: 120000
 
-  ajrasakha-govt-schemes:
-    type: streamable-http
-    url: http://100.100.108.44:9009/mcp
-    timeout: 60000
-    initTimeout: 120000
-speech:
-  stt:
-    openai:
-      url: 'http://100.100.108.44:9017/v1/audio/transcriptions'
-      apiKey: 'not_required'
-      model: 'whisper-1'
-  tts:
-    openai:
-      url: 'http://100.100.108.44:9017/v1/audio/speech'
-      apiKey: 'not_required'
-      model: 'bulbul:v3'
-      voices:
-        - 'alloy'
-        - 'echo'
-        - 'fable'
-        - 'onyx'
-        - 'nova'
-        - 'shimmer'
-  speechTab:
-    speechToText:
-      engineSTT: 'external'
-    textToSpeech:
-      engineTTS: 'external'
+#   ajrasakha-govt-schemes:
+#     type: streamable-http
+#     url: http://100.100.108.44:9009/mcp
+#     timeout: 60000
+#     initTimeout: 120000
+# speech:
+#   stt:
+#     openai:
+#       url: 'http://100.100.108.44:9017/v1/audio/transcriptions'
+#       apiKey: 'not_required'
+#       model: 'whisper-1'
+#   tts:
+#     openai:
+#       url: 'http://100.100.108.44:9017/v1/audio/speech'
+#       apiKey: 'not_required'
+#       model: 'bulbul:v3'
+#       voices:
+#         - 'alloy'
+#         - 'echo'
+#         - 'fable'
+#         - 'onyx'
+#         - 'nova'
+#         - 'shimmer'
+#   speechTab:
+#     speechToText:
+#       engineSTT: 'external'
+#     textToSpeech:
+#       engineTTS: 'external'
 
 actions:
   allowedDomains:
@@ -184,19 +184,19 @@ endpoints:
   
   custom:
   
-    - name: "vLLM-Qwen"
-      apiKey: "not_required"
-      baseURL: "http://100.100.108.100:8081/v1"
-      models:
-        default: ['Qwen/Qwen3-30B-A3B']
-        fetch: true
-      titleConvo: true
-      titleModel: "current_model"
-      titleMessageRole: "user"
-      summarize: false
-      summaryModel: "current_model"
-      forcePrompt: false
-      modelDisplayLabel: "AjraSakha"  # optional display label in UI
+#     - name: "vLLM-Qwen"
+#       apiKey: "not_required"
+#       baseURL: "http://100.100.108.100:8081/v1"
+#       models:
+#         default: ['Qwen/Qwen3-30B-A3B']
+#         fetch: true
+#       titleConvo: true
+#       titleModel: "current_model"
+#       titleMessageRole: "user"
+#       summarize: false
+#       summaryModel: "current_model"
+#       forcePrompt: false
+#       modelDisplayLabel: "AjraSakha"  # optional display label in UI
 
     - name: "vLLM-Gemma"
       apiKey: "not_required"
@@ -210,7 +210,7 @@ endpoints:
       summarize: false
       summaryModel: "current_model"
       forcePrompt: false
-      modelDisplayLabel: "AjraSakha" 
+      modelDisplayLabel: "AjraSakha"
       addParams:
         chat_template_kwargs:
           enable_thinking: true
@@ -227,11 +227,11 @@ endpoints:
       titleModel: "current_model"
       summarize: false
       summaryModel: "current_model"
-      modelDisplayLabel: "Sarvam"   
+      modelDisplayLabel: "Sarvam"
 
     - name: "AjraSakha-Agent"
       apiKey: "not_required"
-      baseURL: "http://100.100.108.43:9019/v1/ajrasakha"
+      baseURL: "http://100.100.108.44:9019/v1/ajrasakha"
       headers: &llm_context_headers
         Content-Type: "application/json"
         X-User-ID: "{{LIBRECHAT_USER_ID}}"
@@ -252,16 +252,16 @@ endpoints:
       # forcePrompt: false
       modelDisplayLabel: "AjraSakha Agent"
 
-fileConfig:
-  endpoints:
-    default:
-      ocr:
-        limit: 1  # Max files per upload
-        supportedMimeTypes:
-          - "image/jpeg"
-          - "image/png"
-          - "image/webp"
-          - "image/gif"
+# fileConfig:
+#   endpoints:
+#     default:
+#       ocr:
+#         limit: 1  # Max files per upload
+#         supportedMimeTypes:
+#           - "image/jpeg"
+#           - "image/png"
+#           - "image/webp"
+#           - "image/gif"
           # Add other types your Python model supports (e.g., pdf if you add support later)
 
 
@@ -732,49 +732,49 @@ modelSpecs:
                - If the input is English, your entire response MUST be English.
                - IMPORTANT: Context retrieved from tools (e.g., Hindi descriptions from search_faq) does NOT override the user's language. You must smoothly translate any regional tool output into [USER_LANGUAGE] as you generate your response. Do not switch to Hindi just because the topic concerns Indian farming.
 
-    - name: "ajrasakha-claude-ffv"
-      label: "AjraSakha-Claude-FFV"
-      mcpServers:
-         - reviewer
-         - pop
-         - ajrasakha-agmarknet
-         - ajrasakha-enam
-         - ajrasakha-imd
-         - faq-videos
-         - ajrasakha-location
-         - ajrasakha-govt-schemes
-         - ajrasakha-soilhealth
+#     - name: "ajrasakha-claude-ffv"
+#       label: "AjraSakha-Claude-FFV"
+#       mcpServers:
+#          - reviewer
+#          - pop
+#          - ajrasakha-agmarknet
+#          - ajrasakha-enam
+#          - ajrasakha-imd
+#          - faq-videos
+#          - ajrasakha-location
+#          - ajrasakha-govt-schemes
+#          - ajrasakha-soilhealth
 
-      default: false
-      description: "Next-gen argi-centric model from annam.ai"
-      iconURL: "https://storage.googleapis.com/annam-temp-images/logo-icon.png"
-      preset:
-        endpoint: "anthropic"
-        model: "claude-sonnet-4-5-20250929"
-        modelLabel: "AjraSakha"
-        promptPrefix:  *ffv_prompt
+#       default: false
+#       description: "Next-gen argi-centric model from annam.ai"
+#       iconURL: "https://storage.googleapis.com/annam-temp-images/logo-icon.png"
+#       preset:
+#         endpoint: "anthropic"
+#         model: "claude-sonnet-4-5-20250929"
+#         modelLabel: "AjraSakha"
+#         promptPrefix:  *ffv_prompt
 
-    - name: "ajrasakha-gemma-ffv"
-      label: "AjraSakha-Gemma-FFV"
-      mcpServers:
-         - reviewer
-         - pop
-         - ajrasakha-agmarknet
-         - ajrasakha-enam
-         - ajrasakha-imd
-         - faq-videos
-         - ajrasakha-location
-         - ajrasakha-govt-schemes
-         - ajrasakha-soilhealth  
+#     - name: "ajrasakha-gemma-ffv"
+#       label: "AjraSakha-Gemma-FFV"
+#       mcpServers:
+#          - reviewer
+#          - pop
+#          - ajrasakha-agmarknet
+#          - ajrasakha-enam
+#          - ajrasakha-imd
+#          - faq-videos
+#          - ajrasakha-location
+#          - ajrasakha-govt-schemes
+#          - ajrasakha-soilhealth  
 
-      default: false
-      description: "Next-gen argi-centric model from annam.ai"
-      iconURL: "https://storage.googleapis.com/annam-temp-images/logo-icon.png"
-      preset:
-        endpoint: "vLLM-Gemma"
-        model: "google/gemma-4-26B-A4B-it"
-        modelLabel: "AjraSakha"
-        promptPrefix:  *ffv_prompt
+#       default: false
+#       description: "Next-gen argi-centric model from annam.ai"
+#       iconURL: "https://storage.googleapis.com/annam-temp-images/logo-icon.png"
+#       preset:
+#         endpoint: "vLLM-Gemma"
+#         model: "google/gemma-4-26B-A4B-it"
+#         modelLabel: "AjraSakha"
+#         promptPrefix:  *ffv_prompt
 
     - name: "ajrasakha-sarvam-ffv"
       label: "AjraSakha-Sarvam-FFV"
@@ -798,28 +798,28 @@ modelSpecs:
         promptPrefix: *ffv_prompt
          
 
-    - name: "ajrasakha-qwen-ffv"
-      label: "AjraSakha-Qwen-FFV"
-      default: false
-
-      mcpServers:
-         - reviewer
-         - pop
-         - ajrasakha-agmarknet
-         - ajrasakha-enam
-         - ajrasakha-imd
-         - faq-videos
-         - ajrasakha-location
-         - ajrasakha-govt-schemes
-         - ajrasakha-soilhealth
-
-      description: "Next-gen argi-centric model from annam.ai"
-      iconURL: "https://storage.googleapis.com/annam-temp-images/logo-icon.png"
-      preset:
-        endpoint: "vLLM-Qwen"
-        model: "Qwen/Qwen3-30B-A3B"
-        modelLabel: "AjraSakha"
-        promptPrefix: *ffv_prompt
+#     - name: "ajrasakha-qwen-ffv"
+#       label: "AjraSakha-Qwen-FFV"
+#       default: false
+# 
+#       mcpServers:
+#          - reviewer
+#          - pop
+#          - ajrasakha-agmarknet
+#          - ajrasakha-enam
+#          - ajrasakha-imd
+#          - faq-videos
+#          - ajrasakha-location
+#          - ajrasakha-govt-schemes
+#          - ajrasakha-soilhealth
+# 
+#       description: "Next-gen argi-centric model from annam.ai"
+#       iconURL: "https://storage.googleapis.com/annam-temp-images/logo-icon.png"
+#       preset:
+#         endpoint: "vLLM-Qwen"
+#         model: "Qwen/Qwen3-30B-A3B"
+#         modelLabel: "AjraSakha"
+#         promptPrefix: *ffv_prompt
 
 
 

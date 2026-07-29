@@ -82,6 +82,7 @@ jobs:
     if: |
       always() &&
       github.event.inputs.deploy_staging == 'true' &&
+      github.event.inputs.should_build == 'true' &&
       (needs.build.result == 'success' || needs.build.result == 'skipped' || needs.build.result == null)
     needs: [build]
     runs-on: ubuntu-latest
@@ -117,7 +118,7 @@ jobs:
             BAN_VIOLATIONS=${{ secrets.BAN_VIOLATIONS }}
             CONCURRENT_MESSAGE_MAX=${{ secrets.CONCURRENT_MESSAGE_MAX }}
             CONCURRENT_VIOLATION_SCORE=${{ secrets.CONCURRENT_VIOLATION_SCORE }}
-            CONFIG_PATH=https://raw.githubusercontent.com/vicharanashala/ajrasakha-client/6e2d988a6be43d809eb3570ef041297028c2581c/librechat.config.yaml
+            CONFIG_PATH=https://raw.githubusercontent.com/vicharanashala/ajrasakha-client/main/librechat.config.staging.yaml
             CONSOLE_JSON=${{ secrets.CONSOLE_JSON }}
             CREDS_IV=${{ secrets.CREDS_IV }}
             CREDS_KEY=${{ secrets.CREDS_KEY }}
