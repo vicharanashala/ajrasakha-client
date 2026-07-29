@@ -20,7 +20,7 @@ import { useSaveFarmerProfileMutation } from '~/data-provider';
 import { useAuthContext } from '~/hooks/AuthContext';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
-import { CROPS, KVKS } from '~/utils/metaData';
+import { STATES, DISTRICTS, BLOCKS, VILLAGES, CROPS, KVKS } from '~/utils/metaData';
 
 // ── Form Types ───────────────────────────────────────────────────────────────
 
@@ -169,9 +169,14 @@ const FarmerProfileModal = ({
   const { data: statesList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['states'],
     queryFn: async () => {
-      const res = await fetch('/api/locations/states');
-      const data = await res.json();
-      return Array.isArray(data) ? data : [];
+      try {
+        const res = await fetch('/api/locations/states');
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) return data;
+      } catch (error) {
+        console.error('Failed to fetch states, using fallback', error);
+      }
+      return STATES.map((name, index) => ({ code: index, name }));
     },
     enabled: open,
     staleTime: Infinity,
@@ -179,37 +184,67 @@ const FarmerProfileModal = ({
 
   const stateObj = statesList.find((s) => s.name === selectedState);
   const { data: districtsList = [] } = useQuery<{ code: number | string; name: string }[]>({
-    queryKey: ['districts', stateObj?.code],
+    queryKey: ['districts', stateObj?.code, selectedState],
     queryFn: async () => {
-      const res = await fetch(`/api/locations/districts?stateCode=${stateObj?.code}`);
-      const data = await res.json();
-      return Array.isArray(data) ? data : [];
+      try {
+        if (stateObj?.code !== undefined) {
+          const res = await fetch(`/api/locations/districts?stateCode=${stateObj?.code}`);
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) return data;
+        }
+      } catch (error) {
+        console.error('Failed to fetch districts, using fallback', error);
+      }
+      if (selectedState && DISTRICTS[selectedState]) {
+        return DISTRICTS[selectedState].map((name, index) => ({ code: index, name }));
+      }
+      return [];
     },
-    enabled: !!stateObj && selectedState !== otherOption,
+    enabled: !!selectedState && selectedState !== otherOption,
     staleTime: Infinity,
   });
 
   const distObj = districtsList.find((d) => d.name === selectedDistrict);
   const { data: blocksList = [] } = useQuery<{ code: number | string; name: string }[]>({
-    queryKey: ['subdistricts', distObj?.code],
+    queryKey: ['subdistricts', distObj?.code, selectedDistrict],
     queryFn: async () => {
-      const res = await fetch(`/api/locations/subdistricts?districtCode=${distObj?.code}`);
-      const data = await res.json();
-      return Array.isArray(data) ? data : [];
+      try {
+        if (distObj?.code !== undefined) {
+          const res = await fetch(`/api/locations/subdistricts?districtCode=${distObj?.code}`);
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) return data;
+        }
+      } catch (error) {
+        console.error('Failed to fetch subdistricts, using fallback', error);
+      }
+      if (selectedDistrict && BLOCKS[selectedDistrict]) {
+        return BLOCKS[selectedDistrict].map((name, index) => ({ code: index, name }));
+      }
+      return [];
     },
-    enabled: !!distObj && selectedDistrict !== otherOption,
+    enabled: !!selectedDistrict && selectedDistrict !== otherOption,
     staleTime: Infinity,
   });
 
   const blockObj = blocksList.find((b) => b.name === selectedBlock);
   const { data: villagesList = [] } = useQuery<{ code: number | string; name: string }[]>({
-    queryKey: ['villages', blockObj?.code],
+    queryKey: ['villages', blockObj?.code, selectedBlock],
     queryFn: async () => {
-      const res = await fetch(`/api/locations/villages?subdistrictCode=${blockObj?.code}`);
-      const data = await res.json();
-      return Array.isArray(data) ? data : [];
+      try {
+        if (blockObj?.code !== undefined) {
+          const res = await fetch(`/api/locations/villages?subdistrictCode=${blockObj?.code}`);
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) return data;
+        }
+      } catch (error) {
+        console.error('Failed to fetch villages, using fallback', error);
+      }
+      if (selectedBlock && VILLAGES[selectedBlock]) {
+        return VILLAGES[selectedBlock].map((name, index) => ({ code: index, name }));
+      }
+      return [];
     },
-    enabled: !!blockObj && selectedBlock !== otherOption,
+    enabled: !!selectedBlock && selectedBlock !== otherOption,
     staleTime: Infinity,
   });
 
