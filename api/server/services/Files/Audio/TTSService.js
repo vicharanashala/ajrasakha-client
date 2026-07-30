@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { logger } = require('@librechat/data-schemas');
-const { HttpsProxyAgent } = require('https-proxy-agent');
+const { ProxyAgent } = require('undici');
 const { genAzureEndpoint, logAxiosError } = require('@librechat/api');
 const { extractEnvVariable, TTSProviders } = require('librechat-data-provider');
 const { getRandomVoiceId, createChunkProcessor, splitTextIntoChunks } = require('./streamAudio');
@@ -278,7 +278,8 @@ class TTSService {
       resolvedProxy = endpointProxy;
     }
     if (resolvedProxy) {
-      options.httpsAgent = new HttpsProxyAgent(resolvedProxy);
+      /** Use undici ProxyAgent as fetch dispatcher - works for HTTP and HTTPS targets, mirrors chat completion in initializeCustom.ts */
+      options.fetchOptions = { dispatcher: new ProxyAgent(resolvedProxy) };
     }
 
     try {
