@@ -155,7 +155,7 @@ speech:
       url: 'http://100.100.108.44:9017/v1/audio/transcriptions'
       apiKey: 'not_required'
       model: 'whisper-1'
-      proxy: true
+      proxy: 'socks5://127.0.0.1:1055'
   tts:
     openai:
       url: 'http://100.100.108.44:9017/v1/audio/speech'
