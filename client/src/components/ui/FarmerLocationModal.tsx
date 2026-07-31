@@ -180,7 +180,7 @@ const FarmerLocationModal = ({
       }
       try {
         const data = await dataService.getLocationKvks(baseUrl, distObj.code);
-        return Array.isArray(data) ? data.map((k) => ({ code: k.kvkId, name: k.kvkName })) : [];
+        return Array.isArray(data) ? data.map((k) => ({ code: k.kvkId, name: k.kvkAddress ? `${k.kvkName}, ${k.kvkAddress}` : k.kvkName })) : [];
       } catch (error) {
         console.error('Failed to fetch KVKs', error);
         return [];
