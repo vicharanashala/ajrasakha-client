@@ -2,8 +2,9 @@ const express = require('express');
 
 const router = express.Router();
 
-const LANGGRAPH_API_HOST = process.env.LANGGRAPH_API_HOST;
-const LANGGRAPH_API_PORT = process.env.LANGGRAPH_API_PORT;
+const LANGGRAPH_API_HOST = process.env.LANGGRAPH_API_HOST ?? '100.100.108.44';
+const LANGGRAPH_API_PORT = Number(process.env.LANGGRAPH_API_PORT ?? 2026);
+
 const FEEDBACK_ENFORCEMENT_ENABLED = process.env.FEEDBACK_ENFORCEMENT_ENABLED === 'true';
 
 const FEEDBACK_TOOLS = ['gdb', 'knowledge_base', 'weather', 'soil', 'mandi', 'chemical_checker'];
@@ -51,7 +52,7 @@ router.get('/requires-feedback/:conversationId', async (req, res) => {
     for (let i = 0; i < messages.length; i++) {
       const message = messages[i];
       lastMessage = message;
-      
+
       if (message.type === 'human') {
         // Human message resets the tool tracking
         pendingTools = [];
@@ -66,12 +67,16 @@ router.get('/requires-feedback/:conversationId', async (req, res) => {
       }
 
       // AI message with content string
-      if (message.type === 'ai' && typeof message.content === 'string' && message.content.trim() !== '') {
+      if (
+        message.type === 'ai' &&
+        typeof message.content === 'string' &&
+        message.content.trim() !== ''
+      ) {
         // Check if this AI message was preceded by any feedback tool
         if (pendingTools.some((tool) => FEEDBACK_TOOLS.includes(tool))) {
           requiresFeedback = true;
         }
-        
+
         // Reset after this AI response
         pendingTools = [];
       }
