@@ -76,6 +76,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:production-${{ github.sha }}
           build-args: |
             NODE_ENV=production
+            VITE_AJRASAKHA_SERVER_URL=${{ secrets.VITE_AJRASAKHA_SERVER_URL_STAGING }}
 
   deploy_staging:
     name: Deploy to Cloud Run (Staging)
