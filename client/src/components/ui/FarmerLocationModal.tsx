@@ -15,7 +15,7 @@ import type { IFarmerProfile } from 'librechat-data-provider';
 import { useSaveFarmerProfileMutation } from '~/data-provider';
 import useGeolocation from '~/hooks/useGeolocation';
 import { useLocalize } from '~/hooks';
-import { INDIAN_LANGUAGES, CROPS, KVKS, STATES, DISTRICTS } from '~/utils/metaData';
+import { INDIAN_LANGUAGES, CROPS } from '~/utils/metaData';
 import SearchableSelect from './SearchableSelect';
 import SearchableMultiSelect from './SearchableMultiSelect';
 
@@ -129,15 +129,16 @@ const FarmerLocationModal = ({
   const { data: statesList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['states'],
     queryFn: async () => {
-      try {
-        if (baseUrl) {
-          const data = await dataService.getLocationStates(baseUrl);
-          if (Array.isArray(data) && data.length > 0) return data;
-        }
-      } catch (error) {
-        console.error('Failed to fetch states, using fallback', error);
+      if (!baseUrl) {
+        return [];
       }
-      return STATES.map((name, index) => ({ code: index, name }));
+      try {
+        const data = await dataService.getLocationStates(baseUrl);
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        console.error('Failed to fetch states', error);
+        return [];
+      }
     },
     enabled: open,
     staleTime: Infinity,
@@ -151,21 +152,16 @@ const FarmerLocationModal = ({
   const { data: districtsList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['districts', stateObj?.code, selectedState],
     queryFn: async () => {
+      if (!baseUrl || stateObj?.code === undefined) {
+        return [];
+      }
       try {
-        if (baseUrl && stateObj?.code !== undefined) {
-          const data = await dataService.getLocationDistricts(
-            baseUrl,
-            stateObj.code,
-          );
-          if (Array.isArray(data) && data.length > 0) return data;
-        }
+        const data = await dataService.getLocationDistricts(baseUrl, stateObj.code);
+        return Array.isArray(data) ? data : [];
       } catch (error) {
-        console.error('Failed to fetch districts, using fallback', error);
+        console.error('Failed to fetch districts', error);
+        return [];
       }
-      if (selectedState && DISTRICTS[selectedState]) {
-        return DISTRICTS[selectedState].map((name, index) => ({ code: index, name }));
-      }
-      return [];
     },
     enabled: !!selectedState && selectedState !== localize('com_farmer_option_other'),
     staleTime: Infinity,
@@ -179,17 +175,16 @@ const FarmerLocationModal = ({
   const { data: kvksList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['kvks', distObj?.code, selectedDistrict],
     queryFn: async () => {
-      try {
-        if (baseUrl && distObj?.code !== undefined) {
-          const data = await dataService.getLocationKvks(baseUrl, distObj.code);
-          if (Array.isArray(data) && data.length > 0) {
-            return data.map((k) => ({ code: k.kvkId, name: k.kvkName }));
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch KVKs, using fallback', error);
+      if (!baseUrl || distObj?.code === undefined) {
+        return [];
       }
-      return [];
+      try {
+        const data = await dataService.getLocationKvks(baseUrl, distObj.code);
+        return Array.isArray(data) ? data.map((k) => ({ code: k.kvkId, name: k.kvkName })) : [];
+      } catch (error) {
+        console.error('Failed to fetch KVKs', error);
+        return [];
+      }
     },
     enabled: !!selectedDistrict && distObj?.code !== undefined,
     staleTime: Infinity,
@@ -199,36 +194,7 @@ const FarmerLocationModal = ({
     if (!selectedDistrict) {
       return [];
     }
-
-    // Prefer the live list from the review system.
-    if (kvksList.length > 0) {
-      return kvksList.map((k) => k.name);
-    }
-
-    // 1. Direct match
-    if (KVKS[selectedDistrict]) {
-      return KVKS[selectedDistrict];
-    }
-
-    // 2. Case-insensitive and normalized match
-    const normalizedSearch = selectedDistrict.toLowerCase().replace(/\s*\(.*\)/, '').trim();
-    const kvkKeys = Object.keys(KVKS);
-
-    // Try finding a key that contains the normalized district name or vice-versa
-    const matchedKey = kvkKeys.find((key) => {
-      const normalizedKey = key.toLowerCase().replace(/\s*\(.*\)/, '').trim();
-      return (
-        normalizedKey === normalizedSearch ||
-        normalizedKey.includes(normalizedSearch) ||
-        normalizedSearch.includes(normalizedKey)
-      );
-    });
-
-    if (matchedKey) {
-      return KVKS[matchedKey];
-    }
-
-    return (KVKS as any).Other || [];
+    return kvksList.map((k) => k.name);
   }, [selectedDistrict, kvksList]);
 
   const handleStateChange = (val: string) => {

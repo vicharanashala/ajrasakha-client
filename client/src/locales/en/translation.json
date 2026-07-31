@@ -1479,7 +1479,7 @@
   "com_ui_zoom_level": "Zoom level",
   "com_ui_zoom_out": "Zoom out",
   "com_farmer_profile_registration": "Farmer Profile Registration",
-  "com_farmer_profile_fill_all_required": "* Please fill in all the details below to complete your registration.",
+  "com_farmer_profile_fill_all_required": "* Please fill in all the details below.",
   "com_farmer_credential_warning_api_key_missing": "⚠️ Location data will not load. API key is missing in configuration.",
   "com_farmer_credential_warning_states_missing": "⚠️ States may not load. States API URL is missing in configuration.",
   "com_farmer_credential_warning_districts_missing": "⚠️ Districts may not load. Districts API URL is missing in configuration.",
