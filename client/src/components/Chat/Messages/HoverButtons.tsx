@@ -1,4 +1,4 @@
-import React, { useState, useMemo, memo } from 'react';
+import React, { useState, useMemo, memo, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import type {
   TConversation,
@@ -14,6 +14,8 @@ import Feedback from './Feedback';
 import { cn } from '~/utils';
 import { logTtsPayload } from '~/utils/ttsDebug';
 import store from '~/store';
+import FeedbackReminderDialog from './FeedbackReminderDialog';
+// import { requiresFeedbackForMessage } from '~/utils/requiresFeedback';
 
 type THoverButtons = {
   isEditing: boolean;
@@ -28,6 +30,7 @@ type THoverButtons = {
   isLast: boolean;
   index: number;
   handleFeedback?: ({ feedback }: { feedback: TFeedback | undefined }) => void;
+  feedback?: TFeedback;
 };
 
 type HoverButtonProps = {
@@ -47,7 +50,7 @@ type HoverButtonProps = {
 function ttsContentFromMessage(message: TMessage): string | TMessageContentParts[] {
   if (Array.isArray(message.content) && message.content.length > 0) {
     const parts = message.content as TMessageContentParts[];
-    logTtsPayload(message.messageId, parts);
+    // logTtsPayload(message.messageId, parts); // Commented out to remove TTS debug logs
     return parts;
   }
   if (typeof message.content === 'string') {
@@ -108,7 +111,42 @@ const HoverButtons = ({
   latestMessage,
   isLast,
   handleFeedback,
+  feedback,
 }: THoverButtons) => {
+  const [showFeedbackReminder, setShowFeedbackReminder] = useRecoilState(
+    store.showFeedbackReminder,
+  );
+
+  // const [toolCalled, setToolCalled] = useState(false);
+
+  // useEffect(() => {
+  //   if (!conversation?.conversationId || !message.messageId) {
+  //     setToolCalled(false);
+  //     return;
+  //   }
+  //   let cancelled = false;
+  //   const load = async () => {
+  //     const requires = await requiresFeedbackForMessage(
+  //       conversation.conversationId ?? '',
+  //       message.messageId,
+  //     );
+
+  //     if (!cancelled) {
+  //       setToolCalled(requires);
+  //     }
+  //   };
+  //   load();
+  //   return () => {
+  //     cancelled = true;
+  //   };
+  // }, [conversation?.conversationId, message.messageId]);
+
+  const isLatestAssistantMessage =
+    !message.isCreatedByUser && message.messageId === latestMessage?.messageId;
+  // console.log('----toollcalled in hoverbuttons----', toolCalled);
+  const shouldShowFeedbackReminder =
+    showFeedbackReminder && isLatestAssistantMessage && !feedback && !isSubmitting;
+
   const localize = useLocalize();
   const [isCopied, setIsCopied] = useState(false);
   const [TextToSpeech] = useRecoilState<boolean>(store.textToSpeech);
@@ -237,6 +275,17 @@ const HoverButtons = ({
           icon={<ContinueIcon className="w-19 h-19 -rotate-180" />}
           isLast={isLast}
           className="active"
+        />
+      )}
+
+      {shouldShowFeedbackReminder && (
+        <FeedbackReminderDialog
+          open={showFeedbackReminder}
+          onOpenChange={setShowFeedbackReminder}
+          feedback={feedback}
+          handleFeedback={handleFeedback!}
+          conversation={conversation}
+          message={message}
         />
       )}
     </div>

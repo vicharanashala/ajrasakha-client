@@ -2060,5 +2060,9 @@
   "com_ui_feedback_tag_not_satisfied": "Not Satisfied",
   "com_ui_feedback_tag_will_not_recommend": "Will Not Recommend",
   "com_ui_feedback_tag_inappropriate_response": "Inappropriate Response",
-  "com_ui_feedback_tag_other_positive": "Others"
+  "com_ui_feedback_tag_other_positive": "Others",
+  "com_ui_feedback_enforce_reminder": "Please provide feedback for the previous response before starting a new conversation.",
+  "com_ui_feedback_enforce_title": "Feedback Required",
+  "com_ui_feedback_enforce_question": "How was the previous response?",
+  "com_ui_feedback_enforce_later": "Maybe Later"
 }

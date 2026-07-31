@@ -25,6 +25,7 @@ const auth = require('./auth');
 const keys = require('./keys');
 const user = require('./user');
 const mcp = require('./mcp');
+const langgraph = require('./langgraph');
 const webhooks = require('./webhooks');
 const push = require('./push');
 const notifications = require('./notifications');
@@ -32,6 +33,7 @@ const diagnostics = require('./diagnostics');
 
 module.exports = {
   mcp,
+  langgraph,
   auth,
   keys,
   user,

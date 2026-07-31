@@ -2049,5 +2049,9 @@
   "com_ui_feedback_tag_not_satisfied": "ସନ୍ତୁଷ୍ଟ ନୁହେଁ",
   "com_ui_feedback_tag_will_not_recommend": "ସୁପାରିଶ କରିବି ନାହିଁ",
   "com_ui_feedback_tag_inappropriate_response": "ଅନୁଚିତ ପ୍ରତିକ୍ରିୟା",
-  "com_ui_feedback_tag_other_positive": "ଅନ୍ୟାନ୍ୟ"
+  "com_ui_feedback_tag_other_positive": "ଅନ୍ୟାନ୍ୟ",
+  "com_ui_feedback_enforce_reminder": "ନୂତନ କଥୋପକଥନ ଆରମ୍ଭ କରିବା ପୂର୍ବରୁ ଦୟାକରି ପୂର୍ବ ଉତ୍ତର ବିଷୟରେ ମତାମତ ଦିଅନ୍ତୁ।",
+  "com_ui_feedback_enforce_title": "ମତାମତ ଆବଶ୍ୟକ",
+  "com_ui_feedback_enforce_question": "ପୂର୍ବ ଉତ୍ତରଟି କିପରି ଥିଲା?",
+  "com_ui_feedback_enforce_later": "ହୁଏତ ପରେ"
 }

@@ -2049,5 +2049,9 @@
   "com_ui_feedback_tag_not_satisfied": "مطمئن نہیں",
   "com_ui_feedback_tag_will_not_recommend": "تجویز نہیں کروں گا",
   "com_ui_feedback_tag_inappropriate_response": "نامناسب جواب",
-  "com_ui_feedback_tag_other_positive": "دیگر"
+  "com_ui_feedback_tag_other_positive": "دیگر",
+  "com_ui_feedback_enforce_reminder": "براہِ کرم نئی گفتگو شروع کرنے سے پہلے پچھلے جواب کے بارے میں اپنی رائے دیں۔",
+  "com_ui_feedback_enforce_title": "رائے درکار ہے",
+  "com_ui_feedback_enforce_question": "پچھلا جواب کیسا تھا؟",
+  "com_ui_feedback_enforce_later": "شاید بعد میں"
 }

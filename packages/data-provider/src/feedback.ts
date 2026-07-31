@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-export type TFeedbackRating = 'thumbsUp' | 'thumbsDown';
-export const FEEDBACK_RATINGS = ['thumbsUp', 'thumbsDown'] as const;
+export type TFeedbackRating = 'thumbsUp' | 'thumbsDown' | 'other';
+export const FEEDBACK_RATINGS = ['thumbsUp', 'thumbsDown', 'other'] as const;
 
 export const FEEDBACK_REASON_KEYS = [
   // Down
@@ -13,7 +13,7 @@ export const FEEDBACK_REASON_KEYS = [
   'not_satisfied',
   'will_not_recommend',
   'inappropriate_response',
-  'other_thumbsup',
+  // 'other_thumbsup',
 
   // Up
   'useful_crop_recommendations',
@@ -25,7 +25,8 @@ export const FEEDBACK_REASON_KEYS = [
   'very_satisfied',
   'recommend_to_others',
   'user_friendly_language',
-  'other_thumbsdown',
+  // 'other_thumbsdown',
+  'other',
 ] as const;
 
 export type TFeedbackTagKey = (typeof FEEDBACK_REASON_KEYS)[number];
@@ -88,12 +89,12 @@ export const FEEDBACK_TAGS: TFeedbackTag[] = [
     direction: 'thumbsDown',
     icon: 'Ban',
   },
-  {
-    key: 'other_thumbsdown',
-    label: 'com_ui_feedback_tag_other',
-    direction: 'thumbsDown',
-    icon: 'HelpCircle',
-  },
+  // {
+  //   key: 'other_thumbsdown',
+  //   label: 'com_ui_feedback_tag_other',
+  //   direction: 'thumbsDown',
+  //   icon: 'HelpCircle',
+  // },
 
   // Thumbs Up
   {
@@ -151,9 +152,9 @@ export const FEEDBACK_TAGS: TFeedbackTag[] = [
     icon: 'MessageCircle',
   },
   {
-    key: 'other_thumbsup',
-    label: 'com_ui_feedback_tag_other_positive',
-    direction: 'thumbsUp',
+    key: 'other',
+    label: 'com_ui_feedback_tag_other',
+    direction: 'other',
     icon: 'HelpCircle',
   },
 ];

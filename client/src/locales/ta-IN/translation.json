@@ -2049,5 +2049,9 @@
   "com_ui_feedback_tag_not_satisfied": "திருப்தி இல்லை",
   "com_ui_feedback_tag_will_not_recommend": "பரிந்துரைக்க மாட்டேன்",
   "com_ui_feedback_tag_inappropriate_response": "பொருத்தமற்ற பதில்",
-  "com_ui_feedback_tag_other_positive": "மற்றவை"
+  "com_ui_feedback_tag_other_positive": "மற்றவை",
+  "com_ui_feedback_enforce_reminder": "புதிய உரையாடலைத் தொடங்குவதற்கு முன், முந்தைய பதிலைப் பற்றிய கருத்தை வழங்கவும்.",
+  "com_ui_feedback_enforce_title": "கருத்து தேவை",
+  "com_ui_feedback_enforce_question": "முந்தைய பதில் எப்படி இருந்தது?",
+  "com_ui_feedback_enforce_later": "ஒருவேளை பின்னர்"
 }

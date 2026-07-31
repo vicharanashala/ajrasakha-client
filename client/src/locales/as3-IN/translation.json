@@ -2048,5 +2048,9 @@
   "com_ui_feedback_tag_not_satisfied": "संतुष्ट नेईं आं",
   "com_ui_feedback_tag_will_not_recommend": "होरनें गी सलाह नेईं देआं",
   "com_ui_feedback_tag_inappropriate_response": "अनुचित जवाब",
-  "com_ui_feedback_tag_other_positive": "होर"
+  "com_ui_feedback_tag_other_positive": "होर",
+  "com_ui_feedback_enforce_reminder": "नावा गालमाराव एहोब माड़ाङ तायोम सेदाक् रोर रोड़ाक् बाबोत फिडबैक एम मे।",
+  "com_ui_feedback_enforce_title": "फिडबैक ला़कती",
+  "com_ui_feedback_enforce_question": "तायोम सेदाक् रोर रोड़ दो चेत् लेका ताहेंकाना?",
+  "com_ui_feedback_enforce_later": "तायोम हों"
 }

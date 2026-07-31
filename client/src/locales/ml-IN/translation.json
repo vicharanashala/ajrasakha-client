@@ -2049,5 +2049,9 @@
   "com_ui_feedback_tag_not_satisfied": "സംതൃപ്തനല്ല",
   "com_ui_feedback_tag_will_not_recommend": "ശുപാർശ ചെയ്യില്ല",
   "com_ui_feedback_tag_inappropriate_response": "അനുചിതമായ പ്രതികരണം",
-  "com_ui_feedback_tag_other_positive": "മറ്റുള്ളവ"
+  "com_ui_feedback_tag_other_positive": "മറ്റുള്ളവ",
+  "com_ui_feedback_enforce_reminder": "പുതിയ സംഭാഷണം ആരംഭിക്കുന്നതിന് മുമ്പ് ദയവായി മുമ്പത്തെ പ്രതികരണത്തെക്കുറിച്ച് അഭിപ്രായം നൽകുക.",
+  "com_ui_feedback_enforce_title": "അഭിപ്രായം ആവശ്യമാണ്",
+  "com_ui_feedback_enforce_question": "മുമ്പത്തെ പ്രതികരണം എങ്ങനെയായിരുന്നു?",
+  "com_ui_feedback_enforce_later": "ഒരുപക്ഷേ പിന്നീട്"
 }

@@ -2049,5 +2049,9 @@
   "com_ui_feedback_tag_not_satisfied": "ತೃಪ್ತಿಯಾಗಿಲ್ಲ",
   "com_ui_feedback_tag_will_not_recommend": "ಶಿಫಾರಸು ಮಾಡುವುದಿಲ್ಲ",
   "com_ui_feedback_tag_inappropriate_response": "ಅನುಚಿತ ಪ್ರತಿಕ್ರಿಯೆ",
-  "com_ui_feedback_tag_other_positive": "ಇತರೆ"
+  "com_ui_feedback_tag_other_positive": "ಇತರೆ",
+  "com_ui_feedback_enforce_reminder": "ಹೊಸ ಸಂಭಾಷಣೆಯನ್ನು ಪ್ರಾರಂಭಿಸುವ ಮೊದಲು ದಯವಿಟ್ಟು ಹಿಂದಿನ ಪ್ರತಿಕ್ರಿಯೆಯ ಕುರಿತು ಅಭಿಪ್ರಾಯ ನೀಡಿ.",
+  "com_ui_feedback_enforce_title": "ಅಭಿಪ್ರಾಯ ಅಗತ್ಯವಿದೆ",
+  "com_ui_feedback_enforce_question": "ಹಿಂದಿನ ಪ್ರತಿಕ್ರಿಯೆ ಹೇಗಿತ್ತು?",
+  "com_ui_feedback_enforce_later": "ಬಹುಶಃ ನಂತರ"
 }

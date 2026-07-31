@@ -1410,5 +1410,9 @@
   "com_ui_feedback_tag_not_satisfied": "不满意",
   "com_ui_feedback_tag_will_not_recommend": "不会推荐",
   "com_ui_feedback_tag_inappropriate_response": "不恰当的回复",
-  "com_ui_feedback_tag_other_positive": "其他"
+  "com_ui_feedback_tag_other_positive": "其他",
+  "com_ui_feedback_enforce_reminder": "开始新对话之前，请先对上一次的回答提供反馈。",
+  "com_ui_feedback_enforce_title": "需要反馈",
+  "com_ui_feedback_enforce_question": "上一次的回答怎么样？",
+  "com_ui_feedback_enforce_later": "稍后再说"
 }
