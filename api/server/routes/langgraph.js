@@ -41,17 +41,20 @@ router.get('/requires-feedback/:conversationId', async (req, res) => {
 
   if (!LANGGRAPH_API_HOST || !LANGGRAPH_API_PORT) {
     return res.status(500).json({
-      error:
-        'LangGraph API is not configured. Please set LANGGRAPH_API_HOST and LANGGRAPH_API_PORT in the .env file on the server.',
+      error: 'LangGraph API is not configured',
+      detail: `LANGGRAPH_API_HOST=${LANGGRAPH_API_HOST}, LANGGRAPH_API_PORT=${LANGGRAPH_API_PORT}`,
     });
   }
 
   const apiUrl = `http://${LANGGRAPH_API_HOST}:${LANGGRAPH_API_PORT}/threads/${conversationId}/state`;
 
   try {
-    const response = await fetch(apiUrl);
+    const response = await fetch(apiUrl, { signal: AbortSignal.timeout(10000) });
     if (!response.ok) {
-      return res.status(response.status).json({ error: 'Failed to fetch conversation state' });
+      return res.status(response.status).json({
+        error: 'LangGraph API returned non-OK response',
+        detail: `status=${response.status} for ${apiUrl}`,
+      });
     }
 
     const conversation = await response.json();
@@ -109,7 +112,12 @@ router.get('/requires-feedback/:conversationId', async (req, res) => {
     logFeedbackEnforcementState(FEEDBACK_ENFORCEMENT_ENABLED, `conversation:${conversationId}`);
     return res.json({ requiresFeedback, enabled: true });
   } catch (err) {
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error('[langgraph/requires-feedback] Error:', err.message, err.stack);
+    return res.status(500).json({
+      error: 'Internal server error',
+      detail: err.message,
+      apiUrl,
+    });
   }
 });
 
