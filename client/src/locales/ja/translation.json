@@ -1415,5 +1415,9 @@
   "com_ui_feedback_tag_not_satisfied": "満足していません",
   "com_ui_feedback_tag_will_not_recommend": "他の人には勧めません",
   "com_ui_feedback_tag_inappropriate_response": "不適切な応答",
-  "com_ui_feedback_tag_other_positive": "その他"
+  "com_ui_feedback_tag_other_positive": "その他",
+  "com_ui_feedback_enforce_reminder": "新しい会話を始める前に、前回の回答についてフィードバックを提供してください。",
+  "com_ui_feedback_enforce_title": "フィードバックが必要です",
+  "com_ui_feedback_enforce_question": "前回の回答はいかがでしたか？",
+  "com_ui_feedback_enforce_later": "後で"
 }

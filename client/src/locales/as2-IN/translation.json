@@ -2048,5 +2048,9 @@
   "com_ui_feedback_tag_not_satisfied": "सन्तुस्ट नङा",
   "com_ui_feedback_tag_will_not_recommend": "गुबुननो सुबुंथि होनाय नङा",
   "com_ui_feedback_tag_inappropriate_response": "गोरोबनाय नङै फिन होनाय",
-  "com_ui_feedback_tag_other_positive": "गुबुन"
+  "com_ui_feedback_tag_other_positive": "गुबुन",
+  "com_ui_feedback_enforce_reminder": "गोदान राइजोनि सिगांनि फिननायनि सायाव फिनजाथाइ हो।",
+  "com_ui_feedback_enforce_title": "फिनजाथाइ गोनां",
+  "com_ui_feedback_enforce_question": "सिगांनि फिननाया माबोरै मोनदों?",
+  "com_ui_feedback_enforce_later": "उनाव जानो हागौ"
 }

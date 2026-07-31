@@ -2048,5 +2048,9 @@
   "com_ui_feedback_tag_not_satisfied": "सन्तुष्टः नास्मि",
   "com_ui_feedback_tag_will_not_recommend": "अनुशंसां न करिष्यामि",
   "com_ui_feedback_tag_inappropriate_response": "अनुचितः प्रतिसादः",
-  "com_ui_feedback_tag_other_positive": "अन्ये"
+  "com_ui_feedback_tag_other_positive": "अन्ये",
+  "com_ui_feedback_enforce_reminder": "नूतनं संवादं प्रारभ्य पूर्वं कृपया पूर्वस्य प्रतिसादस्य विषये अभिप्रायं ददातु।",
+  "com_ui_feedback_enforce_title": "अभिप्रायः आवश्यकः",
+  "com_ui_feedback_enforce_question": "पूर्वः प्रतिसादः कथम् आसीत्?",
+  "com_ui_feedback_enforce_later": "कदाचित् पश्चात्"
 }

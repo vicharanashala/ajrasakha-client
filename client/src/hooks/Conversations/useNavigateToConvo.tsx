@@ -8,6 +8,7 @@ import type {
   TStartupConfig,
   TModelsConfig,
   TConversation,
+  TMessage,
 } from 'librechat-data-provider';
 import {
   clearModelForNonEphemeralAgent,
@@ -17,7 +18,9 @@ import {
   logger,
 } from '~/utils';
 import { useApplyModelSpecEffects } from '~/hooks/Agents';
+import { useSetRecoilState as useRecoilSetState } from 'recoil';
 import store from '~/store';
+import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
 
 const useNavigateToConvo = (index = 0) => {
   const navigate = useNavigate();
@@ -27,6 +30,8 @@ const useNavigateToConvo = (index = 0) => {
   const setSubmission = useSetRecoilState(store.submissionByIndex(index));
   const clearAllLatestMessages = store.useClearLatestMessages(`useNavigateToConvo ${index}`);
   const { hasSetConversation, setConversation: setConvo } = store.useCreateConversationAtom(index);
+  const setShowFeedbackReminder = useRecoilSetState(store.showFeedbackReminder);
+  const setPendingNewConversation = useRecoilSetState(store.pendingNewConversation);
 
   const setConversation = useCallback(
     (conversation: TConversation) => {
@@ -69,7 +74,7 @@ const useNavigateToConvo = (index = 0) => {
     }
   };
 
-  const navigateToConvo = (
+  const navigateToConvo = async (
     conversation?: TConversation | null,
     options?: {
       resetLatestMessage?: boolean;
@@ -82,6 +87,65 @@ const useNavigateToConvo = (index = 0) => {
     }
     const { resetLatestMessage = true, currentConvoId } = options || {};
     logger.log('conversation', 'Navigating to conversation', conversation);
+
+    // Check feedback requirement for the CURRENT conversation first (before switching)
+    // Only if currentConvoId is provided by the caller
+    if (currentConvoId && currentConvoId !== Constants.NEW_CONVO) {
+      const currentMessages = queryClient.getQueryData<TMessage[]>([
+        QueryKeys.messages,
+        currentConvoId,
+      ]);
+
+      const currentMessagesLoaded = currentMessages && currentMessages.length > 0;
+      const currentLatestAssistantMessage = currentMessagesLoaded
+        ? currentMessages
+            ?.slice()
+            .reverse()
+            .find((message) => !message.isCreatedByUser)
+        : null;
+
+      // Only check backend if we have messages loaded
+      if (currentMessagesLoaded) {
+        const toolCalled = await requiresFeedbackFromConversation(currentConvoId);
+
+        // Show modal if CURRENT conversation needs feedback - BLOCK THE SWITCH
+        if (toolCalled && !currentLatestAssistantMessage?.feedback) {
+          setPendingNewConversation(false);
+          setShowFeedbackReminder(true);
+          return;
+        }
+      }
+    }
+
+    // Check feedback requirement for the TARGET conversation (only if not new)
+    if (conversation.conversationId && conversation.conversationId !== Constants.NEW_CONVO) {
+      const messages = queryClient.getQueryData<TMessage[]>([
+        QueryKeys.messages,
+        conversation.conversationId,
+      ]);
+
+      const messagesLoaded = messages && messages.length > 0;
+      const latestAssistantMessage = messagesLoaded
+        ? messages
+            ?.slice()
+            .reverse()
+            .find((message) => !message.isCreatedByUser)
+        : null;
+
+      if (messagesLoaded) {
+        const toolCalled = await requiresFeedbackFromConversation(
+          conversation.conversationId ?? '',
+        );
+
+        // Show modal if TARGET conversation needs feedback (for awareness)
+        if (toolCalled && !latestAssistantMessage?.feedback) {
+          setPendingNewConversation(false);
+          setShowFeedbackReminder(true);
+          return;
+        }
+      }
+    }
+
     hasSetConversation.current = true;
     setSubmission(null);
     if (resetLatestMessage) {

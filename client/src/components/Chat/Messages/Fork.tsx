@@ -237,7 +237,9 @@ export default function Fork({
 
   const forkConvo = useForkConvoMutation({
     onSuccess: (data) => {
-      navigateToConvo(data.conversation);
+      navigateToConvo(data.conversation, {
+        currentConvoId: conversationId || undefined,
+      });
       showToast({
         message: localize('com_ui_fork_success'),
         status: 'success',

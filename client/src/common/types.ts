@@ -446,7 +446,7 @@ export type ToolDialogProps = {
 };
 
 export type TResError = {
-  response: { data: { message: string, errorCode?: string } };
+  response: { data: { message: string; errorCode?: string } };
   message: string;
 };
 
@@ -697,7 +697,7 @@ export type LanguageCode =
   | 'sat-IN'
   | 'sd-IN'
   | 'ne-IN'
-  | 'mn-IN'
+  | 'mn-IN';
 
 export type LanguageOption = {
   value: LanguageCode;

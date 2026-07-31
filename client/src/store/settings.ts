@@ -13,6 +13,14 @@ const staticAtoms = {
   }),
   showPopover: atom<boolean>({ key: 'showPopover', default: false }),
   isFeedbackDialogOpen: atom({ key: 'isFeedbackDialogOpen', default: false }),
+  showFeedbackReminder: atom<boolean>({
+    key: 'showFeedbackReminder',
+    default: false,
+  }),
+  pendingNewConversation: atom<boolean>({
+    key: 'pendingNewConversation',
+    default: false,
+  }),
 };
 
 const localStorageAtoms = {

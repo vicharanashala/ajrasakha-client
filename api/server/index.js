@@ -510,6 +510,7 @@ const startServer = async () => {
   app.use('/api/push', routes.push);
   app.use('/api/notifications', routes.notifications);
   app.use('/api/locations', routes.locations);
+  app.use('/api/langgraph', routes.langgraph);
   app.use('/api/diagnostics', routes.diagnostics);
 
   app.use(ErrorController);

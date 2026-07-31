@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useForm, Controller } from 'react-hook-form';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   OGDialog,
@@ -42,6 +42,8 @@ const FarmerLocationModal = ({
 }) => {
   const localize = useLocalize();
   const [submitError, setSubmitError] = useState('');
+  // Only fetch states/districts/kvks when the user opens the dropdown, not on mount.
+  const [statesQueryTriggered, setStatesQueryTriggered] = useState(false);
   const effectiveMissingFields = useMemo(
     () => missingFields.filter((field) => field !== 'cropsCultivated'),
     [missingFields],
@@ -124,14 +126,11 @@ const FarmerLocationModal = ({
     updateCropsCultivated(selectedCropsList.filter((crop) => crop !== cropToRemove));
   };
 
-  const baseUrl = import.meta.env.VITE_AJRASAKHA_SERVER_URL;
+  const baseUrl = import.meta.env.VITE_AJRASAKHA_SERVER_URL ?? '';
 
-  const { data: statesList = [] } = useQuery<{ code: number | string; name: string }[]>({
+  const { data: statesList = [], refetch: refetchStates } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['states'],
     queryFn: async () => {
-      if (!baseUrl) {
-        return [];
-      }
       try {
         const data = await dataService.getLocationStates(baseUrl);
         return Array.isArray(data) ? data : [];
@@ -140,19 +139,26 @@ const FarmerLocationModal = ({
         return [];
       }
     },
-    enabled: open,
+    enabled: false,
     staleTime: Infinity,
   });
 
-  const stateOptions = statesList.length > 0
+  const triggerStatesQuery = useCallback(() => {
+    if (!statesQueryTriggered) {
+      setStatesQueryTriggered(true);
+      refetchStates();
+    }
+  }, [statesQueryTriggered, refetchStates]);
+
+  const stateOptions = statesQueryTriggered && statesList.length > 0
     ? [...statesList.map((s) => s.name), localize('com_farmer_option_other')]
-    : [localize('com_farmer_option_other')];
+    : [];
 
   const stateObj = statesList.find((s) => s.name === selectedState);
   const { data: districtsList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['districts', stateObj?.code, selectedState],
     queryFn: async () => {
-      if (!baseUrl || stateObj?.code === undefined) {
+      if (stateObj?.code === undefined) {
         return [];
       }
       try {
@@ -175,7 +181,7 @@ const FarmerLocationModal = ({
   const { data: kvksList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['kvks', distObj?.code, selectedDistrict],
     queryFn: async () => {
-      if (!baseUrl || distObj?.code === undefined) {
+      if (distObj?.code === undefined) {
         return [];
       }
       try {
@@ -581,6 +587,7 @@ const FarmerLocationModal = ({
                           config.selectPlaceholder ?? `${localize('com_ui_select')} ${config.label}`
                         }
                         disabled={field === 'district' && !selectedState}
+                        onOpen={field === 'state' ? triggerStatesQuery : undefined}
                       />
                     )}
                   />

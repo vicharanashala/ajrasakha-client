@@ -2048,5 +2048,9 @@
   "com_ui_feedback_tag_not_satisfied": "سَنتوٗشٹ چھُس نہٕ",
   "com_ui_feedback_tag_will_not_recommend": "سِفٲرِش نہٕ کَرٕ",
   "com_ui_feedback_tag_inappropriate_response": "نامُنٲسِب جَواب",
-  "com_ui_feedback_tag_other_positive": "باقی"
+  "com_ui_feedback_tag_other_positive": "باقی",
+  "com_ui_feedback_enforce_reminder": "نئی گفتگو شروع کرنے سے پہلے براہِ کرم پچھلے جواب کے بارے میں اپنی رائے دیں۔",
+  "com_ui_feedback_enforce_title": "رائے درکار ہے",
+  "com_ui_feedback_enforce_question": "پچھلا جواب کیسا تھا؟",
+  "com_ui_feedback_enforce_later": "شاید بعد میں"
 }

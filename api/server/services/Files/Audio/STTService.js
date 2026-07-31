@@ -3,7 +3,6 @@ const fs = require('fs').promises;
 const FormData = require('form-data');
 const { Readable } = require('stream');
 const { logger } = require('@librechat/data-schemas');
-const { ProxyAgent } = require('undici');
 const { genAzureEndpoint, logAxiosError } = require('@librechat/api');
 const { extractEnvVariable, STTProviders } = require('librechat-data-provider');
 const { getAppConfig } = require('~/server/services/Config');
@@ -306,8 +305,17 @@ class STTService {
       resolvedProxy = endpointProxy;
     }
     if (resolvedProxy) {
-      /** Use undici ProxyAgent as fetch dispatcher - works for HTTP and HTTPS targets, mirrors chat completion in initializeCustom.ts */
-      options.fetchOptions = { dispatcher: new ProxyAgent(resolvedProxy) };
+      /** Use axios's native `proxy` option (works for both HTTP and HTTPS targets). axios ignores httpsAgent for HTTP URLs, so we must use the proxy option. */
+      try {
+        const proxyUrl = new URL(resolvedProxy);
+        options.proxy = {
+          protocol: proxyUrl.protocol.replace(':', ''),
+          host: proxyUrl.hostname,
+          port: Number(proxyUrl.port),
+        };
+      } catch (err) {
+        logger.warn(`[STT] Invalid proxy URL "${resolvedProxy}":`, err.message);
+      }
     }
 
     try {
