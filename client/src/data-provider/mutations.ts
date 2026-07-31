@@ -1043,9 +1043,9 @@ export const useRequestVerificationMutation = (
 ): UseMutationResult<{ message: string }, unknown, { identifier: string }, unknown> => {
   return useMutation({
     mutationFn: (variables: { identifier: string }) => {
-      const baseUrl = import.meta.env.VITE_VERIFICATION_SERVICE_URL;
+      const baseUrl = import.meta.env.VITE_AJRASAKHA_SERVER_URL;
       if (!baseUrl) {
-        throw new Error('VITE_VERIFICATION_SERVICE_URL is not configured');
+        throw new Error('VITE_AJRASAKHA_SERVER_URL is not configured');
       }
       return dataService.requestVerification(baseUrl, variables);
     },

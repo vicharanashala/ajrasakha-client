@@ -15,6 +15,7 @@ import {
   Label,
 } from '@librechat/client';
 import { LogOut } from 'lucide-react';
+import { dataService } from 'librechat-data-provider';
 import type { IFarmerProfile } from 'librechat-data-provider';
 import { useSaveFarmerProfileMutation } from '~/data-provider';
 import { useAuthContext } from '~/hooks/AuthContext';
@@ -149,30 +150,16 @@ const FarmerProfileModal = ({
     setValue('villageName', '', { shouldValidate: false });
   };
 
-  // Fetch credential status for warnings
-  const { data: credentialStatus } = useQuery<{
-    hasApiKey: boolean;
-    hasStatesUrl: boolean;
-    hasDistrictsUrl: boolean;
-    hasSubdistrictsUrl: boolean;
-    hasVillagesUrl: boolean;
-  }>({
-    queryKey: ['locations-status'],
-    queryFn: async () => {
-      const res = await fetch('/api/locations/status');
-      return res.json();
-    },
-    enabled: open,
-    staleTime: Infinity,
-  });
+  const baseUrl = import.meta.env.VITE_AJRASAKHA_SERVER_URL;
 
   const { data: statesList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['states'],
     queryFn: async () => {
       try {
-        const res = await fetch('/api/locations/states');
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) return data;
+        if (baseUrl) {
+          const data = await dataService.getLocationStates(baseUrl);
+          if (Array.isArray(data) && data.length > 0) return data;
+        }
       } catch (error) {
         console.error('Failed to fetch states, using fallback', error);
       }
@@ -187,9 +174,11 @@ const FarmerProfileModal = ({
     queryKey: ['districts', stateObj?.code, selectedState],
     queryFn: async () => {
       try {
-        if (stateObj?.code !== undefined) {
-          const res = await fetch(`/api/locations/districts?stateCode=${stateObj?.code}`);
-          const data = await res.json();
+        if (baseUrl && stateObj?.code !== undefined) {
+          const data = await dataService.getLocationDistricts(
+            baseUrl,
+            stateObj.code,
+          );
           if (Array.isArray(data) && data.length > 0) return data;
         }
       } catch (error) {
@@ -209,9 +198,8 @@ const FarmerProfileModal = ({
     queryKey: ['subdistricts', distObj?.code, selectedDistrict],
     queryFn: async () => {
       try {
-        if (distObj?.code !== undefined) {
-          const res = await fetch(`/api/locations/subdistricts?districtCode=${distObj?.code}`);
-          const data = await res.json();
+        if (baseUrl && distObj?.code !== undefined) {
+          const data = await dataService.getLocationBlocks(baseUrl, distObj.code);
           if (Array.isArray(data) && data.length > 0) return data;
         }
       } catch (error) {
@@ -231,9 +219,8 @@ const FarmerProfileModal = ({
     queryKey: ['villages', blockObj?.code, selectedBlock],
     queryFn: async () => {
       try {
-        if (blockObj?.code !== undefined) {
-          const res = await fetch(`/api/locations/villages?subdistrictCode=${blockObj?.code}`);
-          const data = await res.json();
+        if (baseUrl && blockObj?.code !== undefined) {
+          const data = await dataService.getLocationVillages(baseUrl, blockObj.code);
           if (Array.isArray(data) && data.length > 0) return data;
         }
       } catch (error) {
@@ -267,13 +254,34 @@ const FarmerProfileModal = ({
       ? [...villagesList.map((v) => v.name), otherOption]
       : [otherOption];
 
+  const { data: kvksList = [] } = useQuery<{ code: number | string; name: string }[]>({
+    queryKey: ['kvks', distObj?.code, selectedDistrict],
+    queryFn: async () => {
+      try {
+        if (baseUrl && distObj?.code !== undefined) {
+          const data = await dataService.getLocationKvks(baseUrl, distObj.code);
+          if (Array.isArray(data) && data.length > 0) {
+            return data.map((k) => ({ code: k.kvkId, name: k.kvkName }));
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch KVKs, using fallback', error);
+      }
+      return [];
+    },
+    enabled: !!selectedDistrict && selectedDistrict !== otherOption && distObj?.code !== undefined,
+    staleTime: Infinity,
+  });
+
   const baseKvkOptions =
     selectedDistrict && selectedDistrict !== otherOption
-      ? Array.isArray(KVKS[selectedDistrict])
-        ? KVKS[selectedDistrict]
-        : Array.isArray((KVKS as any).Other)
-          ? (KVKS as any).Other
-          : []
+      ? kvksList.length > 0
+        ? kvksList.map((k) => k.name)
+        : Array.isArray(KVKS[selectedDistrict])
+          ? KVKS[selectedDistrict]
+          : Array.isArray((KVKS as any).Other)
+            ? (KVKS as any).Other
+            : []
       : [];
 
   const kvkOptions =
@@ -862,37 +870,6 @@ const FarmerProfileModal = ({
           <p className="shrink-0 px-1 pb-3 text-sm font-medium text-red-500">
             {localize('com_farmer_profile_fill_all_required')}
           </p>
-
-          {/* ── Credential warnings ── */}
-          {credentialStatus && (
-            <div className="shrink-0 px-1 pb-3 space-y-1">
-              {!credentialStatus.hasApiKey && (
-                <p className="text-xs text-orange-500">
-                  {localize('com_farmer_credential_warning_api_key_missing')}
-                </p>
-              )}
-              {!credentialStatus.hasStatesUrl && (
-                <p className="text-xs text-orange-500">
-                  {localize('com_farmer_credential_warning_states_missing')}
-                </p>
-              )}
-              {!credentialStatus.hasDistrictsUrl && (
-                <p className="text-xs text-orange-500">
-                  {localize('com_farmer_credential_warning_districts_missing')}
-                </p>
-              )}
-              {!credentialStatus.hasSubdistrictsUrl && (
-                <p className="text-xs text-orange-500">
-                  {localize('com_farmer_credential_warning_blocks_missing')}
-                </p>
-              )}
-              {!credentialStatus.hasVillagesUrl && (
-                <p className="text-xs text-orange-500">
-                  {localize('com_farmer_credential_warning_villages_missing')}
-                </p>
-              )}
-            </div>
-          )}
 
           <div className="flex-1 overflow-y-auto px-1 py-2">
             <div className={fieldClass}>

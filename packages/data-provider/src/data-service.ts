@@ -1090,3 +1090,126 @@ export async function requestVerification(
   }
   return response.json();
 }
+
+/**
+ * Location lookups (states/districts/blocks/villages).
+ * Uses fetch instead of the internal Axios request module because these
+ * target the external verification service, not the LibreChat API.
+ */
+export interface ILocationOption {
+  code: number | string;
+  name: string;
+}
+
+/**
+ * The review system follows the government LGD field convention — e.g.
+ * `{ stateCode, stateNameEnglish }`, `{ districtCode, districtNameEnglish }` —
+ * rather than a flat `{ code, name }`. The exact prefix varies per level (and
+ * "blocks" may come back as `blockCode`/`blockNameEnglish` or
+ * `subDistrictCode`/`subDistrictNameEnglish`), so normalize generically by
+ * matching on the field name's suffix instead of hardcoding a prefix per call.
+ */
+function normalizeLocationItem(item: unknown): ILocationOption | null {
+  if (item == null || typeof item !== 'object') {
+    return null;
+  }
+  const record = item as Record<string, unknown>;
+  if (typeof record.code !== 'undefined' && typeof record.name !== 'undefined') {
+    return { code: record.code as number | string, name: String(record.name) };
+  }
+  const keys = Object.keys(record);
+  const codeKey = keys.find((k) => /code$/i.test(k));
+  const nameKey =
+    keys.find((k) => /nameenglish$/i.test(k)) ?? keys.find((k) => /name$/i.test(k));
+  const code = codeKey ? record[codeKey] : undefined;
+  const name = nameKey ? record[nameKey] : undefined;
+  if (typeof code === 'undefined' || typeof name === 'undefined') {
+    return null;
+  }
+  return { code: code as number | string, name: String(name) };
+}
+
+async function fetchLocationArray(url: string): Promise<unknown[]> {
+  const response = await fetch(url);
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to fetch location data');
+  }
+  const data = await response.json();
+  // Some deployments wrap the array in an envelope (e.g. { data: [...] }) —
+  // unwrap the common shapes instead of silently treating it as empty.
+  const rawList = Array.isArray(data)
+    ? data
+    : Array.isArray((data as { data?: unknown })?.data)
+      ? (data as { data: unknown[] }).data
+      : undefined;
+  if (!rawList) {
+    throw new Error(
+      `Unexpected location response shape from ${url}: ${JSON.stringify(data).slice(0, 300)}`,
+    );
+  }
+  return rawList;
+}
+
+async function fetchLocationList(url: string): Promise<ILocationOption[]> {
+  const rawList = await fetchLocationArray(url);
+  const normalized = rawList.map(normalizeLocationItem).filter((o): o is ILocationOption => o !== null);
+  if (normalized.length === 0 && rawList.length > 0) {
+    throw new Error(
+      `Could not find code/name fields in location response from ${url}: ${JSON.stringify(
+        rawList[0],
+      ).slice(0, 300)}`,
+    );
+  }
+  return normalized;
+}
+
+/**
+ * KVK (Krishi Vigyan Kendra) lookups, keyed by districtCode. Unlike the
+ * states/districts/blocks/villages lookups, the KVK document's own
+ * identifier is `kvkId` (not a `*Code`-suffixed field) — `districtCode`/
+ * `stateCode` on a KVK document are foreign keys, not its own id — so this
+ * intentionally does not go through the generic code/name normalizer.
+ */
+export interface IKvk {
+  kvkId: string;
+  kvkName: string;
+  kvkAddress?: string;
+  latitude?: number;
+  longitude?: number;
+  districtCode: number | string;
+  stateCode: number | string;
+}
+
+export async function getLocationKvks(
+  baseUrl: string,
+  districtCode: number | string,
+): Promise<IKvk[]> {
+  const rawList = await fetchLocationArray(endpoints.locationKvks(baseUrl, districtCode));
+  return rawList as IKvk[];
+}
+
+export function getLocationStates(baseUrl: string): Promise<ILocationOption[]> {
+  return fetchLocationList(endpoints.locationStates(baseUrl));
+}
+
+export function getLocationDistricts(
+  baseUrl: string,
+  stateCode: number | string,
+): Promise<ILocationOption[]> {
+  return fetchLocationList(endpoints.locationDistricts(baseUrl, stateCode));
+}
+
+export function getLocationBlocks(
+  baseUrl: string,
+  districtCode: number | string,
+): Promise<ILocationOption[]> {
+  return fetchLocationList(endpoints.locationBlocks(baseUrl, districtCode));
+}
+
+export function getLocationVillages(
+  baseUrl: string,
+  blockCode: number | string,
+): Promise<ILocationOption[]> {
+  return fetchLocationList(endpoints.locationVillages(baseUrl, blockCode));
+}
