@@ -10,6 +10,7 @@ import {
   Label,
   Input,
 } from '@librechat/client';
+import { dataService } from 'librechat-data-provider';
 import type { IFarmerProfile } from 'librechat-data-provider';
 import { useSaveFarmerProfileMutation } from '~/data-provider';
 import useGeolocation from '~/hooks/useGeolocation';
@@ -123,13 +124,16 @@ const FarmerLocationModal = ({
     updateCropsCultivated(selectedCropsList.filter((crop) => crop !== cropToRemove));
   };
 
+  const verificationServiceUrl = import.meta.env.VITE_VERIFICATION_SERVICE_URL;
+
   const { data: statesList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['states'],
     queryFn: async () => {
       try {
-        const res = await fetch('/api/locations/states');
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) return data;
+        if (verificationServiceUrl) {
+          const data = await dataService.getLocationStates(verificationServiceUrl);
+          if (Array.isArray(data) && data.length > 0) return data;
+        }
       } catch (error) {
         console.error('Failed to fetch states, using fallback', error);
       }
@@ -148,9 +152,11 @@ const FarmerLocationModal = ({
     queryKey: ['districts', stateObj?.code, selectedState],
     queryFn: async () => {
       try {
-        if (stateObj?.code !== undefined) {
-          const res = await fetch(`/api/locations/districts?stateCode=${stateObj?.code}`);
-          const data = await res.json();
+        if (verificationServiceUrl && stateObj?.code !== undefined) {
+          const data = await dataService.getLocationDistricts(
+            verificationServiceUrl,
+            stateObj.code,
+          );
           if (Array.isArray(data) && data.length > 0) return data;
         }
       } catch (error) {
@@ -169,9 +175,34 @@ const FarmerLocationModal = ({
     ? [...districtsList.map((d) => d.name), localize('com_farmer_option_other')]
     : [localize('com_farmer_option_other')];
 
+  const distObj = districtsList.find((d) => d.name === selectedDistrict);
+  const { data: kvksList = [] } = useQuery<{ code: number | string; name: string }[]>({
+    queryKey: ['kvks', distObj?.code, selectedDistrict],
+    queryFn: async () => {
+      try {
+        if (verificationServiceUrl && distObj?.code !== undefined) {
+          const data = await dataService.getLocationKvks(verificationServiceUrl, distObj.code);
+          if (Array.isArray(data) && data.length > 0) {
+            return data.map((k) => ({ code: k.kvkId, name: k.kvkName }));
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch KVKs, using fallback', error);
+      }
+      return [];
+    },
+    enabled: !!selectedDistrict && distObj?.code !== undefined,
+    staleTime: Infinity,
+  });
+
   const kvkOptions = useMemo(() => {
     if (!selectedDistrict) {
       return [];
+    }
+
+    // Prefer the live list from the review system.
+    if (kvksList.length > 0) {
+      return kvksList.map((k) => k.name);
     }
 
     // 1. Direct match
@@ -198,7 +229,7 @@ const FarmerLocationModal = ({
     }
 
     return (KVKS as any).Other || [];
-  }, [selectedDistrict]);
+  }, [selectedDistrict, kvksList]);
 
   const handleStateChange = (val: string) => {
     setValue('state', val, { shouldValidate: true });

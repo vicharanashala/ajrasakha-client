@@ -19,7 +19,9 @@ const SearchableSelect = ({
   const [search, setSearch] = useState('');
   const ref = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const safeOptions = Array.isArray(options) ? options : [];
+  const safeOptions = Array.isArray(options)
+    ? options.filter((o): o is string => typeof o === 'string')
+    : [];
 
   const filtered = safeOptions.filter((o) =>
     o.toLowerCase().includes(search.toLowerCase()),
