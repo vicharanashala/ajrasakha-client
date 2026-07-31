@@ -31,6 +31,7 @@ RUN uv --version
 
 # Set configurable max-old-space-size with default
 ARG NODE_MAX_OLD_SPACE_SIZE=6144
+ARG VITE_AJRASAKHA_SERVER_URL
 
 RUN mkdir -p /app /app/client/public/images /app/logs /app/uploads
 WORKDIR /app
@@ -55,8 +56,8 @@ RUN \
 COPY . .
 
 RUN \
-    # React client build with configurable memory
-    NODE_OPTIONS="--max-old-space-size=${NODE_MAX_OLD_SPACE_SIZE}" npm run frontend; \
+    # React client build with configurable memory and build-time env vars
+    NODE_OPTIONS="--max-old-space-size=${NODE_MAX_OLD_SPACE_SIZE}" VITE_AJRASAKHA_SERVER_URL="${VITE_AJRASAKHA_SERVER_URL}" npm run frontend; \
     npm prune --production; \
     npm cache clean --force
 
