@@ -149,14 +149,11 @@ const FarmerProfileModal = ({
     setValue('villageName', '', { shouldValidate: false });
   };
 
-  const baseUrl = import.meta.env.VITE_AJRASAKHA_SERVER_URL;
+  const baseUrl = import.meta.env.VITE_AJRASAKHA_SERVER_URL ?? '';
 
   const { data: statesList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['states'],
     queryFn: async () => {
-      if (!baseUrl) {
-        return [];
-      }
       try {
         const data = await dataService.getLocationStates(baseUrl);
         return Array.isArray(data) ? data : [];
@@ -173,7 +170,7 @@ const FarmerProfileModal = ({
   const { data: districtsList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['districts', stateObj?.code, selectedState],
     queryFn: async () => {
-      if (!baseUrl || stateObj?.code === undefined) {
+      if (stateObj?.code === undefined) {
         return [];
       }
       try {
@@ -192,7 +189,7 @@ const FarmerProfileModal = ({
   const { data: blocksList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['subdistricts', distObj?.code, selectedDistrict],
     queryFn: async () => {
-      if (!baseUrl || distObj?.code === undefined) {
+      if (distObj?.code === undefined) {
         return [];
       }
       try {
@@ -211,7 +208,7 @@ const FarmerProfileModal = ({
   const { data: villagesList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['villages', blockObj?.code, selectedBlock],
     queryFn: async () => {
-      if (!baseUrl || blockObj?.code === undefined) {
+      if (blockObj?.code === undefined) {
         return [];
       }
       try {
@@ -248,12 +245,12 @@ const FarmerProfileModal = ({
   const { data: kvksList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['kvks', distObj?.code, selectedDistrict],
     queryFn: async () => {
-      if (!baseUrl || distObj?.code === undefined) {
+      if (distObj?.code === undefined) {
         return [];
       }
       try {
         const data = await dataService.getLocationKvks(baseUrl, distObj.code);
-        return Array.isArray(data) ? data.map((k) => ({ code: k.kvkId, name: k.kvkName })) : [];
+        return Array.isArray(data) ? data.map((k) => ({ code: k.kvkId, name: k.kvkAddress ? `${k.kvkName}, ${k.kvkAddress}` : k.kvkName })) : [];
       } catch (error) {
         console.error('Failed to fetch KVKs', error);
         return [];
