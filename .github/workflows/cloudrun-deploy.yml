@@ -176,7 +176,7 @@ jobs:
             VAPID_EMAIL=${{ secrets.VAPID_EMAIL }}
             VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}
             VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}
-            VITE_VERIFICATION_SERVICE_URL=${{ secrets.VITE_VERIFICATION_SERVICE_URL }}
+            VITE_AJRASAKHA_SERVER_URL_STAGING=${{ secrets.VITE_AJRASAKHA_SERVER_URL_STAGING }}
             WEB_WEBHOOK_API_KEY=${{ secrets.WEB_WEBHOOK_API_KEY }}
           flags: --allow-unauthenticated --port=3080 --memory=2Gi --min-instances=0 --timeout=300
 
@@ -276,6 +276,6 @@ jobs:
             VAPID_EMAIL=${{ secrets.VAPID_EMAIL }}
             VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}
             VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}
-            VITE_VERIFICATION_SERVICE_URL=${{ secrets.VITE_VERIFICATION_SERVICE_URL }}
+            VITE_AJRASAKHA_SERVER_URL=${{ secrets.VITE_AJRASAKHA_SERVER_URL }}
             WEB_WEBHOOK_API_KEY=${{ secrets.WEB_WEBHOOK_API_KEY }}
           flags: --allow-unauthenticated --port=3080 --memory=2Gi --min-instances=0 --timeout=300
