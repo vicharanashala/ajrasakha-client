@@ -6,6 +6,7 @@ interface SearchableSelectProps {
   onChange: (val: string) => void;
   placeholder?: string;
   disabled?: boolean;
+  onOpen?: () => void;
 }
 
 const SearchableSelect = ({
@@ -14,6 +15,7 @@ const SearchableSelect = ({
   onChange,
   placeholder = 'Select...',
   disabled = false,
+  onOpen,
 }: SearchableSelectProps) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -41,6 +43,9 @@ const SearchableSelect = ({
   const handleOpen = () => {
     if (disabled) return;
     setOpen(true);
+    if (onOpen) {
+      onOpen();
+    }
     setTimeout(() => inputRef.current?.focus(), 0);
   };
 
