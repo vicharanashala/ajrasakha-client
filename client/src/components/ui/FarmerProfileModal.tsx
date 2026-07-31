@@ -21,7 +21,6 @@ import { useSaveFarmerProfileMutation } from '~/data-provider';
 import { useAuthContext } from '~/hooks/AuthContext';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
-import { STATES, DISTRICTS, BLOCKS, VILLAGES, CROPS, KVKS } from '~/utils/metaData';
 
 // ── Form Types ───────────────────────────────────────────────────────────────
 
@@ -155,15 +154,16 @@ const FarmerProfileModal = ({
   const { data: statesList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['states'],
     queryFn: async () => {
-      try {
-        if (baseUrl) {
-          const data = await dataService.getLocationStates(baseUrl);
-          if (Array.isArray(data) && data.length > 0) return data;
-        }
-      } catch (error) {
-        console.error('Failed to fetch states, using fallback', error);
+      if (!baseUrl) {
+        return [];
       }
-      return STATES.map((name, index) => ({ code: index, name }));
+      try {
+        const data = await dataService.getLocationStates(baseUrl);
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        console.error('Failed to fetch states', error);
+        return [];
+      }
     },
     enabled: open,
     staleTime: Infinity,
@@ -173,21 +173,16 @@ const FarmerProfileModal = ({
   const { data: districtsList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['districts', stateObj?.code, selectedState],
     queryFn: async () => {
+      if (!baseUrl || stateObj?.code === undefined) {
+        return [];
+      }
       try {
-        if (baseUrl && stateObj?.code !== undefined) {
-          const data = await dataService.getLocationDistricts(
-            baseUrl,
-            stateObj.code,
-          );
-          if (Array.isArray(data) && data.length > 0) return data;
-        }
+        const data = await dataService.getLocationDistricts(baseUrl, stateObj.code);
+        return Array.isArray(data) ? data : [];
       } catch (error) {
-        console.error('Failed to fetch districts, using fallback', error);
+        console.error('Failed to fetch districts', error);
+        return [];
       }
-      if (selectedState && DISTRICTS[selectedState]) {
-        return DISTRICTS[selectedState].map((name, index) => ({ code: index, name }));
-      }
-      return [];
     },
     enabled: !!selectedState && selectedState !== otherOption,
     staleTime: Infinity,
@@ -197,18 +192,16 @@ const FarmerProfileModal = ({
   const { data: blocksList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['subdistricts', distObj?.code, selectedDistrict],
     queryFn: async () => {
+      if (!baseUrl || distObj?.code === undefined) {
+        return [];
+      }
       try {
-        if (baseUrl && distObj?.code !== undefined) {
-          const data = await dataService.getLocationBlocks(baseUrl, distObj.code);
-          if (Array.isArray(data) && data.length > 0) return data;
-        }
+        const data = await dataService.getLocationBlocks(baseUrl, distObj.code);
+        return Array.isArray(data) ? data : [];
       } catch (error) {
-        console.error('Failed to fetch subdistricts, using fallback', error);
+        console.error('Failed to fetch subdistricts', error);
+        return [];
       }
-      if (selectedDistrict && BLOCKS[selectedDistrict]) {
-        return BLOCKS[selectedDistrict].map((name, index) => ({ code: index, name }));
-      }
-      return [];
     },
     enabled: !!selectedDistrict && selectedDistrict !== otherOption,
     staleTime: Infinity,
@@ -218,18 +211,16 @@ const FarmerProfileModal = ({
   const { data: villagesList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['villages', blockObj?.code, selectedBlock],
     queryFn: async () => {
+      if (!baseUrl || blockObj?.code === undefined) {
+        return [];
+      }
       try {
-        if (baseUrl && blockObj?.code !== undefined) {
-          const data = await dataService.getLocationVillages(baseUrl, blockObj.code);
-          if (Array.isArray(data) && data.length > 0) return data;
-        }
+        const data = await dataService.getLocationVillages(baseUrl, blockObj.code);
+        return Array.isArray(data) ? data : [];
       } catch (error) {
-        console.error('Failed to fetch villages, using fallback', error);
+        console.error('Failed to fetch villages', error);
+        return [];
       }
-      if (selectedBlock && VILLAGES[selectedBlock]) {
-        return VILLAGES[selectedBlock].map((name, index) => ({ code: index, name }));
-      }
-      return [];
     },
     enabled: !!selectedBlock && selectedBlock !== otherOption,
     staleTime: Infinity,
@@ -257,32 +248,23 @@ const FarmerProfileModal = ({
   const { data: kvksList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['kvks', distObj?.code, selectedDistrict],
     queryFn: async () => {
-      try {
-        if (baseUrl && distObj?.code !== undefined) {
-          const data = await dataService.getLocationKvks(baseUrl, distObj.code);
-          if (Array.isArray(data) && data.length > 0) {
-            return data.map((k) => ({ code: k.kvkId, name: k.kvkName }));
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch KVKs, using fallback', error);
+      if (!baseUrl || distObj?.code === undefined) {
+        return [];
       }
-      return [];
+      try {
+        const data = await dataService.getLocationKvks(baseUrl, distObj.code);
+        return Array.isArray(data) ? data.map((k) => ({ code: k.kvkId, name: k.kvkName })) : [];
+      } catch (error) {
+        console.error('Failed to fetch KVKs', error);
+        return [];
+      }
     },
     enabled: !!selectedDistrict && selectedDistrict !== otherOption && distObj?.code !== undefined,
     staleTime: Infinity,
   });
 
   const baseKvkOptions =
-    selectedDistrict && selectedDistrict !== otherOption
-      ? kvksList.length > 0
-        ? kvksList.map((k) => k.name)
-        : Array.isArray(KVKS[selectedDistrict])
-          ? KVKS[selectedDistrict]
-          : Array.isArray((KVKS as any).Other)
-            ? (KVKS as any).Other
-            : []
-      : [];
+    selectedDistrict && selectedDistrict !== otherOption ? kvksList.map((k) => k.name) : [];
 
   const kvkOptions =
     selectedDistrict && selectedDistrict !== otherOption
