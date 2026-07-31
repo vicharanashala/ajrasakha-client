@@ -124,14 +124,14 @@ const FarmerLocationModal = ({
     updateCropsCultivated(selectedCropsList.filter((crop) => crop !== cropToRemove));
   };
 
-  const verificationServiceUrl = import.meta.env.VITE_VERIFICATION_SERVICE_URL;
+  const baseUrl = import.meta.env.VITE_AJRASAKHA_SERVER_URL;
 
   const { data: statesList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['states'],
     queryFn: async () => {
       try {
-        if (verificationServiceUrl) {
-          const data = await dataService.getLocationStates(verificationServiceUrl);
+        if (baseUrl) {
+          const data = await dataService.getLocationStates(baseUrl);
           if (Array.isArray(data) && data.length > 0) return data;
         }
       } catch (error) {
@@ -152,9 +152,9 @@ const FarmerLocationModal = ({
     queryKey: ['districts', stateObj?.code, selectedState],
     queryFn: async () => {
       try {
-        if (verificationServiceUrl && stateObj?.code !== undefined) {
+        if (baseUrl && stateObj?.code !== undefined) {
           const data = await dataService.getLocationDistricts(
-            verificationServiceUrl,
+            baseUrl,
             stateObj.code,
           );
           if (Array.isArray(data) && data.length > 0) return data;
@@ -180,8 +180,8 @@ const FarmerLocationModal = ({
     queryKey: ['kvks', distObj?.code, selectedDistrict],
     queryFn: async () => {
       try {
-        if (verificationServiceUrl && distObj?.code !== undefined) {
-          const data = await dataService.getLocationKvks(verificationServiceUrl, distObj.code);
+        if (baseUrl && distObj?.code !== undefined) {
+          const data = await dataService.getLocationKvks(baseUrl, distObj.code);
           if (Array.isArray(data) && data.length > 0) {
             return data.map((k) => ({ code: k.kvkId, name: k.kvkName }));
           }
