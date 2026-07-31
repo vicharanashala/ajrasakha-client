@@ -10,6 +10,23 @@ const FEEDBACK_ENFORCEMENT_ENABLED = process.env.FEEDBACK_ENFORCEMENT_ENABLED ==
 const FEEDBACK_TOOLS = ['gdb', 'knowledge_base', 'weather', 'soil', 'mandi', 'chemical_checker'];
 
 /**
+ * Helper to log the current feedback enforcement state.
+ * - Logs "Feedback enabled" when the value is true.
+ * - Logs "Feedback disabled" when the value is false, null, or undefined.
+ */
+function logFeedbackEnforcementState(value, source) {
+  if (value === true) {
+    console.log(`[Feedback] Feedback enabled (source: ${source})`);
+  } else {
+    // Covers false, null, and undefined
+    console.log(`[Feedback] Feedback disabled (source: ${source})`, { value });
+  }
+}
+
+// Log the boot-time value of FEEDBACK_ENFORCEMENT_ENABLED
+logFeedbackEnforcementState(FEEDBACK_ENFORCEMENT_ENABLED, 'server-startup');
+
+/**
  * GET /api/langgraph/requires-feedback/:conversationId
  * Check if a conversation requires feedback based on tool usage
  */
@@ -18,6 +35,7 @@ router.get('/requires-feedback/:conversationId', async (req, res) => {
 
   // If feedback enforcement is disabled, skip the check
   if (!FEEDBACK_ENFORCEMENT_ENABLED) {
+    logFeedbackEnforcementState(FEEDBACK_ENFORCEMENT_ENABLED, `conversation:${conversationId}`);
     return res.json({ requiresFeedback: false, enabled: false });
   }
 
@@ -41,6 +59,7 @@ router.get('/requires-feedback/:conversationId', async (req, res) => {
     const plan = conversation?.values?.plan ?? {};
 
     if (plan.is_greeting === true) {
+      logFeedbackEnforcementState(FEEDBACK_ENFORCEMENT_ENABLED, `conversation:${conversationId}`);
       return res.json({ requiresFeedback: false, enabled: true });
     }
 
@@ -87,6 +106,7 @@ router.get('/requires-feedback/:conversationId', async (req, res) => {
       requiresFeedback = false;
     }
 
+    logFeedbackEnforcementState(FEEDBACK_ENFORCEMENT_ENABLED, `conversation:${conversationId}`);
     return res.json({ requiresFeedback, enabled: true });
   } catch (err) {
     return res.status(500).json({ error: 'Internal server error' });
