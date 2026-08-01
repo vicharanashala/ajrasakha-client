@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 
 const router = express.Router();
 
@@ -49,15 +50,27 @@ router.get('/requires-feedback/:conversationId', async (req, res) => {
   const apiUrl = `http://${LANGGRAPH_API_HOST}:${LANGGRAPH_API_PORT}/threads/${conversationId}/state`;
 
   try {
-    const response = await fetch(apiUrl, { signal: AbortSignal.timeout(10000) });
-    if (!response.ok) {
+    const options = { timeout: 10000 };
+
+    // Use proxy if configured (same pattern as STTService/TTSService)
+    if (process.env.PROXY) {
+      const proxyUrl = new URL(process.env.PROXY);
+      options.proxy = {
+        protocol: proxyUrl.protocol.replace(':', ''),
+        host: proxyUrl.hostname,
+        port: Number(proxyUrl.port),
+      };
+    }
+
+    const response = await axios.get(apiUrl, options);
+    if (response.status !== 200) {
       return res.status(response.status).json({
         error: 'LangGraph API returned non-OK response',
         detail: `status=${response.status} for ${apiUrl}`,
       });
     }
 
-    const conversation = await response.json();
+    const conversation = response.data;
     const messages = conversation?.values?.messages ?? [];
     const plan = conversation?.values?.plan ?? {};
 
