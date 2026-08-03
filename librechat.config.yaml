@@ -238,7 +238,7 @@ endpoints:
 
     - name: "AjraSakha-Agent"
       apiKey: "not_required"
-      baseURL: "${LANGGRAPH_API_HOST:-100.100.108.44}:${LANGGRAPH_API_PORT:-9019}/v1/ajrasakha"
+      baseURL: "${LANGGRAPH_API_HOST:-100.100.108.44}:9019/v1/ajrasakha"
       headers: &llm_context_headers
         Content-Type: "application/json"
         X-User-ID: "{{LIBRECHAT_USER_ID}}"
