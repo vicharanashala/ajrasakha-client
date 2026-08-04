@@ -43,9 +43,9 @@ env:
   GCP_PRODUCTION_SERVICE: ajrasakha-client-production
 
 jobs:
-  build:
-    if: github.event.inputs.should_build == 'true'
-    name: Build and Push Image
+  build_staging:
+    if: github.event.inputs.should_build == 'true' && github.event.inputs.deploy_staging == 'true'
+    name: Build and Push Image (Staging)
     runs-on: ubuntu-latest
 
     steps:
@@ -63,7 +63,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and Push Image
+      - name: Build and Push Image (Staging)
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -73,6 +73,39 @@ jobs:
           platforms: linux/amd64
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:staging-${{ github.sha }}
+          build-args: |
+            NODE_ENV=production
+            VITE_AJRASAKHA_SERVER_URL=${{ secrets.VITE_AJRASAKHA_SERVER_URL_STAGING }}
+
+  build_production:
+    if: github.event.inputs.should_build == 'true' && github.event.inputs.deploy_production == 'true'
+    name: Build and Push Image (Production)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Image (Production)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          no-cache: true
+          platforms: linux/amd64
+          tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:production-${{ github.sha }}
           build-args: |
             NODE_ENV=production
@@ -84,8 +117,8 @@ jobs:
       always() &&
       github.event.inputs.deploy_staging == 'true' &&
       github.event.inputs.should_build == 'true' &&
-      (needs.build.result == 'success' || needs.build.result == 'skipped' || needs.build.result == null)
-    needs: [build]
+      (needs.build_staging.result == 'success' || needs.build_staging.result == 'skipped' || needs.build_staging.result == null)
+    needs: [build_staging]
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate to Google Cloud
@@ -119,7 +152,7 @@ jobs:
             BAN_VIOLATIONS=${{ secrets.BAN_VIOLATIONS }}
             CONCURRENT_MESSAGE_MAX=${{ secrets.CONCURRENT_MESSAGE_MAX }}
             CONCURRENT_VIOLATION_SCORE=${{ secrets.CONCURRENT_VIOLATION_SCORE }}
-            CONFIG_PATH=https://raw.githubusercontent.com/vicharanashala/ajrasakha-client/main/librechat.config.yaml
+            CONFIG_PATH=https://raw.githubusercontent.com/vicharanashala/ajrasakha-client/${{ github.ref_name }}/librechat.config.yaml
             CONSOLE_JSON=${{ secrets.CONSOLE_JSON }}
             CREDS_IV=${{ secrets.CREDS_IV }}
             CREDS_KEY=${{ secrets.CREDS_KEY }}
@@ -130,6 +163,8 @@ jobs:
             DOMAIN_SERVER=${{ secrets.DOMAIN_SERVER }}
             ENDPOINTS=${{ secrets.ENDPOINTS }}
             FEEDBACK_ENFORCEMENT_ENABLED=${{ secrets.FEEDBACK_ENFORCEMENT_ENABLED }}
+            AGENT_HOST_IP=${{ secrets.AGENT_HOST_IP_STAGING }}
+            TS_PING_TARGET=${{ secrets.TS_PING_TARGET_STAGING }}
             FILE_UPLOAD_VIOLATION_SCORE=${{ secrets.FILE_UPLOAD_VIOLATION_SCORE }}
             FORK_VIOLATION_SCORE=${{ secrets.FORK_VIOLATION_SCORE }}
             GOOGLE_CALLBACK_URL=${{ secrets.GOOGLE_CALLBACK_URL }}
@@ -187,8 +222,8 @@ jobs:
       always() &&
       github.event.inputs.deploy_production == 'true' &&
       github.event.inputs.should_build == 'true' &&
-      (needs.build.result == 'success' || needs.build.result == 'skipped' || needs.build.result == null)
-    needs: [build]
+      (needs.build_production.result == 'success' || needs.build_production.result == 'skipped' || needs.build_production.result == null)
+    needs: [build_production]
     runs-on: ubuntu-latest
     steps:
       - name: Authenticate to Google Cloud
@@ -222,7 +257,7 @@ jobs:
             BAN_VIOLATIONS=${{ secrets.BAN_VIOLATIONS }}
             CONCURRENT_MESSAGE_MAX=${{ secrets.CONCURRENT_MESSAGE_MAX }}
             CONCURRENT_VIOLATION_SCORE=${{ secrets.CONCURRENT_VIOLATION_SCORE }}
-            CONFIG_PATH=${{ secrets.CONFIG_PATH }}
+            CONFIG_PATH=https://raw.githubusercontent.com/vicharanashala/ajrasakha-client/${{ github.ref_name }}/librechat.config.yaml
             CONSOLE_JSON=${{ secrets.CONSOLE_JSON }}
             CREDS_IV=${{ secrets.CREDS_IV }}
             CREDS_KEY=${{ secrets.CREDS_KEY }}
@@ -280,4 +315,6 @@ jobs:
             VITE_AJRASAKHA_SERVER_URL=${{ secrets.VITE_AJRASAKHA_SERVER_URL }}
             WEB_WEBHOOK_API_KEY=${{ secrets.WEB_WEBHOOK_API_KEY }}
             FEEDBACK_ENFORCEMENT_ENABLED=${{ secrets.FEEDBACK_ENFORCEMENT_ENABLED }}
+            AGENT_HOST_IP=${{ secrets.AGENT_HOST_IP }}
+            TS_PING_TARGET=${{ secrets.TS_PING_TARGET }}
           flags: --allow-unauthenticated --port=3080 --memory=2Gi --min-instances=0 --timeout=300
