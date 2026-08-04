@@ -109,11 +109,12 @@ function ChatView({ index = 0 }: { index?: number }) {
       const allMessages = flattenMessages(messagesTree);
       const latestAssistantMessage = findLatestAssistantMessage(allMessages);
 
-      requiresFeedbackFromConversation(convoId).then((toolCalled) => {
+      (async () => {
+        const toolCalled = await requiresFeedbackFromConversation(convoId);
         if (toolCalled && latestAssistantMessage && !latestAssistantMessage.feedback) {
           setShowFeedbackReminder(true);
         }
-      });
+      })();
     }
     // Empty deps: intentionally run only once on component mount.
     // messagesTree is NOT included — we only care about the snapshot at mount time,

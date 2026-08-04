@@ -43,7 +43,7 @@ export async function requiresFeedbackFromConversation(conversationId: string): 
       } catch {
         errorMessage = `Server error: ${response.status}`;
       }
-      alert(`LangGraph API Configuration Error: ${errorMessage}`);
+      console.log(`[Feedback] LangGraph API Configuration Error: ${errorMessage}`);
       logFeedbackEnforcementState(feedbackEnforcementEnabled);
       return false;
     }
@@ -59,7 +59,7 @@ export async function requiresFeedbackFromConversation(conversationId: string): 
 
     return data.requiresFeedback === true;
   } catch (err) {
-    alert('Error: Unable to connect to the feedback service. Please try again later.');
+    console.log('[Feedback] Error: Unable to connect to the feedback service. Please try again later.');
     logFeedbackEnforcementState(feedbackEnforcementEnabled);
     return false;
   }
