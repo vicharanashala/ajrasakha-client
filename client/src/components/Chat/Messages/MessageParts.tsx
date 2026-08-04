@@ -142,6 +142,7 @@ export default function Message(props: TMessageProps) {
                     setSiblingIdx={setSiblingIdx}
                     isCreatedByUser={message.isCreatedByUser}
                     conversationId={conversation?.conversationId}
+                    endpoint={message.endpoint ?? conversation?.endpoint}
                     isLatestMessage={messageId === latestMessage?.messageId}
                     content={message.content as Array<TMessageContentParts | undefined>}
                   />
