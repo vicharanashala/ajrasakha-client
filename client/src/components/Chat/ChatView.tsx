@@ -26,6 +26,7 @@ import { cn } from '~/utils';
 import store from '~/store';
 import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
 
+
 function LoadingSpinner() {
   return (
     <div className="relative flex-1 overflow-hidden overflow-y-auto">
@@ -68,19 +69,20 @@ function ChatView({ index = 0 }: { index?: number }) {
   // Wait for messages to load before resuming to avoid race condition
   useResumeOnLoad(conversationId, chatHelpers.getMessages, index, !isLoading);
 
-  // Check for feedback requirement on initial page load (only for existing conversations)
+  // Check for feedback requirement on initial page load (only once, not on message streaming updates)
   const setShowFeedbackReminder = useSetRecoilState(store.showFeedbackReminder);
-  
+
   useEffect(() => {
-    // Only check for existing conversations (not NEW_CONVO)
+    // Capture conversationId at effect creation time; avoid checking stale IDs after navigation
+    const convoId = conversationId;
+
     if (
       !isLoading &&
-      conversationId &&
-      conversationId !== Constants.NEW_CONVO &&
+      convoId &&
+      convoId !== Constants.NEW_CONVO &&
       messagesTree &&
       messagesTree.length > 0
     ) {
-      // Find the latest assistant message
       const findLatestAssistantMessage = (msgs: TMessage[]): TMessage | null => {
         for (let i = msgs.length - 1; i >= 0; i--) {
           if (!msgs[i].isCreatedByUser) {
@@ -90,7 +92,6 @@ function ChatView({ index = 0 }: { index?: number }) {
         return null;
       };
 
-      // Flatten messages from tree if needed
       const flattenMessages = (tree: TMessage[]): TMessage[] => {
         const result: TMessage[] = [];
         const traverse = (nodes: TMessage[]) => {
@@ -108,15 +109,18 @@ function ChatView({ index = 0 }: { index?: number }) {
       const allMessages = flattenMessages(messagesTree);
       const latestAssistantMessage = findLatestAssistantMessage(allMessages);
 
-      // Check if feedback is required
-      requiresFeedbackFromConversation(conversationId).then((toolCalled) => {
-        // Only show modal if messages are loaded AND tool called AND no feedback given
+      requiresFeedbackFromConversation(convoId).then((toolCalled) => {
         if (toolCalled && latestAssistantMessage && !latestAssistantMessage.feedback) {
           setShowFeedbackReminder(true);
         }
       });
     }
-  }, [isLoading, conversationId, messagesTree, setShowFeedbackReminder]);
+    // Empty deps: intentionally run only once on component mount.
+    // messagesTree is NOT included — we only care about the snapshot at mount time,
+    // not subsequent updates from streaming LLM responses.
+    // conversationId and isLoading are also intentionally omitted to prevent re-runs.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/rules-of-hooks
 
   const methods = useForm<ChatFormValues>({
     defaultValues: { text: '' },
