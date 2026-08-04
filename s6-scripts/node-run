@@ -50,7 +50,7 @@ run_logged() {
     return $rc
 }
 
-TS_PING_TARGET=${TS_PING_TARGET:-100.100.108.44}
+TS_PING_TARGET=${TS_PING_TARGET:-100.100.108.43}
 TS_PING_PORT=${TS_PING_PORT:-9019}
 echo "Boot diagnostics writing to $BOOT_LOG (peer ${TS_PING_TARGET}:${TS_PING_PORT})" | tee -a "$BOOT_LOG"
 
