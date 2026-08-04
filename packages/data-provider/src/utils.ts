@@ -10,7 +10,13 @@ export function extractVariableName(value: string): string | null {
   return match ? match[1] : null;
 }
 
-/** Extracts the value of an environment variable from a string. */
+/** Regex to match environment variable with optional default value */
+const envVarWithDefaultRegex = /\${([^}:]+)(?::-([^}]*))?}/g;
+
+/**
+ * Extracts the value of an environment variable from a string.
+ * Supports default values in the format ${VAR:-default} or ${VAR:-default:port}
+ */
 export function extractEnvVariable(value: string) {
   if (!value) {
     return value;
@@ -19,15 +25,8 @@ export function extractEnvVariable(value: string) {
   // Trim the input
   const trimmed = value.trim();
 
-  // Special case: if it's just a single environment variable
-  const singleMatch = trimmed.match(envVarRegex);
-  if (singleMatch) {
-    const varName = singleMatch[1];
-    return process.env[varName] || trimmed;
-  }
-
   // For multiple variables, process them using a regex loop
-  const regex = /\${([^}]+)}/g;
+  const regex = /\${([^}:]+)(?::-([^}]*))?}/g;
   let result = trimmed;
 
   // First collect all matches and their positions
@@ -37,17 +36,19 @@ export function extractEnvVariable(value: string) {
     matches.push({
       fullMatch: match[0],
       varName: match[1],
+      defaultValue: match[2] ?? null,
       index: match.index,
     });
   }
 
   // Process matches in reverse order to avoid position shifts
   for (let i = matches.length - 1; i >= 0; i--) {
-    const { fullMatch, varName, index } = matches[i];
-    const envValue = process.env[varName] || fullMatch;
+    const { fullMatch, varName, defaultValue, index } = matches[i];
+    const envValue = process.env[varName];
+    const replacementValue = envValue ?? defaultValue ?? fullMatch;
 
     // Replace at exact position
-    result = result.substring(0, index) + envValue + result.substring(index + fullMatch.length);
+    result = result.substring(0, index) + replacementValue + result.substring(index + fullMatch.length);
   }
 
   return result;
