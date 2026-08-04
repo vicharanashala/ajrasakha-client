@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { XIcon } from 'lucide-react';
 import { useRecoilState } from 'recoil';
-import { Button, cn } from '@librechat/client';
+import { Button } from '@librechat/client';
 import { useGetBannerQuery } from '~/data-provider';
 import store from '~/store';
 import { useLocalize } from '~/hooks';
@@ -34,18 +34,24 @@ export const Banner = ({ onHeightChange }: { onHeightChange?: (height: number) =
   //   }
   // };
   const formattedMessage = localize('com_banner_message').replace(/\n/g, '<br />');
+  const isStaging =
+    typeof window !== 'undefined' &&
+    window.location.hostname.includes('ajrasakha-client-staging-');
+
   return (
     <div
       ref={bannerRef}
       className="sticky top-0 z-20 flex w-full items-center justify-between bg-presentation px-3 py-2 text-black dark:text-white md:relative"
     >
       <div id="banner-left-portal" className="z-30 flex min-w-[max-content] items-center"></div>
-      <div
-        className={cn(
-          'flex-1 whitespace-pre-line px-4 text-center text-sm text-black dark:text-white md:text-base lg:text-lg',
+      <div className="flex-1 whitespace-pre-line px-4 text-center text-sm text-black dark:text-white md:text-base lg:text-lg">
+        <div dangerouslySetInnerHTML={{ __html: formattedMessage }}></div>
+        {isStaging && (
+          <div className="mt-1 text-xs font-bold tracking-widest text-red-500 dark:text-red-400">
+            STAGING BUILD CHECK
+          </div>
         )}
-        dangerouslySetInnerHTML={{ __html: formattedMessage }}
-      ></div>
+      </div>
       {/* {!banner.persistable && (
         <Button
           size="icon"
