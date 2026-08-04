@@ -44,7 +44,7 @@ env:
 
 jobs:
   build_staging:
-    if: github.event.inputs.should_build == 'true'
+    if: github.event.inputs.should_build == 'true' && github.event.inputs.deploy_staging == 'true'
     name: Build and Push Image (Staging)
     runs-on: ubuntu-latest
 
@@ -78,7 +78,7 @@ jobs:
             VITE_AJRASAKHA_SERVER_URL=${{ secrets.VITE_AJRASAKHA_SERVER_URL_STAGING }}
 
   build_production:
-    if: github.event.inputs.should_build == 'true'
+    if: github.event.inputs.should_build == 'true' && github.event.inputs.deploy_production == 'true'
     name: Build and Push Image (Production)
     runs-on: ubuntu-latest
 
