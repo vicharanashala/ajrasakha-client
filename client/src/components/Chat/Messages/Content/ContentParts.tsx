@@ -9,7 +9,12 @@ import type {
 import { MessageContext, SearchContext } from '~/Providers';
 import { ParallelContentRenderer, type PartWithIndex } from './ParallelContent';
 import { mapAttachments } from '~/utils';
-import { AJRASAKHA_AGENT_ENDPOINT, EditTextPart, EmptyText } from './Parts';
+import {
+  AJRASAKHA_AGENT_ENDPOINT,
+  AJRASAKHA_AGENT_MODEL,
+  EditTextPart,
+  EmptyText,
+} from './Parts';
 import MemoryArtifacts from './MemoryArtifacts';
 import Sources from '~/components/Web/Sources';
 import Container from './Container';
@@ -20,6 +25,7 @@ type ContentPartsProps = {
   messageId: string;
   conversationId?: string | null;
   endpoint?: string;
+  model?: string;
   attachments?: TAttachment[];
   searchResults?: { [key: string]: SearchResultData };
   isCreatedByUser: boolean;
@@ -54,6 +60,7 @@ const ContentParts = memo(function ContentParts({
   searchResults,
   conversationId,
   endpoint,
+  model,
   isCreatedByUser,
   isLatestMessage,
 }: ContentPartsProps) {
@@ -175,7 +182,11 @@ const ContentParts = memo(function ContentParts({
       <Sources messageId={messageId} conversationId={conversationId || undefined} />
       {showEmptyCursor && (
         <Container>
-          <EmptyText showAjraSakhaProgress={endpoint === AJRASAKHA_AGENT_ENDPOINT} />
+          <EmptyText
+            showAjraSakhaProgress={
+              endpoint === AJRASAKHA_AGENT_ENDPOINT || model === AJRASAKHA_AGENT_MODEL
+            }
+          />
         </Container>
       )}
       {sequentialParts.map(({ part, idx }) => renderPart(part, idx, idx === lastContentIdx))}
