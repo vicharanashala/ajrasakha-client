@@ -76,30 +76,22 @@ export default function AjraSakhaProgressStatus() {
 
   return (
     <div
-      className="animate-gradient-x relative flex max-w-2xl items-center gap-3 overflow-hidden rounded-2xl border border-emerald-500/20 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-violet-500/10 bg-[length:200%_200%] px-4 py-3 shadow-sm shadow-emerald-500/5 motion-reduce:animate-none"
+      className="flex max-w-2xl items-center gap-2"
       role="status"
       aria-live="polite"
       aria-atomic="true"
     >
-      <div
-        className="flex h-9 w-9 shrink-0 items-center justify-center gap-1 rounded-full bg-surface-primary/80 shadow-inner shadow-emerald-500/15"
-        aria-hidden="true"
-      >
+      <div className="flex shrink-0 items-center gap-1" aria-hidden="true">
         <span className="size-1.5 animate-bounce rounded-full bg-emerald-500 motion-reduce:animate-none" />
-        <span className="size-1.5 animate-bounce rounded-full bg-cyan-500 [animation-delay:150ms] motion-reduce:animate-none" />
-        <span className="size-1.5 animate-bounce rounded-full bg-violet-500 [animation-delay:300ms] motion-reduce:animate-none" />
+        <span className="size-1.5 animate-bounce rounded-full bg-emerald-500 [animation-delay:150ms] motion-reduce:animate-none" />
+        <span className="size-1.5 animate-bounce rounded-full bg-emerald-500 [animation-delay:300ms] motion-reduce:animate-none" />
       </div>
-      <div className="min-w-0">
-        <div className="mb-0.5 text-xs font-semibold tracking-wide text-emerald-700 dark:text-emerald-300">
-          AjraSakha is thinking
-        </div>
-        <p
-          key={message}
-          className="animate-fadeIn text-message text-base leading-7 text-text-primary motion-reduce:animate-none"
-        >
-          {message}
-        </p>
-      </div>
+      <p
+        key={message}
+        className="ajrasakha-progress-enter text-message min-w-0 text-base leading-7 text-text-primary"
+      >
+        {message}
+      </p>
     </div>
   );
 }

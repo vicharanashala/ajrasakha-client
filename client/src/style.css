@@ -2855,6 +2855,27 @@ html {
   animation: fadeIn 0.5s ease-out forwards;
 }
 
+@keyframes ajrasakha-progress-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.ajrasakha-progress-enter {
+  animation: ajrasakha-progress-enter 0.45s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ajrasakha-progress-enter {
+    animation: none;
+  }
+}
+
 /* Chat Badges Animation */
 
 @keyframes ios-wiggle {
