@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useForm } from 'react-hook-form';
 import { Spinner } from '@librechat/client';
@@ -70,9 +70,14 @@ function ChatView({ index = 0 }: { index?: number }) {
 
   // Check for feedback requirement on initial page load (only for existing conversations)
   const setShowFeedbackReminder = useSetRecoilState(store.showFeedbackReminder);
-  
+  const hasCheckedFeedback = useRef(false);
+
   useEffect(() => {
-    // Only check for existing conversations (not NEW_CONVO)
+    // Only run once — when messages first finish loading for an existing conversation
+    if (hasCheckedFeedback.current) {
+      return;
+    }
+
     if (
       !isLoading &&
       conversationId &&
@@ -80,6 +85,8 @@ function ChatView({ index = 0 }: { index?: number }) {
       messagesTree &&
       messagesTree.length > 0
     ) {
+      hasCheckedFeedback.current = true;
+
       // Find the latest assistant message
       const findLatestAssistantMessage = (msgs: TMessage[]): TMessage | null => {
         for (let i = msgs.length - 1; i >= 0; i--) {

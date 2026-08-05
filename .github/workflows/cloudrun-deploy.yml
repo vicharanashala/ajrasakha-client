@@ -109,7 +109,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:production-${{ github.sha }}
           build-args: |
             NODE_ENV=production
-            VITE_AJRASAKHA_SERVER_URL=${{ secrets.VITE_AJRASAKHA_SERVER_URL }}
+            VITE_AJRASAKHA_SERVER_URL=${{ secrets.VITE_AJRASAKHA_SERVER_URL_STAGING }}
 
   deploy_staging:
     name: Deploy to Cloud Run (Staging)
@@ -152,7 +152,7 @@ jobs:
             BAN_VIOLATIONS=${{ secrets.BAN_VIOLATIONS }}
             CONCURRENT_MESSAGE_MAX=${{ secrets.CONCURRENT_MESSAGE_MAX }}
             CONCURRENT_VIOLATION_SCORE=${{ secrets.CONCURRENT_VIOLATION_SCORE }}
-            CONFIG_PATH=https://raw.githubusercontent.com/vicharanashala/ajrasakha-client/main/librechat.config.yaml
+            CONFIG_PATH=https://raw.githubusercontent.com/vicharanashala/ajrasakha-client/${{ github.ref_name }}/librechat.config.yaml
             CONSOLE_JSON=${{ secrets.CONSOLE_JSON }}
             CREDS_IV=${{ secrets.CREDS_IV }}
             CREDS_KEY=${{ secrets.CREDS_KEY }}
@@ -257,7 +257,7 @@ jobs:
             BAN_VIOLATIONS=${{ secrets.BAN_VIOLATIONS }}
             CONCURRENT_MESSAGE_MAX=${{ secrets.CONCURRENT_MESSAGE_MAX }}
             CONCURRENT_VIOLATION_SCORE=${{ secrets.CONCURRENT_VIOLATION_SCORE }}
-            CONFIG_PATH=${{ secrets.CONFIG_PATH }}
+            CONFIG_PATH=https://raw.githubusercontent.com/vicharanashala/ajrasakha-client/${{ github.ref_name }}/librechat.config.yaml
             CONSOLE_JSON=${{ secrets.CONSOLE_JSON }}
             CREDS_IV=${{ secrets.CREDS_IV }}
             CREDS_KEY=${{ secrets.CREDS_KEY }}
