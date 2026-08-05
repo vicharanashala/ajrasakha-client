@@ -1,8 +1,5 @@
 import { useEffect, useState } from 'react';
 
-export const AJRASAKHA_AGENT_ENDPOINT = 'AjraSakha-Agent';
-export const AJRASAKHA_AGENT_MODEL = 'ajrasakha_agent';
-
 export const AJRASAKHA_PROGRESS_UPDATES = [
   {
     delay: 0,

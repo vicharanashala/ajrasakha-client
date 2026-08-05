@@ -10,8 +10,6 @@ import { MessageContext, SearchContext } from '~/Providers';
 import { ParallelContentRenderer, type PartWithIndex } from './ParallelContent';
 import { mapAttachments } from '~/utils';
 import {
-  AJRASAKHA_AGENT_ENDPOINT,
-  AJRASAKHA_AGENT_MODEL,
   EditTextPart,
   EmptyText,
 } from './Parts';
@@ -24,8 +22,6 @@ type ContentPartsProps = {
   content: Array<TMessageContentParts | undefined> | undefined;
   messageId: string;
   conversationId?: string | null;
-  endpoint?: string;
-  model?: string;
   attachments?: TAttachment[];
   searchResults?: { [key: string]: SearchResultData };
   isCreatedByUser: boolean;
@@ -59,8 +55,6 @@ const ContentParts = memo(function ContentParts({
   setSiblingIdx,
   searchResults,
   conversationId,
-  endpoint,
-  model,
   isCreatedByUser,
   isLatestMessage,
 }: ContentPartsProps) {
@@ -182,11 +176,7 @@ const ContentParts = memo(function ContentParts({
       <Sources messageId={messageId} conversationId={conversationId || undefined} />
       {showEmptyCursor && (
         <Container>
-          <EmptyText
-            showAjraSakhaProgress={
-              endpoint === AJRASAKHA_AGENT_ENDPOINT || model === AJRASAKHA_AGENT_MODEL
-            }
-          />
+          <EmptyText />
         </Container>
       )}
       {sequentialParts.map(({ part, idx }) => renderPart(part, idx, idx === lastContentIdx))}
