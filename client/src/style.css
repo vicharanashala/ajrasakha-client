@@ -2872,10 +2872,10 @@ html {
 
 @keyframes ajrasakha-progress-shimmer {
   from {
-    background-position: -150% 0;
+    background-position: 150% 0;
   }
   to {
-    background-position: 150% 0;
+    background-position: -150% 0;
   }
 }
 
@@ -2891,14 +2891,16 @@ html {
   pointer-events: none;
   background: linear-gradient(
     100deg,
-    transparent 40%,
-    rgb(255 255 255 / 0.75) 50%,
-    transparent 60%
+    transparent 32%,
+    rgb(255 255 255 / 0.35) 42%,
+    rgb(255 255 255 / 0.95) 50%,
+    rgb(255 255 255 / 0.35) 58%,
+    transparent 68%
   );
-  background-size: 250% 100%;
+  background-size: 260% 100%;
   background-clip: text;
   -webkit-background-clip: text;
-  animation: ajrasakha-progress-shimmer 2.4s ease-in-out infinite;
+  animation: ajrasakha-progress-shimmer 4s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
