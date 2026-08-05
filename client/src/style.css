@@ -2870,8 +2870,40 @@ html {
   animation: ajrasakha-progress-enter 0.45s ease-out both;
 }
 
+@keyframes ajrasakha-progress-shimmer {
+  from {
+    background-position: -150% 0;
+  }
+  to {
+    background-position: 150% 0;
+  }
+}
+
+.ajrasakha-progress-shimmer {
+  position: relative;
+}
+
+.ajrasakha-progress-shimmer::after {
+  position: absolute;
+  inset: 0;
+  content: attr(data-progress-message);
+  color: transparent;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 40%,
+    rgb(255 255 255 / 0.75) 50%,
+    transparent 60%
+  );
+  background-size: 250% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: ajrasakha-progress-shimmer 2.4s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .ajrasakha-progress-enter {
+  .ajrasakha-progress-enter,
+  .ajrasakha-progress-shimmer::after {
     animation: none;
   }
 }

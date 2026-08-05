@@ -88,7 +88,8 @@ export default function AjraSakhaProgressStatus() {
       </div>
       <p
         key={message}
-        className="ajrasakha-progress-enter text-message min-w-0 text-base leading-7 text-text-primary"
+        className="ajrasakha-progress-enter ajrasakha-progress-shimmer text-message min-w-0 text-base leading-7 text-text-primary"
+        data-progress-message={message}
       >
         {message}
       </p>
