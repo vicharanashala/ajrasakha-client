@@ -259,7 +259,21 @@ endpoints:
       # forcePrompt: false
       modelDisplayLabel: "AjraSakha Agent"
 
+    - name: "AgriParam"
+      apiKey: "not_required"
+      baseURL: "http://100.100.108.44:8101/v1"
+      headers: *llm_context_headers
+      models:
+        default: ['/models/agriparam/agriparam-model']
+        fetch: false
+      titleConvo: true
+      titleEndpoint: "vLLM-Gemma"
+      titleModel: "google/gemma-4-26B-A4B-it"
+      titleMessageRole: "user"
+      modelDisplayLabel: "Agri Param"
+
 # fileConfig:
+
 #   endpoints:
 #     default:
 #       ocr:
@@ -843,4 +857,17 @@ modelSpecs:
         # Minimal prefix so the client appends browser GPS (Latitude/Longitude) each turn.
         promptPrefix: "AjraSakha LangGraph agent session."
 
-        
+    - name: "agriparam"
+      label: "Agri Param"
+      default: false
+      maxContextTokens: 2048
+      description: "Next-gen argi-centric model from annam.ai"
+      iconURL: "https://storage.googleapis.com/annam-temp-images/logo-icon.png"
+      preset:
+        endpoint: "AgriParam"
+        model: "/models/agriparam/agriparam-model"
+        modelLabel: "Agri Param"
+        promptPrefix: "Agri Param chat completion session."
+
+
+
