@@ -69,7 +69,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          no-cache: true
+          no-cache: false
           platforms: linux/amd64
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:staging-${{ github.sha }}
@@ -103,7 +103,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          no-cache: true
+          no-cache: false
           platforms: linux/amd64
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:production-${{ github.sha }}
