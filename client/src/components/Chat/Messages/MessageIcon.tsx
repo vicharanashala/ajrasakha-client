@@ -3,8 +3,8 @@ import { getEndpointField } from 'librechat-data-provider';
 import type { Assistant, Agent } from 'librechat-data-provider';
 import type { TMessageIcon } from '~/common';
 import ConvoIconURL from '~/components/Endpoints/ConvoIconURL';
-import { useGetEndpointsQuery } from '~/data-provider';
-import { getIconEndpoint, logger } from '~/utils';
+import { useGetEndpointsQuery, useGetStartupConfig } from '~/data-provider';
+import { getIconEndpoint, getModelSpecIconURL, logger } from '~/utils';
 import Icon from '~/components/Endpoints/Icon';
 
 const MessageIcon = memo(
@@ -19,6 +19,7 @@ const MessageIcon = memo(
   }) => {
     logger.log('icon_data', iconData, assistant, agent);
     const { data: endpointsConfig } = useGetEndpointsQuery();
+    const { data: startupConfig } = useGetStartupConfig();
 
     const agentName = useMemo(() => agent?.name ?? '', [agent]);
     const agentAvatar = useMemo(() => agent?.avatar?.filepath ?? '', [agent]);
@@ -46,6 +47,12 @@ const MessageIcon = memo(
       [endpointsConfig, endpoint],
     );
 
+    const modelSpecIconURL = useMemo(() => {
+      const specs = startupConfig?.modelSpecs?.list ?? [];
+      const match = specs.find((s) => s?.preset?.model === iconData?.model);
+      return match ? getModelSpecIconURL(match) : '';
+    }, [startupConfig?.modelSpecs?.list, iconData?.model]);
+
     if (
       iconData?.isCreatedByUser !== true &&
       iconURL != null &&
@@ -65,11 +72,12 @@ const MessageIcon = memo(
       );
     }
 
+    const resolvedIconURL = iconURL || avatarURL || modelSpecIconURL || endpointIconURL;
     return (
       <Icon
         isCreatedByUser={iconData?.isCreatedByUser ?? false}
         endpoint={endpoint}
-        iconURL={avatarURL || endpointIconURL}
+        iconURL={resolvedIconURL}
         model={iconData?.model}
         assistantName={assistantName}
         agentName={agentName}
