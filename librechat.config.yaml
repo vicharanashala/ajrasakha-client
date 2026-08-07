@@ -861,7 +861,7 @@ modelSpecs:
       label: "Agri Param"
       default: false
       maxContextTokens: 128000
-      description: "Next-gen argi-centric model from annam.ai"
+      description: "BharatGen Agriculture Foundational Model"
       iconURL: "/assets/bharat-gen-logo.png"
       preset:
         endpoint: "AgriParam"
