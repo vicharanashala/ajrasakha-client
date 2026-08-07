@@ -862,7 +862,7 @@ modelSpecs:
       default: false
       maxContextTokens: 128000
       description: "Next-gen argi-centric model from annam.ai"
-      iconURL: "https://storage.googleapis.com/annam-temp-images/logo-icon.png"
+      iconURL: "/assets/bharat-gen-logo.png"
       preset:
         endpoint: "AgriParam"
         model: "/models/agriparam/agriparam-model"
