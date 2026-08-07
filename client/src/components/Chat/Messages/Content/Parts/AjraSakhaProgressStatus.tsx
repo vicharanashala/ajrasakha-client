@@ -75,13 +75,24 @@ export default function AjraSakhaProgressStatus() {
   }, []);
 
   return (
-    <p
-      className="text-message text-base leading-7 text-text-primary"
+    <div
+      className="flex max-w-2xl items-center gap-2"
       role="status"
       aria-live="polite"
       aria-atomic="true"
     >
-      {message}
-    </p>
+      <div className="flex shrink-0 items-center gap-1" aria-hidden="true">
+        <span className="size-1.5 animate-bounce rounded-full bg-emerald-500 motion-reduce:animate-none" />
+        <span className="size-1.5 animate-bounce rounded-full bg-emerald-500 [animation-delay:150ms] motion-reduce:animate-none" />
+        <span className="size-1.5 animate-bounce rounded-full bg-emerald-500 [animation-delay:300ms] motion-reduce:animate-none" />
+      </div>
+      <p
+        key={message}
+        className="ajrasakha-progress-enter ajrasakha-progress-shimmer text-message min-w-0 text-base leading-7 text-text-primary"
+        data-progress-message={message}
+      >
+        {message}
+      </p>
+    </div>
   );
 }
