@@ -1,5 +1,8 @@
 ### node etc ###
 
+# Scripts
+run.sh
+
 # Logs
 data-node
 meili_data*
