@@ -18,6 +18,7 @@ export default function useSubmitMessage() {
   const [showFeedbackReminder, setShowFeedbackReminder] = useRecoilState(store.showFeedbackReminder);
   const setPendingNewConversation = useRecoilState(store.pendingNewConversation)[1];
   const [isRequiredFeedback] = useRecoilState(store.isRequiredFeedback);
+  const setFeedbackShake = useRecoilState(store.feedbackShake)[1];
 
   const submitMessage = useCallback(
     async (data?: { text: string }, position?: { latitude: number; longitude: number }) => {
@@ -25,10 +26,11 @@ export default function useSubmitMessage() {
         return console.warn('No data provided to submitMessage');
       }
 
-      // Check localStorage feedback requirement before submitting
+      // Block submission if feedback is required — Recoil state is synced from the API via MessagesViewContext
       if (isRequiredFeedback) {
         setPendingNewConversation(false);
         setShowFeedbackReminder(true);
+        setFeedbackShake((n) => n + 1);
         return;
       }
 
@@ -70,6 +72,7 @@ export default function useSubmitMessage() {
       updateFarmerPlatform,
       updateLastActiveAt,
       setShowFeedbackReminder,
+      setFeedbackShake,
       setPendingNewConversation,
       isRequiredFeedback,
     ],

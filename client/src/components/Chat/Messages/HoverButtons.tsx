@@ -14,7 +14,6 @@ import Feedback from './Feedback';
 import { cn } from '~/utils';
 import { logTtsPayload } from '~/utils/ttsDebug';
 import store from '~/store';
-import FeedbackReminderDialog from './FeedbackReminderDialog';
 // import { requiresFeedbackForMessage } from '~/utils/requiresFeedback';
 
 type THoverButtons = {
@@ -257,16 +256,6 @@ const HoverButtons = ({
         />
       )}
 
-      {shouldShowFeedbackReminder && (
-        <FeedbackReminderDialog
-          open={showFeedbackReminder}
-          onOpenChange={setShowFeedbackReminder}
-          feedback={feedback}
-          handleFeedback={handleFeedback!}
-          conversation={conversation}
-          message={message}
-        />
-      )}
     </div>
   );
 };

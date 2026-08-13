@@ -257,6 +257,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const [showFeedbackReminder] = useRecoilState(
     store.showFeedbackReminder,
   );
+  const [shakeCount] = useRecoilState(store.feedbackShake);
 
   const handleMessageSubmit = methods.handleSubmit(async (data) => {
     submitMessage(data, position ?? undefined);
@@ -306,6 +307,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               isTemporary
                 ? 'border-violet-800/60 bg-violet-950/10'
                 : 'border-border-light bg-surface-chat',
+              shakeCount > 0 && 'shake',
             )}
           >
             <TextareaHeader addedConvo={addedConvo} setAddedConvo={setAddedConvo} />

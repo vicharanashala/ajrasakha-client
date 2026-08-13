@@ -21,6 +21,10 @@ const staticAtoms = {
     key: 'pendingNewConversation',
     default: false,
   }),
+  feedbackShake: atom<number>({
+    key: 'feedbackShake',
+    default: 0,
+  }),
 };
 
 const localStorageAtoms = {

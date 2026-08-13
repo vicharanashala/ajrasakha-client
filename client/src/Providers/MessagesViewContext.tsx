@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useMemo, useEffect, useRef, useState } from 'react';
 import { useChatContext } from './ChatContext';
-import { Constants } from 'librechat-data-provider';
+import { Constants, TFeedback } from 'librechat-data-provider';
 import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
 import store from '~/store';
 import { useRecoilState } from 'recoil';
@@ -26,6 +26,10 @@ interface MessagesViewContextValue {
   setLatestMessage: ReturnType<typeof useChatContext>['setLatestMessage'];
   getMessages: ReturnType<typeof useChatContext>['getMessages'];
   setMessages: ReturnType<typeof useChatContext>['setMessages'];
+
+  /** Feedback submission */
+  submitFeedback?: (opts: { feedback?: TFeedback }) => void;
+  showFeedbackReminder: boolean;
 }
 
 const MessagesViewContext = createContext<MessagesViewContextValue | undefined>(undefined);
@@ -55,7 +59,23 @@ export function MessagesViewProvider({ children }: { children: React.ReactNode }
   // --- Feedback Tracker ---
   // Watches isSubmitting transitions: true→false means an LLM response just completed.
   // After a 2-second wait, we call the required-feedback API and store the result.
+  // Initialise from localStorage on first mount so conversation switches restore the state.
   const [isRequiredFeedback, setIsRequiredFeedback] = useRecoilState(store.isRequiredFeedback);
+  const [initialized, setInitialized] = useState(false);
+  useEffect(() => {
+    if (initialized) {
+      return;
+    }
+    try {
+      const stored = localStorage.getItem('isRequiredFeedback');
+      if (stored !== null) {
+        setIsRequiredFeedback(stored === 'true');
+      }
+    } catch {
+      // ignore localStorage errors
+    }
+    setInitialized(true);
+  }, [initialized, setIsRequiredFeedback]);
   const [wasSubmitting, setWasSubmitting] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const conversationIdRef = useRef<string | null | undefined>(undefined);
