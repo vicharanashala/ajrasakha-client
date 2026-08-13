@@ -33,6 +33,9 @@ const localStorageAtoms = {
   ),
   keepScreenAwake: atomWithLocalStorage('keepScreenAwake', true),
 
+  // Feedback
+  isRequiredFeedback: atomWithLocalStorage('isRequiredFeedback', false),
+
   // Chat settings
   enterToSend: atomWithLocalStorage('enterToSend', true),
   maximizeChatSpace: atomWithLocalStorage('maximizeChatSpace', false),

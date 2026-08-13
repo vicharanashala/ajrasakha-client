@@ -21,7 +21,6 @@ import type {
   TModelsConfig,
   TConversation,
   TEndpointsConfig,
-  TMessage,
 } from 'librechat-data-provider';
 import type { AssistantListItem } from '~/common';
 import {
@@ -42,7 +41,6 @@ import { useHasAccess } from '~/hooks';
 import store from '~/store';
 import { useQueryClient } from '@tanstack/react-query';
 import { QueryKeys } from 'librechat-data-provider';
-import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
 
 const useNewConvo = (index = 0) => {
   const navigate = useNavigate();
@@ -70,6 +68,7 @@ const useNewConvo = (index = 0) => {
   const resetBadges = useResetChatBadges();
   const setShowFeedbackReminder = useSetRecoilState(store.showFeedbackReminder);
   const setPendingNewConversation = useSetRecoilState(store.pendingNewConversation);
+  const [isRequiredFeedback, setIsRequiredFeedback] = useRecoilState(store.isRequiredFeedback);
   const queryClient = useQueryClient();
   const { mutateAsync } = useDeleteFilesMutation({
     onSuccess: () => {
@@ -236,34 +235,10 @@ const useNewConvo = (index = 0) => {
           return;
         }
 
-        // Check feedback requirement when switching to an existing conversation
+        // Clear feedback requirement when switching conversations — allow free navigation
         if (conversation.conversationId && conversation.conversationId !== Constants.NEW_CONVO) {
-          const messages = queryClient.getQueryData<TMessage[]>([
-            QueryKeys.messages,
-            conversation.conversationId,
-          ]);
-
-          // Check if messages are actually loaded in cache
-          const messagesLoaded = messages && messages.length > 0;
-
-          const latestAssistantMessage = messagesLoaded
-            ? messages
-                ?.slice()
-                .reverse()
-                .find((message) => !message.isCreatedByUser)
-            : null;
-
-          const toolCalled = await requiresFeedbackFromConversation(
-            conversation.conversationId ?? '',
-          );
-
-          // Only show modal if messages are loaded AND tool called AND no feedback given
-          const shouldRequestFeedback = messagesLoaded && toolCalled && !latestAssistantMessage?.feedback;
-
-          if (shouldRequestFeedback) {
-          setPendingNewConversation(false); // Not creating new, just switching
-            setShowFeedbackReminder(true);
-            return;
+          if (isRequiredFeedback) {
+            setIsRequiredFeedback(false);
           }
         }
 
@@ -299,7 +274,6 @@ const useNewConvo = (index = 0) => {
       keepLatestMessage = false,
       keepAddedConvos = false,
       disableParams,
-      skipFeedbackCheck = false,
     }: {
       template?: Partial<TConversation>;
       preset?: Partial<TPreset>;
@@ -309,41 +283,10 @@ const useNewConvo = (index = 0) => {
       keepLatestMessage?: boolean;
       keepAddedConvos?: boolean;
       disableParams?: boolean;
-      skipFeedbackCheck?: boolean;
     } = {}) {
-      if (!skipFeedbackCheck) {
-        const currentConversationId = oldConversation?.conversationId;
-
-        const messages = queryClient.getQueryData<TMessage[]>([
-          QueryKeys.messages,
-          currentConversationId,
-        ]);
-
-        // Check if messages are actually loaded in cache
-        const messagesLoaded = messages && messages.length > 0;
-
-        const latestAssistantMessage = messagesLoaded
-          ? messages
-              ?.slice()
-              .reverse()
-              .find((message) => !message.isCreatedByUser)
-          : null;
-
-        const toolCalled = await requiresFeedbackFromConversation(currentConversationId ?? '');
-
-        // Only show modal if messages are loaded AND tool called AND no feedback given
-        const shouldRequestFeedback =
-          messagesLoaded &&
-          toolCalled &&
-          currentConversationId &&
-          currentConversationId !== Constants.NEW_CONVO &&
-          !latestAssistantMessage?.feedback;
-
-        if (shouldRequestFeedback) {
-          setPendingNewConversation(true);
-          setShowFeedbackReminder(true);
-          return;
-        }
+      // Clear feedback requirement when creating a new conversation — allow free navigation
+      if (isRequiredFeedback) {
+        setIsRequiredFeedback(false);
       }
       pauseGlobalAudio();
       if (!saveBadgesState) {
@@ -413,6 +356,7 @@ const useNewConvo = (index = 0) => {
         }
       }
 
+      // Remove skipFeedbackCheck from switchToConversation call (no longer needed)
       switchToConversation(
         conversation,
         preset,
@@ -425,7 +369,6 @@ const useNewConvo = (index = 0) => {
       );
     },
     [
-      oldConversation?.conversationId,
       queryClient,
       files,
       setFiles,
@@ -439,6 +382,7 @@ const useNewConvo = (index = 0) => {
       applyModelSpecEffects,
       setPendingNewConversation,
       setShowFeedbackReminder,
+      isRequiredFeedback,
     ],
   );
 

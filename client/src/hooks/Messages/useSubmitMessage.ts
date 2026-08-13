@@ -1,23 +1,23 @@
 import { useCallback } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { replaceSpecialVars } from 'librechat-data-provider';
 import { useChatContext, useChatFormContext, useAddedChatContext } from '~/Providers';
 import { useAuthContext } from '~/hooks/AuthContext';
 import { useUpdateFarmerPlatformMutation, useUpdateFarmerLastActiveAt } from '~/data-provider';
 import store from '~/store';
-import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
 
 export default function useSubmitMessage() {
   const { user } = useAuthContext();
   const methods = useChatFormContext();
   const updateFarmerPlatform = useUpdateFarmerPlatformMutation();
   const { conversation: addedConvo } = useAddedChatContext();
-  const { ask, index, getMessages, setMessages, latestMessage, conversation } = useChatContext();
+  const { ask, index, getMessages, setMessages, latestMessage } = useChatContext();
   const updateLastActiveAt = useUpdateFarmerLastActiveAt();
   const autoSendPrompts = useRecoilValue(store.autoSendPrompts);
-  const setActivePrompt = useSetRecoilState(store.activePromptByIndex(index));
-  const setShowFeedbackReminder = useSetRecoilState(store.showFeedbackReminder);
-  const setPendingNewConversation = useSetRecoilState(store.pendingNewConversation);
+  const [activePrompt, setActivePrompt] = useRecoilState(store.activePromptByIndex(index));
+  const [showFeedbackReminder, setShowFeedbackReminder] = useRecoilState(store.showFeedbackReminder);
+  const setPendingNewConversation = useRecoilState(store.pendingNewConversation)[1];
+  const [isRequiredFeedback] = useRecoilState(store.isRequiredFeedback);
 
   const submitMessage = useCallback(
     async (data?: { text: string }, position?: { latitude: number; longitude: number }) => {
@@ -25,31 +25,11 @@ export default function useSubmitMessage() {
         return console.warn('No data provided to submitMessage');
       }
 
-      // Check feedback requirement before submitting
-      const convoId = conversation?.conversationId;
-      if (convoId && convoId !== 'new') {
-        const messages = getMessages();
-        
-        // Check if messages are actually loaded
-        const messagesLoaded = messages && messages.length > 0;
-        
-        const latestAssistantMessage = messagesLoaded
-          ? messages
-              ?.slice()
-              .reverse()
-              .find((message) => !message.isCreatedByUser)
-          : null;
-
-        const toolCalled = await requiresFeedbackFromConversation(convoId);
-
-        // Only show modal if messages are loaded AND tool called AND no feedback given
-        const shouldRequestFeedback = messagesLoaded && toolCalled && !latestAssistantMessage?.feedback;
-
-        if (shouldRequestFeedback) {
-          setPendingNewConversation(false);
-          setShowFeedbackReminder(true);
-          return;
-        }
+      // Check localStorage feedback requirement before submitting
+      if (isRequiredFeedback) {
+        setPendingNewConversation(false);
+        setShowFeedbackReminder(true);
+        return;
       }
 
       const rootMessages = getMessages();
@@ -89,9 +69,9 @@ export default function useSubmitMessage() {
       latestMessage,
       updateFarmerPlatform,
       updateLastActiveAt,
-      conversation,
       setShowFeedbackReminder,
       setPendingNewConversation,
+      isRequiredFeedback,
     ],
   );
 

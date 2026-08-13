@@ -116,36 +116,15 @@ const HoverButtons = ({
   const [showFeedbackReminder, setShowFeedbackReminder] = useRecoilState(
     store.showFeedbackReminder,
   );
-
-  // const [toolCalled, setToolCalled] = useState(false);
-
-  // useEffect(() => {
-  //   if (!conversation?.conversationId || !message.messageId) {
-  //     setToolCalled(false);
-  //     return;
-  //   }
-  //   let cancelled = false;
-  //   const load = async () => {
-  //     const requires = await requiresFeedbackForMessage(
-  //       conversation.conversationId ?? '',
-  //       message.messageId,
-  //     );
-
-  //     if (!cancelled) {
-  //       setToolCalled(requires);
-  //     }
-  //   };
-  //   load();
-  //   return () => {
-  //     cancelled = true;
-  //   };
-  // }, [conversation?.conversationId, message.messageId]);
+  const [isRequiredFeedback] = useRecoilState(store.isRequiredFeedback);
 
   const isLatestAssistantMessage =
     !message.isCreatedByUser && message.messageId === latestMessage?.messageId;
-  // console.log('----toollcalled in hoverbuttons----', toolCalled);
+
+  // Show modal when feedback is required AND action-blocking code set showFeedbackReminder,
+  // AND this is the latest assistant message with no feedback yet
   const shouldShowFeedbackReminder =
-    showFeedbackReminder && isLatestAssistantMessage && !feedback && !isSubmitting;
+    isRequiredFeedback && showFeedbackReminder && isLatestAssistantMessage && !feedback && !isSubmitting;
 
   const localize = useLocalize();
   const [isCopied, setIsCopied] = useState(false);

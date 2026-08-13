@@ -1,5 +1,9 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useContext, useMemo, useEffect, useRef, useState } from 'react';
 import { useChatContext } from './ChatContext';
+import { Constants } from 'librechat-data-provider';
+import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
+import store from '~/store';
+import { useRecoilState } from 'recoil';
 
 interface MessagesViewContextValue {
   /** Core conversation data */
@@ -47,6 +51,62 @@ export function MessagesViewProvider({ children }: { children: React.ReactNode }
     getMessages,
     setMessages,
   } = chatContext;
+
+  // --- Feedback Tracker ---
+  // Watches isSubmitting transitions: true→false means an LLM response just completed.
+  // After a 2-second wait, we call the required-feedback API and store the result.
+  const [isRequiredFeedback, setIsRequiredFeedback] = useRecoilState(store.isRequiredFeedback);
+  const [wasSubmitting, setWasSubmitting] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const conversationIdRef = useRef<string | null | undefined>(undefined);
+
+  // Keep conversationId ref in sync; cancel pending timer on conversation change
+  useEffect(() => {
+    conversationIdRef.current = conversation?.conversationId;
+    if (timerRef.current !== null) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  }, [conversation?.conversationId]);
+
+  // Detect isSubmitting transition: true → false (LLM response completed)
+  useEffect(() => {
+    console.log(`[Feedback] useEffect fired — isSubmitting=${isSubmitting}, wasSubmitting=${wasSubmitting}, convoId=${conversation?.conversationId}`);
+    if (wasSubmitting && !isSubmitting) {
+      const convoId = conversationIdRef.current;
+      console.log(`[Feedback] Detected true→false transition, convoId=${convoId}`);
+      if (!convoId || convoId === Constants.NEW_CONVO) {
+        console.log(`[Feedback] Skipping — invalid convoId: ${convoId}`);
+        setWasSubmitting(false);
+        return;
+      }
+      // Cancel any previous pending timer
+      if (timerRef.current !== null) {
+        clearTimeout(timerRef.current);
+      }
+      timerRef.current = setTimeout(async () => {
+        timerRef.current = null;
+        console.log(`[Feedback] 2s timer fired — calling required-feedback API for conversation: ${convoId}`);
+        const result = await requiresFeedbackFromConversation(convoId);
+        console.log(`[Feedback] API returned: ${result} for conversation: ${convoId}`);
+        setIsRequiredFeedback(result);
+        localStorage.setItem('isRequiredFeedback', JSON.stringify(result));
+        console.log(`[Feedback] Wrote to localStorage: isRequiredFeedback = ${result}`);
+      }, 2000);
+    }
+    setWasSubmitting(isSubmitting);
+  }, [isSubmitting, wasSubmitting, setIsRequiredFeedback, conversation?.conversationId]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current !== null) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, []);
+  // --- End Feedback Tracker ---
 
   /** Memoize conversation-related values */
   const conversationValues = useMemo(

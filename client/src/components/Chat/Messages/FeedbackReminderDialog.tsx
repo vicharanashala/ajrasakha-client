@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 import {
   Button,
   OGDialog,
@@ -10,6 +10,7 @@ import {
 import type { TFeedback, TConversation, TMessage } from 'librechat-data-provider';
 import { useLocalize } from '~/hooks';
 import Feedback from './Feedback';
+import store from '~/store';
 
 interface FeedbackReminderDialogProps {
   open: boolean;
@@ -21,14 +22,14 @@ interface FeedbackReminderDialogProps {
 }
 
 const FeedbackReminderDialog = memo(
-  ({ open, onOpenChange, feedback, handleFeedback, conversation, message }: FeedbackReminderDialogProps) => {
+  ({ open, onOpenChange, feedback, handleFeedback, conversation }: FeedbackReminderDialogProps) => {
     const localize = useLocalize();
-    const navigate = useNavigate();
+    const [, setIsRequiredFeedback] = useRecoilState(store.isRequiredFeedback);
 
     const onFeedback = ({ feedback }: { feedback: TFeedback | undefined }) => {
       handleFeedback({ feedback });
-
       if (feedback) {
+        setIsRequiredFeedback(false);
         onOpenChange(false);
       }
     };
@@ -36,13 +37,15 @@ const FeedbackReminderDialog = memo(
     const handleGoToConversation = useCallback((e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      console.log('----handleGoToConversation called----', conversation?.conversationId);
       if (conversation?.conversationId) {
-        const targetPath = `/c/${conversation.conversationId}`;
-        console.log('----navigating to----', targetPath);
-        window.location.href = targetPath;
+        window.location.href = `/c/${conversation.conversationId}`;
       }
     }, [conversation]);
+
+    const handleMaybeLater = useCallback(() => {
+      setIsRequiredFeedback(false);
+      onOpenChange(false);
+    }, [setIsRequiredFeedback, onOpenChange]);
 
     return (
       <OGDialog open={open} onOpenChange={onOpenChange}>
@@ -86,7 +89,7 @@ const FeedbackReminderDialog = memo(
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={handleMaybeLater}
             >
               {localize('com_ui_feedback_enforce_later')}
             </Button>
