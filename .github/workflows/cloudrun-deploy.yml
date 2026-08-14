@@ -162,7 +162,7 @@ jobs:
             DOMAIN_CLIENT=${{ secrets.DOMAIN_CLIENT }}
             DOMAIN_SERVER=${{ secrets.DOMAIN_SERVER }}
             ENDPOINTS=${{ secrets.ENDPOINTS }}
-            PROMPT_FEEDBACK_ENABLED=true
+            PROMPT_FEEDBACK_ENABLED=${{ secrets.PROMPT_FEEDBACK_ENABLED }}
             AGENT_HOST_IP=${{ secrets.AGENT_HOST_IP_STAGING }}
             TS_PING_TARGET=${{ secrets.TS_PING_TARGET_STAGING }}
             FILE_UPLOAD_VIOLATION_SCORE=${{ secrets.FILE_UPLOAD_VIOLATION_SCORE }}
