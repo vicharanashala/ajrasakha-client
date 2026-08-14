@@ -107,13 +107,12 @@ export function MessagesViewProvider({ children }: { children: React.ReactNode }
       }
       timerRef.current = setTimeout(async () => {
         timerRef.current = null;
-        console.log(`[Feedback] 2s timer fired — calling required-feedback API for conversation: ${convoId}`);
+        console.log(`[Feedback] Timer fired — calling required-feedback API for conversation: ${convoId}`);
         const result = await requiresFeedbackFromConversation(convoId);
         console.log(`[Feedback] API returned: ${result} for conversation: ${convoId}`);
-        setIsRequiredFeedback(result);
         localStorage.setItem('isRequiredFeedback', JSON.stringify(result));
         console.log(`[Feedback] Wrote to localStorage: isRequiredFeedback = ${result}`);
-      }, 2000);
+      }, 0);
     }
     setWasSubmitting(isSubmitting);
   }, [isSubmitting, wasSubmitting, setIsRequiredFeedback, conversation?.conversationId]);

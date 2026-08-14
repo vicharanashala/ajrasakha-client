@@ -2,7 +2,7 @@ import { memo, useRef, useMemo, useEffect, useState, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useWatch } from 'react-hook-form';
 import { TextareaAutosize } from '@librechat/client';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { Constants, isAssistantsEndpoint, isAgentsEndpoint } from 'librechat-data-provider';
 import {
   useChatContext,
@@ -185,6 +185,22 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   });
 
   const textValue = useWatch({ control: methods.control, name: 'text' });
+
+  /** Trigger feedback reminder panel when user focuses textarea or starts typing */
+  const setIsRequiredFeedback = useSetRecoilState(store.isRequiredFeedback);
+  useEffect(() => {
+    if (!isTextAreaFocused && (!textValue || textValue.length === 0)) {
+      return;
+    }
+    try {
+      const stored = localStorage.getItem('isRequiredFeedback');
+      if (stored === 'true') {
+        setIsRequiredFeedback(true);
+      }
+    } catch {
+      // ignore localStorage errors
+    }
+  }, [isTextAreaFocused, textValue, setIsRequiredFeedback]);
 
   useEffect(() => {
     if (textAreaRef.current) {
