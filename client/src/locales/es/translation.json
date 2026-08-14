@@ -885,5 +885,6 @@
   "com_farmer_option_other": "Otro",
   "com_farmer_option_under_graduate": "Pregrado",
   "com_farmer_option_graduate": "Graduado",
-  "com_farmer_option_post_graduate": "Posgrado"
+  "com_farmer_option_post_graduate": "Posgrado",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

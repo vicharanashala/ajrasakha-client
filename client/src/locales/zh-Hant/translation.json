@@ -995,5 +995,6 @@
   "com_farmer_option_other": "其他",
   "com_farmer_option_under_graduate": "大學以下",
   "com_farmer_option_graduate": "大學畢業",
-  "com_farmer_option_post_graduate": "研究所畢業"
+  "com_farmer_option_post_graduate": "研究所畢業",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

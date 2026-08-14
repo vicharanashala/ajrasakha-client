@@ -2053,5 +2053,6 @@
   "com_ui_feedback_enforce_reminder": "പുതിയ സംഭാഷണം ആരംഭിക്കുന്നതിന് മുമ്പ് ദയവായി മുമ്പത്തെ പ്രതികരണത്തെക്കുറിച്ച് അഭിപ്രായം നൽകുക.",
   "com_ui_feedback_enforce_title": "അഭിപ്രായം ആവശ്യമാണ്",
   "com_ui_feedback_enforce_question": "മുമ്പത്തെ പ്രതികരണം എങ്ങനെയായിരുന്നു?",
-  "com_ui_feedback_enforce_later": "ഒരുപക്ഷേ പിന്നീട്"
+  "com_ui_feedback_enforce_later": "ഒരുപക്ഷേ പിന്നീട്",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

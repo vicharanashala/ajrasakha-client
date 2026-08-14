@@ -1380,5 +1380,6 @@
   "com_ui_feedback_enforce_reminder": "Veuillez donner votre avis sur la réponse précédente avant de commencer une nouvelle conversation.",
   "com_ui_feedback_enforce_title": "Avis requis",
   "com_ui_feedback_enforce_question": "Comment était la réponse précédente ?",
-  "com_ui_feedback_enforce_later": "Peut-être plus tard"
+  "com_ui_feedback_enforce_later": "Peut-être plus tard",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

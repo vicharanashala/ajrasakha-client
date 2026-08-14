@@ -998,5 +998,6 @@
   "com_farmer_option_other": "Andet",
   "com_farmer_option_under_graduate": "Bachelorstuderende",
   "com_farmer_option_graduate": "Bachelor",
-  "com_farmer_option_post_graduate": "Kandidat"
+  "com_farmer_option_post_graduate": "Kandidat",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

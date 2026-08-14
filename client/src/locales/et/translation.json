@@ -1038,5 +1038,6 @@
   "com_ui_feedback_tag_doesnt_match_season": "Nõuanne ei sobi hooajaga",
   "com_ui_feedback_tag_not_satisfied": "Ei ole rahul",
   "com_ui_feedback_tag_will_not_recommend": "Ei soovita teistele",
-  "com_ui_feedback_tag_inappropriate_response": "Sobimatu vastus"
+  "com_ui_feedback_tag_inappropriate_response": "Sobimatu vastus",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

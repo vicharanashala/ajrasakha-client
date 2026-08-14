@@ -903,5 +903,6 @@
   "com_farmer_option_other": "سایر",
   "com_farmer_option_under_graduate": "کارشناسی ناتمام",
   "com_farmer_option_graduate": "کارشناس",
-  "com_farmer_option_post_graduate": "کارشناسی ارشد"
+  "com_farmer_option_post_graduate": "کارشناسی ارشد",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

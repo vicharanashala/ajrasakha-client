@@ -1353,5 +1353,6 @@
   "com_ui_feedback_enforce_reminder": "Vennligst gi tilbakemelding på det forrige svaret før du starter en ny samtale.",
   "com_ui_feedback_enforce_title": "Tilbakemelding kreves",
   "com_ui_feedback_enforce_question": "Hvordan var det forrige svaret?",
-  "com_ui_feedback_enforce_later": "Kanskje senere"
+  "com_ui_feedback_enforce_later": "Kanskje senere",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

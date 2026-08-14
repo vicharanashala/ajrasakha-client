@@ -2053,5 +2053,6 @@
   "com_ui_feedback_enforce_reminder": "नई बातचीत शुरू करने से पहले कृपया पिछली प्रतिक्रिया पर फ़ीडबैक दें।",
   "com_ui_feedback_enforce_title": "फ़ीडबैक आवश्यक",
   "com_ui_feedback_enforce_question": "पिछली प्रतिक्रिया कैसी थी?",
-  "com_ui_feedback_enforce_later": "शायद बाद में"
+  "com_ui_feedback_enforce_later": "शायद बाद में",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

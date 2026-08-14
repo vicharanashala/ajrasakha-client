@@ -2053,5 +2053,6 @@
   "com_ui_feedback_enforce_reminder": "ନୂତନ କଥୋପକଥନ ଆରମ୍ଭ କରିବା ପୂର୍ବରୁ ଦୟାକରି ପୂର୍ବ ଉତ୍ତର ବିଷୟରେ ମତାମତ ଦିଅନ୍ତୁ।",
   "com_ui_feedback_enforce_title": "ମତାମତ ଆବଶ୍ୟକ",
   "com_ui_feedback_enforce_question": "ପୂର୍ବ ଉତ୍ତରଟି କିପରି ଥିଲା?",
-  "com_ui_feedback_enforce_later": "ହୁଏତ ପରେ"
+  "com_ui_feedback_enforce_later": "ହୁଏତ ପରେ",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

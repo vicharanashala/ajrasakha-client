@@ -1535,5 +1535,6 @@
   "com_ui_feedback_enforce_reminder": "Lūdzu, sniedziet atsauksmi par iepriekšējo atbildi, pirms sākat jaunu sarunu.",
   "com_ui_feedback_enforce_title": "Nepieciešama atsauksme",
   "com_ui_feedback_enforce_question": "Kāda bija iepriekšējā atbilde?",
-  "com_ui_feedback_enforce_later": "Varbūt vēlāk"
+  "com_ui_feedback_enforce_later": "Varbūt vēlāk",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

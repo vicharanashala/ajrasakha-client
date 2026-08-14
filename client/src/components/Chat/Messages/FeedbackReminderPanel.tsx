@@ -1,12 +1,11 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { GripVertical, X } from 'lucide-react';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';
 import store from '~/store';
 import FeedbackDetailDialog from './FeedbackDetailDialog';
 import { useMessagesViewContext } from '~/Providers/MessagesViewContext';
-import { useForm } from 'react-hook-form';
 import { TFeedback } from 'librechat-data-provider';
 
 interface FeedbackReminderPanelProps {
@@ -20,12 +19,14 @@ const emojiConfig = {
     activeBg: 'bg-red-500/15 border-red-500/40 ring-2 ring-red-500/30',
     text: 'text-red-400',
     face: 'sad' as const,
+    ring: '',
   },
   thumbsUp: {
     idleBg: 'bg-green-500/5 border-green-500/20 hover:bg-green-500/10',
     activeBg: 'bg-green-500/15 border-green-500/40 ring-2 ring-green-500/30',
     text: 'text-green-400',
     face: 'happy' as const,
+    ring: '',
   },
 };
 
@@ -64,6 +65,7 @@ const FeedbackReminderPanel = memo(({ onSubmitFeedback }: FeedbackReminderPanelP
   const localize = useLocalize();
   const { submitFeedback } = useMessagesViewContext();
   const setIsRequiredFeedback = useSetRecoilState(store.isRequiredFeedback);
+  const setFeedbackSkipCount = useSetRecoilState(store.feedbackSkipCount);
 
   const [showFeedbackReminder, setShowFeedbackReminder] = useRecoilState(store.showFeedbackReminder);
   const [isRequiredFeedback] = useRecoilState(store.isRequiredFeedback);
@@ -72,7 +74,7 @@ const FeedbackReminderPanel = memo(({ onSubmitFeedback }: FeedbackReminderPanelP
   const [dismissed, setDismissed] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [isPulsing, setIsPulsing] = useState(false);
+  const [dismissedText, setDismissedText] = useState(false);
 
   const [position, setPosition] = useState<{ left: number; top: number } | null>(null);
 
@@ -81,21 +83,63 @@ const FeedbackReminderPanel = memo(({ onSubmitFeedback }: FeedbackReminderPanelP
   const panelRef = useRef<HTMLDivElement>(null);
   const panelSizeRef = useRef({ width: 288, height: 192 });
 
-  // Mount animation — replay when isRequiredFeedback becomes true again (conversation switch)
+  // Mount/unmount animation — replay when isRequiredFeedback becomes true again
   useEffect(() => {
+    if (!isRequiredFeedback) {
+      return;
+    }
+    // Reset UI state for the new panel instance
+    setDismissed(false);
+    setDismissedText(false);
     setMounted(false);
+    // Always reset the count when isRequiredFeedback becomes true — this handles
+    // both fresh sessions and page reloads (where the count was restored from localStorage)
+    setFeedbackSkipCount(0);
     requestAnimationFrame(() => setMounted(true));
   }, [isRequiredFeedback]);
 
-  // Auto-pulse when visible
+  const feedbackSkipCount = useRecoilValue(store.feedbackSkipCount);
+  // Tracks the count from the previous render — updated at the START of each effect
+  // so comparisons see the old value, not the current one.
+  const prevCountRef = useRef(feedbackSkipCount);
+  // Tracks whether we've already shown the shake for count=1 in this session;
+  // reset by explicit user actions (submit / clear / dismiss).
+  const shakeShownRef = useRef(false);
+
+  // First click (count 0→1): shake. Second+ click (count >= 2): auto-dismiss.
   useEffect(() => {
-    if (!showFeedbackReminder || dismissed) {
+    if (!showFeedbackReminder) {
       return;
     }
-    const timer = setTimeout(() => setIsPulsing(false), 500);
-    setIsPulsing(true);
-    return () => clearTimeout(timer);
-  }, [showFeedbackReminder, dismissed]);
+    const prev = prevCountRef.current;
+    const cur = feedbackSkipCount;
+
+    // Update the ref FIRST so next render sees the correct previous value
+    prevCountRef.current = cur;
+
+    // Only act when the count has actually increased from the previous render
+    if (cur <= prev) {
+      return;
+    }
+
+    if (cur >= 2) {
+      // Second+ click — show "Reminder is closed", then auto-dismiss
+      setDismissedText(true);
+      setDismissed(true);
+      const timer = setTimeout(() => {
+        setIsRequiredFeedback(false);
+        setShowFeedbackReminder(false);
+      }, 600);
+      return () => clearTimeout(timer);
+    }
+
+    // cur === 1 and prev === 0 — first send click
+    if (!shakeShownRef.current) {
+      shakeShownRef.current = true;
+      const timer = setTimeout(() => setDismissedText(false), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [showFeedbackReminder, feedbackSkipCount, setIsRequiredFeedback, setShowFeedbackReminder]);
 
   /** Keep panelSizeRef in sync with the actual DOM size (responsive width) */
   useEffect(() => {
@@ -215,29 +259,36 @@ const FeedbackReminderPanel = memo(({ onSubmitFeedback }: FeedbackReminderPanelP
 
   const handleMaybeLater = useCallback(() => {
     setIsRequiredFeedback(false);
+    setShowFeedbackReminder(false);
+    setFeedbackSkipCount(0);
+    setDismissedText(false);
     setDismissed(true);
-  }, [setIsRequiredFeedback]);
+  }, [setIsRequiredFeedback, setShowFeedbackReminder, setFeedbackSkipCount]);
 
   /* Called when the user submits Modal 2 (detail form) */
   const handleDetailSubmit = useCallback(
     (feedback: TFeedback) => {
       setIsRequiredFeedback(false);
       setShowFeedbackReminder(false);
+      setFeedbackSkipCount(0);
       if (submitFeedback) {
         submitFeedback({ feedback });
       }
       onSubmitFeedback(feedback);
     },
-    [setIsRequiredFeedback, setShowFeedbackReminder, submitFeedback, onSubmitFeedback],
+    [setIsRequiredFeedback, setShowFeedbackReminder, setFeedbackSkipCount, submitFeedback, onSubmitFeedback],
   );
 
   /* Called when the user clicks Delete in Modal 2 */
   const handleDetailClear = useCallback(() => {
+    setIsRequiredFeedback(false);
+    setShowFeedbackReminder(false);
+    setFeedbackSkipCount(0);
     onSubmitFeedback(undefined);
-  }, [onSubmitFeedback]);
+  }, [setIsRequiredFeedback, setShowFeedbackReminder, setFeedbackSkipCount, onSubmitFeedback]);
 
-  /* ── Render guard — synced with Recoil state set by MessagesViewContext ── */
-  if (!isRequiredFeedback || dismissed) {
+  /* ── Render guard — isRequiredFeedback controls visibility; dismissed drives exit animation ── */
+  if (!isRequiredFeedback) {
     return null;
   }
 
@@ -251,7 +302,7 @@ const FeedbackReminderPanel = memo(({ onSubmitFeedback }: FeedbackReminderPanelP
         role="dialog"
         aria-label={localize('com_ui_feedback_enforce_question')}
         aria-modal="false"
-        data-pulsing={isPulsing ? 'true' : undefined}
+        data-pulsing={feedbackSkipCount > 0 && !dismissedText ? 'true' : undefined}
         className={cn(
           'fixed z-50 select-none overflow-hidden rounded-2xl border',
           'w-[calc(100vw-32px)] max-w-72',
@@ -264,7 +315,7 @@ const FeedbackReminderPanel = memo(({ onSubmitFeedback }: FeedbackReminderPanelP
           isDragging
             ? 'scale-[1.02] shadow-[0_20px_40px_-8px_rgba(0,0,0,0.18)]'
             : 'hover:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.14)]',
-          isPulsing && 'animate-pulse',
+          feedbackSkipCount === 1 ? 'shake' : '',
         )}
         style={{
           height: '192px',
@@ -323,9 +374,15 @@ const FeedbackReminderPanel = memo(({ onSubmitFeedback }: FeedbackReminderPanelP
               alt="logo"
               className="h-6 w-auto object-contain flex-shrink-0"
             />
-            <p className="text-[13px] font-medium leading-relaxed text-[var(--text-primary)]">
-              {localize('com_ui_feedback_enforce_question')}
-            </p>
+            {dismissedText ? (
+              <p className="text-[13px] font-medium leading-relaxed text-[var(--text-secondary)]">
+                {localize('com_ui_feedback_enforce_skipped')}
+              </p>
+            ) : (
+              <p className="text-[13px] font-medium leading-relaxed text-[var(--text-primary)]">
+                {localize('com_ui_feedback_enforce_question')}
+              </p>
+            )}
           </div>
 
           {/* Rating options */}

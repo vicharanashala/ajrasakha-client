@@ -1394,5 +1394,6 @@
   "com_ui_feedback_enforce_reminder": "Пожалуйста, оставьте отзыв о предыдущем ответе, прежде чем начинать новый разговор.",
   "com_ui_feedback_enforce_title": "Требуется обратная связь",
   "com_ui_feedback_enforce_question": "Каким был предыдущий ответ?",
-  "com_ui_feedback_enforce_later": "Может быть, позже"
+  "com_ui_feedback_enforce_later": "Может быть, позже",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

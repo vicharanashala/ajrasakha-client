@@ -39,6 +39,7 @@ const localStorageAtoms = {
 
   // Feedback
   isRequiredFeedback: atomWithLocalStorage('isRequiredFeedback', false),
+  feedbackSkipCount: atomWithLocalStorage('feedbackSkipCount', 0),
 
   // Chat settings
   enterToSend: atomWithLocalStorage('enterToSend', true),

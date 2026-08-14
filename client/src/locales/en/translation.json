@@ -2068,5 +2068,6 @@
   "com_ui_feedback_detail_positive_title": "Great! Tell us more",
   "com_ui_feedback_detail_positive_desc": "What did you like most about the response?",
   "com_ui_feedback_detail_negative_title": "Sorry to hear that",
-  "com_ui_feedback_detail_negative_desc": "Help us improve by sharing what could be better."
+  "com_ui_feedback_detail_negative_desc": "Help us improve by sharing what could be better.",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

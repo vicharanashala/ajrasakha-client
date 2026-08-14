@@ -809,5 +809,6 @@
   "com_farmer_validation_experience_range": "يجب أن تكون سنوات الخبرة بين 0 و70",
   "com_farmer_validation_landholding_valid": "يجب أن تكون الحيازة الزراعية رقمًا صحيحًا.",
   "com_farmer_validation_smartphones_integer": "يجب أن يكون عدد الهواتف الذكية عددًا صحيحًا",
-  "com_farmer_validation_smartphones_range": "يجب أن يكون عدد الهواتف الذكية بين 0 و20"
+  "com_farmer_validation_smartphones_range": "يجب أن يكون عدد الهواتف الذكية بين 0 و20",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

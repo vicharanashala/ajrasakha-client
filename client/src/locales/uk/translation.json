@@ -1354,5 +1354,6 @@
   "com_ui_feedback_enforce_reminder": "Будь ласка, надайте відгук про попередню відповідь, перш ніж починати нову розмову.",
   "com_ui_feedback_enforce_title": "Потрібен відгук",
   "com_ui_feedback_enforce_question": "Якою була попередня відповідь?",
-  "com_ui_feedback_enforce_later": "Можливо, пізніше"
+  "com_ui_feedback_enforce_later": "Можливо, пізніше",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

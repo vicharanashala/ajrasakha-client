@@ -626,5 +626,6 @@
   "com_farmer_option_other": "Annat",
   "com_farmer_option_under_graduate": "Grundutbildning",
   "com_farmer_option_graduate": "Examen",
-  "com_farmer_option_post_graduate": "Forskarutbildning"
+  "com_farmer_option_post_graduate": "Forskarutbildning",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

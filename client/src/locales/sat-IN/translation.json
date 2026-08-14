@@ -2052,5 +2052,6 @@
   "com_ui_feedback_enforce_reminder": "ᱱᱟᱶᱟ ᱜᱟᱞᱢᱟᱨᱟᱣ ᱮᱦᱚᱵ ᱢᱟᱲᱟᱝ ᱛᱟᱭᱚᱢ ᱥᱮᱫᱟᱜ ᱨᱚᱲ ᱨᱩᱣᱟᱹᱲ ᱵᱟᱵᱚᱛ ᱯᱷᱤᱰᱵᱮᱠ ᱮᱢ ᱢᱮ।",
   "com_ui_feedback_enforce_title": "ᱯᱷᱤᱰᱵᱮᱠ ᱞᱟᱹᱠᱛᱤ",
   "com_ui_feedback_enforce_question": "ᱛᱟᱭᱚᱢ ᱥᱮᱫᱟᱜ ᱨᱚᱲ ᱨᱩᱣᱟᱹᱲ ᱫᱚ ᱪᱮᱫ ᱞᱮᱠᱟ ᱛᱟᱦᱮᱸᱠᱟᱱᱟ?",
-  "com_ui_feedback_enforce_later": "ᱛᱟᱭᱚᱢ ᱦᱚᱸ"
+  "com_ui_feedback_enforce_later": "ᱛᱟᱭᱚᱢ ᱦᱚᱸ",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useRecoilValue, useRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import { replaceSpecialVars } from 'librechat-data-provider';
 import { useChatContext, useChatFormContext, useAddedChatContext } from '~/Providers';
 import { useAuthContext } from '~/hooks/AuthContext';
@@ -18,7 +18,7 @@ export default function useSubmitMessage() {
   const [showFeedbackReminder, setShowFeedbackReminder] = useRecoilState(store.showFeedbackReminder);
   const setPendingNewConversation = useRecoilState(store.pendingNewConversation)[1];
   const [isRequiredFeedback] = useRecoilState(store.isRequiredFeedback);
-  const setFeedbackShake = useRecoilState(store.feedbackShake)[1];
+  const setFeedbackSkipCount = useSetRecoilState(store.feedbackSkipCount);
 
   const submitMessage = useCallback(
     async (data?: { text: string }, position?: { latitude: number; longitude: number }) => {
@@ -30,7 +30,7 @@ export default function useSubmitMessage() {
       if (isRequiredFeedback) {
         setPendingNewConversation(false);
         setShowFeedbackReminder(true);
-        setFeedbackShake((n) => n + 1);
+        setFeedbackSkipCount((n) => n + 1);
         return;
       }
 
@@ -72,7 +72,6 @@ export default function useSubmitMessage() {
       updateFarmerPlatform,
       updateLastActiveAt,
       setShowFeedbackReminder,
-      setFeedbackShake,
       setPendingNewConversation,
       isRequiredFeedback,
     ],

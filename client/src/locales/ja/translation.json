@@ -1419,5 +1419,6 @@
   "com_ui_feedback_enforce_reminder": "新しい会話を始める前に、前回の回答についてフィードバックを提供してください。",
   "com_ui_feedback_enforce_title": "フィードバックが必要です",
   "com_ui_feedback_enforce_question": "前回の回答はいかがでしたか？",
-  "com_ui_feedback_enforce_later": "後で"
+  "com_ui_feedback_enforce_later": "後で",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

@@ -1333,5 +1333,6 @@
   "com_ui_feedback_enforce_reminder": "Forneça feedback sobre a resposta anterior antes de iniciar uma nova conversa.",
   "com_ui_feedback_enforce_title": "Feedback necessário",
   "com_ui_feedback_enforce_question": "Como foi a resposta anterior?",
-  "com_ui_feedback_enforce_later": "Talvez mais tarde"
+  "com_ui_feedback_enforce_later": "Talvez mais tarde",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

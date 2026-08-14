@@ -2052,5 +2052,6 @@
   "com_ui_feedback_enforce_reminder": "نئين ڳالهه ٻولهه شروع ڪرڻ کان اڳ مهرباني ڪري پوئين جواب بابت راءِ ڏيو.",
   "com_ui_feedback_enforce_title": "راءِ گهربل آهي",
   "com_ui_feedback_enforce_question": "پوئين جواب بابت توهان جي راءِ ڇا هئي؟",
-  "com_ui_feedback_enforce_later": "شايد پوءِ"
+  "com_ui_feedback_enforce_later": "شايد پوءِ",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

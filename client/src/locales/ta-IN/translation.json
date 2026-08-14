@@ -2053,5 +2053,6 @@
   "com_ui_feedback_enforce_reminder": "புதிய உரையாடலைத் தொடங்குவதற்கு முன், முந்தைய பதிலைப் பற்றிய கருத்தை வழங்கவும்.",
   "com_ui_feedback_enforce_title": "கருத்து தேவை",
   "com_ui_feedback_enforce_question": "முந்தைய பதில் எப்படி இருந்தது?",
-  "com_ui_feedback_enforce_later": "ஒருவேளை பின்னர்"
+  "com_ui_feedback_enforce_later": "ஒருவேளை பின்னர்",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

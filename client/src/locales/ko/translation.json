@@ -1181,5 +1181,6 @@
   "com_ui_feedback_enforce_reminder": "새 대화를 시작하기 전에 이전 응답에 대한 피드백을 제공해 주세요.",
   "com_ui_feedback_enforce_title": "피드백 필요",
   "com_ui_feedback_enforce_question": "이전 응답은 어떠셨나요?",
-  "com_ui_feedback_enforce_later": "나중에"
+  "com_ui_feedback_enforce_later": "나중에",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

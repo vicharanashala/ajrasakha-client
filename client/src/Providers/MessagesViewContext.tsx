@@ -61,6 +61,7 @@ export function MessagesViewProvider({ children }: { children: React.ReactNode }
   // After a 2-second wait, we call the required-feedback API and store the result.
   // Initialise from localStorage on first mount so conversation switches restore the state.
   const [isRequiredFeedback, setIsRequiredFeedback] = useRecoilState(store.isRequiredFeedback);
+  const [showFeedbackReminder] = useRecoilState(store.showFeedbackReminder);
   const [initialized, setInitialized] = useState(false);
   useEffect(() => {
     if (initialized) {
@@ -143,8 +144,9 @@ export function MessagesViewProvider({ children }: { children: React.ReactNode }
       abortScroll,
       isSubmitting,
       setAbortScroll,
+      showFeedbackReminder,
     }),
-    [isSubmitting, abortScroll, setAbortScroll],
+    [isSubmitting, abortScroll, setAbortScroll, showFeedbackReminder],
   );
 
   /** Memoize message operations (these are typically stable references) */

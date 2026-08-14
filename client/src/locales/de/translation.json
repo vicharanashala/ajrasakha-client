@@ -1533,5 +1533,6 @@
   "com_ui_feedback_enforce_reminder": "Bitte geben Sie Feedback zur vorherigen Antwort, bevor Sie eine neue Unterhaltung beginnen.",
   "com_ui_feedback_enforce_title": "Feedback erforderlich",
   "com_ui_feedback_enforce_question": "Wie war die vorherige Antwort?",
-  "com_ui_feedback_enforce_later": "Vielleicht später"
+  "com_ui_feedback_enforce_later": "Vielleicht später",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }
