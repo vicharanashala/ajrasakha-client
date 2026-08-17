@@ -1,9 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useCallback, useState } from 'react';
 import { ArrowUpDown, ArrowUp, ArrowDown, Database } from 'lucide-react';
 import { FileSources, FileContext } from 'librechat-data-provider';
 import {
   Button,
   Checkbox,
+  CheckMark,
+  Clipboard,
   useMediaQuery,
   TooltipAnchor,
   AzureMinimalIcon,
@@ -15,7 +18,7 @@ import ImagePreview from '~/components/Chat/Input/Files/ImagePreview';
 import FilePreview from '~/components/Chat/Input/Files/FilePreview';
 import { TranslationKeys, useLocalize } from '~/hooks';
 import { SortFilterHeader } from './SortFilterHeader';
-import { formatDate, getFileType } from '~/utils';
+import { formatDate, getFileType, cn } from '~/utils';
 
 const contextMap: Record<any, TranslationKeys> = {
   [FileContext.avatar]: 'com_ui_avatar',
@@ -25,6 +28,71 @@ const contextMap: Record<any, TranslationKeys> = {
   [FileContext.assistants_output]: 'com_ui_assistants_output',
   [FileContext.message_attachment]: 'com_ui_attachment',
 };
+
+const MOBILE_FILENAME_CHAR_LIMIT = 12;
+
+function FileNameCell({ file }: { file: TFile }) {
+  const localize = useLocalize();
+  const isSmallScreen = useMediaQuery('(max-width: 768px)');
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopy = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      event.stopPropagation();
+      navigator.clipboard?.writeText(file.filename ?? '').catch(() => undefined);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 1500);
+    },
+    [file.filename],
+  );
+
+  const fileType = !file.type?.startsWith('image') ? getFileType(file.type) : undefined;
+  const filename = file.filename ?? '';
+  const displayName =
+    isSmallScreen && filename.length > MOBILE_FILENAME_CHAR_LIMIT
+      ? `${filename.slice(0, MOBILE_FILENAME_CHAR_LIMIT)}...`
+      : filename;
+
+  return (
+    <div className="flex min-w-0 items-center gap-2">
+      {file.type?.startsWith('image') ? (
+        <ImagePreview
+          url={file.filepath}
+          className="relative h-10 w-10 shrink-0 overflow-visible rounded-md"
+          source={file.source}
+        />
+      ) : (
+        fileType && <FilePreview fileType={fileType} className="relative" file={file} />
+      )}
+      <span className={cn('min-w-0 flex-1', isSmallScreen ? 'whitespace-nowrap' : 'truncate')}>
+        {displayName}
+      </span>
+      <TooltipAnchor
+        description={
+          isCopied
+            ? localize('com_ui_copied_to_clipboard')
+            : localize('com_ui_copy_to_clipboard')
+        }
+        side="top"
+        render={
+          <button
+            type="button"
+            onClick={handleCopy}
+            aria-label={localize('com_ui_copy_to_clipboard')}
+            className="flex shrink-0 items-center justify-center rounded-lg p-1 text-text-secondary-alt hover:bg-surface-hover hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-white"
+          >
+            {isCopied ? (
+              <CheckMark className="h-3.5 w-3.5" />
+            ) : (
+              <Clipboard className="h-3.5 w-3.5" />
+            )}
+          </button>
+        }
+      />
+    </div>
+  );
+}
 
 export const columns: ColumnDef<TFile>[] = [
   {
@@ -103,29 +171,7 @@ export const columns: ColumnDef<TFile>[] = [
         />
       );
     },
-    cell: ({ row }) => {
-      const file = row.original;
-      if (file.type?.startsWith('image')) {
-        return (
-          <div className="flex gap-2">
-            <ImagePreview
-              url={file.filepath}
-              className="relative h-10 w-10 shrink-0 overflow-visible rounded-md"
-              source={file.source}
-            />
-            <span className="self-center truncate">{file.filename}</span>
-          </div>
-        );
-      }
-
-      const fileType = getFileType(file.type);
-      return (
-        <div className="flex gap-2">
-          {fileType && <FilePreview fileType={fileType} className="relative" file={file} />}
-          <span className="self-center truncate">{file.filename}</span>
-        </div>
-      );
-    },
+    cell: ({ row }) => <FileNameCell file={row.original} />,
   },
   {
     accessorKey: 'updatedAt',
