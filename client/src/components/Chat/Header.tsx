@@ -52,7 +52,7 @@ export default function Header() {
   }, [bannerPortal]);
 
   const modelSelectorNodes = (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5 sm:gap-2">
       <ModelSelector startupConfig={startupConfig} />
       {interfaceConfig.presets === true && interfaceConfig.modelSelect && <PresetsMenu />}
       {hasAccessToMultiConvo === true && <AddMultiConvo />}
@@ -60,13 +60,13 @@ export default function Header() {
   );
 
   return (
-    <div className="via-presentation/70 md:from-presentation/80 md:via-presentation/50 2xl:from-presentation/0 absolute top-0 z-10 flex h-14 w-full items-center justify-between bg-gradient-to-b from-presentation to-transparent p-2 font-semibold text-text-primary 2xl:via-transparent">
-      <div className="hide-scrollbar flex w-full items-center justify-between gap-2 overflow-x-auto">
+    <div className="via-presentation/70 md:from-presentation/80 md:via-presentation/50 2xl:from-presentation/0 absolute top-0 z-10 flex h-14 w-full items-center justify-between bg-gradient-to-b from-presentation to-transparent px-1.5 py-2 font-semibold text-text-primary sm:p-2 2xl:via-transparent">
+      <div className="hide-scrollbar flex w-full items-center justify-between gap-1.5 overflow-x-auto sm:gap-2">
         <div className="mx-1 flex w-full flex-1 items-center">
           <AnimatePresence initial={false}>
             {!navVisible && (
               <motion.div
-                className="flex items-center gap-2"
+                className="flex items-center gap-1.5 sm:gap-2"
                 initial={{ width: 0, opacity: 0 }}
                 animate={{ width: 'auto', opacity: 1 }}
                 exit={{ width: 0, opacity: 0 }}
@@ -83,7 +83,7 @@ export default function Header() {
           {!(navVisible && isSmallScreen) && (
             <div
               className={cn(
-                'flex w-full flex-1 items-center gap-2',
+                'flex w-full flex-1 items-center gap-1.5 sm:gap-2',
                 !isSmallScreen ? 'transition-all duration-200 ease-in-out' : '',
                 !navVisible && !isSmallScreen ? 'pl-2' : '',
               )}
@@ -91,7 +91,7 @@ export default function Header() {
               {/* {!bannerPortal && modelSelectorNodes} */}
               {hasAccessToBookmarks === true && <BookmarkMenu />}
               {isSmallScreen && (
-                <div className="flex w-full flex-1 justify-between">
+                <div className="flex w-full flex-1 items-center justify-between gap-1.5">
                   <ExportAndShareMenu
                     isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false}
                   />

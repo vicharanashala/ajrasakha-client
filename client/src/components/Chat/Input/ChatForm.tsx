@@ -221,7 +221,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
       cn(
         'md:py-3.5 m-0 w-full resize-none py-[13px] placeholder-black/50 bg-transparent dark:placeholder-white/50 [&:has(textarea:focus)]:shadow-[0_2px_6px_rgba(0,0,0,.05)]',
         isCollapsed ? 'max-h-[52px]' : 'max-h-[45vh] md:max-h-[55vh]',
-        isMoreThanThreeRows ? 'pl-5' : 'px-5',
+        isMoreThanThreeRows ? 'pl-4 sm:pl-5' : 'px-4 sm:px-5',
       ),
     [isCollapsed, isMoreThanThreeRows],
   );
@@ -307,7 +307,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     <form
       onSubmit={handleMessageSubmit}
       className={cn(
-        'mx-auto flex w-full flex-row gap-3 transition-[max-width] duration-300 sm:px-2',
+        'mx-auto flex w-full flex-row gap-3 px-2 transition-[max-width] duration-300',
         maximizeChatSpace ? 'max-w-full' : 'md:max-w-3xl xl:max-w-4xl',
         centerFormOnLanding &&
           (conversationId == null || conversationId === Constants.NEW_CONVO) &&
@@ -415,11 +415,11 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
             )}
             <div
               className={cn(
-                '@container items-between flex gap-2 pb-2',
+                '@container items-between flex gap-1.5 pb-2 sm:gap-2',
                 isRTL ? 'flex-row-reverse' : 'flex-row',
               )}
             >
-              <div className={`${isRTL ? 'mr-2' : 'ml-2'}`}>
+              <div className={`${isRTL ? 'mr-1.5 sm:mr-2' : 'ml-1.5 sm:ml-2'}`}>
                 <AttachFileChat conversation={conversation} disableInputs={disableInputs} />
               </div>
               <BadgeRow
@@ -442,7 +442,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   enabled={!isFeedbackDialogOpen}
                 />
               )}
-              <div className={`${isRTL ? 'ml-2' : 'mr-2'}`}>
+              <div className={`${isRTL ? 'ml-1.5 sm:ml-2' : 'mr-1.5 sm:mr-2'}`}>
                 {isSubmitting && showStopButton ? (
                   <StopButton stop={handleStopGenerating} setShowStopButton={setShowStopButton} />
                 ) : (
