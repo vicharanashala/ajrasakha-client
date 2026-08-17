@@ -84,7 +84,7 @@ export default function Presentation({ children }: { children: React.ReactNode }
           defaultCollapsed={defaultCollapsed}
           artifacts={artifactsElement}
         >
-          <main className="flex h-full flex-col overflow-y-auto" role="main">
+          <main className="flex h-full flex-col overflow-hidden" role="main">
             <Banner />
             {children}
           </main>

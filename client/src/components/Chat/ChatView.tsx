@@ -150,7 +150,7 @@ function ChatView({ index = 0 }: { index?: number }) {
       <ChatContext.Provider value={chatHelpers}>
         <AddedChatContext.Provider value={addedChatHelpers}>
           <Presentation>
-            <div className="relative flex h-full w-full flex-col">
+            <div className="relative flex min-h-0 w-full flex-1 flex-col">
               {!isLoading && <Header />}
               <>
                 <div
@@ -158,7 +158,7 @@ function ChatView({ index = 0 }: { index?: number }) {
                     'flex flex-col',
                     isLandingPage
                       ? 'flex-1 items-center justify-end sm:justify-center'
-                      : 'h-full overflow-y-auto',
+                      : 'min-h-0 flex-1 overflow-hidden',
                   )}
                 >
                   {content}
