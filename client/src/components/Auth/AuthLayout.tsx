@@ -126,7 +126,7 @@ function AuthLayout({
           >
             <div className="fixed inset-0 flex items-center justify-center p-4">
               <DialogPanel className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-black/5 dark:bg-gray-900 dark:ring-white/10">
-                <DialogTitle className="mb-5 flex items-center justify-between">
+                <DialogTitle as="div" className="mb-5 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Select Language
                   </h2>
