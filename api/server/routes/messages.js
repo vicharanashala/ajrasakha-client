@@ -388,7 +388,13 @@ router.put('/:conversationId/:messageId', validateMessageReq, async (req, res) =
 router.put('/:conversationId/:messageId/feedback', validateMessageReq, async (req, res) => {
   try {
     const { conversationId, messageId } = req.params;
-    const { feedback } = req.body;
+    let { feedback } = req.body;
+
+    if (feedback) {
+      const existingMessage = await Message.findOne({ messageId }).lean();
+      feedback.updatedAt = new Date();
+      feedback.createdAt = existingMessage?.feedback?.createdAt || new Date();
+    }
 
     const updatedMessage = await updateMessage(
       req,
