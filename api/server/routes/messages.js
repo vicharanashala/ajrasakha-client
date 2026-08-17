@@ -410,7 +410,7 @@ router.put('/:conversationId/:messageId/feedback', validateMessageReq, async (re
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
-            'x-api-key': internalApiKey || ''
+            'x-internal-api-key': internalApiKey || ''
           },
           body: JSON.stringify({
             source: 'WEB_APPLICATION'
