@@ -2,7 +2,7 @@ import { memo, useRef, useMemo, useEffect, useState, useCallback } from 'react';
 import { Plus, X } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useWatch } from 'react-hook-form';
-import { TextareaAutosize } from '@librechat/client';
+import { TextareaAutosize, useMediaQuery } from '@librechat/client';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { Constants, isAssistantsEndpoint, isAgentsEndpoint } from 'librechat-data-provider';
 import {
@@ -46,6 +46,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   useFocusChatEffect(textAreaRef);
   const localize = useLocalize();
   const { data: startupConfig } = useGetStartupConfig();
+  const isSmallScreen = useMediaQuery('(max-width: 768px)');
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [, setIsScrollable] = useState(false);
@@ -461,7 +462,12 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 </>
               )}
               <div className="mx-auto flex" />
-              <ModelSelector startupConfig={startupConfig} />
+              {/* Hide the model selector on mobile when the left options
+                  (attach file / badges) are expanded — there isn't enough
+                  room for both, and the left options take priority. */}
+              {!(isSmallScreen && showLeftOptions) && (
+                <ModelSelector startupConfig={startupConfig} />
+              )}
               {SpeechToText && (
                 <AudioRecorder
                   methods={methods}
