@@ -2,14 +2,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useMediaQuery } from '@librechat/client';
 import { useOutletContext } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
 import { getConfigDefaults, PermissionTypes, Permissions } from 'librechat-data-provider';
 import type { ContextType } from '~/common';
-import { PresetsMenu, OpenSidebar } from './Menus';
-// HeaderNewChat is intentionally not used below — the "New Chat" button outside
-// the sidebar (next to the sidebar toggle) is disabled; the sidebar's own
-// New Chat button is kept instead.
-// import { HeaderNewChat } from './Menus';
+import { PresetsMenu } from './Menus';
+// HeaderNewChat and the standalone OpenSidebar toggle are intentionally not
+// used below — the sidebar's own controls (New Chat button and, when
+// collapsed, its own toggle icon in the icon rail) are kept instead, so this
+// header doesn't need a duplicate.
+// import { HeaderNewChat, OpenSidebar } from './Menus';
 import { useGetStartupConfig } from '~/data-provider';
 import ExportAndShareMenu from './ExportAndShareMenu';
 import BookmarkMenu from './Menus/BookmarkMenu';
@@ -22,7 +22,7 @@ const defaultInterface = getConfigDefaults().interface;
 
 export default function Header() {
   const { data: startupConfig } = useGetStartupConfig();
-  const { navVisible, setNavVisible } = useOutletContext<ContextType>();
+  const { navVisible } = useOutletContext<ContextType>();
 
   const interfaceConfig = useMemo(
     () => startupConfig?.interface ?? defaultInterface,
@@ -66,22 +66,6 @@ export default function Header() {
     <div className="via-presentation/70 md:from-presentation/80 md:via-presentation/50 2xl:from-presentation/0 absolute top-0 z-10 flex h-14 w-full items-center justify-between bg-gradient-to-b from-presentation to-transparent px-1.5 py-2 font-semibold text-text-primary sm:p-2 2xl:via-transparent">
       <div className="hide-scrollbar flex w-full items-center justify-between gap-1.5 overflow-x-auto sm:gap-2">
         <div className="mx-1 flex w-full flex-1 items-center">
-          <AnimatePresence initial={false}>
-            {!navVisible && (
-              <motion.div
-                className="flex items-center gap-1.5 sm:gap-2"
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 'auto', opacity: 1 }}
-                exit={{ width: 0, opacity: 0 }}
-                transition={{ duration: 0.15 }}
-                key="header-buttons"
-              >
-                <OpenSidebar setNavVisible={setNavVisible} className="max-md:hidden" />
-                {/* HeaderNewChat disabled: keeping only the sidebar's New Chat button */}
-                {/* <HeaderNewChat /> */}
-              </motion.div>
-            )}
-          </AnimatePresence>
           {!isSmallScreen && bannerPortal ? createPortal(modelSelectorNodes, bannerPortal) : null}
 
           {!(navVisible && isSmallScreen) && (

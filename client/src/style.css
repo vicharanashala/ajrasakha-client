@@ -3043,6 +3043,23 @@ html {
   }
 }
 
+/* Account settings popover: width scales down on narrow phones instead of
+   staying a fixed 305px (which could overflow very small viewports), and
+   height is capped with scroll so it never runs off the bottom of the
+   screen. Plain CSS instead of Tailwind arbitrary-value classes, for the
+   same JIT-compile-reliability reason as the rules above. */
+.account-settings-popover {
+  width: min(305px, calc(100vw - 24px));
+  max-height: min(70vh, var(--popover-available-height, 70vh));
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  .account-settings-popover {
+    width: 244px;
+  }
+}
+
 .sharepoint-picker-bg {
   background-color: #f5f5f5;
 }

@@ -10,7 +10,6 @@ import {
   startTransition,
 } from 'react';
 import { useRecoilValue } from 'recoil';
-import { motion } from 'framer-motion';
 import { Skeleton, useMediaQuery } from '@librechat/client';
 import { PermissionTypes, Permissions } from 'librechat-data-provider';
 import type { InfiniteQueryObserverResult } from '@tanstack/react-query';
@@ -37,6 +36,9 @@ const NotificationBell = lazy(() => import('./NotificationBell'));
 export const NAV_WIDTH = {
   MOBILE: 320,
   DESKTOP: 260,
+  // Slim icon rail shown on desktop when the sidebar is collapsed, instead of
+  // hiding it completely.
+  COLLAPSED: 64,
 } as const;
 
 const SearchBarSkeleton = memo(() => (
@@ -264,6 +266,36 @@ const Nav = memo(
       </div>
     );
 
+    // Collapsed rail (desktop only): a slim strip with the sidebar toggle,
+    // New Chat, and notifications stacked at the top, and the profile avatar
+    // pinned to the bottom — instead of hiding the sidebar completely.
+    const collapsedContent = (
+      <div className="flex h-full flex-col">
+        <nav
+          id="chat-history-nav-collapsed"
+          aria-label={localize('com_ui_chat_history')}
+          className="flex h-full flex-col items-center px-1.5 pb-3.5"
+          aria-hidden={navVisible}
+        >
+          <div className="flex flex-1 flex-col items-center overflow-hidden">
+            <MemoNewChat
+              toggleNav={toggleNavVisible}
+              isSmallScreen={isSmallScreen}
+              collapsed
+              notificationBell={
+                <Suspense fallback={null}>
+                  <NotificationBell collapsed />
+                </Suspense>
+              }
+            />
+          </div>
+          <Suspense fallback={<Skeleton className="mt-1 h-10 w-10 rounded-xl" />}>
+            <AccountSettings collapsed />
+          </Suspense>
+        </nav>
+      </div>
+    );
+
     // Mobile: Fixed positioned sidebar that slides over content
     // Uses CSS transitions (not Framer Motion) to sync perfectly with content animation
     if (isSmallScreen) {
@@ -288,24 +320,30 @@ const Nav = memo(
       );
     }
 
-    // Desktop: Inline sidebar with width transition
+    // Desktop: Inline sidebar with width transition. When collapsed, a slim
+    // icon rail stays visible instead of shrinking to nothing.
+    const desktopWidth = navVisible ? sidebarWidth : NAV_WIDTH.COLLAPSED;
     return (
       <div
         className="flex-shrink-0 overflow-hidden"
-        style={{ width: navVisible ? sidebarWidth : 0, transition: 'width 0.2s ease-out' }}
+        style={{ width: desktopWidth, transition: 'width 0.2s ease-out' }}
       >
-        <motion.div
+        <div
           data-testid="nav"
-          className={cn('nav h-full bg-surface-primary-alt', navVisible && 'active')}
-          style={{ width: sidebarWidth }}
-          initial={false}
-          animate={{
-            x: navVisible ? 0 : -sidebarWidth,
-          }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
+          // Always keep the shared `.nav.active` styles on desktop (position:
+          // relative, opacity: 1) — the base `.nav` rule in mobile.css sets
+          // opacity: 0 and position: fixed, which is meant for the mobile
+          // slide-in/out animation. On desktop, visibility is driven purely
+          // by the width transition above, so the rail must stay "active"
+          // even while collapsed or it renders invisible.
+          // The collapsed rail blends into the chat area's background
+          // (bg-presentation) in both light and dark mode, instead of
+          // keeping the sidebar's usual surface-primary-alt shade.
+          className={cn('nav active h-full', navVisible ? 'bg-surface-primary-alt' : 'bg-presentation')}
+          style={{ width: desktopWidth, transition: 'width 0.2s ease-out' }}
         >
-          {sidebarContent}
-        </motion.div>
+          {navVisible ? sidebarContent : collapsedContent}
+        </div>
       </div>
     );
   },

@@ -15,6 +15,7 @@ export default function NewChat({
   isSmallScreen,
   headerButtons,
   notificationBell,
+  collapsed = false,
 }: {
   index?: number;
   toggleNav: () => void;
@@ -22,6 +23,7 @@ export default function NewChat({
   subHeaders?: React.ReactNode;
   headerButtons?: React.ReactNode;
   notificationBell?: React.ReactNode;
+  collapsed?: boolean;
 }) {
   const queryClient = useQueryClient();
   /** Note: this component needs an explicit index passed if using more than one */
@@ -54,6 +56,53 @@ export default function NewChat({
     },
     [queryClient, conversation, newConvo, toggleNav, isSmallScreen],
   );
+
+  // Collapsed rail: sidebar toggle, New Chat, and notifications stacked as
+  // centered icon-only buttons (no labels, no search bar).
+  if (collapsed) {
+    return (
+      <div className="flex flex-col items-center gap-1 py-[2px] md:py-2">
+        <TooltipAnchor
+          description={localize('com_nav_open_sidebar')}
+          side="right"
+          render={
+            <Button
+              id={OPEN_SIDEBAR_ID}
+              size="icon"
+              variant="outline"
+              data-testid="open-sidebar-button"
+              aria-label={localize('com_nav_open_sidebar')}
+              aria-expanded={false}
+              className="rounded-full border-none bg-transparent duration-0 hover:bg-surface-active-alt md:rounded-xl"
+              onClick={handleToggleNav}
+            >
+              <Sidebar aria-hidden="true" className="max-md:hidden" />
+              <MobileSidebar
+                aria-hidden="true"
+                className="icon-lg m-1 inline-flex items-center justify-center md:hidden"
+              />
+            </Button>
+          }
+        />
+        <TooltipAnchor
+          description={localize('com_ui_new_chat')}
+          side="right"
+          render={
+            <button
+              type="button"
+              data-testid="nav-new-chat-button"
+              aria-label={localize('com_ui_new_chat')}
+              onClick={clickHandler}
+              className="flex h-10 w-10 items-center justify-center rounded-xl border-none bg-transparent text-text-primary duration-0 hover:bg-surface-active-alt"
+            >
+              <NewChatIcon className="icon-lg text-text-primary" />
+            </button>
+          }
+        />
+        {notificationBell}
+      </div>
+    );
+  }
 
   return (
     <>

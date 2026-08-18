@@ -1,14 +1,14 @@
 import { useState, memo, useRef } from 'react';
 import * as Select from '@ariakit/react/select';
 import { FileText, LogOut } from 'lucide-react';
-import { LinkIcon, GearIcon, DropdownMenuSeparator, Avatar } from '@librechat/client';
+import { LinkIcon, GearIcon, DropdownMenuSeparator, Avatar, TooltipAnchor } from '@librechat/client';
 import { MyFilesModal } from '~/components/Chat/Input/Files/MyFilesModal';
 import { useGetStartupConfig, useGetUserBalance } from '~/data-provider';
 import { useAuthContext } from '~/hooks/AuthContext';
 import { useLocalize } from '~/hooks';
 import Settings from './Settings';
 
-function AccountSettings() {
+function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
   const localize = useLocalize();
   const { user, isAuthenticated, logout } = useAuthContext();
   const { data: startupConfig } = useGetStartupConfig();
@@ -19,28 +19,52 @@ function AccountSettings() {
   const [showFiles, setShowFiles] = useState(false);
   const accountSettingsButtonRef = useRef<HTMLButtonElement>(null);
 
-  return (
-    <Select.SelectProvider>
-      <Select.Select
-        ref={accountSettingsButtonRef}
-        aria-label={localize('com_nav_account_settings')}
-        data-testid="nav-user"
-        className="mt-text-sm flex h-auto w-full items-center gap-2 rounded-xl p-2 text-sm transition-all duration-200 ease-in-out hover:bg-surface-active-alt aria-[expanded=true]:bg-surface-active-alt"
-      >
-        <div className="-ml-0.9 -mt-0.8 h-8 w-8 flex-shrink-0">
-          <div className="relative flex">
-            <Avatar user={user} size={32} />
-          </div>
+  const selectTrigger = (
+    <Select.Select
+      ref={accountSettingsButtonRef}
+      aria-label={localize('com_nav_account_settings')}
+      data-testid="nav-user"
+      className={
+        collapsed
+          ? 'flex h-10 w-10 items-center justify-center rounded-xl p-0 transition-all duration-200 ease-in-out hover:bg-surface-active-alt aria-[expanded=true]:bg-surface-active-alt'
+          : 'mt-text-sm flex h-auto w-full items-center gap-2 rounded-xl p-2 text-sm transition-all duration-200 ease-in-out hover:bg-surface-active-alt aria-[expanded=true]:bg-surface-active-alt'
+      }
+    >
+      <div className={collapsed ? 'h-8 w-8 flex-shrink-0' : '-ml-0.9 -mt-0.8 h-8 w-8 flex-shrink-0'}>
+        <div className="relative flex">
+          <Avatar user={user} size={32} />
         </div>
+      </div>
+      {!collapsed && (
         <div
           className="mt-2 grow overflow-hidden text-ellipsis whitespace-nowrap text-left text-text-primary"
           style={{ marginTop: '0', marginLeft: '0' }}
         >
           {user?.name ?? user?.username ?? localize('com_nav_user')}
         </div>
-      </Select.Select>
+      )}
+    </Select.Select>
+  );
+
+  return (
+    <Select.SelectProvider>
+      {collapsed ? (
+        <TooltipAnchor
+          description={user?.name ?? user?.username ?? localize('com_nav_account_settings')}
+          side="right"
+          render={selectTrigger}
+        />
+      ) : (
+        selectTrigger
+      )}
       <Select.SelectPopover
-        className="popover-ui w-[305px] rounded-lg md:w-[244px]"
+        // Portal to document.body so the popover isn't clipped by the
+        // sidebar's `overflow-hidden` wrapper — most visible when the
+        // sidebar is collapsed to its narrow icon rail.
+        portal
+        gutter={8}
+        overflowPadding={12}
+        className="popover-ui account-settings-popover rounded-lg"
         style={{
           transformOrigin: 'bottom',
           translate: '0 -4px',
