@@ -1,10 +1,7 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
-import { QueryKeys } from 'librechat-data-provider';
-import { useQueryClient } from '@tanstack/react-query';
 import type { Dispatch, SetStateAction } from 'react';
-import { useLocalize, useNewConvo } from '~/hooks';
-import { clearMessagesCache } from '~/utils';
+import { useLocalize } from '~/hooks';
 import store from '~/store';
 
 export default function MobileNav({
@@ -15,8 +12,6 @@ export default function MobileNav({
   setNavVisible: Dispatch<SetStateAction<boolean>>;
 }) {
   const localize = useLocalize();
-  const queryClient = useQueryClient();
-  const { newConversation } = useNewConvo();
   const conversation = useRecoilValue(store.conversationByIndex(0));
   const { title = 'New Chat' } = conversation || {};
 
@@ -59,6 +54,13 @@ export default function MobileNav({
       <h1 className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-center text-sm font-normal">
         {title ?? localize('com_ui_new_chat')}
       </h1>
+      {/*
+        Mobile "New Chat" button (outside the sidebar) intentionally disabled —
+        keeping only the sidebar's own New Chat button. A same-sized empty
+        spacer is kept below so the title stays centered between the sidebar
+        toggle on the left and this space on the right.
+      */}
+      {/*
       <button
         type="button"
         aria-label={localize('com_ui_new_chat')}
@@ -85,6 +87,8 @@ export default function MobileNav({
           />
         </svg>
       </button>
+      */}
+      <div className="m-1 size-10" aria-hidden="true" />
     </div>
   );
 }

@@ -5,7 +5,11 @@ import { useOutletContext } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { getConfigDefaults, PermissionTypes, Permissions } from 'librechat-data-provider';
 import type { ContextType } from '~/common';
-import { PresetsMenu, HeaderNewChat, OpenSidebar } from './Menus';
+import { PresetsMenu, OpenSidebar } from './Menus';
+// HeaderNewChat is intentionally not used below — the "New Chat" button outside
+// the sidebar (next to the sidebar toggle) is disabled; the sidebar's own
+// New Chat button is kept instead.
+// import { HeaderNewChat } from './Menus';
 import ModelSelector from './Menus/Endpoints/ModelSelector';
 import { useGetStartupConfig } from '~/data-provider';
 import ExportAndShareMenu from './ExportAndShareMenu';
@@ -74,7 +78,8 @@ export default function Header() {
                 key="header-buttons"
               >
                 <OpenSidebar setNavVisible={setNavVisible} className="max-md:hidden" />
-                <HeaderNewChat />
+                {/* HeaderNewChat disabled: keeping only the sidebar's New Chat button */}
+                {/* <HeaderNewChat /> */}
               </motion.div>
             )}
           </AnimatePresence>
