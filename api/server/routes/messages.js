@@ -394,6 +394,7 @@ router.put('/:conversationId/:messageId/feedback', validateMessageReq, async (re
       const existingMessage = await Message.findOne({ messageId }).lean();
       feedback.updatedAt = new Date();
       feedback.createdAt = existingMessage?.feedback?.createdAt || new Date();
+      feedback.status = existingMessage?.feedback?.status || 'open';
     }
 
     const updatedMessage = await updateMessage(
