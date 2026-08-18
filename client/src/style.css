@@ -3008,6 +3008,41 @@ html {
   scrollbar-width: none; /* Firefox */
 }
 
+/* Compact "premium" trigger button for the model selector, now positioned in
+   the chat input toolbar (left of the microphone button). Written as plain
+   CSS (rather than Tailwind arbitrary-value classes) so the sizing is
+   guaranteed to compile regardless of the Tailwind JIT content scan/cache. */
+.model-selector-trigger {
+  height: 2.125rem;
+  width: fit-content;
+  max-width: 130px;
+}
+
+@media (min-width: 640px) {
+  .model-selector-trigger {
+    height: 2.25rem;
+    max-width: 190px;
+  }
+}
+
+/* Popover height cap + scroll for the model/endpoint selector dropdown
+   (CustomMenu). This is written as plain CSS instead of Tailwind
+   arbitrary-value classes like max-h-[min(450px,var(--popover-available-height))]
+   because those calc()/min()-based arbitrary utilities have proven unreliable
+   to compile in this codebase (same root cause as the chat-bubble-col fix) —
+   without a real max-height, the list can't overflow, so it never scrolls and
+   longer model lists get cut off instead of being reachable. */
+.custom-menu-popover {
+  max-height: min(450px, var(--popover-available-height, 450px));
+  overflow-y: auto;
+}
+
+@media (min-width: 640px) {
+  .custom-menu-popover {
+    max-height: 65vh;
+  }
+}
+
 .sharepoint-picker-bg {
   background-color: #f5f5f5;
 }

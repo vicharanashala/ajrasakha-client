@@ -22,8 +22,10 @@ import {
   useFocusChatEffect,
 } from '~/hooks';
 import { mainTextareaId, BadgeItem, TAskProps } from '~/common';
+import ModelSelector from '../Menus/Endpoints/ModelSelector';
 import AttachFileChat from './Files/AttachFileChat';
 import FileFormChat from './Files/FileFormChat';
+import { useGetStartupConfig } from '~/data-provider';
 import { cn, removeFocusRings } from '~/utils';
 import TextareaHeader from './TextareaHeader';
 import PromptsCommand from './PromptsCommand';
@@ -43,6 +45,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   useFocusChatEffect(textAreaRef);
   const localize = useLocalize();
+  const { data: startupConfig } = useGetStartupConfig();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [, setIsScrollable] = useState(false);
@@ -458,6 +461,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 </>
               )}
               <div className="mx-auto flex" />
+              <ModelSelector startupConfig={startupConfig} />
               {SpeechToText && (
                 <AudioRecorder
                   methods={methods}

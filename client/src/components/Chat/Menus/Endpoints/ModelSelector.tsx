@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { ChevronDown } from 'lucide-react';
 import { TooltipAnchor } from '@librechat/client';
 import { getConfigDefaults } from 'librechat-data-provider';
 import type { ModelSelectorProps } from '~/common';
@@ -65,11 +66,11 @@ function ModelSelectorContent() {
       description={localize('com_ui_select_model')}
       render={
         <button
-          className="my-1 flex h-10 w-full max-w-[70vw] items-center justify-center gap-2 rounded-xl border border-border-light bg-presentation px-3 py-2 text-sm text-text-primary hover:bg-surface-active-alt"
+          className="model-selector-trigger group flex items-center gap-1.5 rounded-full border border-transparent bg-transparent px-3 text-xs font-medium text-text-primary transition-colors duration-200 hover:bg-surface-secondary sm:text-sm"
           aria-label={localize('com_ui_select_model')}
         >
           {selectedIcon && React.isValidElement(selectedIcon) && (
-            <div className="flex flex-shrink-0 items-center justify-center overflow-hidden">
+            <div className="flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden">
               {selectedIcon}
             </div>
           )}
@@ -78,13 +79,17 @@ function ModelSelectorContent() {
               ? `${selectedDisplayValue?.substring(0, 10)}...`
               : selectedDisplayValue}
           </span>
+          <ChevronDown
+            className="h-3.5 w-3.5 flex-shrink-0 text-text-secondary transition-colors duration-200 group-hover:text-text-primary"
+            aria-hidden="true"
+          />
         </button>
       }
     />
   );
 
   return (
-    <div className="relative flex w-full max-w-md flex-col items-center gap-2">
+    <div className="relative flex w-fit flex-col items-center">
       <Menu
         values={selectedValues}
         onValuesChange={(values: Record<string, any>) => {

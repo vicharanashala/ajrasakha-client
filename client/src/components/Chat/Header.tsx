@@ -10,7 +10,6 @@ import { PresetsMenu, OpenSidebar } from './Menus';
 // the sidebar (next to the sidebar toggle) is disabled; the sidebar's own
 // New Chat button is kept instead.
 // import { HeaderNewChat } from './Menus';
-import ModelSelector from './Menus/Endpoints/ModelSelector';
 import { useGetStartupConfig } from '~/data-provider';
 import ExportAndShareMenu from './ExportAndShareMenu';
 import BookmarkMenu from './Menus/BookmarkMenu';
@@ -55,9 +54,9 @@ export default function Header() {
     return () => observer.disconnect();
   }, [bannerPortal]);
 
+  // ModelSelector moved into the chat input toolbar (left of the microphone button)
   const modelSelectorNodes = (
     <div className="flex items-center gap-1.5 sm:gap-2">
-      <ModelSelector startupConfig={startupConfig} />
       {interfaceConfig.presets === true && interfaceConfig.modelSelect && <PresetsMenu />}
       {hasAccessToMultiConvo === true && <AddMultiConvo />}
     </div>
