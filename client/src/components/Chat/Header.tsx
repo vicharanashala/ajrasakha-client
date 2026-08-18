@@ -95,29 +95,19 @@ export default function Header() {
               {/* {!bannerPortal && modelSelectorNodes} */}
               {hasAccessToBookmarks === true && <BookmarkMenu />}
               {isSmallScreen && (
-                <div className="flex w-full flex-1 items-center justify-between gap-1.5">
-                  <ExportAndShareMenu
-                    isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false}
-                  />
+                <div className="flex w-full flex-1 items-center justify-end gap-1.5">
                   {modelSelectorNodes}
-                  <TemporaryChat />
                 </div>
               )}
             </div>
           )}
         </div>
-
-        {!isSmallScreen && (
-          <div className="flex items-center gap-2">
-            <ExportAndShareMenu
-              isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false}
-            />
-            <TemporaryChat />
-          </div>
-        )}
       </div>
-      {/* Empty div for spacing */}
-      <div />
+      {/* Temporary chat + share/export menu, pinned together to the top-right corner of the header */}
+      <div className="absolute right-1.5 top-1.5 z-20 flex items-center gap-1.5 sm:right-2 sm:top-2">
+        <TemporaryChat />
+        <ExportAndShareMenu isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false} />
+      </div>
     </div>
   );
 }
