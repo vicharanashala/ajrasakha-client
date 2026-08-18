@@ -149,22 +149,24 @@ export default function Settings({ open, onOpenChange }: TDialogProps) {
           leaveFrom="opacity-100 scale-100"
           leaveTo="opacity-0 scale-95"
         >
-          <div className={cn('fixed inset-0 flex w-screen items-center justify-center p-4')}>
+          <div className={cn('fixed inset-0 flex w-screen items-center justify-center p-2 sm:p-4')}>
             <DialogPanel
               className={cn(
-                'max-h-[90vh] overflow-hidden rounded-xl rounded-b-lg bg-background pb-6 shadow-2xl backdrop-blur-2xl animate-in sm:rounded-2xl md:w-[680px]',
+                'flex w-full flex-col overflow-hidden rounded-2xl border border-border-light bg-surface-dialog shadow-2xl backdrop-blur-2xl animate-in',
+                'max-h-[92vh] md:h-[600px] md:max-h-[85vh] md:w-[720px]',
               )}
             >
               <DialogTitle
-                className="mb-1 flex items-center justify-between p-6 pb-5 text-left"
+                className="flex flex-shrink-0 items-center justify-between border-b border-border-light px-4 py-3.5 text-left sm:px-6 sm:py-4"
                 as="div"
               >
-                <h2 className="text-lg font-medium leading-6 text-text-primary">
+                <h2 className="text-base font-semibold leading-6 text-text-primary sm:text-lg">
                   {localize('com_nav_settings')}
                 </h2>
                 <button
                   type="button"
-                  className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-border-xheavy focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-surface-primary dark:focus:ring-offset-surface-primary"
+                  aria-label={localize('com_ui_close_settings')}
+                  className="inline-flex size-8 flex-shrink-0 items-center justify-center rounded-lg text-text-secondary transition-colors duration-200 hover:bg-surface-hover hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-border-xheavy"
                   onClick={() => onOpenChange(false)}
                 >
                   <svg
@@ -177,7 +179,7 @@ export default function Settings({ open, onOpenChange }: TDialogProps) {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="h-5 w-5 text-text-primary"
+                    className="h-5 w-5"
                   >
                     <line x1="18" x2="6" y1="6" y2="18"></line>
                     <line x1="6" x2="18" y1="6" y2="18"></line>
@@ -185,75 +187,75 @@ export default function Settings({ open, onOpenChange }: TDialogProps) {
                   <span className="sr-only">{localize('com_ui_close_settings')}</span>
                 </button>
               </DialogTitle>
-              <div className="max-h-[calc(90vh-120px)] overflow-auto px-6 md:w-[680px]">
-                <Tabs.Root
-                  value={activeTab}
-                  onValueChange={handleTabChange}
-                  className="flex flex-col gap-10 md:flex-row"
-                  orientation="vertical"
+              <Tabs.Root
+                value={activeTab}
+                onValueChange={handleTabChange}
+                className="flex min-h-0 flex-1 flex-col md:flex-row"
+                orientation="vertical"
+              >
+                <Tabs.List
+                  aria-label="Settings"
+                  className={cn(
+                    'flex flex-shrink-0',
+                    isSmallScreen
+                      ? 'no-scrollbar w-full flex-row gap-1 overflow-x-auto border-b border-border-light px-2 py-2'
+                      : 'w-56 flex-col gap-0.5 overflow-y-auto border-r border-border-light p-3',
+                  )}
+                  onKeyDown={handleKeyDown}
                 >
-                  <Tabs.List
-                    aria-label="Settings"
-                    className={cn(
-                      'min-w-auto max-w-auto relative -ml-[8px] flex flex-shrink-0 flex-col flex-nowrap overflow-auto sm:max-w-none',
-                      isSmallScreen
-                        ? 'flex-row rounded-xl bg-surface-secondary'
-                        : 'sticky top-0 h-full',
-                    )}
-                    onKeyDown={handleKeyDown}
-                  >
-                    {settingsTabs.map(({ value, icon, label }) => (
-                      <Tabs.Trigger
-                        key={value}
-                        className={cn(
-                          'group relative z-10 m-1 flex items-center justify-start gap-2 rounded-xl px-2 py-1.5 transition-all duration-200 ease-in-out',
-                          isSmallScreen
-                            ? 'flex-1 justify-center text-nowrap p-1 px-3 text-sm text-text-secondary radix-state-active:bg-surface-hover radix-state-active:text-text-primary'
-                            : 'bg-transparent text-text-secondary radix-state-active:bg-surface-tertiary radix-state-active:text-text-primary',
-                        )}
-                        value={value}
-                        ref={(el) => (tabRefs.current[value] = el)}
-                      >
-                        {icon}
-                        {localize(label)}
-                      </Tabs.Trigger>
-                    ))}
-                  </Tabs.List>
-                  <div className="overflow-auto sm:w-full sm:max-w-none md:pr-0.5 md:pt-0.5">
-                    <Tabs.Content value={SettingsTabValues.GENERAL} tabIndex={-1}>
-                      <General />
+                  {settingsTabs.map(({ value, icon, label }) => (
+                    <Tabs.Trigger
+                      key={value}
+                      className={cn(
+                        'group relative flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200 ease-in-out',
+                        'text-text-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-border-xheavy',
+                        'radix-state-active:bg-surface-tertiary radix-state-active:text-text-primary',
+                        isSmallScreen
+                          ? 'flex-shrink-0 whitespace-nowrap'
+                          : 'w-full justify-start hover:bg-surface-hover hover:text-text-primary',
+                      )}
+                      value={value}
+                      ref={(el) => (tabRefs.current[value] = el)}
+                    >
+                      <span className="flex flex-shrink-0 items-center justify-center">{icon}</span>
+                      {localize(label)}
+                    </Tabs.Trigger>
+                  ))}
+                </Tabs.List>
+                <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5">
+                  <Tabs.Content value={SettingsTabValues.GENERAL} tabIndex={-1}>
+                    <General />
+                  </Tabs.Content>
+                  <Tabs.Content value={SettingsTabValues.CHAT} tabIndex={-1}>
+                    <Chat />
+                  </Tabs.Content>
+                  <Tabs.Content value={SettingsTabValues.COMMANDS} tabIndex={-1}>
+                    <Commands />
+                  </Tabs.Content>
+                  <Tabs.Content value={SettingsTabValues.SPEECH} tabIndex={-1}>
+                    <Speech />
+                  </Tabs.Content>
+                  {hasAnyPersonalizationFeature && (
+                    <Tabs.Content value={SettingsTabValues.PERSONALIZATION} tabIndex={-1}>
+                      <Personalization
+                        hasMemoryOptOut={hasMemoryOptOut}
+                        hasAnyPersonalizationFeature={hasAnyPersonalizationFeature}
+                      />
                     </Tabs.Content>
-                    <Tabs.Content value={SettingsTabValues.CHAT} tabIndex={-1}>
-                      <Chat />
+                  )}
+                  <Tabs.Content value={SettingsTabValues.DATA} tabIndex={-1}>
+                    <Data />
+                  </Tabs.Content>
+                  {startupConfig?.balance?.enabled && (
+                    <Tabs.Content value={SettingsTabValues.BALANCE} tabIndex={-1}>
+                      <Balance />
                     </Tabs.Content>
-                    <Tabs.Content value={SettingsTabValues.COMMANDS} tabIndex={-1}>
-                      <Commands />
-                    </Tabs.Content>
-                    <Tabs.Content value={SettingsTabValues.SPEECH} tabIndex={-1}>
-                      <Speech />
-                    </Tabs.Content>
-                    {hasAnyPersonalizationFeature && (
-                      <Tabs.Content value={SettingsTabValues.PERSONALIZATION} tabIndex={-1}>
-                        <Personalization
-                          hasMemoryOptOut={hasMemoryOptOut}
-                          hasAnyPersonalizationFeature={hasAnyPersonalizationFeature}
-                        />
-                      </Tabs.Content>
-                    )}
-                    <Tabs.Content value={SettingsTabValues.DATA} tabIndex={-1}>
-                      <Data />
-                    </Tabs.Content>
-                    {startupConfig?.balance?.enabled && (
-                      <Tabs.Content value={SettingsTabValues.BALANCE} tabIndex={-1}>
-                        <Balance />
-                      </Tabs.Content>
-                    )}
-                    <Tabs.Content value={SettingsTabValues.ACCOUNT} tabIndex={-1}>
-                      <Account />
-                    </Tabs.Content>
-                  </div>
-                </Tabs.Root>
-              </div>
+                  )}
+                  <Tabs.Content value={SettingsTabValues.ACCOUNT} tabIndex={-1}>
+                    <Account />
+                  </Tabs.Content>
+                </div>
+              </Tabs.Root>
             </DialogPanel>
           </div>
         </TransitionChild>
