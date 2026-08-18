@@ -141,17 +141,21 @@ function NotificationBell() {
   return (
     <div className="flex-shrink-0">
       <button
+        type="button"
         ref={buttonRef}
         onClick={handleToggle}
-        className="relative flex h-9 w-9 items-center justify-center rounded-xl transition-colors hover:bg-surface-active-alt"
+        className="mb-1 flex w-full items-center gap-2 rounded-xl border-none bg-transparent px-2 py-2 text-left text-sm font-medium text-text-primary duration-0 hover:bg-surface-active-alt"
         aria-label="Notifications"
       >
-        <Bell className="h-5 w-5 text-text-primary" />
-        {unreadCount > 0 && (
-          <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-            {unreadCount > 9 ? '9+' : unreadCount}
-          </span>
-        )}
+        <span className="relative flex h-5 w-5 flex-shrink-0 items-center justify-center">
+          <Bell className="h-5 w-5 text-text-primary" />
+          {unreadCount > 0 && (
+            <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </span>
+        <span className="truncate">Notifications</span>
       </button>
       {dropdown}
     </div>

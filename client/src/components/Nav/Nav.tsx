@@ -233,6 +233,11 @@ const Nav = memo(
               toggleNav={toggleNavVisible}
               headerButtons={headerButtons}
               isSmallScreen={isSmallScreen}
+              notificationBell={
+                <Suspense fallback={null}>
+                  <NotificationBell />
+                </Suspense>
+              }
             />
             <div className="flex min-h-0 flex-grow flex-col overflow-hidden">
               <Conversations
@@ -254,9 +259,6 @@ const Nav = memo(
                 <AccountSettings />
               </Suspense>
             </div>
-            <Suspense fallback={null}>
-              <NotificationBell />
-            </Suspense>
           </div>
         </nav>
       </div>

@@ -14,12 +14,14 @@ export default function NewChat({
   subHeaders,
   isSmallScreen,
   headerButtons,
+  notificationBell,
 }: {
   index?: number;
   toggleNav: () => void;
   isSmallScreen?: boolean;
   subHeaders?: React.ReactNode;
   headerButtons?: React.ReactNode;
+  notificationBell?: React.ReactNode;
 }) {
   const queryClient = useQueryClient();
   /** Note: this component needs an explicit index passed if using more than one */
@@ -77,26 +79,19 @@ export default function NewChat({
             </Button>
           }
         />
-        <div className="flex gap-0.5">
-          {headerButtons}
-
-          <TooltipAnchor
-            description={localize('com_ui_new_chat')}
-            render={
-              <Button
-                size="icon"
-                variant="outline"
-                data-testid="nav-new-chat-button"
-                aria-label={localize('com_ui_new_chat')}
-                className="rounded-full border-none bg-transparent duration-0 hover:bg-surface-active-alt md:rounded-xl"
-                onClick={clickHandler}
-              >
-                <NewChatIcon className="icon-lg text-text-primary" />
-              </Button>
-            }
-          />
-        </div>
+        <div className="flex gap-0.5">{headerButtons}</div>
       </div>
+      <button
+        type="button"
+        data-testid="nav-new-chat-button"
+        aria-label={localize('com_ui_new_chat')}
+        onClick={clickHandler}
+        className="mb-1 flex w-full items-center gap-2 rounded-xl border-none bg-transparent px-2 py-2 text-left text-sm font-medium text-text-primary duration-0 hover:bg-surface-active-alt"
+      >
+        <NewChatIcon className="icon-lg flex-shrink-0 text-text-primary" />
+        <span className="truncate">{localize('com_ui_new_chat')}</span>
+      </button>
+      {notificationBell}
       {subHeaders != null ? subHeaders : null}
     </>
   );
