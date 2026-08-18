@@ -1,12 +1,10 @@
 import React, { useMemo } from 'react';
-import { useAtomValue } from 'jotai';
 import { useRecoilValue } from 'recoil';
 import type { TMessageContentParts } from 'librechat-data-provider';
 import type { TMessageProps, TMessageIcon } from '~/common';
 import { useMessageHelpers, useLocalize, useAttachments, useContentMetadata } from '~/hooks';
 import MessageIcon from '~/components/Chat/Messages/MessageIcon';
 import ContentParts from './Content/ContentParts';
-import { fontSizeAtom } from '~/store/fontSize';
 import SiblingSwitch from './SiblingSwitch';
 import MultiMessage from './MultiMessage';
 import HoverButtons from './HoverButtons';
@@ -38,7 +36,6 @@ export default function Message(props: TMessageProps) {
     regenerateMessage,
   } = useMessageHelpers(props);
 
-  const fontSize = useAtomValue(fontSizeAtom);
   const maximizeChatSpace = useRecoilValue(store.maximizeChatSpace);
   const { children, messageId = null, isCreatedByUser } = message ?? {};
 
@@ -116,27 +113,22 @@ export default function Message(props: TMessageProps) {
           >
             {!hasParallelContent && !isCreatedByUser && (
               <div className="relative flex flex-shrink-0 flex-col items-center">
-                <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full pt-0.5">
+                <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full pt-0.5">
                   <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
                 </div>
               </div>
             )}
             <div
               className={cn(
-                'relative flex flex-col',
-                hasParallelContent ? 'w-full' : 'w-fit max-w-[85%] sm:max-w-[75%]',
+                'relative flex min-w-0 flex-col',
+                hasParallelContent ? 'w-full' : 'chat-bubble-col',
                 isCreatedByUser ? 'user-turn items-end' : 'agent-turn items-start',
               )}
             >
-              {!hasParallelContent && (
-                <h2 className={cn('select-none font-semibold text-text-primary', fontSize)}>
-                  {name}
-                </h2>
-              )}
-              <div className="flex flex-col gap-1">
+              <div className="flex min-w-0 flex-col gap-1">
                 <div
                   className={cn(
-                    'flex max-w-full flex-grow flex-col gap-0',
+                    'flex min-w-0 max-w-full flex-grow flex-col gap-0 overflow-hidden break-all',
                     !hasParallelContent &&
                       (isCreatedByUser
                         ? 'rounded-2xl rounded-tr-sm bg-surface-tertiary px-4 py-2.5'
@@ -187,7 +179,7 @@ export default function Message(props: TMessageProps) {
             </div>
             {!hasParallelContent && isCreatedByUser && (
               <div className="relative flex flex-shrink-0 flex-col items-center">
-                <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full pt-0.5">
+                <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full pt-0.5">
                   <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
                 </div>
               </div>

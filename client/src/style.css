@@ -2549,6 +2549,22 @@ html {
   line-height: 1.4;
 }
 
+/* Chat bubble width cap for user/assistant messages. Written as plain CSS
+   (rather than a Tailwind arbitrary-value class like max-w-[75%]) so the
+   constraint is guaranteed to be compiled and applied regardless of the
+   Tailwind JIT content scan/cache. */
+.chat-bubble-col {
+  width: fit-content;
+  min-width: 0;
+  max-width: 85%;
+}
+
+@media (min-width: 640px) {
+  .chat-bubble-col {
+    max-width: 75%;
+  }
+}
+
 .message-content pre code {
   font-size: calc(0.85 * var(--markdown-font-size, var(--font-size-base)));
 }
