@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Ariakit from '@ariakit/react';
-import { PinIcon } from '@librechat/client';
+import { PinIcon, useMediaQuery } from '@librechat/client';
 import { ChevronRight, WandSparkles } from 'lucide-react';
 import { ArtifactModes } from 'librechat-data-provider';
 import { useLocalize } from '~/hooks';
@@ -29,16 +29,103 @@ const ArtifactsSubMenu = React.forwardRef<HTMLDivElement, ArtifactsSubMenuProps>
     ref,
   ) => {
     const localize = useLocalize();
+    const isSmallScreen = useMediaQuery('(max-width: 768px)');
 
     const menuStore = Ariakit.useMenuStore({
       focusLoop: true,
       showTimeout: 100,
-      placement: 'right',
+      placement: 'right-start',
     });
 
     const isEnabled = artifactsMode !== '' && artifactsMode !== undefined;
     const isShadcnEnabled = artifactsMode === ArtifactModes.SHADCNUI;
     const isCustomEnabled = artifactsMode === ArtifactModes.CUSTOM;
+
+    if (isSmallScreen) {
+      return (
+        <div ref={ref} className="w-full">
+          <div className="flex w-full items-center justify-between rounded-lg p-2 hover:bg-surface-hover">
+            <div
+              className="flex flex-1 cursor-pointer items-center gap-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleArtifactsToggle();
+              }}
+            >
+              <WandSparkles className="icon-md" aria-hidden="true" />
+              <span>{localize('com_ui_artifacts')}</span>
+            </div>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsArtifactsPinned(!isArtifactsPinned);
+              }}
+              className={cn(
+                'rounded p-1 transition-all duration-200',
+                'hover:bg-surface-tertiary hover:shadow-sm',
+                !isArtifactsPinned && 'text-text-secondary hover:text-text-primary',
+              )}
+              aria-label={isArtifactsPinned ? 'Unpin' : 'Pin'}
+            >
+              <div className="h-4 w-4">
+                <PinIcon unpin={isArtifactsPinned} />
+              </div>
+            </button>
+          </div>
+
+          {isEnabled && (
+            <div className="mt-1 flex flex-col border-t border-border-light/60 px-2 pb-1 pt-2">
+              <div className="mb-1 text-xs font-medium text-text-secondary">
+                {localize('com_ui_artifacts_options')}
+              </div>
+
+              {/* Include shadcn/ui Option */}
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  handleShadcnToggle();
+                }}
+                className={cn(
+                  'mb-1 flex w-full items-center justify-between gap-2 rounded-lg px-2 py-2 text-left',
+                  'cursor-pointer bg-surface-secondary text-text-primary outline-none transition-colors',
+                  'hover:bg-surface-hover',
+                  isShadcnEnabled && 'bg-surface-active',
+                )}
+              >
+                <span className="text-sm">{localize('com_ui_include_shadcnui' as any)}</span>
+                <div className="ml-auto flex shrink-0 items-center">
+                  <Ariakit.MenuItemCheck checked={isShadcnEnabled} />
+                </div>
+              </button>
+
+              {/* Custom Prompt Mode Option */}
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  handleCustomToggle();
+                }}
+                className={cn(
+                  'mb-1 flex w-full items-center justify-between gap-2 rounded-lg px-2 py-2 text-left',
+                  'cursor-pointer bg-surface-secondary text-text-primary outline-none transition-colors',
+                  'hover:bg-surface-hover',
+                  isCustomEnabled && 'bg-surface-active',
+                )}
+              >
+                <span className="text-sm">{localize('com_ui_custom_prompt_mode' as any)}</span>
+                <div className="ml-auto flex shrink-0 items-center">
+                  <Ariakit.MenuItemCheck checked={isCustomEnabled} />
+                </div>
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    }
 
     return (
       <div ref={ref}>
@@ -89,8 +176,14 @@ const ArtifactsSubMenu = React.forwardRef<HTMLDivElement, ArtifactsSubMenuProps>
             <Ariakit.Menu
               portal={true}
               unmountOnHide={true}
+              gutter={8}
+              flip={true}
+              slide={true}
+              overlap={false}
+              fitViewport={true}
+              overflowPadding={8}
               className={cn(
-                'animate-popover-left z-40 ml-3 mt-6 flex min-w-[250px] flex-col rounded-xl',
+                'animate-popover-left z-40 flex min-w-[240px] max-w-[calc(100vw-1rem)] flex-col rounded-xl sm:max-w-[280px]',
                 'border border-border-light bg-surface-secondary shadow-lg',
               )}
             >
