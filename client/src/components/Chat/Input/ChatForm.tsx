@@ -1,4 +1,5 @@
 import { memo, useRef, useMemo, useEffect, useState, useCallback } from 'react';
+import { Plus, X } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useWatch } from 'react-hook-form';
 import { TextareaAutosize } from '@librechat/client';
@@ -48,6 +49,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const [visualRowCount, setVisualRowCount] = useState(1);
   const [isTextAreaFocused, setIsTextAreaFocused] = useState(false);
   const [backupBadges, setBackupBadges] = useState<Pick<BadgeItem, 'id'>[]>([]);
+  const [showLeftOptions, setShowLeftOptions] = useState(false);
 
   // Location access state
   const [position, setPosition] = useState<TAskProps['position'] | null>(null);
@@ -420,17 +422,41 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               )}
             >
               <div className={`${isRTL ? 'mr-1.5 sm:mr-2' : 'ml-1.5 sm:ml-2'}`}>
-                <AttachFileChat conversation={conversation} disableInputs={disableInputs} />
+                <button
+                  type="button"
+                  aria-label={showLeftOptions ? 'Close options' : 'Open options'}
+                  onClick={() => setShowLeftOptions((prev) => !prev)}
+                  className={cn(
+                    'flex size-9 items-center justify-center rounded-full p-1 transition-all duration-200',
+                    'hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-opacity-50',
+                    showLeftOptions && 'bg-surface-hover',
+                  )}
+                >
+                  <Plus
+                    className={cn(
+                      'size-5 transition-transform duration-200',
+                      showLeftOptions && 'rotate-45',
+                    )}
+                    aria-hidden="true"
+                  />
+                </button>
               </div>
-              <BadgeRow
-                showEphemeralBadges={!isAgentsEndpoint(endpoint) && !isAssistantsEndpoint(endpoint)}
-                isSubmitting={isSubmitting}
-                conversationId={conversationId}
-                onChange={setBadges}
-                isInChat={
-                  Array.isArray(conversation?.messages) && conversation.messages.length >= 1
-                }
-              />
+              {showLeftOptions && (
+                <>
+                  <div>
+                    <AttachFileChat conversation={conversation} disableInputs={disableInputs} />
+                  </div>
+                  <BadgeRow
+                    showEphemeralBadges={!isAgentsEndpoint(endpoint) && !isAssistantsEndpoint(endpoint)}
+                    isSubmitting={isSubmitting}
+                    conversationId={conversationId}
+                    onChange={setBadges}
+                    isInChat={
+                      Array.isArray(conversation?.messages) && conversation.messages.length >= 1
+                    }
+                  />
+                </>
+              )}
               <div className="mx-auto flex" />
               {SpeechToText && (
                 <AudioRecorder
