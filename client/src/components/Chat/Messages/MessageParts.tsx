@@ -107,9 +107,14 @@ export default function Message(props: TMessageProps) {
           <div
             id={messageId ?? ''}
             aria-label={getMessageAriaLabel(message, localize)}
-            className={cn(baseClasses.common, baseClasses.chat, 'message-render')}
+            className={cn(
+              baseClasses.common,
+              baseClasses.chat,
+              'message-render',
+              !hasParallelContent && (isCreatedByUser ? 'justify-end' : 'justify-start'),
+            )}
           >
-            {!hasParallelContent && (
+            {!hasParallelContent && !isCreatedByUser && (
               <div className="relative flex flex-shrink-0 flex-col items-center">
                 <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full pt-0.5">
                   <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
@@ -119,8 +124,8 @@ export default function Message(props: TMessageProps) {
             <div
               className={cn(
                 'relative flex flex-col',
-                hasParallelContent ? 'w-full' : 'w-11/12',
-                isCreatedByUser ? 'user-turn' : 'agent-turn',
+                hasParallelContent ? 'w-full' : 'w-fit max-w-[85%] sm:max-w-[75%]',
+                isCreatedByUser ? 'user-turn items-end' : 'agent-turn items-start',
               )}
             >
               {!hasParallelContent && (
@@ -129,7 +134,15 @@ export default function Message(props: TMessageProps) {
                 </h2>
               )}
               <div className="flex flex-col gap-1">
-                <div className="flex max-w-full flex-grow flex-col gap-0">
+                <div
+                  className={cn(
+                    'flex max-w-full flex-grow flex-col gap-0',
+                    !hasParallelContent &&
+                      (isCreatedByUser
+                        ? 'rounded-2xl rounded-tr-sm bg-surface-tertiary px-4 py-2.5'
+                        : 'rounded-2xl rounded-tl-sm bg-surface-secondary px-4 py-2.5'),
+                  )}
+                >
                   <ContentParts
                     edit={edit}
                     isLast={isLast}
@@ -149,7 +162,7 @@ export default function Message(props: TMessageProps) {
                 {isLast && isSubmitting ? (
                   <div className="mt-1 h-[27px] bg-transparent" />
                 ) : (
-                  <SubRow classes="text-xs">
+                  <SubRow classes={cn('text-xs', isCreatedByUser && 'justify-end')}>
                     <SiblingSwitch
                       siblingIdx={siblingIdx}
                       siblingCount={siblingCount}
@@ -172,6 +185,13 @@ export default function Message(props: TMessageProps) {
                 )}
               </div>
             </div>
+            {!hasParallelContent && isCreatedByUser && (
+              <div className="relative flex flex-shrink-0 flex-col items-center">
+                <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full pt-0.5">
+                  <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

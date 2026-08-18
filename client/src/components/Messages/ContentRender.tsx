@@ -114,6 +114,83 @@ const ContentRender = memo(
       focus: 'focus:outline-none focus:ring-2 focus:ring-border-xheavy',
     };
 
+    const isUser = msg.isCreatedByUser;
+
+    const avatarBlock = !hasParallelContent && (
+      <div className="relative flex flex-shrink-0 flex-col items-center">
+        <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
+          <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
+        </div>
+      </div>
+    );
+
+    const contentColumn = (
+      <div
+        className={cn(
+          'relative flex flex-col',
+          hasParallelContent ? 'w-full' : 'w-fit max-w-[85%] sm:max-w-[75%]',
+          isUser ? 'user-turn items-end' : 'agent-turn items-start',
+        )}
+      >
+        {!hasParallelContent && (
+          <h2 className={cn('select-none font-semibold', fontSize)}>{messageLabel}</h2>
+        )}
+
+        <div className="flex flex-col gap-1">
+          <div
+            className={cn(
+              'flex max-w-full flex-grow flex-col gap-0',
+              !hasParallelContent &&
+                (isUser
+                  ? 'rounded-2xl rounded-tr-sm bg-surface-tertiary px-4 py-2.5'
+                  : 'rounded-2xl rounded-tl-sm bg-surface-secondary px-4 py-2.5'),
+            )}
+          >
+            <ContentParts
+              edit={edit}
+              isLast={isLast}
+              enterEdit={enterEdit}
+              siblingIdx={siblingIdx}
+              messageId={msg.messageId}
+              attachments={attachments}
+              searchResults={searchResults}
+              setSiblingIdx={setSiblingIdx}
+              isLatestMessage={isLatestMessage}
+              isSubmitting={effectiveIsSubmitting}
+              isCreatedByUser={msg.isCreatedByUser}
+              conversationId={conversation?.conversationId}
+              content={msg.content as Array<TMessageContentParts | undefined>}
+            />
+          </div>
+          {hasNoChildren && effectiveIsSubmitting ? (
+            <PlaceholderRow />
+          ) : (
+            <SubRow classes={cn('text-xs', isUser && 'justify-end')}>
+              <SiblingSwitch
+                siblingIdx={siblingIdx}
+                siblingCount={siblingCount}
+                setSiblingIdx={setSiblingIdx}
+              />
+              <HoverButtons
+                index={index}
+                message={msg}
+                isEditing={edit}
+                enterEdit={enterEdit}
+                isSubmitting={isSubmitting}
+                conversation={conversation ?? null}
+                regenerate={handleRegenerateMessage}
+                copyToClipboard={copyToClipboard}
+                handleContinue={handleContinue}
+                latestMessage={latestMessage}
+                handleFeedback={handleFeedback}
+                isLast={isLast}
+              />
+            </SubRow>
+          )}
+        </div>
+      </div>
+    );
+
     return (
       <div
         id={msg.messageId}
@@ -123,72 +200,20 @@ const ContentRender = memo(
           baseClasses.chat,
           conditionalClasses.focus,
           'message-render',
+          !hasParallelContent && (isUser ? 'justify-end' : 'justify-start'),
         )}
       >
-        {!hasParallelContent && (
-          <div className="relative flex flex-shrink-0 flex-col items-center">
-            <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
-              <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
-            </div>
-          </div>
+        {isUser ? (
+          <>
+            {contentColumn}
+            {avatarBlock}
+          </>
+        ) : (
+          <>
+            {avatarBlock}
+            {contentColumn}
+          </>
         )}
-
-        <div
-          className={cn(
-            'relative flex flex-col',
-            hasParallelContent ? 'w-full' : 'w-11/12',
-            msg.isCreatedByUser ? 'user-turn' : 'agent-turn',
-          )}
-        >
-          {!hasParallelContent && (
-            <h2 className={cn('select-none font-semibold', fontSize)}>{messageLabel}</h2>
-          )}
-
-          <div className="flex flex-col gap-1">
-            <div className="flex max-w-full flex-grow flex-col gap-0">
-              <ContentParts
-                edit={edit}
-                isLast={isLast}
-                enterEdit={enterEdit}
-                siblingIdx={siblingIdx}
-                messageId={msg.messageId}
-                attachments={attachments}
-                searchResults={searchResults}
-                setSiblingIdx={setSiblingIdx}
-                isLatestMessage={isLatestMessage}
-                isSubmitting={effectiveIsSubmitting}
-                isCreatedByUser={msg.isCreatedByUser}
-                conversationId={conversation?.conversationId}
-                content={msg.content as Array<TMessageContentParts | undefined>}
-              />
-            </div>
-            {hasNoChildren && effectiveIsSubmitting ? (
-              <PlaceholderRow />
-            ) : (
-              <SubRow classes="text-xs">
-                <SiblingSwitch
-                  siblingIdx={siblingIdx}
-                  siblingCount={siblingCount}
-                  setSiblingIdx={setSiblingIdx}
-                />
-                <HoverButtons
-                  index={index}
-                  message={msg}
-                  isEditing={edit}
-                  enterEdit={enterEdit}
-                  isSubmitting={isSubmitting}
-                  conversation={conversation ?? null}
-                  regenerate={handleRegenerateMessage}
-                  copyToClipboard={copyToClipboard}
-                  handleContinue={handleContinue}
-                  latestMessage={latestMessage}
-                  handleFeedback={handleFeedback}
-                  isLast={isLast}
-                />
-              </SubRow>
-            )}
-          </div>
-        </div>
       </div>
     );
   },
