@@ -58,7 +58,7 @@ export default function MobileNav({
         {title ?? localize('com_ui_new_chat')}
       </h1>
       */}
-      <div className="flex-1" />
+      <div id="mobile-nav-model-selector-portal" className="flex-1 flex items-center justify-start min-w-0 px-2" />
       {/*
         Mobile "New Chat" button (outside the sidebar) intentionally disabled —
         keeping only the sidebar's own New Chat button. A same-sized empty

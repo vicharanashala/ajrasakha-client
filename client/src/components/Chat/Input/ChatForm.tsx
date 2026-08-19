@@ -1,4 +1,5 @@
 import { memo, useRef, useMemo, useEffect, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { Plus, X } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useWatch } from 'react-hook-form';
@@ -139,6 +140,19 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     conversationId,
     isSubmitting,
   });
+
+  const [mobileNavPortal, setMobileNavPortal] = useState<Element | null>(null);
+
+  useEffect(() => {
+    const node = document.getElementById('mobile-nav-model-selector-portal');
+    if (node) setMobileNavPortal(node);
+    const observer = new MutationObserver(() => {
+      const p = document.getElementById('mobile-nav-model-selector-portal');
+      if (p !== mobileNavPortal) setMobileNavPortal(p);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [mobileNavPortal]);
 
   const { submitMessage, submitPrompt } = useSubmitMessage();
 
@@ -462,10 +476,13 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 </>
               )}
               <div className="mx-auto flex" />
-              {/* Hide the model selector on mobile when the left options
-                  (attach file / badges) are expanded — there isn't enough
-                  room for both, and the left options take priority. */}
-              {!(isSmallScreen && showLeftOptions) && (
+              {/* On mobile, portal the model selector to the top mobile nav bar.
+                  On desktop, render it inline in the chat input. */}
+              {isSmallScreen ? (
+                mobileNavPortal ? (
+                  createPortal(<ModelSelector startupConfig={startupConfig} />, mobileNavPortal)
+                ) : null
+              ) : (
                 <ModelSelector startupConfig={startupConfig} />
               )}
               {SpeechToText && (
