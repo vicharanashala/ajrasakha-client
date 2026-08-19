@@ -14,7 +14,7 @@ import {
   Input,
   Label,
 } from '@librechat/client';
-import { LogOut } from 'lucide-react';
+import { LogOut, User, Leaf, Smartphone, Landmark, MapPin } from 'lucide-react';
 import { dataService } from 'librechat-data-provider';
 import type { IFarmerProfile } from 'librechat-data-provider';
 import { useSaveFarmerProfileMutation } from '~/data-provider';
@@ -353,11 +353,15 @@ const FarmerProfileModal = ({
   };
 
   const inputClass =
-    'mt-1 block w-full rounded-md border border-border-heavy bg-surface-secondary px-3 py-2 text-sm text-text-primary placeholder-text-secondary focus:outline-none focus:ring-1 focus:ring-green-500';
+    'mt-1.5 block w-full rounded-lg border border-border-medium bg-surface-primary px-3 py-2 text-sm text-text-primary placeholder-text-secondary transition-colors focus:border-border-heavy focus:outline-none focus:ring-1 focus:ring-border-heavy';
   const errorClass = 'mt-1 text-xs text-red-500';
-  const sectionClass = 'mb-6';
-  const sectionTitleClass =
-    'mb-3 text-base font-semibold text-text-primary border-b border-border-heavy pb-1';
+  const sectionClass =
+    'mb-5 rounded-xl border border-border-light bg-surface-secondary p-4 sm:mb-6 sm:p-5';
+  const sectionTitleClass = 'mb-4 flex items-center gap-3';
+  const sectionBadgeClass =
+    'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-light bg-surface-tertiary text-text-primary';
+  const sectionHeadingTextClass = 'text-base font-semibold text-text-primary';
+  const sectionStepClass = 'text-xs font-medium text-text-tertiary';
   const fieldClass = 'mb-4';
   const decimalRegex = /^\d+(\.\d+)?$/;
   const genderOptions = [
@@ -823,17 +827,17 @@ const FarmerProfileModal = ({
         showCloseButton={false}
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
-        className="flex max-h-[90vh] w-11/12 max-w-2xl flex-col overflow-y-hidden sm:w-3/4 md:w-2/3 lg:w-1/2"
+        className="farmer-modal-shell flex w-11/12 max-w-2xl flex-col overflow-y-hidden p-4 sm:w-3/4 sm:p-6 md:w-2/3 lg:w-1/2"
       >
         <OGDialogHeader>
-          <div className="flex flex-row items-center justify-between w-full">
-            <OGDialogTitle className="text-lg font-bold text-text-primary">
+          <div className="flex w-full flex-row flex-wrap items-center justify-between gap-2">
+            <OGDialogTitle className="text-base font-bold text-text-primary sm:text-lg">
               {localize('com_farmer_profile_registration')}
             </OGDialogTitle>
             <button
               type="button"
               onClick={() => logout()}
-              className="inline-flex items-center gap-2 rounded-lg border border-border-heavy bg-surface-secondary px-3 py-1.5 text-xs font-semibold text-text-primary hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-200 shrink-0"
+              className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border-heavy bg-surface-secondary px-3 py-1.5 text-xs font-semibold text-text-primary transition-all duration-200 hover:border-surface-destructive hover:bg-surface-destructive hover:text-white"
             >
               <LogOut className="h-3.5 w-3.5" />
               {localize('com_nav_log_out')}
@@ -846,7 +850,7 @@ const FarmerProfileModal = ({
           <input type="hidden" {...register('location.longitude')} />
 
           {/* ── Notice — pinned above the scrollable area ── */}
-          <p className="shrink-0 px-1 pb-3 text-sm font-medium text-red-500">
+          <p className="shrink-0 px-1 pb-3 text-xs font-medium text-red-500 sm:text-sm">
             {localize('com_farmer_profile_fill_all_required')}
           </p>
 
@@ -873,7 +877,17 @@ const FarmerProfileModal = ({
             </div>
             {/* ── Section 1: Demographic Details ── */}
             <div className={sectionClass}>
-              <h3 className={sectionTitleClass}>{localize('com_farmer_profile_demographic_details')}</h3>
+              <div className={sectionTitleClass}>
+                <span className={sectionBadgeClass}>
+                  <User className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className={sectionStepClass}>Section 1 of 4</p>
+                  <h3 className={sectionHeadingTextClass}>
+                    {localize('com_farmer_profile_demographic_details')}
+                  </h3>
+                </div>
+              </div>
 
               <div className={fieldClass}>
                 <Label htmlFor="farmerName">{localize('com_farmer_label_farmer_name')}</Label>
@@ -888,7 +902,7 @@ const FarmerProfileModal = ({
                 {errors.farmerName && <p className={errorClass}>{errors.farmerName.message}</p>}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className={fieldClass}>
                   <Label htmlFor="age">{localize('com_farmer_label_age')}</Label>
                   <Input
@@ -960,13 +974,14 @@ const FarmerProfileModal = ({
                     </div>
                   </div>
                 </div>
-                <div className="mt-2 flex items-center gap-3">
+                <div className="mt-2 flex flex-wrap items-center gap-3">
                   <button
                     type="button"
                     onClick={getLocation}
                     disabled={isLocating}
-                    className="inline-flex items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface-active disabled:cursor-not-allowed disabled:opacity-50"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border-heavy bg-surface-secondary px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                   >
+                    <MapPin className="h-4 w-4" />
                     {isLocating
                       ? localize('com_farmer_button_locating')
                       : localize('com_farmer_button_get_location')}
@@ -1210,7 +1225,17 @@ const FarmerProfileModal = ({
 
             {/* ── Section 2: Agricultural Background ── */}
             <div className={sectionClass}>
-              <h3 className={sectionTitleClass}>{localize('com_farmer_profile_agricultural_background')}</h3>
+              <div className={sectionTitleClass}>
+                <span className={sectionBadgeClass}>
+                  <Leaf className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className={sectionStepClass}>Section 2 of 4</p>
+                  <h3 className={sectionHeadingTextClass}>
+                    {localize('com_farmer_profile_agricultural_background')}
+                  </h3>
+                </div>
+              </div>
 
               <div className={fieldClass}>
                 <Label htmlFor="yearsOfExperience">{localize('com_farmer_label_years_experience')}</Label>
@@ -1263,7 +1288,7 @@ const FarmerProfileModal = ({
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className={fieldClass}>
                   <Label htmlFor="primaryCrop">{localize('com_farmer_label_primary_crop')}</Label>
                   <SearchableMultiSelect
@@ -1348,7 +1373,17 @@ const FarmerProfileModal = ({
 
             {/* ── Section 3: Awareness & Digital Adoption ── */}
             <div className={sectionClass}>
-              <h3 className={sectionTitleClass}>{localize('com_farmer_profile_awareness_section')}</h3>
+              <div className={sectionTitleClass}>
+                <span className={sectionBadgeClass}>
+                  <Smartphone className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className={sectionStepClass}>Section 3 of 4</p>
+                  <h3 className={sectionHeadingTextClass}>
+                    {localize('com_farmer_profile_awareness_section')}
+                  </h3>
+                </div>
+              </div>
 
               <div className={fieldClass}>
                 <Label>{localize('com_farmer_label_awareness_kcc')}</Label>
@@ -1401,7 +1436,17 @@ const FarmerProfileModal = ({
 
             {/* ── Section 4: Socio-Economic Indicator ── */}
             <div className={sectionClass}>
-              <h3 className={sectionTitleClass}>{localize('com_farmer_profile_socio_economic')}</h3>
+              <div className={sectionTitleClass}>
+                <span className={sectionBadgeClass}>
+                  <Landmark className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className={sectionStepClass}>Section 4 of 4</p>
+                  <h3 className={sectionHeadingTextClass}>
+                    {localize('com_farmer_profile_socio_economic')}
+                  </h3>
+                </div>
+              </div>
 
               <div className={fieldClass}>
                 <Label>{localize('com_farmer_label_highest_educated')}</Label>
@@ -1455,19 +1500,19 @@ const FarmerProfileModal = ({
           </div>
 
           {/* ── Footer ── */}
-          <div className="mt-2 flex shrink-0 justify-end gap-2 border-t border-border-heavy px-1 pt-4">
+          <div className="mt-2 flex shrink-0 flex-col-reverse gap-2 border-t border-border-light px-1 pt-4 sm:flex-row sm:justify-end sm:gap-3">
             <button
               type="button"
               onClick={() => reset()}
               disabled={saveMutation.isLoading}
-              className="inline-flex items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-6 py-2 text-sm font-medium text-text-primary hover:bg-surface-active disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex w-full items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-6 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
               {localize('com_ui_reset')}
             </button>
             <button
               type="submit"
               disabled={saveMutation.isLoading}
-              className="inline-flex items-center justify-center rounded-lg bg-green-600 px-6 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-green-700 dark:hover:bg-green-800"
+              className="inline-flex w-full items-center justify-center rounded-lg bg-surface-submit px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
               {saveMutation.isLoading ? `${localize('com_ui_submit')}...` : localize('com_ui_submit')}
             </button>

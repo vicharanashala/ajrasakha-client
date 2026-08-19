@@ -3063,3 +3063,13 @@ html {
 .sharepoint-picker-bg {
   background-color: #f5f5f5;
 }
+
+/* Farmer profile / location modal shell: caps dialog height so the sticky
+   header/footer stay in view and the middle section scrolls on small
+   screens. Written as plain CSS instead of the Tailwind arbitrary-value
+   class max-h-[90vh], for the same JIT-compile-reliability reason as the
+   rules above (the bracket utility can compile into the DOM class list
+   without ever producing a working CSS rule). */
+.farmer-modal-shell {
+  max-height: 90vh;
+}

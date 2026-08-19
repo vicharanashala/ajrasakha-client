@@ -280,7 +280,7 @@ const FarmerLocationModal = ({
 
   const fieldClass = 'mb-4';
   const inputClass =
-    'mt-1 block w-full rounded-md border border-border-heavy bg-surface-secondary px-3 py-2 text-sm text-text-primary placeholder-text-secondary focus:outline-none focus:ring-1 focus:ring-green-500';
+    'mt-1.5 block w-full rounded-lg border border-border-medium bg-surface-primary px-3 py-2 text-sm text-text-primary placeholder-text-secondary transition-colors focus:border-border-heavy focus:outline-none focus:ring-1 focus:ring-border-heavy';
   const integerRegex = /^\d+$/;
   const decimalRegex = /^\d+(\.\d+)?$/;
 
@@ -544,19 +544,21 @@ const FarmerLocationModal = ({
             e.preventDefault();
           }
         }}
-        className="flex max-h-[90vh] w-11/12 max-w-md flex-col overflow-y-auto sm:w-full"
+        className="farmer-modal-shell flex w-11/12 max-w-md flex-col overflow-y-auto p-4 sm:w-full sm:p-6"
       >
         <OGDialogHeader>
-          <OGDialogTitle className="text-lg font-bold text-text-primary">
+          <OGDialogTitle className="text-base font-bold text-text-primary sm:text-lg">
             {localize('com_farmer_complete_profile_title')}
           </OGDialogTitle>
         </OGDialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit, onFormError)} className="mt-4 flex flex-col">
-          <p className="mb-4 text-sm text-text-secondary">
+          <p className="mb-4 rounded-lg border border-border-light bg-surface-secondary p-3 text-sm text-text-secondary">
             {localize('com_farmer_complete_profile_helper')}
           </p>
 
+          {otherMissingFields.length > 0 && (
+          <div className="mb-4 rounded-xl border border-border-light bg-surface-secondary p-4 sm:p-5">
           {otherMissingFields.map((field) => {
             const config = fieldConfig[field];
             if (!config) return null;
@@ -765,12 +767,14 @@ const FarmerLocationModal = ({
               </div>
             );
           })}
+          </div>
+          )}
 
           {isLocationMissing && (
             <>
               <input type="hidden" {...register('location.latitude')} />
               <input type="hidden" {...register('location.longitude')} />
-              <div className="mb-4 rounded-md border border-blue-100 bg-blue-50/50 p-4 dark:border-blue-800 dark:bg-blue-900/10">
+              <div className="mb-4 rounded-lg border border-blue-100 bg-blue-50/50 p-4 dark:border-blue-800 dark:bg-blue-900/10">
                 <div className="flex">
                   <div className="flex-shrink-0">
                     <svg
@@ -803,7 +807,7 @@ const FarmerLocationModal = ({
                     type="button"
                     onClick={getLocation}
                     disabled={isLocating}
-                    className="inline-flex w-fit items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface-active disabled:cursor-not-allowed disabled:opacity-50"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border-heavy bg-surface-secondary px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-fit"
                   >
                     {isLocating
                       ? localize('com_farmer_button_locating')
@@ -822,11 +826,11 @@ const FarmerLocationModal = ({
 
           {submitError && <div className="mt-2 text-sm text-red-500">{submitError}</div>}
 
-          <div className="mt-4 flex justify-end gap-2 border-t border-border-heavy pt-4">
+          <div className="mt-4 flex flex-col gap-2 border-t border-border-light pt-4 sm:flex-row sm:justify-end sm:gap-3">
             <button
               type="submit"
               disabled={saveMutation.isLoading || !isFormValid()}
-              className="hover:bg-surface-active-hover inline-flex items-center justify-center rounded-lg bg-surface-active px-6 py-2 text-sm font-medium text-text-primary disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex w-full items-center justify-center rounded-lg bg-surface-submit px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
               {saveMutation.isLoading ? `${localize('com_ui_save')}...` : localize('com_ui_save')}
             </button>
