@@ -87,11 +87,15 @@ export default function Header() {
           )}
         </div>
       </div>
-      {/* Temporary chat + share/export menu, pinned together to the top-right corner of the header */}
-      <div className="absolute right-1.5 top-1.5 z-20 flex items-center gap-1.5 sm:right-2 sm:top-2">
-        <TemporaryChat />
-        <ExportAndShareMenu isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false} />
-      </div>
+      {/* Temporary chat + share/export menu, portaled to body so fixed positioning
+         works even when parent panels apply CSS transforms */}
+      {createPortal(
+        <div className="fixed right-3 top-3 z-[100] flex items-center gap-1.5">
+          <TemporaryChat />
+          <ExportAndShareMenu isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false} />
+        </div>,
+        document.body,
+      )}
     </div>
   );
 }
