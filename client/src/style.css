@@ -3073,3 +3073,59 @@ html {
 .farmer-modal-shell {
   max-height: 90vh;
 }
+
+/* Terms & Conditions modal shell: same treatment as .farmer-modal-shell
+   above (caps dialog height at 90vh so the header/footer stay pinned and
+   only the middle content region scrolls). Rebuilt on the app's modern
+   OGDialogContent primitive (same one FarmerProfileModal/FarmerLocationModal
+   use) instead of the legacy gray-hardcoded DialogTemplate, for visual
+   consistency with the rest of the app's "premium" dialogs. */
+.terms-modal-shell {
+  max-height: 90vh;
+}
+
+/* Important Notice modal shell: same 90vh height cap as the shells above,
+   rebuilt on OGDialogContent for the same reason (legacy DialogTemplate's
+   hardcoded gray styling looked dated). */
+.notice-modal-shell {
+  max-height: 90vh;
+}
+
+/* Terms & Conditions markdown body: explicit type scale so the hierarchy
+   reads clearly at every size — h1 (the "Terms and Conditions for
+   AjraSakha / chat.annam.ai" title) largest, h2 section headings (Beta
+   Development Notice, etc.) noticeably smaller than h1 but still bigger
+   than body copy, and paragraph/list text smallest of the three. Plain CSS
+   instead of prose-h1:text-*/prose-h2:text-* utilities, for the same
+   JIT-compile-reliability reason as the rules above. */
+.terms-content-prose h1 {
+  font-size: 17px;
+  line-height: 1.4;
+  margin-top: 0;
+}
+
+.terms-content-prose h2 {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.terms-content-prose p,
+.terms-content-prose li {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@media (min-width: 640px) {
+  .terms-content-prose h1 {
+    font-size: 26px;
+  }
+
+  .terms-content-prose h2 {
+    font-size: 20px;
+  }
+
+  .terms-content-prose p,
+  .terms-content-prose li {
+    font-size: 16px;
+  }
+}

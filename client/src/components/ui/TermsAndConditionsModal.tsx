@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { OGDialog, DialogTemplate, useToastContext } from '@librechat/client';
+import { OGDialog, OGDialogContent, OGDialogHeader, OGDialogTitle, useToastContext } from '@librechat/client';
 import type { TTermsOfService } from 'librechat-data-provider';
 import MarkdownLite from '~/components/Chat/Messages/Content/MarkdownLite';
 import { useAcceptTermsMutation } from '~/data-provider';
@@ -68,45 +68,52 @@ const TermsAndConditionsModal = ({
 
   return (
     <OGDialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTemplate
-        title={title ?? localize('com_ui_terms_and_conditions')}
-        className="w-11/12 max-w-3xl sm:w-3/4 md:w-1/2 lg:w-2/5"
+      <OGDialogContent
         showCloseButton={false}
-        showCancelButton={false}
-        main={
-          <section
-            // Motivation: This is a dialog, so its content should be focusable
+        onInteractOutside={(e) => e.preventDefault()}
+        className="terms-modal-shell flex w-11/12 max-w-2xl flex-col overflow-y-hidden p-4 sm:w-3/4 sm:p-6 md:w-2/3 lg:w-1/2"
+      >
+        <OGDialogHeader>
+          <OGDialogTitle className="text-sm font-bold leading-snug text-text-primary sm:text-lg">
+            {title ?? localize('com_ui_terms_and_conditions')}
+          </OGDialogTitle>
+        </OGDialogHeader>
 
-            tabIndex={0}
-            className="max-h-[60vh] overflow-y-auto p-4"
-            aria-label={localize('com_ui_terms_and_conditions')}
+        <section
+          // Motivation: This is a dialog, so its content should be focusable
+          tabIndex={0}
+          className="min-h-0 flex-1 overflow-y-auto rounded-xl border border-border-light bg-surface-secondary p-4 sm:p-5"
+          aria-label={localize('com_ui_terms_and_conditions')}
+        >
+          <div className="terms-content-prose prose dark:prose-invert w-full max-w-none !text-text-primary prose-sm sm:prose-base">
+            {content !== '' ? (
+              <MarkdownLite content={content} />
+            ) : (
+              <p>{localize('com_ui_no_terms_content')}</p>
+            )}
+          </div>
+        </section>
+
+        <div className="mt-2 flex shrink-0 flex-col-reverse gap-2 border-t border-border-light px-1 pt-4 sm:flex-row sm:justify-end sm:gap-3">
+          <button
+            type="button"
+            onClick={handleDecline}
+            className="inline-flex w-full items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-6 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover sm:w-auto"
           >
-            <div className="prose dark:prose-invert w-full max-w-none !text-text-primary">
-              {content !== '' ? (
-                <MarkdownLite content={content} />
-              ) : (
-                <p>{localize('com_ui_no_terms_content')}</p>
-              )}
-            </div>
-          </section>
-        }
-        buttons={
-          <>
-            <button
-              onClick={handleDecline}
-              className="inline-flex h-10 items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-4 py-2 text-sm text-text-primary hover:bg-surface-active"
-            >
-              {localize('com_ui_decline')}
-            </button>
-            <button
-              onClick={handleAccept}
-              className="inline-flex h-10 items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-4 py-2 text-sm text-text-primary hover:bg-green-500 hover:text-white focus:bg-green-500 focus:text-white dark:hover:bg-green-600 dark:focus:bg-green-600"
-            >
-              {localize('com_ui_accept')}
-            </button>
-          </>
-        }
-      />
+            {localize('com_ui_decline')}
+          </button>
+          <button
+            type="button"
+            onClick={handleAccept}
+            disabled={acceptTermsMutation.isLoading}
+            className="inline-flex w-full items-center justify-center rounded-lg bg-surface-submit px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+          >
+            {acceptTermsMutation.isLoading
+              ? `${localize('com_ui_accept')}...`
+              : localize('com_ui_accept')}
+          </button>
+        </div>
+      </OGDialogContent>
     </OGDialog>
   );
 };
