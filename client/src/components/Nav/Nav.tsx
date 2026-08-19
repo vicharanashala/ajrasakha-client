@@ -10,7 +10,8 @@ import {
   startTransition,
 } from 'react';
 import { useRecoilValue } from 'recoil';
-import { Skeleton, useMediaQuery } from '@librechat/client';
+import { Sun, Moon } from 'lucide-react';
+import { Skeleton, useMediaQuery, TooltipAnchor, useTheme, isDark } from '@librechat/client';
 import { PermissionTypes, Permissions } from 'librechat-data-provider';
 import type { InfiniteQueryObserverResult } from '@tanstack/react-query';
 import type { ConversationListResponse } from 'librechat-data-provider';
@@ -68,6 +69,40 @@ const NavMask = memo(
 );
 
 const MemoNewChat = memo(NewChat);
+
+// Compact light/dark toggle sized to match the sidebar's other small icon
+// buttons (~28px). The shared `ThemeSelector` component (from
+// packages/client, also used on the login screen) auto-sizes itself from
+// icon size + padding to roughly 40px, which read as noticeably bigger than
+// everything else down here — so this reimplements just the toggle
+// behavior locally instead, using the same `useTheme`/`isDark` primitives.
+const ThemeToggleButton = memo(({ side = 'top' }: { side?: 'top' | 'right' }) => {
+  const localize = useLocalize();
+  const { theme, setTheme } = useTheme();
+  const dark = isDark(theme);
+
+  return (
+    <TooltipAnchor
+      description={localize('com_ui_toggle_theme')}
+      side={side}
+      render={
+        <button
+          type="button"
+          aria-label={localize('com_ui_toggle_theme')}
+          onClick={() => setTheme(dark ? 'light' : 'dark')}
+          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border-none bg-transparent text-text-primary duration-0 hover:bg-surface-active-alt"
+        >
+          {dark ? (
+            <Moon className="h-5 w-5" aria-hidden="true" />
+          ) : (
+            <Sun className="h-5 w-5" aria-hidden="true" />
+          )}
+        </button>
+      }
+    />
+  );
+});
+ThemeToggleButton.displayName = 'ThemeToggleButton';
 
 const Nav = memo(
   ({
@@ -261,14 +296,19 @@ const Nav = memo(
                 <AccountSettings />
               </Suspense>
             </div>
+            {/* Theme toggle, pinned to the opposite side of the row from the
+                profile avatar — mirrors the logo/collapse-button pairing at
+                the top of the expanded sidebar. */}
+            <ThemeToggleButton />
           </div>
         </nav>
       </div>
     );
 
     // Collapsed rail (desktop only): a slim strip with the sidebar toggle,
-    // New Chat, and notifications stacked at the top, and the profile avatar
-    // pinned to the bottom — instead of hiding the sidebar completely.
+    // New Chat, and notifications stacked at the top, and the theme toggle +
+    // profile avatar pinned to the bottom — instead of hiding the sidebar
+    // completely.
     const collapsedContent = (
       <div className="flex h-full flex-col">
         <nav
@@ -289,9 +329,12 @@ const Nav = memo(
               }
             />
           </div>
-          <Suspense fallback={<Skeleton className="mt-1 h-10 w-10 rounded-xl" />}>
-            <AccountSettings collapsed />
-          </Suspense>
+          <div className="flex flex-col items-center gap-1">
+            <ThemeToggleButton side="right" />
+            <Suspense fallback={<Skeleton className="mt-1 h-10 w-10 rounded-xl" />}>
+              <AccountSettings collapsed />
+            </Suspense>
+          </div>
         </nav>
       </div>
     );

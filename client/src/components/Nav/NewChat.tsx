@@ -87,7 +87,7 @@ export default function NewChat({
   if (collapsed) {
     return (
       <div className="flex flex-col items-center gap-1 py-[2px] md:py-2">
-        <div className="mb-3 mt-1 flex-shrink-0" style={{ height: 28, width: 28 }}>
+        <div className="mb-3 mt-1 flex-shrink-0" style={{ height: 32, width: 32 }}>
           {logo}
         </div>
         <TooltipAnchor
@@ -135,7 +135,7 @@ export default function NewChat({
   return (
     <>
       <div className="mb-3 mt-2 flex items-center justify-between pl-1">
-        <div className="flex-shrink-0" style={{ height: 28, width: 28 }}>
+        <div className="flex-shrink-0" style={{ height: 32, width: 32 }}>
           {logo}
         </div>
         <div className="flex items-center gap-0.5">
