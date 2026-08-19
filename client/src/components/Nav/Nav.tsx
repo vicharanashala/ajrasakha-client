@@ -381,8 +381,12 @@ const Nav = memo(
           // even while collapsed or it renders invisible.
           // The collapsed rail blends into the chat area's background
           // (bg-presentation) in both light and dark mode, instead of
-          // keeping the sidebar's usual surface-primary-alt shade.
-          className={cn('nav active h-full', navVisible ? 'bg-surface-primary-alt' : 'bg-presentation')}
+          // keeping the sidebar's usual surface-primary-alt shade — so a
+          // thin border is the only thing separating it from the chat area.
+          className={cn(
+            'nav active h-full',
+            navVisible ? 'bg-surface-primary-alt' : 'border-r border-border-light bg-presentation',
+          )}
           style={{ width: desktopWidth, transition: 'width 0.2s ease-out' }}
         >
           {navVisible ? sidebarContent : collapsedContent}
