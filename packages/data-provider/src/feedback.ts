@@ -170,6 +170,10 @@ export const feedbackSchema = z.object({
   rating: feedbackRatingSchema,
   tag: feedbackTagKeySchema,
   text: z.string().max(1024).optional(),
+  status: z.enum(['open', 'accepted', 'rejected']).optional(),
+  reviewNote: z.string().optional(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
 });
 
 export type TMinimalFeedback = z.infer<typeof feedbackSchema>;
@@ -178,6 +182,10 @@ export type TFeedback = {
   rating: TFeedbackRating;
   tag: TFeedbackTag | undefined;
   text?: string;
+  status?: 'open' | 'accepted' | 'rejected';
+  reviewNote?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export function toMinimalFeedback(feedback: TFeedback | undefined): TMinimalFeedback | undefined {
@@ -189,6 +197,10 @@ export function toMinimalFeedback(feedback: TFeedback | undefined): TMinimalFeed
     rating: feedback.rating,
     tag: feedback.tag.key,
     text: feedback.text,
+    status: feedback.status,
+    reviewNote: feedback.reviewNote,
+    createdAt: feedback.createdAt,
+    updatedAt: feedback.updatedAt,
   };
 }
 
