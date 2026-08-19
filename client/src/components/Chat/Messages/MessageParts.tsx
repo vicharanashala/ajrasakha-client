@@ -112,7 +112,7 @@ export default function Message(props: TMessageProps) {
             )}
           >
             {!hasParallelContent && !isCreatedByUser && (
-              <div className="relative flex flex-shrink-0 flex-col items-center">
+              <div className="relative hidden flex-shrink-0 flex-col items-center sm:flex">
                 <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full pt-0.5">
                   <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
                 </div>
@@ -129,10 +129,17 @@ export default function Message(props: TMessageProps) {
                 <div
                   className={cn(
                     'flex min-w-0 max-w-full flex-grow flex-col gap-0 overflow-hidden break-all',
+                    // AI bubble uses bg-surface-tertiary: in dark mode
+                    // surface-secondary is the exact same color as the page
+                    // background (presentation), so it was invisible there.
+                    // User bubble gets a slight green tint (the app's
+                    // existing brand-green scale, already used for badges
+                    // elsewhere) so it stays visually distinct from the AI
+                    // bubble.
                     !hasParallelContent &&
                       (isCreatedByUser
-                        ? 'rounded-2xl rounded-tr-sm bg-surface-tertiary px-4 py-2.5'
-                        : 'rounded-2xl rounded-tl-sm bg-surface-secondary px-4 py-2.5'),
+                        ? 'rounded-2xl rounded-tr-sm bg-green-100 px-4 py-2.5 dark:bg-green-600/25'
+                        : 'rounded-2xl rounded-tl-sm bg-surface-tertiary px-4 py-2.5'),
                   )}
                 >
                   <ContentParts
@@ -178,7 +185,7 @@ export default function Message(props: TMessageProps) {
               </div>
             </div>
             {!hasParallelContent && isCreatedByUser && (
-              <div className="relative flex flex-shrink-0 flex-col items-center">
+              <div className="relative hidden flex-shrink-0 flex-col items-center sm:flex">
                 <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full pt-0.5">
                   <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
                 </div>

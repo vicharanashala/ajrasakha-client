@@ -113,8 +113,10 @@ const ContentRender = memo(
 
     const isUser = msg.isCreatedByUser;
 
+    // Avatars are hidden on mobile to save horizontal space in the chat
+    // bubbles; they still show from the sm breakpoint up.
     const avatarBlock = !hasParallelContent && (
-      <div className="relative flex flex-shrink-0 flex-col items-center">
+      <div className="relative hidden flex-shrink-0 flex-col items-center sm:flex">
         <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full">
           <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
         </div>
@@ -125,18 +127,24 @@ const ContentRender = memo(
       <div
         className={cn(
           'relative flex min-w-0 flex-col',
-          hasParallelContent ? 'w-full' : 'chat-bubble-col',
+          hasParallelContent ? 'w-full' : 'w-fit max-w-[85%] sm:max-w-[75%]',
           isUser ? 'user-turn items-end' : 'agent-turn items-start',
         )}
       >
         <div className="flex min-w-0 flex-col gap-1">
           <div
             className={cn(
-              'flex min-w-0 max-w-full flex-grow flex-col gap-0 overflow-hidden break-all',
+              'flex min-w-0 max-w-full flex-grow flex-col gap-0',
+              // AI bubble uses bg-surface-tertiary: in dark mode
+              // surface-secondary is the exact same color as the page
+              // background (presentation), so it was invisible there.
+              // User bubble gets a slight green tint (the app's existing
+              // brand-green scale, already used for badges elsewhere) so
+              // it stays visually distinct from the AI bubble.
               !hasParallelContent &&
                 (isUser
-                  ? 'rounded-2xl rounded-tr-sm bg-surface-tertiary px-4 py-2.5'
-                  : 'rounded-2xl rounded-tl-sm bg-surface-secondary px-4 py-2.5'),
+                  ? 'rounded-2xl rounded-tr-sm bg-green-100 px-4 py-2.5 dark:bg-green-600/25'
+                  : 'rounded-2xl rounded-tl-sm bg-surface-tertiary px-4 py-2.5'),
             )}
           >
             <ContentParts
