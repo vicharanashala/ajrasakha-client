@@ -21,6 +21,10 @@ const staticAtoms = {
     key: 'pendingNewConversation',
     default: false,
   }),
+  feedbackShake: atom<number>({
+    key: 'feedbackShake',
+    default: 0,
+  }),
 };
 
 const localStorageAtoms = {
@@ -32,6 +36,10 @@ const localStorageAtoms = {
     true,
   ),
   keepScreenAwake: atomWithLocalStorage('keepScreenAwake', true),
+
+  // Feedback
+  isRequiredFeedback: atomWithLocalStorage('isRequiredFeedback', false),
+  feedbackSkipCount: atomWithLocalStorage('feedbackSkipCount', 0),
 
   // Chat settings
   enterToSend: atomWithLocalStorage('enterToSend', true),

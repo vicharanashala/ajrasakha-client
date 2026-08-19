@@ -2052,5 +2052,6 @@
   "com_ui_feedback_enforce_reminder": "নতুন কথোপকথন শুরু করার আগে অনুগ্রহ করে পূর্ববর্তী উত্তরের বিষয়ে মতামত দিন।",
   "com_ui_feedback_enforce_title": "মতামত প্রয়োজন",
   "com_ui_feedback_enforce_question": "পূর্ববর্তী উত্তরটি কেমন ছিল?",
-  "com_ui_feedback_enforce_later": "পরে হয়তো"
+  "com_ui_feedback_enforce_later": "পরে হয়তো",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

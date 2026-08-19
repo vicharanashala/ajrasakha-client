@@ -4,7 +4,7 @@ import { Plus, X } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useWatch } from 'react-hook-form';
 import { TextareaAutosize, useMediaQuery } from '@librechat/client';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { Constants, isAssistantsEndpoint, isAgentsEndpoint } from 'librechat-data-provider';
 import {
   useChatContext,
@@ -39,7 +39,6 @@ import EditBadges from './EditBadges';
 import BadgeRow from './BadgeRow';
 import Mention from './Mention';
 import store from '~/store';
-import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
 
 const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
@@ -207,6 +206,22 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
 
   const textValue = useWatch({ control: methods.control, name: 'text' });
 
+  /** Trigger feedback reminder panel when user focuses textarea or starts typing */
+  const setIsRequiredFeedback = useSetRecoilState(store.isRequiredFeedback);
+  useEffect(() => {
+    if (!isTextAreaFocused && (!textValue || textValue.length === 0)) {
+      return;
+    }
+    try {
+      const stored = localStorage.getItem('isRequiredFeedback');
+      if (stored === 'true') {
+        setIsRequiredFeedback(true);
+      }
+    } catch {
+      // ignore localStorage errors
+    }
+  }, [isTextAreaFocused, textValue, setIsRequiredFeedback]);
+
   useEffect(() => {
     if (textAreaRef.current) {
       const style = window.getComputedStyle(textAreaRef.current);
@@ -275,49 +290,10 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useRecoilState(
     store.isFeedbackDialogOpen,
   );
-  const [showFeedbackReminder, setShowFeedbackReminder] = useRecoilState(
+  const [showFeedbackReminder] = useRecoilState(
     store.showFeedbackReminder,
   );
-  const { getMessages } = useChatContext();
-
-  // Track if input was previously focused (to detect refocus after blur)
-  const wasPreviouslyFocusedRef = useRef(false);
-
-  // Check for feedback requirement
-  const checkFeedbackRequirement = useCallback(async () => {
-    const messages = getMessages();
-
-    // Check if messages are actually loaded
-    const messagesLoaded = messages && messages.length > 0;
-
-    const latestAssistantMessage = messagesLoaded
-      ? messages
-          ?.slice()
-          .reverse()
-          .find((message) => !message.isCreatedByUser)
-      : null;
-
-    const toolCalled = await requiresFeedbackFromConversation(conversationId);
-
-    // Only show modal if messages are loaded AND tool called AND no feedback given
-    if (messagesLoaded && toolCalled && !latestAssistantMessage?.feedback) {
-      setShowFeedbackReminder(true);
-    }
-  }, [conversationId, getMessages, setShowFeedbackReminder]);
-
-  // Reset focus tracking when conversation changes
-  useEffect(() => {
-    wasPreviouslyFocusedRef.current = false;
-  }, [conversationId]);
-
-  // Handle input focus - check feedback on refocus (after blur)
-  const handleInputFocus = useCallback(() => {
-    // Only check if this is a refocus (user previously had input focused and now focused again)
-    if (wasPreviouslyFocusedRef.current) {
-      checkFeedbackRequirement();
-    }
-    wasPreviouslyFocusedRef.current = true;
-  }, [checkFeedbackRequirement]);
+  const [shakeCount] = useRecoilState(store.feedbackShake);
 
   const handleMessageSubmit = methods.handleSubmit(async (data) => {
     submitMessage(data, position ?? undefined);
@@ -367,6 +343,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               isTemporary
                 ? 'border-violet-800/60 bg-violet-950/10'
                 : 'border-border-light bg-surface-chat',
+              shakeCount > 0 && 'shake',
             )}
           >
             <TextareaHeader addedConvo={addedConvo} setAddedConvo={setAddedConvo} />
@@ -400,7 +377,6 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     rows={1}
                     onFocus={() => {
                       handleFocusOrClick();
-                      handleInputFocus();
                       setIsTextAreaFocused(true);
                     }}
                     onBlur={setIsTextAreaFocused.bind(null, false)}

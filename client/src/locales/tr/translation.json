@@ -797,5 +797,6 @@
   "com_farmer_option_other": "Diğer",
   "com_farmer_option_under_graduate": "Lisans Altı",
   "com_farmer_option_graduate": "Lisans Mezunu",
-  "com_farmer_option_post_graduate": "Lisansüstü"
+  "com_farmer_option_post_graduate": "Lisansüstü",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

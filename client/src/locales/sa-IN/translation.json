@@ -2052,5 +2052,6 @@
   "com_ui_feedback_enforce_reminder": "नूतनं संवादं प्रारभ्य पूर्वं कृपया पूर्वस्य प्रतिसादस्य विषये अभिप्रायं ददातु।",
   "com_ui_feedback_enforce_title": "अभिप्रायः आवश्यकः",
   "com_ui_feedback_enforce_question": "पूर्वः प्रतिसादः कथम् आसीत्?",
-  "com_ui_feedback_enforce_later": "कदाचित् पश्चात्"
+  "com_ui_feedback_enforce_later": "कदाचित् पश्चात्",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

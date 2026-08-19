@@ -978,5 +978,6 @@
   "com_farmer_option_other": "Altro",
   "com_farmer_option_under_graduate": "Non Laureato",
   "com_farmer_option_graduate": "Laureato",
-  "com_farmer_option_post_graduate": "Post Laurea"
+  "com_farmer_option_post_graduate": "Post Laurea",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

@@ -1,5 +1,5 @@
-import { memo, useCallback, useEffect, useRef } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { memo, useCallback } from 'react';
+import { useRecoilValue } from 'recoil';
 import { useForm } from 'react-hook-form';
 import { Spinner } from '@librechat/client';
 import { useParams } from 'react-router-dom';
@@ -24,7 +24,6 @@ import Header from './Header';
 import Footer from './Footer';
 import { cn } from '~/utils';
 import store from '~/store';
-import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
 
 function LoadingSpinner() {
   return (
@@ -67,63 +66,6 @@ function ChatView({ index = 0 }: { index?: number }) {
   // Auto-resume if navigating back to conversation with active job
   // Wait for messages to load before resuming to avoid race condition
   useResumeOnLoad(conversationId, chatHelpers.getMessages, index, !isLoading);
-
-  // Check for feedback requirement on initial page load (only for existing conversations)
-  const setShowFeedbackReminder = useSetRecoilState(store.showFeedbackReminder);
-  const hasCheckedFeedback = useRef(false);
-
-  useEffect(() => {
-    // Only run once — when messages first finish loading for an existing conversation
-    if (hasCheckedFeedback.current) {
-      return;
-    }
-
-    if (
-      !isLoading &&
-      conversationId &&
-      conversationId !== Constants.NEW_CONVO &&
-      messagesTree &&
-      messagesTree.length > 0
-    ) {
-      hasCheckedFeedback.current = true;
-
-      // Find the latest assistant message
-      const findLatestAssistantMessage = (msgs: TMessage[]): TMessage | null => {
-        for (let i = msgs.length - 1; i >= 0; i--) {
-          if (!msgs[i].isCreatedByUser) {
-            return msgs[i];
-          }
-        }
-        return null;
-      };
-
-      // Flatten messages from tree if needed
-      const flattenMessages = (tree: TMessage[]): TMessage[] => {
-        const result: TMessage[] = [];
-        const traverse = (nodes: TMessage[]) => {
-          for (const node of nodes) {
-            result.push(node);
-            if (node.children && node.children.length > 0) {
-              traverse(node.children);
-            }
-          }
-        };
-        traverse(tree);
-        return result;
-      };
-
-      const allMessages = flattenMessages(messagesTree);
-      const latestAssistantMessage = findLatestAssistantMessage(allMessages);
-
-      // Check if feedback is required
-      requiresFeedbackFromConversation(conversationId).then((toolCalled) => {
-        // Only show modal if messages are loaded AND tool called AND no feedback given
-        if (toolCalled && latestAssistantMessage && !latestAssistantMessage.feedback) {
-          setShowFeedbackReminder(true);
-        }
-      });
-    }
-  }, [isLoading, conversationId, messagesTree, setShowFeedbackReminder]);
 
   const methods = useForm<ChatFormValues>({
     defaultValues: { text: '' },

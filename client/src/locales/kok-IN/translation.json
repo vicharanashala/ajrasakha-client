@@ -2052,5 +2052,6 @@
   "com_ui_feedback_enforce_reminder": "नवीन संवाद सुरू करण्यापूर्वी कृपया मागील प्रतिसादाबद्दल अभिप्राय द्या.",
   "com_ui_feedback_enforce_title": "अभिप्राय आवश्यक",
   "com_ui_feedback_enforce_question": "मागील प्रतिसाद कसा होता?",
-  "com_ui_feedback_enforce_later": "कदाचित नंतर"
+  "com_ui_feedback_enforce_later": "कदाचित नंतर",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

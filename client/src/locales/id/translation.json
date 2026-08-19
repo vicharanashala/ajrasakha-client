@@ -373,5 +373,6 @@
   "com_farmer_option_other": "Lainnya",
   "com_farmer_option_under_graduate": "Sarjana Muda",
   "com_farmer_option_graduate": "Sarjana",
-  "com_farmer_option_post_graduate": "Pascasarjana"
+  "com_farmer_option_post_graduate": "Pascasarjana",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

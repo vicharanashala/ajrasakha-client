@@ -944,5 +944,6 @@
   "com_farmer_option_other": "อื่น ๆ",
   "com_farmer_option_under_graduate": "ต่ำกว่าปริญญาตรี",
   "com_farmer_option_graduate": "ปริญญาตรี",
-  "com_farmer_option_post_graduate": "สูงกว่าปริญญาตรี"
+  "com_farmer_option_post_graduate": "สูงกว่าปริญญาตรี",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

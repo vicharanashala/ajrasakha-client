@@ -469,5 +469,6 @@
   "com_ui_feedback_enforce_reminder": "Vui lòng cung cấp phản hồi về câu trả lời trước trước khi bắt đầu một cuộc trò chuyện mới.",
   "com_ui_feedback_enforce_title": "Yêu cầu phản hồi",
   "com_ui_feedback_enforce_question": "Câu trả lời trước như thế nào?",
-  "com_ui_feedback_enforce_later": "Có thể để sau"
+  "com_ui_feedback_enforce_later": "Có thể để sau",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

@@ -959,5 +959,6 @@
   "com_farmer_option_other": "Altre",
   "com_farmer_option_under_graduate": "Estudis universitaris incomplets",
   "com_farmer_option_graduate": "Graduat",
-  "com_farmer_option_post_graduate": "Postgraduat"
+  "com_farmer_option_post_graduate": "Postgraduat",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

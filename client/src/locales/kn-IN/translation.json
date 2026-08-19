@@ -2053,5 +2053,6 @@
   "com_ui_feedback_enforce_reminder": "ಹೊಸ ಸಂಭಾಷಣೆಯನ್ನು ಪ್ರಾರಂಭಿಸುವ ಮೊದಲು ದಯವಿಟ್ಟು ಹಿಂದಿನ ಪ್ರತಿಕ್ರಿಯೆಯ ಕುರಿತು ಅಭಿಪ್ರಾಯ ನೀಡಿ.",
   "com_ui_feedback_enforce_title": "ಅಭಿಪ್ರಾಯ ಅಗತ್ಯವಿದೆ",
   "com_ui_feedback_enforce_question": "ಹಿಂದಿನ ಪ್ರತಿಕ್ರಿಯೆ ಹೇಗಿತ್ತು?",
-  "com_ui_feedback_enforce_later": "ಬಹುಶಃ ನಂತರ"
+  "com_ui_feedback_enforce_later": "ಬಹುಶಃ ನಂತರ",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

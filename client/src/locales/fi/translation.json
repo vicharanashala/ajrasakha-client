@@ -678,5 +678,6 @@
   "com_farmer_option_other": "Muu",
   "com_farmer_option_under_graduate": "Perustutkinto-opiskelija",
   "com_farmer_option_graduate": "Korkeakoulututkinto",
-  "com_farmer_option_post_graduate": "Jatkotutkinto"
+  "com_farmer_option_post_graduate": "Jatkotutkinto",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

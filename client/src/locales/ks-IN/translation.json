@@ -2052,5 +2052,6 @@
   "com_ui_feedback_enforce_reminder": "نئی گفتگو شروع کرنے سے پہلے براہِ کرم پچھلے جواب کے بارے میں اپنی رائے دیں۔",
   "com_ui_feedback_enforce_title": "رائے درکار ہے",
   "com_ui_feedback_enforce_question": "پچھلا جواب کیسا تھا؟",
-  "com_ui_feedback_enforce_later": "شاید بعد میں"
+  "com_ui_feedback_enforce_later": "شاید بعد میں",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

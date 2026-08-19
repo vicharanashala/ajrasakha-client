@@ -2052,5 +2052,6 @@
   "com_ui_feedback_enforce_reminder": "অনৌবা ৱারী শান্নবা হৌদ্রিঙৈ মমাংগী পাউখুমগী মতাংদা ফিডবেক পীবিয়ু।",
   "com_ui_feedback_enforce_title": "ফিডবেক দরকার",
   "com_ui_feedback_enforce_question": "মমাংগী পাউখুম অসি করম্না লৈরম্বগে?",
-  "com_ui_feedback_enforce_later": "মতুংদা পীরমগনি"
+  "com_ui_feedback_enforce_later": "মতুংদা পীরমগনি",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

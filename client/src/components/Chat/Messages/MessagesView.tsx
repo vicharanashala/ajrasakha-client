@@ -8,6 +8,7 @@ import ScrollToBottom from '~/components/Messages/ScrollToBottom';
 import { MessagesViewProvider } from '~/Providers';
 import { fontSizeAtom } from '~/store/fontSize';
 import MultiMessage from './MultiMessage';
+import FeedbackReminderPanel from './FeedbackReminderPanel';
 import { cn } from '~/utils';
 import store from '~/store';
 
@@ -37,6 +38,7 @@ function MessagesViewContent({
   return (
     <>
       <div className="relative flex-1 overflow-hidden overflow-y-auto">
+        <FeedbackReminderPanel onSubmitFeedback={() => {}} />
         <div className="relative h-full">
           <div
             className="scrollbar-gutter-stable"

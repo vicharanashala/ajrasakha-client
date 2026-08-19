@@ -804,5 +804,6 @@
   "com_farmer_option_other": "Jiné",
   "com_farmer_option_under_graduate": "Vysokoškolák",
   "com_farmer_option_graduate": "Absolvent",
-  "com_farmer_option_post_graduate": "Postgraduální"
+  "com_farmer_option_post_graduate": "Postgraduální",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

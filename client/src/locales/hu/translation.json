@@ -903,5 +903,6 @@
   "com_farmer_option_other": "Egyéb",
   "com_farmer_option_under_graduate": "Alapképzés alatt",
   "com_farmer_option_graduate": "Diplomás",
-  "com_farmer_option_post_graduate": "Posztgraduális"
+  "com_farmer_option_post_graduate": "Posztgraduális",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

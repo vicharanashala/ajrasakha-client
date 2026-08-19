@@ -2053,5 +2053,6 @@
   "com_ui_feedback_enforce_reminder": "కొత్త సంభాషణను ప్రారంభించే ముందు దయచేసి మునుపటి ప్రతిస్పందనపై అభిప్రాయాన్ని అందించండి.",
   "com_ui_feedback_enforce_title": "అభిప్రాయం అవసరం",
   "com_ui_feedback_enforce_question": "మునుపటి ప్రతిస్పందన ఎలా ఉంది?",
-  "com_ui_feedback_enforce_later": "బహుశా తర్వాత"
+  "com_ui_feedback_enforce_later": "బహుశా తర్వాత",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

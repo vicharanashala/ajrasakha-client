@@ -2052,5 +2052,6 @@
   "com_ui_feedback_enforce_reminder": "नावा गालमाराव एहोब माड़ाङ तायोम सेदाक् रोर रोड़ाक् बाबोत फिडबैक एम मे।",
   "com_ui_feedback_enforce_title": "फिडबैक ला़कती",
   "com_ui_feedback_enforce_question": "तायोम सेदाक् रोर रोड़ दो चेत् लेका ताहेंकाना?",
-  "com_ui_feedback_enforce_later": "तायोम हों"
+  "com_ui_feedback_enforce_later": "तायोम हों",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

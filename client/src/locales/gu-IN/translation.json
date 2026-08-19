@@ -2053,5 +2053,6 @@
   "com_ui_feedback_enforce_reminder": "નવી વાતચીત શરૂ કરતા પહેલાં કૃપા કરીને અગાઉના પ્રતિસાદ પર તમારો અભિપ્રાય આપો.",
   "com_ui_feedback_enforce_title": "અભિપ્રાય જરૂરી",
   "com_ui_feedback_enforce_question": "અગાઉનો પ્રતિસાદ કેવો હતો?",
-  "com_ui_feedback_enforce_later": "કદાચ પછી"
+  "com_ui_feedback_enforce_later": "કદાચ પછી",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

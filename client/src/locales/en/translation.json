@@ -2064,5 +2064,10 @@
   "com_ui_feedback_enforce_reminder": "Please provide feedback for the previous response before starting a new conversation.",
   "com_ui_feedback_enforce_title": "Feedback Required",
   "com_ui_feedback_enforce_question": "How was the previous response?",
-  "com_ui_feedback_enforce_later": "Maybe Later"
+  "com_ui_feedback_enforce_later": "Maybe Later",
+  "com_ui_feedback_detail_positive_title": "Great! Tell us more",
+  "com_ui_feedback_detail_positive_desc": "What did you like most about the response?",
+  "com_ui_feedback_detail_negative_title": "Sorry to hear that",
+  "com_ui_feedback_detail_negative_desc": "Help us improve by sharing what could be better.",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

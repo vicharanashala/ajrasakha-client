@@ -1371,5 +1371,6 @@
   "com_ui_feedback_enforce_reminder": "אנא ספק משוב על התגובה הקודמת לפני התחלת שיחה חדשה.",
   "com_ui_feedback_enforce_title": "נדרש משוב",
   "com_ui_feedback_enforce_question": "איך הייתה התגובה הקודמת?",
-  "com_ui_feedback_enforce_later": "אולי מאוחר יותר"
+  "com_ui_feedback_enforce_later": "אולי מאוחר יותר",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

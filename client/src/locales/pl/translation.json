@@ -787,5 +787,6 @@
   "com_farmer_option_other": "Inne",
   "com_farmer_option_under_graduate": "Student",
   "com_farmer_option_graduate": "Absolwent",
-  "com_farmer_option_post_graduate": "Studia Podyplomowe"
+  "com_farmer_option_post_graduate": "Studia Podyplomowe",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

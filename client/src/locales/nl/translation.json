@@ -804,5 +804,6 @@
   "com_ui_feedback_enforce_reminder": "Geef feedback op het vorige antwoord voordat u een nieuw gesprek begint.",
   "com_ui_feedback_enforce_title": "Feedback vereist",
   "com_ui_feedback_enforce_question": "Hoe was het vorige antwoord?",
-  "com_ui_feedback_enforce_later": "Misschien later"
+  "com_ui_feedback_enforce_later": "Misschien later",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }

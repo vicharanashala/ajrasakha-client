@@ -1414,5 +1414,6 @@
   "com_ui_feedback_enforce_reminder": "开始新对话之前，请先对上一次的回答提供反馈。",
   "com_ui_feedback_enforce_title": "需要反馈",
   "com_ui_feedback_enforce_question": "上一次的回答怎么样？",
-  "com_ui_feedback_enforce_later": "稍后再说"
+  "com_ui_feedback_enforce_later": "稍后再说",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
 }
