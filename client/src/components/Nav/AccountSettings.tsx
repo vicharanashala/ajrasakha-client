@@ -30,9 +30,9 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
           : 'mt-text-sm flex h-auto w-full items-center gap-2 rounded-xl p-2 text-sm transition-all duration-200 ease-in-out hover:bg-surface-active-alt aria-[expanded=true]:bg-surface-active-alt'
       }
     >
-      <div className={collapsed ? 'h-8 w-8 flex-shrink-0' : '-ml-0.9 -mt-0.8 h-8 w-8 flex-shrink-0'}>
+      <div className={collapsed ? 'h-7 w-7 flex-shrink-0' : '-ml-0.9 -mt-0.8 h-7 w-7 flex-shrink-0'}>
         <div className="relative flex">
-          <Avatar user={user} size={32} />
+          <Avatar user={user} size={28} />
         </div>
       </div>
       {!collapsed && (
