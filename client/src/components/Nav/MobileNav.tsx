@@ -51,9 +51,14 @@ export default function MobileNav({
           />
         </svg>
       </button>
+      {/*
+        Conversation title in the mobile top bar — intentionally hidden, no
+        need to show it on mobile.
       <h1 className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-center text-sm font-normal">
         {title ?? localize('com_ui_new_chat')}
       </h1>
+      */}
+      <div className="flex-1" />
       {/*
         Mobile "New Chat" button (outside the sidebar) intentionally disabled —
         keeping only the sidebar's own New Chat button. A same-sized empty
