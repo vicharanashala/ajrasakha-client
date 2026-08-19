@@ -157,7 +157,7 @@ const refreshController = async (req, res) => {
     }
 
     if (session && session.expiration > new Date()) {
-      const token = await setAuthTokens(userId, res, session);
+      const token = await setAuthTokens(userId, res, session, refreshToken);
 
       // trigger OAuth MCP server reconnection asynchronously (best effort)
       try {
