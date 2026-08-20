@@ -14,12 +14,23 @@ import {
   Input,
   Label,
 } from '@librechat/client';
-import { LogOut, User, Leaf, Smartphone, Landmark, MapPin } from 'lucide-react';
+import {
+  LogOut,
+  User,
+  Leaf,
+  Smartphone,
+  Landmark,
+  MapPin,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import { dataService } from 'librechat-data-provider';
 import type { IFarmerProfile } from 'librechat-data-provider';
 import { useSaveFarmerProfileMutation } from '~/data-provider';
 import { useAuthContext } from '~/hooks/AuthContext';
 import { useLocalize } from '~/hooks';
+import { cn } from '~/utils';
 import store from '~/store';
 
 // ── Form Types ───────────────────────────────────────────────────────────────
@@ -70,6 +81,7 @@ const FarmerProfileModal = ({
   const localize = useLocalize();
   const { logout } = useAuthContext();
   const [langcode, setLangcode] = useRecoilState(store.lang);
+  const [currentSection, setCurrentSection] = useState(0);
   const {
     register,
     handleSubmit,
@@ -77,6 +89,7 @@ const FarmerProfileModal = ({
     reset,
     watch,
     setValue,
+    trigger,
     formState: { errors },
   } = useForm<FarmerProfileForm>({ mode: 'onChange' });
 
@@ -821,6 +834,57 @@ const FarmerProfileModal = ({
     { label: noLabel, value: 'no' },
   ];
 
+  const SECTIONS: { icon: typeof User; title: string; fields: (keyof FarmerProfileForm)[] }[] = [
+    {
+      icon: User,
+      title: localize('com_farmer_profile_demographic_details'),
+      fields: [
+        'farmerName',
+        'age',
+        'gender',
+        'state',
+        'customState',
+        'district',
+        'customDistrict',
+        'blockName',
+        'customBlock',
+        'villageName',
+        'customVillage',
+        'nearestKVK',
+        'customKVK',
+        'phoneNo',
+      ],
+    },
+    {
+      icon: Leaf,
+      title: localize('com_farmer_profile_agricultural_background'),
+      fields: ['yearsOfExperience', 'landhold', 'primaryCrop', 'secondaryCrop'],
+    },
+    {
+      icon: Smartphone,
+      title: localize('com_farmer_profile_awareness_section'),
+      fields: ['awarenessOfKCC', 'usesAgriApps'],
+    },
+    {
+      icon: Landmark,
+      title: localize('com_farmer_profile_socio_economic'),
+      fields: ['highestEducatedPerson', 'numberOfSmartphones'],
+    },
+  ];
+
+  const isLastSection = currentSection === SECTIONS.length - 1;
+
+  const handleNextSection = async () => {
+    const isValid = await trigger(SECTIONS[currentSection].fields);
+    if (isValid) {
+      setCurrentSection((section) => Math.min(section + 1, SECTIONS.length - 1));
+    }
+  };
+
+  const handlePreviousSection = () => {
+    setCurrentSection((section) => Math.max(section - 1, 0));
+  };
+
   return (
     <OGDialog open={open} onOpenChange={handleOpenChange}>
       <OGDialogContent
@@ -850,9 +914,9 @@ const FarmerProfileModal = ({
           <input type="hidden" {...register('location.longitude')} />
 
           {/* ── Notice — pinned above the scrollable area ── */}
-          <p className="shrink-0 px-1 pb-3 text-xs font-medium text-red-500 sm:text-sm">
+          {/* <p className="shrink-0 px-1 pb-3 text-xs font-medium text-red-500 sm:text-sm">
             {localize('com_farmer_profile_fill_all_required')}
-          </p>
+          </p> */}
 
           <div className="flex-1 overflow-y-auto px-1 py-2">
             <div className={fieldClass}>
@@ -875,7 +939,72 @@ const FarmerProfileModal = ({
                 <p className={errorClass}>{errors.languagePreference.message}</p>
               )}
             </div>
+
+            {/* ── Progress — compact bar on mobile ── */}
+            <div className="mb-4 sm:hidden">
+              <div className="mb-1.5 flex items-center justify-between gap-2 text-xs font-medium text-text-secondary">
+                <span>
+                  Section {currentSection + 1} of {SECTIONS.length}
+                </span>
+                <span className="truncate text-text-primary">{SECTIONS[currentSection].title}</span>
+              </div>
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-tertiary">
+                <div
+                  className="h-full rounded-full bg-surface-submit transition-all duration-300"
+                  style={{ width: `${((currentSection + 1) / SECTIONS.length) * 100}%` }}
+                />
+              </div>
+            </div>
+
+            {/* ── Progress — detailed stepper on larger screens ── */}
+            <div className="mb-6 hidden items-start sm:flex">
+              {SECTIONS.map((section, index) => {
+                const StepIcon = section.icon;
+                const isCompleted = index < currentSection;
+                const isActive = index === currentSection;
+                return (
+                  <div key={section.title} className="flex flex-1 items-center last:flex-none">
+                    <div className="flex flex-col items-center gap-1.5">
+                      <div
+                        className={cn(
+                          'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
+                          isCompleted
+                            ? 'border-surface-submit bg-surface-submit text-white'
+                            : isActive
+                              ? 'border-surface-submit bg-surface-primary text-surface-submit'
+                              : 'border-border-light bg-surface-secondary text-text-tertiary',
+                        )}
+                      >
+                        {isCompleted ? (
+                          <Check className="h-4 w-4" />
+                        ) : (
+                          <StepIcon className="h-4 w-4" />
+                        )}
+                      </div>
+                      <span
+                        className={cn(
+                          'max-w-[6.5rem] text-center text-xs font-medium',
+                          isActive ? 'text-text-primary' : 'text-text-tertiary',
+                        )}
+                      >
+                        {section.title}
+                      </span>
+                    </div>
+                    {index < SECTIONS.length - 1 && (
+                      <div
+                        className={cn(
+                          'mx-2 mb-5 h-0.5 flex-1 rounded-full transition-colors',
+                          isCompleted ? 'bg-surface-submit' : 'bg-border-light',
+                        )}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
             {/* ── Section 1: Demographic Details ── */}
+            {currentSection === 0 && (
             <div className={sectionClass}>
               <div className={sectionTitleClass}>
                 <span className={sectionBadgeClass}>
@@ -1222,8 +1351,10 @@ const FarmerProfileModal = ({
                 {errors.phoneNo && <p className={errorClass}>{errors.phoneNo.message}</p>}
               </div>
             </div>
+            )}
 
             {/* ── Section 2: Agricultural Background ── */}
+            {currentSection === 1 && (
             <div className={sectionClass}>
               <div className={sectionTitleClass}>
                 <span className={sectionBadgeClass}>
@@ -1370,8 +1501,10 @@ const FarmerProfileModal = ({
                 </div>
               </div>
             </div>
+            )}
 
             {/* ── Section 3: Awareness & Digital Adoption ── */}
+            {currentSection === 2 && (
             <div className={sectionClass}>
               <div className={sectionTitleClass}>
                 <span className={sectionBadgeClass}>
@@ -1433,8 +1566,10 @@ const FarmerProfileModal = ({
                 {errors.usesAgriApps && <p className={errorClass}>{errors.usesAgriApps.message}</p>}
               </div>
             </div>
+            )}
 
             {/* ── Section 4: Socio-Economic Indicator ── */}
+            {currentSection === 3 && (
             <div className={sectionClass}>
               <div className={sectionTitleClass}>
                 <span className={sectionBadgeClass}>
@@ -1497,25 +1632,49 @@ const FarmerProfileModal = ({
                 )}
               </div>
             </div>
+            )}
           </div>
 
           {/* ── Footer ── */}
-          <div className="mt-2 flex shrink-0 flex-col-reverse gap-2 border-t border-border-light px-1 pt-4 sm:flex-row sm:justify-end sm:gap-3">
-            <button
-              type="button"
-              onClick={() => reset()}
-              disabled={saveMutation.isLoading}
-              className="inline-flex w-full items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-6 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-            >
-              {localize('com_ui_reset')}
-            </button>
-            <button
-              type="submit"
-              disabled={saveMutation.isLoading}
-              className="inline-flex w-full items-center justify-center rounded-lg bg-surface-submit px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-            >
-              {saveMutation.isLoading ? `${localize('com_ui_submit')}...` : localize('com_ui_submit')}
-            </button>
+          <div className="mt-2 flex shrink-0 flex-col-reverse gap-2 border-t border-border-light px-1 pt-4 sm:flex-row sm:justify-between sm:gap-3">
+            {currentSection === 0 ? (
+              <button
+                type="button"
+                onClick={() => reset()}
+                disabled={saveMutation.isLoading}
+                className="inline-flex w-full items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-6 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+              >
+                {localize('com_ui_reset')}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handlePreviousSection}
+                disabled={saveMutation.isLoading}
+                className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-border-heavy bg-surface-secondary px-6 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                {localize('com_ui_back')}
+              </button>
+            )}
+            {isLastSection ? (
+              <button
+                type="submit"
+                disabled={saveMutation.isLoading}
+                className="inline-flex w-full items-center justify-center rounded-lg bg-surface-submit px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+              >
+                {saveMutation.isLoading ? `${localize('com_ui_submit')}...` : localize('com_ui_submit')}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleNextSection}
+                className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-surface-submit px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 sm:w-auto"
+              >
+                {localize('com_ui_next')}
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            )}
           </div>
         </form>
       </OGDialogContent>
