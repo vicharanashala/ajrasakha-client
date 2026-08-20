@@ -1429,6 +1429,7 @@ const FarmerProfileModal = ({
                       setValue('primaryCrop', selected.join(', '), { shouldValidate: true })
                     }
                     placeholder={localize('com_ui_select_options')}
+                    openUpward
                   />
                   {selectedPrimaryCropList.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-2">
@@ -1468,6 +1469,7 @@ const FarmerProfileModal = ({
                       setValue('secondaryCrop', selected.join(', '), { shouldValidate: true })
                     }
                     placeholder={localize('com_ui_select_options')}
+                    openUpward
                   />
                   {selectedSecondaryCropList.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-2">

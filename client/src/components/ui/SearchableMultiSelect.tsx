@@ -6,6 +6,7 @@ interface SearchableMultiSelectProps {
   onChange: (selected: string[]) => void;
   placeholder?: string;
   disabled?: boolean;
+  openUpward?: boolean;
 }
 
 const SearchableMultiSelect = ({
@@ -14,6 +15,7 @@ const SearchableMultiSelect = ({
   onChange,
   placeholder = 'Select...',
   disabled = false,
+  openUpward = false,
 }: SearchableMultiSelectProps) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -87,7 +89,11 @@ const SearchableMultiSelect = ({
       </button>
 
       {open && (
-        <div className="absolute z-[300] mt-1 w-full rounded-md border border-border-heavy bg-surface-primary shadow-lg">
+        <div
+          className={`absolute z-[300] w-full rounded-md border border-border-heavy bg-surface-primary shadow-lg ${
+            openUpward ? 'bottom-full mb-1' : 'mt-1'
+          }`}
+        >
           <div className="border-b border-border-heavy p-2">
             <input
               ref={inputRef}
