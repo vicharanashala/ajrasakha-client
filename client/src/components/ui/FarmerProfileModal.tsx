@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useForm, Controller } from 'react-hook-form';
 import useGeolocation from '~/hooks/useGeolocation';
 import { SearchableSelect, SearchableMultiSelect } from '~/components/ui';
+import LogoutConfirmModal from '~/components/ui/LogoutConfirmModal';
 import { LangSelector } from '~/components/Nav/SettingsTabs/General/General';
 import {
   OGDialog,
@@ -82,6 +83,7 @@ const FarmerProfileModal = ({
   const { logout } = useAuthContext();
   const [langcode, setLangcode] = useRecoilState(store.lang);
   const [currentSection, setCurrentSection] = useState(0);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const {
     register,
     handleSubmit,
@@ -886,6 +888,7 @@ const FarmerProfileModal = ({
   };
 
   return (
+    <>
     <OGDialog open={open} onOpenChange={handleOpenChange}>
       <OGDialogContent
         showCloseButton={false}
@@ -900,7 +903,7 @@ const FarmerProfileModal = ({
             </OGDialogTitle>
             <button
               type="button"
-              onClick={() => logout()}
+              onClick={() => setShowLogoutConfirm(true)}
               className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border-heavy bg-surface-secondary px-3 py-1.5 text-xs font-semibold text-text-primary transition-all duration-200 hover:border-surface-destructive hover:bg-surface-destructive hover:text-white"
             >
               <LogOut className="h-3.5 w-3.5" />
@@ -1681,6 +1684,12 @@ const FarmerProfileModal = ({
         </form>
       </OGDialogContent>
     </OGDialog>
+    <LogoutConfirmModal
+      open={showLogoutConfirm}
+      onOpenChange={setShowLogoutConfirm}
+      onConfirm={() => logout()}
+    />
+    </>
   );
 };
 
