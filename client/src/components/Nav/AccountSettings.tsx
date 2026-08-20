@@ -51,8 +51,8 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
       data-testid="nav-user"
       className={
         collapsed
-          ? 'flex h-10 w-10 items-center justify-center rounded-xl p-0 transition-all duration-200 ease-in-out hover:bg-surface-active-alt aria-[expanded=true]:bg-surface-active-alt'
-          : 'mt-text-sm flex h-auto w-full items-center gap-2 rounded-xl p-2 text-sm transition-all duration-200 ease-in-out hover:bg-surface-active-alt aria-[expanded=true]:bg-surface-active-alt'
+          ? 'flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl p-0 transition-all duration-200 ease-in-out aria-[expanded=true]:bg-surface-active-alt'
+          : 'mt-text-sm flex h-auto w-full cursor-pointer items-center gap-2 rounded-xl p-2 text-sm transition-all duration-200 ease-in-out aria-[expanded=true]:bg-surface-active-alt'
       }
     >
       <div className={collapsed ? 'h-8 w-8 flex-shrink-0' : '-ml-0.9 -mt-0.8 h-8 w-8 flex-shrink-0'}>
