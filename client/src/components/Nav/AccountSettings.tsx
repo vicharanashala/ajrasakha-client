@@ -3,6 +3,7 @@ import * as Select from '@ariakit/react/select';
 import { FileText, LogOut } from 'lucide-react';
 import { LinkIcon, GearIcon, DropdownMenuSeparator, Avatar, TooltipAnchor } from '@librechat/client';
 import { MyFilesModal } from '~/components/Chat/Input/Files/MyFilesModal';
+import LogoutConfirmModal from '~/components/ui/LogoutConfirmModal';
 import { useGetStartupConfig, useGetUserBalance } from '~/data-provider';
 import { useAuthContext } from '~/hooks/AuthContext';
 import { useLocalize } from '~/hooks';
@@ -17,6 +18,7 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
   });
   const [showSettings, setShowSettings] = useState(false);
   const [showFiles, setShowFiles] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const accountSettingsButtonRef = useRef<HTMLButtonElement>(null);
 
   const selectTrigger = (
@@ -112,7 +114,7 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
         <DropdownMenuSeparator />
         <Select.SelectItem
           aria-selected={true}
-          onClick={() => logout()}
+          onClick={() => setShowLogoutConfirm(true)}
           value="logout"
           className="select-item text-sm"
         >
@@ -128,6 +130,11 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
         />
       )}
       {showSettings && <Settings open={showSettings} onOpenChange={setShowSettings} />}
+      <LogoutConfirmModal
+        open={showLogoutConfirm}
+        onOpenChange={setShowLogoutConfirm}
+        onConfirm={() => logout()}
+      />
     </Select.SelectProvider>
   );
 }
