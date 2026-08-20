@@ -9,9 +9,32 @@ import { useAuthContext } from '~/hooks/AuthContext';
 import { useLocalize } from '~/hooks';
 import Settings from './Settings';
 
+const USER_ROLE_LABELS: Record<string, string> = {
+  FARMER: 'Farmer',
+  INTERNAL: 'Internal',
+  DISTRICT_COORDINATOR: 'District Coordinator',
+  BLOCK_COORDINATOR: 'Block Coordinator',
+  VILLAGE_VOLUNTEER: 'Village Volunteer',
+};
+
+const formatUserRole = (userRole?: string | null): string | undefined => {
+  if (userRole == null || userRole === '') {
+    return undefined;
+  }
+  return (
+    USER_ROLE_LABELS[userRole] ??
+    userRole
+      .toLowerCase()
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  );
+};
+
 function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
   const localize = useLocalize();
   const { user, isAuthenticated, logout } = useAuthContext();
+  const roleLabel = formatUserRole(user?.userRole);
   const { data: startupConfig } = useGetStartupConfig();
   const balanceQuery = useGetUserBalance({
     enabled: !!isAuthenticated && startupConfig?.balance?.enabled,
@@ -39,10 +62,17 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
       </div>
       {!collapsed && (
         <div
-          className="mt-2 grow overflow-hidden text-ellipsis whitespace-nowrap text-left text-text-primary"
+          className="mt-2 grow overflow-hidden text-left"
           style={{ marginTop: '0', marginLeft: '0' }}
         >
-          {user?.name ?? user?.username ?? localize('com_nav_user')}
+          <div className="overflow-hidden text-ellipsis whitespace-nowrap text-text-primary">
+            {user?.name ?? user?.username ?? localize('com_nav_user')}
+          </div>
+          {roleLabel != null && (
+            <div className="overflow-hidden text-ellipsis whitespace-nowrap text-xs text-text-secondary">
+              {roleLabel}
+            </div>
+          )}
         </div>
       )}
     </Select.Select>
@@ -52,7 +82,11 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
     <Select.SelectProvider>
       {collapsed ? (
         <TooltipAnchor
-          description={user?.name ?? user?.username ?? localize('com_nav_account_settings')}
+          description={
+            roleLabel != null
+              ? `${user?.name ?? user?.username ?? localize('com_nav_account_settings')} — ${roleLabel}`
+              : (user?.name ?? user?.username ?? localize('com_nav_account_settings'))
+          }
           side="right"
           render={selectTrigger}
         />
