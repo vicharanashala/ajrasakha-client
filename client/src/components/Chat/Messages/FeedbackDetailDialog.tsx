@@ -119,7 +119,7 @@ const FeedbackDetailDialog = memo(
 
     return (
       <OGDialog open={open} onOpenChange={onOpenChange}>
-        <OGDialogContent className="max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border border-border-medium bg-surface-primary p-0 shadow-2xl">
+        <OGDialogContent className="w-11/12 max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border border-border-medium bg-surface-primary p-0 shadow-2xl">
           <div className="flex flex-col">
             {/* Top accent line — green for thumbsUp, red for thumbsDown */}
             <div
