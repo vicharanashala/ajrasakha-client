@@ -928,31 +928,9 @@ const FarmerProfileModal = ({
             {localize('com_farmer_profile_fill_all_required')}
           </p> */}
 
-          <div className="flex-1 overflow-y-auto px-1 py-2">
-            <div className={fieldClass}>
-              <Controller
-                name="languagePreference"
-                control={control}
-                rules={{ required: localize('com_farmer_validation_language_required') }}
-                render={({ field }) => (
-                  <LangSelector
-                    langcode={(field.value as string) ?? langcode}
-                    onChange={(value) => {
-                      const resolvedLang = changeLang(value);
-                      field.onChange(resolvedLang);
-                    }}
-                    portal={false}
-                    compactOnMobile
-                  />
-                )}
-              />
-              {errors.languagePreference && (
-                <p className={errorClass}>{errors.languagePreference.message}</p>
-              )}
-            </div>
-
-            {/* ── Progress — compact bar on mobile ── */}
-            <div className="mb-4 sm:hidden">
+          <div className="flex min-h-0 flex-1 flex-col px-1 py-2">
+            {/* ── Progress — compact bar on mobile — pinned, does not scroll with the form ── */}
+            <div className="mb-4 shrink-0 sm:hidden">
               <div className="mb-1.5 flex items-center justify-between gap-2 text-xs font-medium text-text-secondary">
                 <span>
                   Section {currentSection + 1} of {SECTIONS.length}
@@ -967,8 +945,8 @@ const FarmerProfileModal = ({
               </div>
             </div>
 
-            {/* ── Progress — detailed stepper on larger screens ── */}
-            <div className="mb-6 hidden items-start sm:flex">
+            {/* ── Progress — detailed stepper on larger screens — pinned, does not scroll with the form ── */}
+            <div className="mb-6 hidden shrink-0 items-start sm:flex">
               {SECTIONS.map((section, index) => {
                 const StepIcon = section.icon;
                 const isCompleted = index < currentSection;
@@ -1013,6 +991,29 @@ const FarmerProfileModal = ({
                 );
               })}
             </div>
+
+            <div className="flex-1 overflow-y-auto">
+              <div className={fieldClass}>
+                <Controller
+                  name="languagePreference"
+                  control={control}
+                  rules={{ required: localize('com_farmer_validation_language_required') }}
+                  render={({ field }) => (
+                    <LangSelector
+                      langcode={(field.value as string) ?? langcode}
+                      onChange={(value) => {
+                        const resolvedLang = changeLang(value);
+                        field.onChange(resolvedLang);
+                      }}
+                      portal={false}
+                      compactOnMobile
+                    />
+                  )}
+                />
+                {errors.languagePreference && (
+                  <p className={errorClass}>{errors.languagePreference.message}</p>
+                )}
+              </div>
 
             {/* ── Section 1: Demographic Details ── */}
             {currentSection === 0 && (
@@ -1646,6 +1647,7 @@ const FarmerProfileModal = ({
               </div>
             </div>
             )}
+            </div>
           </div>
 
           {/* ── Footer ── */}
