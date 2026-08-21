@@ -904,10 +904,11 @@ const FarmerProfileModal = ({
             <button
               type="button"
               onClick={() => setShowLogoutConfirm(true)}
-              className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border-heavy bg-surface-secondary px-3 py-1.5 text-xs font-semibold text-text-primary transition-all duration-200 hover:border-surface-destructive hover:bg-surface-destructive hover:text-white"
+              aria-label={localize('com_nav_log_out')}
+              className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border-heavy bg-surface-secondary p-2 text-xs font-semibold text-text-primary transition-all duration-200 hover:border-surface-destructive hover:bg-surface-destructive hover:text-white sm:px-3 sm:py-1.5"
             >
               <LogOut className="h-3.5 w-3.5" />
-              {localize('com_nav_log_out')}
+              <span className="hidden sm:inline">{localize('com_nav_log_out')}</span>
             </button>
           </div>
         </OGDialogHeader>
