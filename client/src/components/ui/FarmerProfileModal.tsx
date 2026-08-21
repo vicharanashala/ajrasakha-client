@@ -1652,14 +1652,16 @@ const FarmerProfileModal = ({
           {/* ── Footer ── */}
           <div className="mt-2 flex shrink-0 flex-col-reverse gap-2 border-t border-border-light px-1 pt-4 sm:flex-row sm:justify-between sm:gap-3">
             {currentSection === 0 ? (
-              <button
-                type="button"
-                onClick={() => reset()}
-                disabled={saveMutation.isLoading}
-                className="inline-flex w-full items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-6 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-              >
-                {localize('com_ui_reset')}
-              </button>
+              // Reset button temporarily disabled — commented out per request.
+              // <button
+              //   type="button"
+              //   onClick={() => reset()}
+              //   disabled={saveMutation.isLoading}
+              //   className="inline-flex w-full items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-6 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+              // >
+              //   {localize('com_ui_reset')}
+              // </button>
+              null
             ) : (
               <button
                 type="button"
