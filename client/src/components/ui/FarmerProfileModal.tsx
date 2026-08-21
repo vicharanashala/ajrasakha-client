@@ -943,7 +943,6 @@ const FarmerProfileModal = ({
                     }}
                     portal={false}
                     compactOnMobile
-                    required
                   />
                 )}
               />
