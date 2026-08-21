@@ -378,6 +378,12 @@ const FarmerProfileModal = ({
   const sectionHeadingTextClass = 'text-base font-semibold text-text-primary';
   const sectionStepClass = 'text-xs font-medium text-text-tertiary';
   const fieldClass = 'mb-4';
+  const requiredMark = (
+    <span className="text-red-500" aria-hidden="true">
+      {' '}
+      *
+    </span>
+  );
   const decimalRegex = /^\d+(\.\d+)?$/;
   const genderOptions = [
     localize('com_farmer_option_male'),
@@ -937,6 +943,7 @@ const FarmerProfileModal = ({
                     }}
                     portal={false}
                     compactOnMobile
+                    required
                   />
                 )}
               />
@@ -1024,7 +1031,7 @@ const FarmerProfileModal = ({
               </div>
 
               <div className={fieldClass}>
-                <Label htmlFor="farmerName">{localize('com_farmer_label_farmer_name')}</Label>
+                <Label htmlFor="farmerName">{localize('com_farmer_label_farmer_name')}{requiredMark}</Label>
                 <Input
                   id="farmerName"
                   placeholder={localize('com_farmer_placeholder_full_name')}
@@ -1038,7 +1045,7 @@ const FarmerProfileModal = ({
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className={fieldClass}>
-                  <Label htmlFor="age">{localize('com_farmer_label_age')}</Label>
+                  <Label htmlFor="age">{localize('com_farmer_label_age')}{requiredMark}</Label>
                   <Input
                     id="age"
                     type="number"
@@ -1065,7 +1072,7 @@ const FarmerProfileModal = ({
                 </div>
 
                 <div className={fieldClass}>
-                  <Label>{localize('com_farmer_label_gender')}</Label>
+                  <Label>{localize('com_farmer_label_gender')}{requiredMark}</Label>
                   <Controller
                     name="gender"
                     control={control}
@@ -1131,7 +1138,7 @@ const FarmerProfileModal = ({
 
               {/* ── State → District → Block → Village ── */}
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_state')}</Label>
+                <Label>{localize('com_farmer_label_state')}{requiredMark}</Label>
                 <Controller
                   name="state"
                   control={control}
@@ -1151,7 +1158,7 @@ const FarmerProfileModal = ({
               {/* Custom state input – shown only when "Other" is selected */}
               {selectedState === otherOption && (
                 <div className={fieldClass}>
-                  <Label htmlFor="customState">{localize('com_farmer_label_custom_state')}</Label>
+                  <Label htmlFor="customState">{localize('com_farmer_label_custom_state')}{requiredMark}</Label>
                   <Input
                     id="customState"
                     placeholder={localize('com_farmer_placeholder_custom_state')}
@@ -1167,7 +1174,7 @@ const FarmerProfileModal = ({
               )}
 
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_district')}</Label>
+                <Label>{localize('com_farmer_label_district')}{requiredMark}</Label>
                 <Controller
                   name="district"
                   control={control}
@@ -1192,7 +1199,7 @@ const FarmerProfileModal = ({
               {/* Custom district input – shown only when "Other" is selected */}
               {selectedDistrict === otherOption && (
                 <div className={fieldClass}>
-                  <Label htmlFor="customDistrict">{localize('com_farmer_label_custom_district')}</Label>
+                  <Label htmlFor="customDistrict">{localize('com_farmer_label_custom_district')}{requiredMark}</Label>
                   <Input
                     id="customDistrict"
                     placeholder={localize('com_farmer_placeholder_custom_district')}
@@ -1208,7 +1215,7 @@ const FarmerProfileModal = ({
               )}
 
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_block_name')}</Label>
+                <Label>{localize('com_farmer_label_block_name')}{requiredMark}</Label>
                 <Controller
                   name="blockName"
                   control={control}
@@ -1232,7 +1239,7 @@ const FarmerProfileModal = ({
 
               {selectedBlock === otherOption && (
                 <div className={fieldClass}>
-                  <Label htmlFor="customBlock">{localize('com_farmer_label_custom_block')}</Label>
+                  <Label htmlFor="customBlock">{localize('com_farmer_label_custom_block')}{requiredMark}</Label>
                   <Input
                     id="customBlock"
                     placeholder={localize('com_farmer_placeholder_custom_block')}
@@ -1246,7 +1253,7 @@ const FarmerProfileModal = ({
               )}
 
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_village_name')}</Label>
+                <Label>{localize('com_farmer_label_village_name')}{requiredMark}</Label>
                 <Controller
                   name="villageName"
                   control={control}
@@ -1270,7 +1277,7 @@ const FarmerProfileModal = ({
 
               {selectedBlock === otherOption || selectedVillage === otherOption ? (
                 <div className={fieldClass}>
-                  <Label htmlFor="customVillage">{localize('com_farmer_label_custom_village')}</Label>
+                  <Label htmlFor="customVillage">{localize('com_farmer_label_custom_village')}{requiredMark}</Label>
                   <Input
                     id="customVillage"
                     placeholder={localize('com_farmer_placeholder_custom_village')}
@@ -1286,7 +1293,7 @@ const FarmerProfileModal = ({
               ) : null}
 
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_nearest_kvk')}</Label>
+                <Label>{localize('com_farmer_label_nearest_kvk')}{requiredMark}</Label>
 
                 <Controller
                   name="nearestKVK"
@@ -1321,7 +1328,7 @@ const FarmerProfileModal = ({
 
               {selectedKVK === otherOption && (
                 <div className={fieldClass}>
-                  <Label htmlFor="customKVK">{localize('com_farmer_label_custom_kvk')}</Label>
+                  <Label htmlFor="customKVK">{localize('com_farmer_label_custom_kvk')}{requiredMark}</Label>
                   <Input
                     id="customKVK"
                     placeholder={localize('com_farmer_placeholder_custom_kvk')}
@@ -1337,7 +1344,7 @@ const FarmerProfileModal = ({
               )}
 
               <div className={fieldClass}>
-                <Label htmlFor="phoneNo">{localize('com_farmer_label_phone_number')}</Label>
+                <Label htmlFor="phoneNo">{localize('com_farmer_label_phone_number')}{requiredMark}</Label>
                 <Input
                   id="phoneNo"
                   type="tel"
@@ -1374,7 +1381,7 @@ const FarmerProfileModal = ({
               </div>
 
               <div className={fieldClass}>
-                <Label htmlFor="yearsOfExperience">{localize('com_farmer_label_years_experience')}</Label>
+                <Label htmlFor="yearsOfExperience">{localize('com_farmer_label_years_experience')}{requiredMark}</Label>
                 <Input
                   id="yearsOfExperience"
                   type="number"
@@ -1403,7 +1410,7 @@ const FarmerProfileModal = ({
               </div>
 
               <div className={fieldClass}>
-                <Label htmlFor="landhold">{localize('com_farmer_label_landholding')}</Label>
+                <Label htmlFor="landhold">{localize('com_farmer_label_landholding')}{requiredMark}</Label>
                 <Input
                   id="landhold"
                   type="text"
@@ -1426,7 +1433,7 @@ const FarmerProfileModal = ({
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className={fieldClass}>
-                  <Label htmlFor="primaryCrop">{localize('com_farmer_label_primary_crop')}</Label>
+                  <Label htmlFor="primaryCrop">{localize('com_farmer_label_primary_crop')}{requiredMark}</Label>
                   <SearchableMultiSelect
                     options={cropsOptions}
                     value={selectedPrimaryCropList}
@@ -1466,7 +1473,7 @@ const FarmerProfileModal = ({
                 </div>
 
                 <div className={fieldClass}>
-                  <Label htmlFor="secondaryCrop">{localize('com_farmer_label_secondary_crop')}</Label>
+                  <Label htmlFor="secondaryCrop">{localize('com_farmer_label_secondary_crop')}{requiredMark}</Label>
                   <SearchableMultiSelect
                     options={cropsOptions}
                     value={selectedSecondaryCropList}
@@ -1526,7 +1533,7 @@ const FarmerProfileModal = ({
               </div>
 
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_awareness_kcc')}</Label>
+                <Label>{localize('com_farmer_label_awareness_kcc')}{requiredMark}</Label>
                 <div className="mt-2 flex gap-6">
                   {yesNoOptions.map((option) => (
                     <label
@@ -1551,7 +1558,7 @@ const FarmerProfileModal = ({
               </div>
 
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_usage_agri_apps')}</Label>
+                <Label>{localize('com_farmer_label_usage_agri_apps')}{requiredMark}</Label>
                 <div className="mt-2 flex gap-6">
                   {yesNoOptions.map((option) => (
                     <label
@@ -1591,7 +1598,7 @@ const FarmerProfileModal = ({
               </div>
 
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_highest_educated')}</Label>
+                <Label>{localize('com_farmer_label_highest_educated')}{requiredMark}</Label>
                 <Controller
                   name="highestEducatedPerson"
                   control={control}
@@ -1611,7 +1618,7 @@ const FarmerProfileModal = ({
               </div>
 
               <div className={fieldClass}>
-                <Label htmlFor="numberOfSmartphones">{localize('com_farmer_label_smartphone_count')}</Label>
+                <Label htmlFor="numberOfSmartphones">{localize('com_farmer_label_smartphone_count')}{requiredMark}</Label>
                 <Input
                   id="numberOfSmartphones"
                   type="number"

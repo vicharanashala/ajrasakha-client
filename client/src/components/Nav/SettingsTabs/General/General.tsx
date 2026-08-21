@@ -82,6 +82,7 @@ export const LangSelector = ({
   portal = true,
   defaultLanguageOptions,
   compactOnMobile = false,
+  required = false,
 }: {
   langcode: string;
   onChange: (value: string) => void;
@@ -94,6 +95,8 @@ export const LangSelector = ({
    * at any breakpoint. Defaults to false so existing callers are unaffected.
    */
   compactOnMobile?: boolean;
+  /** When true, appends a small red asterisk to the caption to mark this field as required. */
+  required?: boolean;
 }) => {
   const localize = useLocalize();
 
@@ -130,6 +133,12 @@ export const LangSelector = ({
     <div className="flex items-center justify-between gap-2 text-gray-700 dark:text-gray-100">
       <div id={labelId} className={compactOnMobile ? 'hidden sm:block' : undefined}>
         {localize('com_nav_language')}
+        {required && (
+          <span className="text-red-500" aria-hidden="true">
+            {' '}
+            *
+          </span>
+        )}
       </div>
 
       <Dropdown
