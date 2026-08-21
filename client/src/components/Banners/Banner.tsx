@@ -37,12 +37,12 @@ export const Banner = ({ onHeightChange }: { onHeightChange?: (height: number) =
   return (
     <div
       ref={bannerRef}
-      className="sticky top-0 z-20 flex w-full items-center justify-between border-b border-border-light bg-white px-3 py-2 text-black dark:bg-gray-900 dark:text-white md:relative"
+      className="sticky top-0 z-20 flex w-full items-center justify-between bg-presentation px-3 py-2 text-black dark:text-white md:relative"
     >
       <div id="banner-left-portal" className="z-30 flex min-w-[max-content] items-center"></div>
       <div
         className={cn(
-          'flex-1 whitespace-pre-line px-4 text-center text-sm text-black dark:text-white md:text-base lg:text-md',
+          'flex-1 whitespace-pre-line px-4 text-center text-xs text-black dark:text-white md:text-base lg:text-md',
         )}
         dangerouslySetInnerHTML={{ __html: formattedMessage }}
       ></div>
