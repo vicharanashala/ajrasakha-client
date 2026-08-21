@@ -81,11 +81,19 @@ export const LangSelector = ({
   onChange,
   portal = true,
   defaultLanguageOptions,
+  compactOnMobile = false,
 }: {
   langcode: string;
   onChange: (value: string) => void;
   portal?: boolean;
   defaultLanguageOptions?: LanguageOption[];
+  /**
+   * When true, hides the redundant "Language" caption on mobile (the dropdown
+   * button already shows the selected language) and tightens its padding/text
+   * size there. Pure CSS — the dropdown itself never changes shape or logic
+   * at any breakpoint. Defaults to false so existing callers are unaffected.
+   */
+  compactOnMobile?: boolean;
 }) => {
   const localize = useLocalize();
 
@@ -119,16 +127,21 @@ export const LangSelector = ({
   const labelId = 'language-selector-label';
 
   return (
-    <div className="flex items-center justify-between text-gray-700 dark:text-gray-100">
-      <div id={labelId}>{localize('com_nav_language')}</div>
+    <div className="flex items-center justify-between gap-2 text-gray-700 dark:text-gray-100">
+      <div id={labelId} className={compactOnMobile ? 'hidden sm:block' : undefined}>
+        {localize('com_nav_language')}
+      </div>
 
       <Dropdown
         value={langcode}
         onChange={onChange}
         sizeClasses="[--anchor-max-height:256px] max-h-[60vh]"
         options={defaultLanguageOptions || languageOptions}
-        className="z-50"
+        className={
+          compactOnMobile ? 'z-50 px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm' : 'z-50'
+        }
         aria-labelledby={labelId}
+        ariaLabel={compactOnMobile ? localize('com_nav_language') : undefined}
         portal={portal}
       />
     </div>

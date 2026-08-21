@@ -936,6 +936,7 @@ const FarmerProfileModal = ({
                       field.onChange(resolvedLang);
                     }}
                     portal={false}
+                    compactOnMobile
                   />
                 )}
               />
