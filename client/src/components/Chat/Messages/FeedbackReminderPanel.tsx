@@ -492,9 +492,9 @@ const FeedbackReminderPanel = memo(({ onSubmitFeedback }: FeedbackReminderPanelP
         aria-modal="false"
         data-pulsing={feedbackSkipCount > 0 && !dismissedText ? 'true' : undefined}
         className={cn(
-          'fixed inset-x-3 z-50 flex items-center gap-2 rounded-full px-3.5 py-2.5 sm:hidden',
-          'bg-[rgba(23,23,23,0.82)] backdrop-blur-md',
-          'shadow-[0_8px_24px_-6px_rgba(0,0,0,0.35)]',
+          'fixed inset-x-3 z-50 flex items-center gap-2 rounded-full border px-3.5 py-2.5 sm:hidden',
+          'bg-[var(--surface-primary-alt)] border-[var(--border-medium)]',
+          'shadow-[0_8px_28px_-6px_rgba(0,0,0,0.12),0_4px_12px_-4px_rgba(0,0,0,0.08)]',
           'ease-[cubic-bezier(0.16,1,0.3,1)] transition-[opacity,transform] duration-300',
           'motion-reduce:transition-none motion-reduce:duration-0',
           mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
@@ -510,7 +510,12 @@ const FeedbackReminderPanel = memo(({ onSubmitFeedback }: FeedbackReminderPanelP
               : 'calc(84px + env(safe-area-inset-bottom, 0px))',
         }}
       >
-        <p className="min-w-0 flex-1 truncate text-[13px] font-medium leading-tight text-white">
+        <p
+          className={cn(
+            'min-w-0 flex-1 truncate text-[13px] font-medium leading-tight',
+            dismissedText ? 'text-[var(--text-secondary)]' : 'text-[var(--text-primary)]',
+          )}
+        >
           {dismissedText
             ? localize('com_ui_feedback_enforce_skipped')
             : localize('com_ui_feedback_enforce_question')}
@@ -521,7 +526,8 @@ const FeedbackReminderPanel = memo(({ onSubmitFeedback }: FeedbackReminderPanelP
           aria-pressed={selectedRating === 'thumbsUp'}
           aria-label={localize('com_ui_feedback_positive')}
           className={cn(
-            'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white text-black',
+            'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border',
+            'border-[var(--border-light)] bg-[var(--surface-tertiary)] text-[var(--text-primary)]',
             'transition-transform duration-150 active:scale-90',
             selectedRating === 'thumbsUp' && 'ring-2 ring-green-500',
           )}
@@ -534,7 +540,8 @@ const FeedbackReminderPanel = memo(({ onSubmitFeedback }: FeedbackReminderPanelP
           aria-pressed={selectedRating === 'thumbsDown'}
           aria-label={localize('com_ui_feedback_negative')}
           className={cn(
-            'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white text-black',
+            'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border',
+            'border-[var(--border-light)] bg-[var(--surface-tertiary)] text-[var(--text-primary)]',
             'transition-transform duration-150 active:scale-90',
             selectedRating === 'thumbsDown' && 'ring-2 ring-red-500',
           )}
@@ -545,7 +552,7 @@ const FeedbackReminderPanel = memo(({ onSubmitFeedback }: FeedbackReminderPanelP
           type="button"
           onClick={handleMaybeLater}
           aria-label={localize('com_ui_feedback_enforce_later')}
-          className="flex h-9 w-9 flex-shrink-0 items-center justify-center text-white/80 transition-colors hover:text-white"
+          className="flex h-9 w-9 flex-shrink-0 items-center justify-center text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-primary)]"
         >
           <X size={18} strokeWidth={2.25} />
         </button>
