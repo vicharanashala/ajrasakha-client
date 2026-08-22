@@ -113,6 +113,14 @@ const ContentRender = memo(
 
     const isUser = msg.isCreatedByUser;
 
+    // True while the bubble is showing the "still working on it..." status
+    // (no content parts have streamed in yet) — same condition ContentParts
+    // uses internally to decide whether to render the loading text. Drives
+    // the animated gradient-border treatment on the bubble itself, below.
+    const contentLength = (msg.content as Array<TMessageContentParts | undefined> | undefined)
+      ?.length ?? 0;
+    const isEmptyLoading = !isUser && contentLength === 0 && effectiveIsSubmitting;
+
     // Avatars are hidden on mobile to save horizontal space in the chat
     // bubbles; they still show from the sm breakpoint up.
     const avatarBlock = !hasParallelContent && (
@@ -145,6 +153,7 @@ const ContentRender = memo(
                 (isUser
                   ? 'rounded-2xl rounded-tr-sm bg-green-100 px-4 py-2.5 dark:bg-green-600/25'
                   : 'rounded-2xl rounded-tl-sm bg-surface-tertiary px-4 py-2.5'),
+              isEmptyLoading && 'ajrasakha-orbit-bubble',
             )}
           >
             <ContentParts
