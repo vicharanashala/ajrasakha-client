@@ -1,64 +1,16 @@
-import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { TFeedback, TFeedbackTag, getTagsForRating, getTagByKey } from 'librechat-data-provider';
-import {
-  Button,
-  OGDialog,
-  OGDialogContent,
-  OGDialogTitle,
-  ThumbUpIcon,
-  ThumbDownIcon,
-  DialogDescription,
-} from '@librechat/client';
-import { Mic, Square } from 'lucide-react';
-import { useLocalize, useSpeechToText } from '~/hooks';
+import React, { useState, useCallback, useEffect } from 'react';
+import { TFeedback } from 'librechat-data-provider';
+import { ThumbUpIcon, ThumbDownIcon } from '@librechat/client';
+import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';
-import { FormProvider, useForm } from 'react-hook-form';
 import { useRecoilState } from 'recoil';
+import FeedbackDetailDialog from './FeedbackDetailDialog';
 import store from '~/store';
 
 interface FeedbackProps {
   handleFeedback: ({ feedback }: { feedback: TFeedback | undefined }) => void;
   feedback?: TFeedback;
   isLast?: boolean;
-}
-
-interface FeedbackForm {
-  text: string;
-}
-
-function FeedbackOptionButton({
-  tag,
-  active,
-  onClick,
-  name,
-}: {
-  tag: TFeedbackTag;
-  active?: boolean;
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  name: string;
-}) {
-  const localize = useLocalize();
-  const label = localize(tag.label as Parameters<typeof localize>[0]);
-
-  return (
-    <button
-      className={cn(
-        'flex w-full items-center gap-3 rounded-xl border border-border-medium p-3 text-left',
-        'transition-colors duration-200 hover:bg-surface-hover',
-        active && 'bg-surface-hover',
-      )}
-      onClick={onClick}
-      type="button"
-      aria-label={label}
-      aria-pressed={active}
-    >
-      <input type="radio" name={name} checked={active} readOnly className="h-4 w-4 shrink-0" />
-
-      <span className={cn('text-text-secondary', active && 'font-semibold text-text-primary')}>
-        {label}
-      </span>
-    </button>
-  );
 }
 
 function FeedbackButtons({
@@ -116,25 +68,8 @@ export default function Feedback({
   const localize = useLocalize();
   const [openDialog, setOpenDialog] = useState(false);
   const [feedback, setFeedback] = useState<TFeedback | undefined>(initialFeedback);
-  const methods = useForm<FeedbackForm>({
-    defaultValues: { text: '' },
-  });
-  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [selectedRating, setSelectedRating] = useState<'thumbsUp' | 'thumbsDown' | null>(null);
   const [, setIsFeedbackDialogOpen] = useRecoilState(store.isFeedbackDialogOpen);
-
-  const { isListening, startRecording, stopRecording, error } = useSpeechToText(
-    (text) => {
-      methods.setValue('text', text);
-      setFeedback((prev) => (prev ? { ...prev, text } : prev));
-    },
-    (text) => {
-      methods.setValue('text', text);
-      setFeedback((prev) => (prev ? { ...prev, text } : prev));
-    },
-    openDialog,
-  );
-
-  const { ref: rhfRef, ...textRegister } = methods.register('text');
 
   useEffect(() => {
     setIsFeedbackDialogOpen(openDialog);
@@ -142,8 +77,7 @@ export default function Feedback({
 
   useEffect(() => {
     setFeedback(initialFeedback);
-    methods.setValue('text', initialFeedback?.text || '');
-  }, [initialFeedback, methods]);
+  }, [initialFeedback]);
 
   const propagateMinimal = useCallback(
     (fb: TFeedback | undefined) => {
@@ -153,63 +87,21 @@ export default function Feedback({
     [handleFeedback],
   );
 
-  const handleButtonFeedback = useCallback(
-    (fb: TFeedback | undefined) => {
-      setOpenDialog(false);
+  const handleDetailSubmit = useCallback(
+    (fb: TFeedback) => {
       propagateMinimal(fb);
     },
     [propagateMinimal],
   );
 
-  const handleDialogClear = useCallback(() => {
-    methods.reset({ text: '' });
-    setFeedback(undefined);
-    handleFeedback({ feedback: undefined });
-    setOpenDialog(false);
-  }, [handleFeedback, methods]);
+  const handleDetailClear = useCallback(() => {
+    propagateMinimal(undefined);
+  }, [propagateMinimal]);
 
-  useEffect(() => {
-    if (!openDialog) {
-      stopRecording();
-    }
-  }, [openDialog, stopRecording]);
-
-  const [selectedRating, setSelectedRating] = useState<'thumbsUp' | 'thumbsDown' | null>(null);
-
-  const feedbackOptions = useMemo(() => {
-    if (!selectedRating) {
-      return [];
-    }
-    return getTagsForRating(selectedRating);
-  }, [selectedRating]);
-
-  const handleDialogSave = useCallback(() => {
-    const text = methods.getValues('text').trim();
-    if (!selectedRating) {
-      return;
-    }
-    const otherTag = getTagByKey('other');
-    if (!otherTag) {
-      return;
-    }
-    const updatedFeedback: TFeedback = {
-      rating: selectedRating,
-      tag: feedback?.tag ?? otherTag,
-      text,
-    };
-    propagateMinimal(updatedFeedback);
-    setOpenDialog(false);
-  }, [feedback, selectedRating, propagateMinimal, methods]);
-
-  const handleThumbClick = useCallback(
-    (rating: 'thumbsUp' | 'thumbsDown') => {
-      setSelectedRating(rating);
-      setFeedback(undefined);
-      methods.reset({ text: '' });
-      setOpenDialog(true);
-    },
-    [methods],
-  );
+  const handleThumbClick = useCallback((rating: 'thumbsUp' | 'thumbsDown') => {
+    setSelectedRating(rating);
+    setOpenDialog(true);
+  }, []);
 
   const renderSingleFeedbackButton = () => {
     if (!feedback) return null;
@@ -223,8 +115,9 @@ export default function Feedback({
         className={buttonClasses(true, isLast)}
         onClick={() => {
           if (isThumbsUp) {
-            handleButtonFeedback(undefined);
+            propagateMinimal(undefined);
           } else {
+            setSelectedRating('thumbsDown');
             setOpenDialog(true);
           }
         }}
@@ -244,101 +137,18 @@ export default function Feedback({
       ) : (
         <FeedbackButtons isLast={isLast} feedback={feedback} onThumbClick={handleThumbClick} />
       )}
-      <OGDialog open={openDialog} onOpenChange={setOpenDialog}>
-        <FormProvider {...methods}>
-          <OGDialogContent className="w-11/12 max-w-3xl">
-            {' '}
-            <OGDialogTitle className="text-token-text-primary text-lg font-semibold leading-6">
-              {localize('com_ui_feedback_more_information')}
-            </OGDialogTitle>
-            <DialogDescription>
-              {localize('com_ui_feedback_what_worked_what_not')}
-            </DialogDescription>
-            <div className="grid grid-cols-2 gap-3">
-              {feedbackOptions.map((tag) => (
-                <FeedbackOptionButton
-                  key={tag.key}
-                  tag={tag}
-                  name="feedback-option"
-                  active={feedback?.tag?.key === tag.key}
-                  onClick={() => {
-                    setFeedback({
-                      rating: selectedRating!,
-                      tag,
-                      text: methods.getValues('text'),
-                    });
-                  }}
-                />
-              ))}
-            </div>
-            <textarea
-              {...textRegister}
-              onChange={(e) => {
-                textRegister.onChange(e);
-
-                setFeedback((prev) => ({
-                  rating: prev?.rating ?? selectedRating!,
-                  tag: prev?.tag,
-                  text: e.target.value,
-                }));
-              }}
-              ref={(el) => {
-                textAreaRef.current = el;
-                rhfRef(el);
-              }}
-              className="w-full rounded-xl border bg-transparent p-2"
-              rows={4}
-              placeholder={localize('com_ui_feedback_placeholder')}
-            />
-            <div className="mt-1 flex justify-center">
-              <button
-                type="button"
-                onClick={isListening ? stopRecording : startRecording}
-                className={cn(
-                  'flex items-center gap-2 rounded-full px-3 py-2',
-                  isListening ? 'text-red-500' : 'hover:bg-surface-hover',
-                )}
-              >
-                <div className="flex flex-col items-center justify-center">
-                  {!isListening ? (
-                    <Mic size="28" className="rounded-full" />
-                  ) : (
-                    <div
-                      className={cn(
-                        'flex h-full w-10 animate-pulse items-center justify-center rounded-full transition-all',
-                      )}
-                    >
-                      <Square
-                        className="text-red rounded-md bg-red-500 shadow-[0_0_0_10px_rgba(239,68,68,0.2)]"
-                        size={30}
-                      />
-                    </div>
-                  )}
-                  <div className="mt-2 text-sm">
-                    {isListening ? localize('com_ui_stop') : localize('com_ui_use_micrphone')}
-                  </div>
-                </div>
-              </button>
-            </div>
-            {error && (
-              <div className="mt-2 text-center text-sm font-medium text-red-500">{error}</div>
-            )}
-            <div className="mt-1 flex items-end justify-between gap-2">
-              <Button className="w-full" variant="destructive" onClick={handleDialogClear}>
-                {localize('com_ui_delete')}
-              </Button>
-              <Button
-                className="w-full"
-                variant="submit"
-                onClick={handleDialogSave}
-                disabled={!feedback?.tag && !feedback?.text?.trim()}
-              >
-                {localize('com_ui_save')}
-              </Button>
-            </div>
-          </OGDialogContent>
-        </FormProvider>
-      </OGDialog>
+      {/* Same detail modal used by the feedback reminder flow (tags + textarea
+          + mic), kept consistent across both entry points instead of this
+          component maintaining its own separate dialog implementation. */}
+      {selectedRating && (
+        <FeedbackDetailDialog
+          open={openDialog}
+          onOpenChange={setOpenDialog}
+          rating={selectedRating}
+          onSubmit={handleDetailSubmit}
+          onClear={handleDetailClear}
+        />
+      )}
     </>
   );
 }
