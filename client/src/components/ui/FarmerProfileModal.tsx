@@ -375,7 +375,6 @@ const FarmerProfileModal = ({
   const sectionTitleClass = 'mb-4 flex items-center gap-3';
   const sectionBadgeClass =
     'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-light bg-surface-tertiary text-text-primary';
-  const sectionHeadingTextClass = 'text-base font-semibold text-text-primary';
   const sectionStepClass = 'text-xs font-medium text-text-tertiary';
   const fieldClass = 'mb-4';
   const requiredMark = (
@@ -1018,7 +1017,7 @@ const FarmerProfileModal = ({
             {/* ── Section 1: Demographic Details ── */}
             {currentSection === 0 && (
             <div className={sectionClass}>
-              <div className={sectionTitleClass}>
+              {/* <div className={sectionTitleClass}>
                 <span className={sectionBadgeClass}>
                   <User className="h-4 w-4" />
                 </span>
@@ -1028,7 +1027,7 @@ const FarmerProfileModal = ({
                     {localize('com_farmer_profile_demographic_details')}
                   </h3>
                 </div>
-              </div>
+              </div> */}
 
               <div className={fieldClass}>
                 <Label htmlFor="farmerName">{localize('com_farmer_label_farmer_name')}{requiredMark}</Label>
@@ -1368,7 +1367,7 @@ const FarmerProfileModal = ({
             {/* ── Section 2: Agricultural Background ── */}
             {currentSection === 1 && (
             <div className={sectionClass}>
-              <div className={sectionTitleClass}>
+              {/* <div className={sectionTitleClass}>
                 <span className={sectionBadgeClass}>
                   <Leaf className="h-4 w-4" />
                 </span>
@@ -1378,7 +1377,7 @@ const FarmerProfileModal = ({
                     {localize('com_farmer_profile_agricultural_background')}
                   </h3>
                 </div>
-              </div>
+              </div> */}
 
               <div className={fieldClass}>
                 <Label htmlFor="yearsOfExperience">{localize('com_farmer_label_years_experience')}{requiredMark}</Label>
@@ -1520,7 +1519,7 @@ const FarmerProfileModal = ({
             {/* ── Section 3: Awareness & Digital Adoption ── */}
             {currentSection === 2 && (
             <div className={sectionClass}>
-              <div className={sectionTitleClass}>
+              {/* <div className={sectionTitleClass}>
                 <span className={sectionBadgeClass}>
                   <Smartphone className="h-4 w-4" />
                 </span>
@@ -1530,7 +1529,7 @@ const FarmerProfileModal = ({
                     {localize('com_farmer_profile_awareness_section')}
                   </h3>
                 </div>
-              </div>
+              </div> */}
 
               <div className={fieldClass}>
                 <Label>{localize('com_farmer_label_awareness_kcc')}{requiredMark}</Label>
@@ -1585,7 +1584,7 @@ const FarmerProfileModal = ({
             {/* ── Section 4: Socio-Economic Indicator ── */}
             {currentSection === 3 && (
             <div className={sectionClass}>
-              <div className={sectionTitleClass}>
+              {/* <div className={sectionTitleClass}>
                 <span className={sectionBadgeClass}>
                   <Landmark className="h-4 w-4" />
                 </span>
@@ -1595,7 +1594,7 @@ const FarmerProfileModal = ({
                     {localize('com_farmer_profile_socio_economic')}
                   </h3>
                 </div>
-              </div>
+              </div> */}
 
               <div className={fieldClass}>
                 <Label>{localize('com_farmer_label_highest_educated')}{requiredMark}</Label>
