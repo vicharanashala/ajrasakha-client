@@ -1,6 +1,21 @@
-import React, { createContext, useContext, useMemo, useEffect, useRef, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useMemo,
+  useEffect,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
+import { useUpdateFeedbackMutation } from 'librechat-data-provider/react-query';
+import {
+  Constants,
+  TFeedback,
+  getTagByKey,
+  toMinimalFeedback,
+  TUpdateFeedbackRequest,
+} from 'librechat-data-provider';
 import { useChatContext } from './ChatContext';
-import { Constants, TFeedback } from 'librechat-data-provider';
 import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
 import store from '~/store';
 import { useRecoilState } from 'recoil';
@@ -128,6 +143,39 @@ export function MessagesViewProvider({ children }: { children: React.ReactNode }
   }, []);
   // --- End Feedback Tracker ---
 
+  // --- Feedback Submission (Modal 1 / FeedbackReminderPanel) ---
+  // PUT /api/messages/:conversationId/:messageId/feedback, keyed to the
+  // conversation's last message — this reminder isn't tied to any one
+  // message on screen, so it always records feedback against the most
+  // recent message in the conversation (mirrors per-message feedback in
+  // useMessageActions, which keys off the specific message being rated).
+  const feedbackMutation = useUpdateFeedbackMutation(
+    conversation?.conversationId ?? '',
+    latestMessage?.messageId ?? '',
+  );
+
+  const submitFeedback = useCallback(
+    ({ feedback }: { feedback?: TFeedback }) => {
+      const normalizedFeedback = feedback
+        ? {
+            ...feedback,
+            tag: typeof feedback.tag === 'string' ? getTagByKey(feedback.tag) : feedback.tag,
+          }
+        : undefined;
+      const payload: TUpdateFeedbackRequest = {
+        feedback: feedback ? toMinimalFeedback(normalizedFeedback) : undefined,
+      };
+
+      feedbackMutation.mutate(payload, {
+        onError: (error) => {
+          console.error('Failed to submit feedback:', error);
+        },
+      });
+    },
+    [feedbackMutation],
+  );
+  // --- End Feedback Submission ---
+
   /** Memoize conversation-related values */
   const conversationValues = useMemo(
     () => ({
@@ -170,6 +218,14 @@ export function MessagesViewProvider({ children }: { children: React.ReactNode }
     [index, latestMessage, setLatestMessage],
   );
 
+  /** Memoize feedback operations */
+  const feedbackOperations = useMemo(
+    () => ({
+      submitFeedback,
+    }),
+    [submitFeedback],
+  );
+
   /** Combine all values into final context value */
   const contextValue = useMemo<MessagesViewContextValue>(
     () => ({
@@ -177,8 +233,9 @@ export function MessagesViewProvider({ children }: { children: React.ReactNode }
       ...submissionStates,
       ...messageOperations,
       ...messageState,
+      ...feedbackOperations,
     }),
-    [conversationValues, submissionStates, messageOperations, messageState],
+    [conversationValues, submissionStates, messageOperations, messageState, feedbackOperations],
   );
 
   return (
