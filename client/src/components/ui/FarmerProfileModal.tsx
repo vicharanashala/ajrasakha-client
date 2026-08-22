@@ -370,8 +370,6 @@ const FarmerProfileModal = ({
   const inputClass =
     'mt-1.5 block w-full rounded-lg border border-border-medium bg-surface-primary px-3 py-2 text-sm text-text-primary placeholder-text-secondary transition-colors focus:border-border-heavy focus:outline-none focus:ring-1 focus:ring-border-heavy';
   const errorClass = 'mt-1 text-xs text-red-500';
-  const sectionClass =
-    'mb-5 rounded-xl border border-border-light bg-surface-secondary p-4 sm:mb-6 sm:p-5';
   const sectionTitleClass = 'mb-4 flex items-center gap-3';
   const sectionBadgeClass =
     'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-light bg-surface-tertiary text-text-primary';
@@ -1016,7 +1014,7 @@ const FarmerProfileModal = ({
 
             {/* ── Section 1: Demographic Details ── */}
             {currentSection === 0 && (
-            <div className={sectionClass}>
+            <>
               {/* <div className={sectionTitleClass}>
                 <span className={sectionBadgeClass}>
                   <User className="h-4 w-4" />
@@ -1361,12 +1359,12 @@ const FarmerProfileModal = ({
                 />
                 {errors.phoneNo && <p className={errorClass}>{errors.phoneNo.message}</p>}
               </div>
-            </div>
+            </>
             )}
 
             {/* ── Section 2: Agricultural Background ── */}
             {currentSection === 1 && (
-            <div className={sectionClass}>
+            <>
               {/* <div className={sectionTitleClass}>
                 <span className={sectionBadgeClass}>
                   <Leaf className="h-4 w-4" />
@@ -1513,12 +1511,12 @@ const FarmerProfileModal = ({
                   )}
                 </div>
               </div>
-            </div>
+            </>
             )}
 
             {/* ── Section 3: Awareness & Digital Adoption ── */}
             {currentSection === 2 && (
-            <div className={sectionClass}>
+            <>
               {/* <div className={sectionTitleClass}>
                 <span className={sectionBadgeClass}>
                   <Smartphone className="h-4 w-4" />
@@ -1578,12 +1576,12 @@ const FarmerProfileModal = ({
                 </div>
                 {errors.usesAgriApps && <p className={errorClass}>{errors.usesAgriApps.message}</p>}
               </div>
-            </div>
+            </>
             )}
 
             {/* ── Section 4: Socio-Economic Indicator ── */}
             {currentSection === 3 && (
-            <div className={sectionClass}>
+            <>
               {/* <div className={sectionTitleClass}>
                 <span className={sectionBadgeClass}>
                   <Landmark className="h-4 w-4" />
@@ -1644,7 +1642,7 @@ const FarmerProfileModal = ({
                   <p className={errorClass}>{errors.numberOfSmartphones.message}</p>
                 )}
               </div>
-            </div>
+            </>
             )}
             </div>
           </div>
