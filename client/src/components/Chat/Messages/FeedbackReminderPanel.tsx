@@ -1,11 +1,12 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { GripVertical, X } from 'lucide-react';
+import { GripVertical, X, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';
 import store from '~/store';
 import FeedbackDetailDialog from './FeedbackDetailDialog';
 import { useMessagesViewContext } from '~/Providers/MessagesViewContext';
+import { mainTextareaId } from '~/common';
 import { TFeedback } from 'librechat-data-provider';
 
 interface FeedbackReminderPanelProps {
@@ -158,8 +159,52 @@ const FeedbackReminderPanel = memo(({ onSubmitFeedback }: FeedbackReminderPanelP
     return () => ro.disconnect();
   }, []);
 
+  /** How far the mobile pill's bottom edge sits above the viewport bottom, in
+   * px, so it always rests just above the real chat input box instead of at
+   * a guessed fixed offset. Measured from the input form's own top edge
+   * (found via the textarea's stable id) rather than hardcoding a height,
+   * since the input grows/shrinks with rows, badges, and safe-area insets. */
+  const MOBILE_PILL_GAP = 12;
+  const [mobilePillBottom, setMobilePillBottom] = useState<number | null>(null);
+
+  useLayoutEffect(() => {
+    const getForm = () => document.getElementById(mainTextareaId)?.closest('form') ?? null;
+
+    const updateOffset = () => {
+      const form = getForm();
+      if (!form) {
+        return;
+      }
+      const top = form.getBoundingClientRect().top;
+      setMobilePillBottom(Math.max(0, window.innerHeight - top) + MOBILE_PILL_GAP);
+    };
+
+    updateOffset();
+    window.addEventListener('resize', updateOffset);
+    window.addEventListener('orientationchange', updateOffset);
+
+    const form = getForm();
+    const ro = form ? new ResizeObserver(updateOffset) : null;
+    if (form && ro) {
+      ro.observe(form);
+    }
+
+    return () => {
+      window.removeEventListener('resize', updateOffset);
+      window.removeEventListener('orientationchange', updateOffset);
+      ro?.disconnect();
+    };
+  }, []);
+
   const startDrag = useCallback((clientX: number, clientY: number) => {
     if (!panelRef.current) {
+      return;
+    }
+    // Below the `sm` breakpoint the fixed, single-row pill (further down)
+    // takes over and is never meant to move — guard here too so dragging
+    // can't be started even if something else makes the card element
+    // reachable at a small viewport size.
+    if (window.matchMedia('(max-width: 639px)').matches) {
       return;
     }
     isDraggingRef.current = true;
@@ -304,6 +349,8 @@ const FeedbackReminderPanel = memo(({ onSubmitFeedback }: FeedbackReminderPanelP
         aria-modal="false"
         data-pulsing={feedbackSkipCount > 0 && !dismissedText ? 'true' : undefined}
         className={cn(
+          // Below sm, the compact pill rendered further down takes over.
+          'hidden sm:block',
           'fixed z-50 select-none overflow-hidden rounded-2xl border',
           'w-[calc(100vw-32px)] max-w-72',
           'bg-[var(--surface-primary-alt)]',
@@ -435,6 +482,73 @@ const FeedbackReminderPanel = memo(({ onSubmitFeedback }: FeedbackReminderPanelP
             })}
           </div>
         </div>
+      </div>
+
+      {/* ── Mobile pill: single-row bar over the content, no drag/logo/accent —
+          matches the compact overlay shape requested for small screens ── */}
+      <div
+        role="dialog"
+        aria-label={localize('com_ui_feedback_enforce_question')}
+        aria-modal="false"
+        data-pulsing={feedbackSkipCount > 0 && !dismissedText ? 'true' : undefined}
+        className={cn(
+          'fixed inset-x-3 z-50 flex items-center gap-2 rounded-full px-3.5 py-2.5 sm:hidden',
+          'bg-[rgba(23,23,23,0.82)] backdrop-blur-md',
+          'shadow-[0_8px_24px_-6px_rgba(0,0,0,0.35)]',
+          'ease-[cubic-bezier(0.16,1,0.3,1)] transition-[opacity,transform] duration-300',
+          'motion-reduce:transition-none motion-reduce:duration-0',
+          mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
+          feedbackSkipCount === 1 ? 'shake' : '',
+        )}
+        style={{
+          // Sits a small, fixed gap above the real input box (measured live);
+          // falls back to the old estimate for the first frame before the
+          // input has been measured.
+          bottom:
+            mobilePillBottom !== null
+              ? `${mobilePillBottom}px`
+              : 'calc(84px + env(safe-area-inset-bottom, 0px))',
+        }}
+      >
+        <p className="min-w-0 flex-1 truncate text-[13px] font-medium leading-tight text-white">
+          {dismissedText
+            ? localize('com_ui_feedback_enforce_skipped')
+            : localize('com_ui_feedback_enforce_question')}
+        </p>
+        <button
+          type="button"
+          onClick={() => handleRatingClick('thumbsUp')}
+          aria-pressed={selectedRating === 'thumbsUp'}
+          aria-label={localize('com_ui_feedback_positive')}
+          className={cn(
+            'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white text-black',
+            'transition-transform duration-150 active:scale-90',
+            selectedRating === 'thumbsUp' && 'ring-2 ring-green-500',
+          )}
+        >
+          <ThumbsUp size={16} strokeWidth={2.25} />
+        </button>
+        <button
+          type="button"
+          onClick={() => handleRatingClick('thumbsDown')}
+          aria-pressed={selectedRating === 'thumbsDown'}
+          aria-label={localize('com_ui_feedback_negative')}
+          className={cn(
+            'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white text-black',
+            'transition-transform duration-150 active:scale-90',
+            selectedRating === 'thumbsDown' && 'ring-2 ring-red-500',
+          )}
+        >
+          <ThumbsDown size={16} strokeWidth={2.25} />
+        </button>
+        <button
+          type="button"
+          onClick={handleMaybeLater}
+          aria-label={localize('com_ui_feedback_enforce_later')}
+          className="flex h-9 w-9 flex-shrink-0 items-center justify-center text-white/80 transition-colors hover:text-white"
+        >
+          <X size={18} strokeWidth={2.25} />
+        </button>
       </div>
 
       {/* ── Modal 2: Detail form (tag options + textarea + mic) ── */}
