@@ -37,7 +37,7 @@ export const Banner = ({ onHeightChange }: { onHeightChange?: (height: number) =
   return (
     <div
       ref={bannerRef}
-      className="sticky top-0 z-20 flex w-full items-center justify-between bg-presentation px-3 py-2 text-black dark:text-white md:relative"
+      className="sticky top-0 z-20 flex w-full items-center justify-between bg-transparent px-3 py-2 text-black dark:text-white md:relative shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.12)]"
     >
       <div id="banner-left-portal" className="z-30 flex min-w-[max-content] items-center"></div>
       <div
