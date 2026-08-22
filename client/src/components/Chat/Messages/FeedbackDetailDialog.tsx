@@ -5,6 +5,7 @@ import {
   OGDialogContent,
   OGDialogTitle,
   DialogDescription,
+  useToastContext,
 } from '@librechat/client';
 import { TFeedback, TFeedbackTag, getTagsForRating } from 'librechat-data-provider';
 import { Mic, Square } from 'lucide-react';
@@ -61,6 +62,7 @@ function FeedbackOptionButton({
 const FeedbackDetailDialog = memo(
   ({ open, onOpenChange, rating, onSubmit, onClear }: FeedbackDetailDialogProps) => {
     const localize = useLocalize();
+    const { showToast } = useToastContext();
     const methods = useForm<FeedbackForm>({ defaultValues: { text: '' } });
     const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
     const { ref: rhfRef, ...textRegister } = methods.register('text');
@@ -105,7 +107,8 @@ const FeedbackDetailDialog = memo(
       setSubmittedFeedback(feedback);
       onSubmit(feedback);
       onOpenChange(false);
-    }, [rating, selectedTag, methods, onSubmit, onOpenChange]);
+      showToast({ message: localize('com_ui_feedback_thank_you'), status: 'success' });
+    }, [rating, selectedTag, methods, onSubmit, onOpenChange, showToast, localize]);
 
     const handleClear = useCallback(() => {
       methods.reset({ text: '' });
