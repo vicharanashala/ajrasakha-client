@@ -156,6 +156,11 @@ export function MessagesViewProvider({ children }: { children: React.ReactNode }
 
   const submitFeedback = useCallback(
     ({ feedback }: { feedback?: TFeedback }) => {
+      // Captured up front: feedbackMutation is scoped to whatever messageId
+      // it was created with, but by the time onSuccess runs, latestMessage
+      // (and therefore this component's next render) may already have moved
+      // on — so pin down which message we're actually updating.
+      const targetMessageId = latestMessage?.messageId;
       const normalizedFeedback = feedback
         ? {
             ...feedback,
@@ -167,12 +172,36 @@ export function MessagesViewProvider({ children }: { children: React.ReactNode }
       };
 
       feedbackMutation.mutate(payload, {
+        // Mirror useMessageActions' handleFeedback: write the confirmed
+        // feedback into the local messages list so the per-message hover
+        // thumbs icon (Feedback.tsx, driven by message.feedback) updates
+        // immediately instead of only after a refetch/refresh.
+        onSuccess: (data) => {
+          if (!targetMessageId) {
+            return;
+          }
+          const updatedFeedback = data.feedback
+            ? {
+                rating: data.feedback.rating,
+                tag: getTagByKey(data.feedback.tag ?? undefined),
+                text: data.feedback.text,
+              }
+            : undefined;
+          const messages = getMessages();
+          if (messages) {
+            setMessages(
+              messages.map((item) =>
+                item.messageId === targetMessageId ? { ...item, feedback: updatedFeedback } : item,
+              ),
+            );
+          }
+        },
         onError: (error) => {
           console.error('Failed to submit feedback:', error);
         },
       });
     },
-    [feedbackMutation],
+    [feedbackMutation, latestMessage?.messageId, getMessages, setMessages],
   );
   // --- End Feedback Submission ---
 
