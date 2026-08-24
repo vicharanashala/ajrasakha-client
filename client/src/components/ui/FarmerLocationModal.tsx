@@ -414,8 +414,10 @@ const FarmerLocationModal = ({
       return {
         required: localize('com_farmer_validation_required_generic', { 0: label }),
         pattern: {
-          value: /^\d{10}$/,
-          message: localize('com_farmer_validation_phone_exact_10'),
+          // 10 digits total, and the first digit must be 6, 7, 8, or 9
+          // (standard Indian mobile number format).
+          value: /^[6-9]\d{9}$/,
+          message: localize('com_farmer_validation_phone_invalid'),
         },
       };
     }
