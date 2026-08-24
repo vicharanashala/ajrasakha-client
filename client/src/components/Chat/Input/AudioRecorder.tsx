@@ -109,7 +109,7 @@ export default function AudioRecorder({
 
   const renderIcon = () => {
     if (isListening === true) {
-      return <ListeningIcon className="size-full stroke-green-500" />;
+      return <ListeningIcon className="size-full stroke-emerald-400" />;
     }
     if (isLoading === true) {
       return <Spinner className="stroke-text-secondary" size={24} />;
@@ -128,15 +128,33 @@ export default function AudioRecorder({
           onClick={isListening === true ? handleStopRecording : handleStartRecording}
           disabled={disabled}
           className={cn(
-            'relative flex size-9 items-center justify-center rounded-full p-1 transition-colors hover:bg-surface-hover',
+            'relative flex size-14 items-center justify-center rounded-full border-2 p-2.5 transition-colors',
+            // While listening, a translucent surface with a glowing emerald ring, matching
+            // the app's own dark theme instead of a flat colored fill. Border, glow, and
+            // icon all use the same emerald-400 tone so the whole button reads as one color.
+            isListening === true
+              ? 'border-emerald-400/70 bg-surface-primary/30'
+              : 'border-border-heavy hover:bg-surface-hover',
           )}
+          style={
+            isListening === true
+              ? { animation: 'voice-mic-pulse 1.8s ease-in-out infinite' }
+              : undefined
+          }
           title={localize('com_ui_use_micrphone')}
           aria-pressed={isListening}
         >
           {isListening === true && (
-            <span className="absolute inset-0 animate-pulse rounded-full bg-green-500/25 [animation-duration:0.3s]" />
+            <style>{`
+              @keyframes voice-mic-pulse {
+                0%, 100% { transform: scale(1); box-shadow: 0 0 8px 2px rgba(52, 211, 153, 0.4); }
+                50% { transform: scale(1.04); box-shadow: 0 0 14px 4px rgba(52, 211, 153, 0.2); }
+              }
+            `}</style>
           )}
-          {renderIcon()}
+          <span className="relative z-10 flex size-full items-center justify-center">
+            {renderIcon()}
+          </span>
         </button>
       }
     />

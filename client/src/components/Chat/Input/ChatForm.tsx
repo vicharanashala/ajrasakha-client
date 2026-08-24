@@ -40,6 +40,15 @@ import BadgeRow from './BadgeRow';
 import Mention from './Mention';
 import store from '~/store';
 
+/** Formats a whole number of seconds as mm:ss for the listening timer. */
+const formatListeningDuration = (totalSeconds: number) => {
+  const minutes = Math.floor(totalSeconds / 60)
+    .toString()
+    .padStart(2, '0');
+  const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+  return `${minutes}:${seconds}`;
+};
+
 const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -58,6 +67,21 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const [inputMode, setInputMode] = useState<'voice' | 'type'>('voice');
   /** Whether the mic is actively listening, to drive the "speaking now" animation. */
   const [isVoiceListening, setIsVoiceListening] = useState(false);
+  /** Elapsed seconds since listening started, shown as a running timer next to the equalizer. */
+  const [listeningDuration, setListeningDuration] = useState(0);
+
+  useEffect(() => {
+    if (!isVoiceListening) {
+      setListeningDuration(0);
+      return;
+    }
+    const startedAt = Date.now();
+    setListeningDuration(0);
+    const interval = setInterval(() => {
+      setListeningDuration(Math.floor((Date.now() - startedAt) / 1000));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isVoiceListening]);
 
   // Location access state
   const [position, setPosition] = useState<TAskProps['position'] | null>(null);
@@ -342,7 +366,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
           <div
             onClick={handleContainerClick}
             className={cn(
-              'relative flex w-full flex-grow flex-col overflow-hidden rounded-3xl border pb-4 text-text-primary transition-all duration-200 sm:pb-0',
+              'relative flex w-full flex-grow flex-col overflow-hidden rounded-3xl border pb-2 text-text-primary transition-all duration-200 sm:pb-0',
               isTextAreaFocused ? 'shadow-lg' : 'shadow-md',
               isTemporary
                 ? 'border-violet-800/60 bg-violet-950/10'
@@ -428,76 +452,143 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               </div>
             )}
             {endpoint && inputMode === 'voice' && (
-              <div className="flex flex-col items-center justify-center gap-2 px-4 py-5 text-center text-text-secondary sm:py-6">
-                {isVoiceListening ? (
+              <div className="relative flex flex-col items-center justify-center gap-3 px-4 pb-2 pt-5 text-center text-text-secondary sm:pb-3 sm:pt-6">
+                {/* Voice/Type selector, pinned to the top corner of this panel instead of
+                    down in the bottom icon row. */}
+                <div
+                  className={cn(
+                    'absolute top-2 sm:top-3',
+                    isRTL ? 'right-2 sm:right-3' : 'left-2 sm:left-3',
+                  )}
+                >
                   <div
-                    className="relative flex size-10 items-center justify-center"
-                    role="status"
-                    aria-label="Listening"
+                    role="tablist"
+                    aria-label="Input mode"
+                    className="relative flex shrink-0 items-center rounded-full border border-border-light/60 bg-surface-secondary/80 p-0.5 shadow-sm backdrop-blur-sm"
                   >
-                    <style>{`
-                      @keyframes voice-orb-ring { to { transform: rotate(360deg); } }
-                      @keyframes voice-orb-ring-outer { to { transform: rotate(-360deg); } }
-                      @keyframes voice-orb-glow {
-                        0%, 100% { opacity: 0.3; transform: scale(0.85); }
-                        50% { opacity: 0.85; transform: scale(1.55); }
-                      }
-                      @keyframes voice-orb-core {
-                        0%, 100% { transform: scale(0.88); }
-                        50% { transform: scale(1.14); }
-                      }
-                    `}</style>
-                    {/* faint outer ring, counter-rotating for a subtle parallax depth */}
+                    {/* sliding active-tab indicator */}
                     <span
-                      className="absolute inline-block size-10 rounded-full opacity-40"
-                      style={{
-                        background: 'conic-gradient(from 90deg, transparent, #34d399, transparent 60%)',
-                        WebkitMask:
-                          'radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px))',
-                        mask: 'radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px))',
-                        animation: 'voice-orb-ring-outer 4s linear infinite',
-                      }}
+                      aria-hidden="true"
+                      className={cn(
+                        'absolute inset-y-0.5 left-0.5 w-[calc(50%-2px)] rounded-full bg-emerald-600',
+                        'shadow-[0_1px_2px_rgba(0,0,0,0.18)]',
+                        'transition-transform duration-300 ease-out',
+                        inputMode === 'type' ? 'translate-x-full' : 'translate-x-0',
+                      )}
                     />
-                    {/* main spinning gradient ring */}
-                    <span
-                      className="absolute inline-block size-8 rounded-full"
-                      style={{
-                        background:
-                          'conic-gradient(from 0deg, #a7f3d0, #10b981, #047857, #10b981, #a7f3d0)',
-                        WebkitMask:
-                          'radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px))',
-                        mask: 'radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px))',
-                        animation: 'voice-orb-ring 2.4s linear infinite',
-                      }}
-                    />
-                    {/* soft pulsing glow */}
-                    <span
-                      className="absolute inline-block size-8 rounded-full blur-md"
-                      style={{
-                        background: 'radial-gradient(circle, rgba(16,185,129,0.7), transparent 70%)',
-                        animation: 'voice-orb-glow 2s cubic-bezier(0.45,0,0.55,1) infinite',
-                      }}
-                    />
-                    {/* glassy core with gloss highlight */}
-                    <span
-                      className="relative inline-block size-4 rounded-full"
-                      style={{
-                        background:
-                          'radial-gradient(circle at 32% 28%, #d1fae5, #34d399 35%, #059669 70%, #065f46 100%)',
-                        boxShadow:
-                          '0 0 14px 3px rgba(16,185,129,0.6), inset 0 1px 2px rgba(255,255,255,0.5)',
-                        animation: 'voice-orb-core 2s cubic-bezier(0.45,0,0.55,1) infinite',
-                      }}
-                    />
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={inputMode === 'voice'}
+                      aria-label="Voice"
+                      title="Voice"
+                      onClick={() => setInputMode('voice')}
+                      className={cn(
+                        'relative z-10 flex flex-1 items-center justify-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors duration-300 sm:px-3',
+                        inputMode === 'voice'
+                          ? 'text-white'
+                          : 'text-text-secondary hover:text-text-primary',
+                      )}
+                    >
+                      <Mic className="size-3.5 shrink-0" aria-hidden="true" />
+                      <span className="hidden sm:inline">Voice</span>
+                    </button>
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={inputMode === 'type'}
+                      aria-label="Type"
+                      title="Type"
+                      onClick={() => setInputMode('type')}
+                      className={cn(
+                        'relative z-10 flex flex-1 items-center justify-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors duration-300 sm:px-3',
+                        inputMode === 'type'
+                          ? 'text-white'
+                          : 'text-text-secondary hover:text-text-primary',
+                      )}
+                    >
+                      <Keyboard className="size-3.5 shrink-0" aria-hidden="true" />
+                      <span className="hidden sm:inline">Type</span>
+                    </button>
                   </div>
-                ) : (
-                  <Mic className="size-6" aria-hidden="true" />
-                )}
+                </div>
+                {/* The actual mic button lives here (not just a decorative icon), so
+                    tapping it directly starts/stops recording. Its own pulse animation
+                    (see AudioRecorder.tsx) is the main "listening" indicator; this layer
+                    just adds a faint outer ring counter-rotating slowly, in the same
+                    emerald tone as the button, for a subtle parallax/machinery feel
+                    rather than a flat, static ring. */}
+                <div
+                  className="relative flex size-16 items-center justify-center"
+                  {...(isVoiceListening ? { role: 'status', 'aria-label': 'Listening' } : {})}
+                >
+                  {isVoiceListening && (
+                    <>
+                      <style>{`
+                        @keyframes voice-orb-ring-outer { to { transform: rotate(-360deg); } }
+                      `}</style>
+                      <span
+                        className="absolute inline-block size-16 rounded-full opacity-40"
+                        style={{
+                          background:
+                            'conic-gradient(from 90deg, transparent, #34d399, transparent 60%)',
+                          WebkitMask:
+                            'radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px))',
+                          mask: 'radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px))',
+                          animation: 'voice-orb-ring-outer 4s linear infinite',
+                        }}
+                      />
+                    </>
+                  )}
+                  {SpeechToText ? (
+                    <AudioRecorder
+                      methods={methods}
+                      ask={submitMessage}
+                      textAreaRef={textAreaRef}
+                      disabled={disableInputs || isNotAppendable}
+                      isSubmitting={isSubmitting}
+                      enabled={!isFeedbackDialogOpen}
+                      onStopRecording={() => setInputMode('type')}
+                      onListeningChange={setIsVoiceListening}
+                    />
+                  ) : (
+                    <Mic className="relative size-8" aria-hidden="true" />
+                  )}
+                </div>
                 <span className="text-xs sm:text-sm">
                   {isVoiceListening
-                    ? 'Listening… tap the microphone below to stop'
-                    : 'Tap the microphone below to start speaking'}
+                    ? 'Listening… tap the microphone above to stop'
+                    : 'Tap the microphone above to start speaking'}
                 </span>
+                {isVoiceListening && (
+                  <div className="flex items-center justify-center gap-2">
+                    <style>{`
+                      @keyframes voice-eq-bar {
+                        0%, 100% { transform: scaleY(0.35); }
+                        50% { transform: scaleY(1); }
+                      }
+                    `}</style>
+                    {/* Small equalizer-style bars, each bouncing on its own timing for a
+                        lively, non-uniform waveform while the mic is listening. */}
+                    <div className="flex h-3.5 items-end gap-0.5" aria-hidden="true">
+                      {[0.6, 0.85, 0.7, 0.9, 0.65].map((durationScale, i) => (
+                        <span
+                          key={i}
+                          className="w-0.5 rounded-full bg-emerald-600"
+                          style={{
+                            height: '100%',
+                            transformOrigin: 'bottom',
+                            animation: `voice-eq-bar ${0.7 * durationScale}s ease-in-out infinite`,
+                            animationDelay: `${i * 0.1}s`,
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <span className="font-mono text-[11px] tabular-nums text-text-secondary">
+                      {formatListeningDuration(listeningDuration)}
+                    </span>
+                  </div>
+                )}
               </div>
             )}
             <div
@@ -506,27 +597,31 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 isRTL ? 'flex-row-reverse' : 'flex-row',
               )}
             >
-              <div className={`${isRTL ? 'mr-1.5 sm:mr-2' : 'ml-1.5 sm:ml-2'}`}>
-                <button
-                  type="button"
-                  aria-label={showLeftOptions ? 'Close options' : 'Open options'}
-                  onClick={() => setShowLeftOptions((prev) => !prev)}
-                  className={cn(
-                    'flex size-9 items-center justify-center rounded-full p-1 transition-all duration-200',
-                    'hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-opacity-50',
-                    showLeftOptions && 'bg-surface-hover',
-                  )}
-                >
-                  <Plus
+              {inputMode !== 'voice' && (
+                <div className={`${isRTL ? 'mr-1.5 sm:mr-2' : 'ml-1.5 sm:ml-2'}`}>
+                  <button
+                    type="button"
+                    aria-label={showLeftOptions ? 'Close options' : 'Open options'}
+                    onClick={() => setShowLeftOptions((prev) => !prev)}
                     className={cn(
-                      'size-5 transition-transform duration-200',
-                      showLeftOptions && 'rotate-45',
+                      'flex size-9 items-center justify-center rounded-full p-1 transition-all duration-200',
+                      'hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-opacity-50',
+                      showLeftOptions && 'bg-surface-hover',
                     )}
-                    aria-hidden="true"
-                  />
-                </button>
-              </div>
-              {!showLeftOptions && (
+                  >
+                    <Plus
+                      className={cn(
+                        'size-5 transition-transform duration-200',
+                        showLeftOptions && 'rotate-45',
+                      )}
+                      aria-hidden="true"
+                    />
+                  </button>
+                </div>
+              )}
+              {/* In Voice mode the selector is shown up top, parallel to the mic button,
+                  instead of here in the bottom row. */}
+              {inputMode !== 'voice' && !showLeftOptions && (
                 <div
                   role="tablist"
                   aria-label="Input mode"
@@ -596,26 +691,16 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               )}
               <div className="mx-auto flex" />
               {/* On mobile, portal the model selector to the top mobile nav bar.
-                  On desktop, render it inline in the chat input. */}
-              {isSmallScreen ? (
-                mobileNavPortal ? (
-                  createPortal(<ModelSelector startupConfig={startupConfig} />, mobileNavPortal)
-                ) : null
-              ) : (
-                <ModelSelector startupConfig={startupConfig} />
-              )}
-              {SpeechToText && inputMode === 'voice' && (
-                <AudioRecorder
-                  methods={methods}
-                  ask={submitMessage}
-                  textAreaRef={textAreaRef}
-                  disabled={disableInputs || isNotAppendable}
-                  isSubmitting={isSubmitting}
-                  enabled={!isFeedbackDialogOpen}
-                  onStopRecording={() => setInputMode('type')}
-                  onListeningChange={setIsVoiceListening}
-                />
-              )}
+                  On desktop, render it inline in the chat input. Hidden entirely
+                  in Voice mode, where there's no need to pick a model inline. */}
+              {inputMode !== 'voice' &&
+                (isSmallScreen ? (
+                  mobileNavPortal ? (
+                    createPortal(<ModelSelector startupConfig={startupConfig} />, mobileNavPortal)
+                  ) : null
+                ) : (
+                  <ModelSelector startupConfig={startupConfig} />
+                ))}
               <div className={`${isRTL ? 'ml-1.5 sm:ml-2' : 'mr-1.5 sm:mr-2'}`}>
                 {isSubmitting && showStopButton ? (
                   <StopButton stop={handleStopGenerating} setShowStopButton={setShowStopButton} />
