@@ -1,6 +1,6 @@
 import { memo, useRef, useMemo, useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, Mic, Keyboard } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useWatch } from 'react-hook-form';
 import { TextareaAutosize, useMediaQuery } from '@librechat/client';
@@ -54,6 +54,8 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const [isTextAreaFocused, setIsTextAreaFocused] = useState(false);
   const [backupBadges, setBackupBadges] = useState<Pick<BadgeItem, 'id'>[]>([]);
   const [showLeftOptions, setShowLeftOptions] = useState(false);
+  /** Which input mode is active: default to Voice, switch to Type once the user stops recording. */
+  const [inputMode, setInputMode] = useState<'voice' | 'type'>('voice');
 
   // Location access state
   const [position, setPosition] = useState<TAskProps['position'] | null>(null);
@@ -356,7 +358,13 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
             />
             <FileFormChat conversation={conversation} />
             {endpoint && (
-              <div className={cn('flex', isRTL ? 'flex-row-reverse' : 'flex-row')}>
+              <div
+                className={cn(
+                  'flex',
+                  isRTL ? 'flex-row-reverse' : 'flex-row',
+                  inputMode === 'voice' && 'hidden',
+                )}
+              >
                 <div className="relative flex-1">
                   <TextareaAutosize
                     {...registerProps}
@@ -409,9 +417,17 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 </div>
               </div>
             )}
+            {endpoint && inputMode === 'voice' && (
+              <div className="flex flex-col items-center justify-center gap-2 px-4 py-5 text-center text-text-secondary sm:py-6">
+                <Mic className="size-6" aria-hidden="true" />
+                <span className="text-xs sm:text-sm">
+                  Tap the microphone below to start speaking
+                </span>
+              </div>
+            )}
             <div
               className={cn(
-                '@container items-between flex gap-1.5 pb-2 sm:gap-2',
+                '@container items-between flex flex-wrap gap-1.5 pb-2 sm:gap-2',
                 isRTL ? 'flex-row-reverse' : 'flex-row',
               )}
             >
@@ -435,6 +451,48 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   />
                 </button>
               </div>
+              {!showLeftOptions && (
+                <div
+                  role="tablist"
+                  aria-label="Input mode"
+                  className="flex shrink-0 items-center gap-0.5 rounded-full border border-border-light bg-surface-secondary p-0.5"
+                >
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={inputMode === 'voice'}
+                    aria-label="Voice"
+                    title="Voice"
+                    onClick={() => setInputMode('voice')}
+                    className={cn(
+                      'flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors sm:px-2.5',
+                      inputMode === 'voice'
+                        ? 'bg-surface-hover text-text-primary'
+                        : 'text-text-secondary hover:text-text-primary',
+                    )}
+                  >
+                    <Mic className="size-3.5 shrink-0" aria-hidden="true" />
+                    <span className="hidden sm:inline">Voice</span>
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={inputMode === 'type'}
+                    aria-label="Type"
+                    title="Type"
+                    onClick={() => setInputMode('type')}
+                    className={cn(
+                      'flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors sm:px-2.5',
+                      inputMode === 'type'
+                        ? 'bg-surface-hover text-text-primary'
+                        : 'text-text-secondary hover:text-text-primary',
+                    )}
+                  >
+                    <Keyboard className="size-3.5 shrink-0" aria-hidden="true" />
+                    <span className="hidden sm:inline">Type</span>
+                  </button>
+                </div>
+              )}
               {showLeftOptions && (
                 <>
                   <div>
@@ -461,7 +519,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               ) : (
                 <ModelSelector startupConfig={startupConfig} />
               )}
-              {SpeechToText && (
+              {SpeechToText && inputMode === 'voice' && (
                 <AudioRecorder
                   methods={methods}
                   ask={submitMessage}
@@ -469,13 +527,15 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   disabled={disableInputs || isNotAppendable}
                   isSubmitting={isSubmitting}
                   enabled={!isFeedbackDialogOpen}
+                  onStopRecording={() => setInputMode('type')}
                 />
               )}
               <div className={`${isRTL ? 'ml-1.5 sm:ml-2' : 'mr-1.5 sm:mr-2'}`}>
                 {isSubmitting && showStopButton ? (
                   <StopButton stop={handleStopGenerating} setShowStopButton={setShowStopButton} />
                 ) : (
-                  endpoint && (
+                  endpoint &&
+                  inputMode === 'type' && (
                     <SendButton
                       ref={submitButtonRef}
                       control={methods.control}

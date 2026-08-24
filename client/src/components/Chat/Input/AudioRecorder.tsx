@@ -13,6 +13,7 @@ export default function AudioRecorder({
   textAreaRef,
   isSubmitting,
   enabled = false,
+  onStopRecording,
 }: {
   disabled: boolean;
   ask: (data: { text: string }) => void;
@@ -20,6 +21,8 @@ export default function AudioRecorder({
   textAreaRef: React.RefObject<HTMLTextAreaElement>;
   isSubmitting: boolean;
   enabled?: boolean;
+  /** Called after the user manually stops recording, e.g. to switch the input UI back to text view. */
+  onStopRecording?: () => void;
 }) {
   const { setValue, reset, getValues } = methods;
   const localize = useLocalize();
@@ -94,6 +97,7 @@ export default function AudioRecorder({
     if (!isExternalSTT(speechToTextEndpoint)) {
       existingTextRef.current = '';
     }
+    onStopRecording?.();
   };
 
   const renderIcon = () => {

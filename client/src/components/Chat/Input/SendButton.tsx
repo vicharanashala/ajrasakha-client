@@ -41,10 +41,9 @@ const SubmitButton = React.memo(
 const SendButton = React.memo(
   forwardRef((props: SendButtonProps, ref: React.ForwardedRef<HTMLButtonElement>) => {
     const data = useWatch({ control: props.control });
-    if (!data.text) {
-      return null;
-    }
-    return <SubmitButton ref={ref} disabled={props.disabled} />;
+    /** Always render the button so the input row doesn't lose its send action while empty;
+     *  disable it instead of hiding it until there's text to send. */
+    return <SubmitButton ref={ref} disabled={props.disabled || !data.text} />;
   }),
 );
 
