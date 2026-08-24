@@ -56,6 +56,8 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const [showLeftOptions, setShowLeftOptions] = useState(false);
   /** Which input mode is active: default to Voice, switch to Type once the user stops recording. */
   const [inputMode, setInputMode] = useState<'voice' | 'type'>('voice');
+  /** Whether the mic is actively listening, to drive the "speaking now" animation. */
+  const [isVoiceListening, setIsVoiceListening] = useState(false);
 
   // Location access state
   const [position, setPosition] = useState<TAskProps['position'] | null>(null);
@@ -362,7 +364,15 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 className={cn(
                   'flex',
                   isRTL ? 'flex-row-reverse' : 'flex-row',
-                  inputMode === 'voice' && 'hidden',
+                  /**
+                   * Collapse instead of `display: none` when hidden: a fully undisplayed
+                   * textarea can't be measured by the autosize logic, so it would briefly
+                   * render at the wrong height (clipping the placeholder text against the
+                   * rounded corners) once switched back to the Type tab. `invisible h-0
+                   * overflow-hidden` keeps it laid out (and therefore measurable) while
+                   * taking up no visible space and staying out of the tab/focus order.
+                   */
+                  inputMode === 'voice' && 'invisible h-0 overflow-hidden',
                 )}
               >
                 <div className="relative flex-1">
@@ -419,9 +429,33 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
             )}
             {endpoint && inputMode === 'voice' && (
               <div className="flex flex-col items-center justify-center gap-2 px-4 py-5 text-center text-text-secondary sm:py-6">
-                <Mic className="size-6" aria-hidden="true" />
+                {isVoiceListening ? (
+                  <div className="flex h-6 items-center gap-1" role="status" aria-label="Listening">
+                    <style>{`
+                      @keyframes voice-listening-bounce {
+                        0%, 100% { height: 6px; }
+                        50% { height: 24px; }
+                      }
+                    `}</style>
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <span
+                        key={i}
+                        className="w-1 rounded-full bg-green-500"
+                        style={{
+                          height: 6,
+                          animation: 'voice-listening-bounce 0.9s ease-in-out infinite',
+                          animationDelay: `${i * 0.12}s`,
+                        }}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <Mic className="size-6" aria-hidden="true" />
+                )}
                 <span className="text-xs sm:text-sm">
-                  Tap the microphone below to start speaking
+                  {isVoiceListening
+                    ? 'Listening… tap the microphone below to stop'
+                    : 'Tap the microphone below to start speaking'}
                 </span>
               </div>
             )}
@@ -528,6 +562,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   isSubmitting={isSubmitting}
                   enabled={!isFeedbackDialogOpen}
                   onStopRecording={() => setInputMode('type')}
+                  onListeningChange={setIsVoiceListening}
                 />
               )}
               <div className={`${isRTL ? 'ml-1.5 sm:ml-2' : 'mr-1.5 sm:mr-2'}`}>

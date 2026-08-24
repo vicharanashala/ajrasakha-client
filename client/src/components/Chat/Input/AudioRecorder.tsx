@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useToastContext, TooltipAnchor, ListeningIcon, Spinner } from '@librechat/client';
 import { useLocalize, useSpeechToText, useGetAudioSettings } from '~/hooks';
 import { useChatFormContext } from '~/Providers';
@@ -14,6 +14,7 @@ export default function AudioRecorder({
   isSubmitting,
   enabled = false,
   onStopRecording,
+  onListeningChange,
 }: {
   disabled: boolean;
   ask: (data: { text: string }) => void;
@@ -23,6 +24,8 @@ export default function AudioRecorder({
   enabled?: boolean;
   /** Called after the user manually stops recording, e.g. to switch the input UI back to text view. */
   onStopRecording?: () => void;
+  /** Called whenever the listening state changes, e.g. to drive a "speaking now" animation elsewhere. */
+  onListeningChange?: (isListening: boolean) => void;
 }) {
   const { setValue, reset, getValues } = methods;
   const localize = useLocalize();
@@ -81,6 +84,10 @@ export default function AudioRecorder({
     onTranscriptionComplete,
     enabled,
   );
+
+  useEffect(() => {
+    onListeningChange?.(isListening === true);
+  }, [isListening, onListeningChange]);
 
   if (!textAreaRef.current) {
     return null;
