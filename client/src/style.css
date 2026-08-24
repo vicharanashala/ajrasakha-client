@@ -2963,7 +2963,7 @@ html {
         transparent 360deg
       )
       border-box;
-  animation: ajrasakha-orbit-spin 2.6s linear infinite;
+  animation: ajrasakha-orbit-spin 2.6s linear infinite alternate;
 }
 
 @keyframes ajrasakha-orbit-spin {
@@ -3000,7 +3000,7 @@ html {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   filter: blur(5px);
-  animation: ajrasakha-orbit-spin 2.6s linear infinite;
+  animation: ajrasakha-orbit-spin 2.6s linear infinite alternate;
   pointer-events: none;
 }
 
