@@ -430,24 +430,65 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
             {endpoint && inputMode === 'voice' && (
               <div className="flex flex-col items-center justify-center gap-2 px-4 py-5 text-center text-text-secondary sm:py-6">
                 {isVoiceListening ? (
-                  <div className="flex h-6 items-center gap-1" role="status" aria-label="Listening">
+                  <div
+                    className="relative flex size-10 items-center justify-center"
+                    role="status"
+                    aria-label="Listening"
+                  >
                     <style>{`
-                      @keyframes voice-listening-bounce {
-                        0%, 100% { height: 6px; }
-                        50% { height: 24px; }
+                      @keyframes voice-orb-ring { to { transform: rotate(360deg); } }
+                      @keyframes voice-orb-ring-outer { to { transform: rotate(-360deg); } }
+                      @keyframes voice-orb-glow {
+                        0%, 100% { opacity: 0.3; transform: scale(0.85); }
+                        50% { opacity: 0.85; transform: scale(1.55); }
+                      }
+                      @keyframes voice-orb-core {
+                        0%, 100% { transform: scale(0.88); }
+                        50% { transform: scale(1.14); }
                       }
                     `}</style>
-                    {[0, 1, 2, 3, 4].map((i) => (
-                      <span
-                        key={i}
-                        className="w-1 rounded-full bg-green-500"
-                        style={{
-                          height: 6,
-                          animation: 'voice-listening-bounce 0.9s ease-in-out infinite',
-                          animationDelay: `${i * 0.12}s`,
-                        }}
-                      />
-                    ))}
+                    {/* faint outer ring, counter-rotating for a subtle parallax depth */}
+                    <span
+                      className="absolute inline-block size-10 rounded-full opacity-40"
+                      style={{
+                        background: 'conic-gradient(from 90deg, transparent, #34d399, transparent 60%)',
+                        WebkitMask:
+                          'radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px))',
+                        mask: 'radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px))',
+                        animation: 'voice-orb-ring-outer 4s linear infinite',
+                      }}
+                    />
+                    {/* main spinning gradient ring */}
+                    <span
+                      className="absolute inline-block size-8 rounded-full"
+                      style={{
+                        background:
+                          'conic-gradient(from 0deg, #a7f3d0, #10b981, #047857, #10b981, #a7f3d0)',
+                        WebkitMask:
+                          'radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px))',
+                        mask: 'radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px))',
+                        animation: 'voice-orb-ring 2.4s linear infinite',
+                      }}
+                    />
+                    {/* soft pulsing glow */}
+                    <span
+                      className="absolute inline-block size-8 rounded-full blur-md"
+                      style={{
+                        background: 'radial-gradient(circle, rgba(16,185,129,0.7), transparent 70%)',
+                        animation: 'voice-orb-glow 2s cubic-bezier(0.45,0,0.55,1) infinite',
+                      }}
+                    />
+                    {/* glassy core with gloss highlight */}
+                    <span
+                      className="relative inline-block size-4 rounded-full"
+                      style={{
+                        background:
+                          'radial-gradient(circle at 32% 28%, #d1fae5, #34d399 35%, #059669 70%, #065f46 100%)',
+                        boxShadow:
+                          '0 0 14px 3px rgba(16,185,129,0.6), inset 0 1px 2px rgba(255,255,255,0.5)',
+                        animation: 'voice-orb-core 2s cubic-bezier(0.45,0,0.55,1) infinite',
+                      }}
+                    />
                   </div>
                 ) : (
                   <Mic className="size-6" aria-hidden="true" />
