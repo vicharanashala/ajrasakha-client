@@ -530,8 +530,18 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 <div
                   role="tablist"
                   aria-label="Input mode"
-                  className="flex shrink-0 items-center gap-0.5 rounded-full border border-border-light bg-surface-secondary p-0.5"
+                  className="relative flex shrink-0 items-center rounded-full border border-border-light/60 bg-surface-secondary/80 p-0.5 shadow-sm backdrop-blur-sm"
                 >
+                  {/* sliding active-tab indicator */}
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      'absolute inset-y-0.5 left-0.5 w-[calc(50%-2px)] rounded-full bg-emerald-600',
+                      'shadow-[0_1px_2px_rgba(0,0,0,0.18)]',
+                      'transition-transform duration-300 ease-out',
+                      inputMode === 'type' ? 'translate-x-full' : 'translate-x-0',
+                    )}
+                  />
                   <button
                     type="button"
                     role="tab"
@@ -540,9 +550,9 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     title="Voice"
                     onClick={() => setInputMode('voice')}
                     className={cn(
-                      'flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors sm:px-2.5',
+                      'relative z-10 flex flex-1 items-center justify-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors duration-300 sm:px-3',
                       inputMode === 'voice'
-                        ? 'bg-surface-hover text-text-primary'
+                        ? 'text-white'
                         : 'text-text-secondary hover:text-text-primary',
                     )}
                   >
@@ -557,9 +567,9 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     title="Type"
                     onClick={() => setInputMode('type')}
                     className={cn(
-                      'flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors sm:px-2.5',
+                      'relative z-10 flex flex-1 items-center justify-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors duration-300 sm:px-3',
                       inputMode === 'type'
-                        ? 'bg-surface-hover text-text-primary'
+                        ? 'text-white'
                         : 'text-text-secondary hover:text-text-primary',
                     )}
                   >
