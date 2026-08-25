@@ -1,4 +1,4 @@
-import { memo, useRef, useMemo, useEffect, useState, useCallback } from 'react';
+import { memo, useRef, useMemo, useEffect, useLayoutEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Plus, X, Mic, Keyboard } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
@@ -99,6 +99,37 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
       setInputMode('type');
     }
   }, [pendingVoiceStop, isTranscribing, inputMode]);
+
+  /**
+   * Refs + measured-height state used to animate the Type/Voice panel swap smoothly. Both
+   * panels stay mounted (absolutely positioned, stacked on top of each other) so they can
+   * crossfade via opacity, while this wrapper's own height is set explicitly from the
+   * ACTIVE panel's real `scrollHeight` and transitions between the old and new value. That
+   * keeps each mode at its own natural height — Type stays as compact as it's always been,
+   * Voice stays its own size — instead of the wrapper getting stuck at the height of
+   * whichever panel is taller (which is what a CSS Grid overlap approach does, and why Type
+   * mode looked taller than it should). A ResizeObserver keeps re-measuring the active
+   * panel so its own internal height changes (the textarea growing as you type, the
+   * equalizer/timer appearing while listening) also animate smoothly instead of jumping.
+   */
+  const typePanelRef = useRef<HTMLDivElement>(null);
+  const voicePanelRef = useRef<HTMLDivElement>(null);
+  const [panelsHeight, setPanelsHeight] = useState<number | null>(null);
+
+  useLayoutEffect(() => {
+    const activeEl = inputMode === 'voice' ? voicePanelRef.current : typePanelRef.current;
+    if (!activeEl) {
+      return;
+    }
+    // Synchronous initial measurement (before paint) avoids a flash of the wrong height;
+    // the ResizeObserver below then keeps it accurate as the active panel's content changes.
+    setPanelsHeight(activeEl.scrollHeight);
+    const observer = new ResizeObserver(() => {
+      setPanelsHeight(activeEl.scrollHeight);
+    });
+    observer.observe(activeEl);
+    return () => observer.disconnect();
+  }, [inputMode]);
 
   // Location access state
   const [position, setPosition] = useState<TAskProps['position'] | null>(null);
@@ -420,21 +451,40 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
             />
             <FileFormChat conversation={conversation} />
             {endpoint && (
+              /**
+               * Both panels stay mounted, absolutely stacked on top of each other, so they
+               * can crossfade via opacity/transform. This wrapper's own height is driven by
+               * the `panelsHeight` state (measured from whichever panel is active — see the
+               * useLayoutEffect above) and transitions smoothly between values, so each mode
+               * keeps its own natural height instead of both being stuck at the taller one.
+               */
               <div
-                className={cn(
-                  'flex',
-                  isRTL ? 'flex-row-reverse' : 'flex-row',
-                  /**
-                   * Collapse instead of `display: none` when hidden: a fully undisplayed
-                   * textarea can't be measured by the autosize logic, so it would briefly
-                   * render at the wrong height (clipping the placeholder text against the
-                   * rounded corners) once switched back to the Type tab. `invisible h-0
-                   * overflow-hidden` keeps it laid out (and therefore measurable) while
-                   * taking up no visible space and staying out of the tab/focus order.
-                   */
-                  inputMode === 'voice' && 'invisible h-0 overflow-hidden',
-                )}
+                className="relative overflow-hidden transition-[height] duration-[600ms] ease-[cubic-bezier(0.65,0,0.35,1)] motion-reduce:transition-none [will-change:height]"
+                style={panelsHeight != null ? { height: panelsHeight } : undefined}
               >
+                <div
+                  ref={typePanelRef}
+                  className={cn(
+                    'absolute inset-x-0 top-0 flex',
+                    isRTL ? 'flex-row-reverse' : 'flex-row',
+                    /**
+                     * Deliberately shorter than the wrapper's height transition (see the
+                     * outer div above). If content faded at the same pace as the height
+                     * animation, then on the shrink direction (voice -> type) the taller
+                     * outgoing Voice panel would still be partway through fading out while
+                     * the wrapper is still tall — leaving its tail end (mic/equalizer)
+                     * visibly peeking out below the now-shorter Type box until the wrapper
+                     * finally clips it away, which reads as a snap. Fading content out fast
+                     * means it's fully invisible well before the gap below it would be
+                     * visible, so the wrapper just quietly collapses over empty space.
+                     */
+                    'transition-[opacity,transform] duration-[280ms] ease-[cubic-bezier(0,0,0.2,1)] motion-reduce:transition-none [will-change:opacity,transform]',
+                    inputMode === 'voice'
+                      ? 'pointer-events-none translate-y-3 opacity-0 z-0'
+                      : 'translate-y-0 opacity-100 z-10',
+                  )}
+                  aria-hidden={inputMode === 'voice'}
+                >
                 <div className="relative flex-1">
                   <TextareaAutosize
                     {...registerProps}
@@ -485,10 +535,20 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     setIsCollapsed={setIsCollapsed}
                   />
                 </div>
-              </div>
-            )}
-            {endpoint && inputMode === 'voice' && (
-              <div className="relative flex flex-col items-center justify-center gap-3 px-4 pb-2 pt-5 text-center text-text-secondary sm:pb-3 sm:pt-6">
+                </div>
+                <div
+                  ref={voicePanelRef}
+                  className={cn(
+                    'absolute inset-x-0 top-0 flex flex-col items-center justify-center gap-3 px-4 pb-2 pt-5 text-center text-text-secondary sm:pb-3 sm:pt-6',
+                    // See the matching comment on the Type panel above — content fades
+                    // faster than the wrapper's height settles, on purpose.
+                    'transition-[opacity,transform] duration-[280ms] ease-[cubic-bezier(0,0,0.2,1)] motion-reduce:transition-none [will-change:opacity,transform]',
+                    inputMode === 'voice'
+                      ? 'translate-y-0 opacity-100 z-10'
+                      : 'pointer-events-none translate-y-3 opacity-0 z-0',
+                  )}
+                  aria-hidden={inputMode !== 'voice'}
+                >
                 {/* Voice/Type selector, pinned to the top corner of this panel instead of
                     down in the bottom icon row. */}
                 <div
@@ -638,6 +698,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     </span>
                   </div>
                 )}
+              </div>
               </div>
             )}
             <div
