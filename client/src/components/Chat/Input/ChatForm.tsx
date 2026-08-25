@@ -147,6 +147,25 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     [conversation?.conversationId],
   );
 
+  /**
+   * Re-apply the screen-size default (Voice on mobile, Type on larger screens) whenever the
+   * user lands back on a *new* chat — e.g. clicking "New chat" while sitting on an existing
+   * conversation. The lazy useState initializer for inputMode only covers the very first
+   * mount, so without this, switching to Type mid-conversation and then starting a new chat
+   * would carry that Type choice over instead of resetting to the size-based default. Only
+   * fires on an actual transition INTO the new-chat state (tracked via the ref below), not on
+   * every render while already there, so it never fights a manual tab switch mid-composition.
+   */
+  const prevConversationIdRef = useRef(conversationId);
+  useEffect(() => {
+    if (prevConversationIdRef.current !== conversationId) {
+      if (conversationId === Constants.NEW_CONVO) {
+        setInputMode(isSmallScreen ? 'voice' : 'type');
+      }
+      prevConversationIdRef.current = conversationId;
+    }
+  }, [conversationId, isSmallScreen]);
+
   const isRTL = useMemo(
     () => (chatDirection != null ? chatDirection?.toLowerCase() === 'rtl' : false),
     [chatDirection],
