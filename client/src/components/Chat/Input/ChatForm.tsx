@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { Plus, X, Mic, Keyboard } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useWatch } from 'react-hook-form';
-import { TextareaAutosize, useMediaQuery } from '@librechat/client';
+import { TextareaAutosize, useMediaQuery, Spinner } from '@librechat/client';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { Constants, isAssistantsEndpoint, isAgentsEndpoint } from 'librechat-data-provider';
 import {
@@ -70,6 +70,13 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   );
   /** Whether the mic is actively listening, to drive the "speaking now" animation. */
   const [isVoiceListening, setIsVoiceListening] = useState(false);
+  /** Whether a transcript is still being produced (e.g. an external STT round-trip) after the
+   *  user has stopped recording. Kept separate from isVoiceListening so the UI can show a
+   *  distinct "converting speech to text" state instead of an empty Type tab. */
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  /** Set when the user taps stop; the actual switch to Type mode waits for isTranscribing to
+   *  clear, so we never land on an empty textarea before the transcript is ready. */
+  const [pendingVoiceStop, setPendingVoiceStop] = useState(false);
   /** Elapsed seconds since listening started, shown as a running timer next to the equalizer. */
   const [listeningDuration, setListeningDuration] = useState(0);
 
@@ -85,6 +92,13 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     }, 1000);
     return () => clearInterval(interval);
   }, [isVoiceListening]);
+
+  useEffect(() => {
+    if (pendingVoiceStop && !isTranscribing && inputMode === 'voice') {
+      setPendingVoiceStop(false);
+      setInputMode('type');
+    }
+  }, [pendingVoiceStop, isTranscribing, inputMode]);
 
   // Location access state
   const [position, setPosition] = useState<TAskProps['position'] | null>(null);
@@ -551,8 +565,14 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                       disabled={disableInputs || isNotAppendable}
                       isSubmitting={isSubmitting}
                       enabled={!isFeedbackDialogOpen}
-                      onStopRecording={() => setInputMode('type')}
+                      // Don't jump to the Type tab the instant stop is tapped — the
+                      // transcript (especially from an external STT round-trip) can take a
+                      // second or two to arrive. Mark the switch as pending instead; the
+                      // effect above fires it once isTranscribing actually clears, so the
+                      // user never lands on an empty textarea before the text is ready.
+                      onStopRecording={() => setPendingVoiceStop(true)}
                       onListeningChange={setIsVoiceListening}
+                      onLoadingChange={setIsTranscribing}
                     />
                   ) : (
                     <Mic className="relative size-8" aria-hidden="true" />
@@ -561,8 +581,15 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 <span className="text-xs sm:text-sm">
                   {isVoiceListening
                     ? 'Listening… tap the microphone above to stop'
-                    : 'Tap the microphone above to start speaking'}
+                    : isTranscribing
+                      ? 'Converting your speech to text…'
+                      : 'Tap the microphone above to start speaking'}
                 </span>
+                {isTranscribing && !isVoiceListening && (
+                  <div className="flex items-center justify-center gap-1.5 text-emerald-400">
+                    <Spinner size={14} />
+                  </div>
+                )}
                 {isVoiceListening && (
                   <div className="flex items-center justify-center gap-2">
                     <style>{`
