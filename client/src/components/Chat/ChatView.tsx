@@ -16,6 +16,7 @@ import {
 } from '~/hooks';
 import ConversationStarters from './Input/ConversationStarters';
 import { useGetMessagesByConvoId } from '~/data-provider';
+import ExampleQuestionTiles from './ExampleQuestionTiles';
 import MessagesView from './Messages/MessagesView';
 import Presentation from './Presentation';
 import ChatForm from './Input/ChatForm';
@@ -99,11 +100,18 @@ function ChatView({ index = 0 }: { index?: number }) {
                   className={cn(
                     'flex flex-col',
                     isLandingPage
-                      ? 'flex-1 items-center justify-end sm:justify-center'
+                      ? 
+                        'flex-1 items-center justify-center overflow-y-auto'
                       : 'min-h-0 flex-1 overflow-hidden',
                   )}
                 >
                   {content}
+                  {/* Kept as a sibling of Landing rather than nested inside it: Landing's own
+                      wrapper collapses to `max-h-0` on larger screens when centerFormOnLanding
+                      is on, and content nested inside that box would render past its zero
+                      height and get visually covered by ChatForm below. As a sibling, its
+                      layout height is unaffected by that collapse. */}
+                  {isLandingPage && <ExampleQuestionTiles />}
                   <div
                     className={cn(
                       'w-full',
