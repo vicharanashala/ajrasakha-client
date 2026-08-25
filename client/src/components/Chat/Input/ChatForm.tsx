@@ -63,8 +63,11 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const [isTextAreaFocused, setIsTextAreaFocused] = useState(false);
   const [backupBadges, setBackupBadges] = useState<Pick<BadgeItem, 'id'>[]>([]);
   const [showLeftOptions, setShowLeftOptions] = useState(false);
-  /** Which input mode is active: default to Voice, switch to Type once the user stops recording. */
-  const [inputMode, setInputMode] = useState<'voice' | 'type'>('voice');
+  /** Which input mode is active by default: Voice on mobile, Type on larger screens.
+   *  Still switches to Type once the user stops recording, on either size. */
+  const [inputMode, setInputMode] = useState<'voice' | 'type'>(() =>
+    isSmallScreen ? 'voice' : 'type',
+  );
   /** Whether the mic is actively listening, to drive the "speaking now" animation. */
   const [isVoiceListening, setIsVoiceListening] = useState(false);
   /** Elapsed seconds since listening started, shown as a running timer next to the equalizer. */
