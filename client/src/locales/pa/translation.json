@@ -2058,5 +2058,10 @@
   "com_ui_landing_chip_expert_verified": "ਮਾਹਿਰਾਂ ਦੁਆਰਾ ਪ੍ਰਮਾਣਿਤ",
   "com_ui_landing_chip_multilingual": "ਬਹੁਭਾਸ਼ੀ",
   "com_ui_landing_chip_voice": "ਆਵਾਜ਼ ਨਾਲ ਪੁੱਛੋ",
-  "com_ui_landing_tagline": "ਸਮਾਰਟ ਤਰੀਕੇ ਨਾਲ ਖੇਤੀ ਕਰੋ। ਬਿਹਤਰ ਉਗਾਓ।"
+  "com_ui_landing_tagline": "ਸਮਾਰਟ ਤਰੀਕੇ ਨਾਲ ਖੇਤੀ ਕਰੋ। ਬਿਹਤਰ ਉਗਾਓ।",
+  "com_ui_landing_question_mandi_price_paddy": "ਮੇਰੇ ਖੇਤਰ ਵਿੱਚ ਝੋਨੇ ਦੀ ਫਸਲ ਦਾ ਮੌਜੂਦਾ ਮੰਡੀ ਭਾਅ ਕੀ ਹੈ?",
+  "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) ਬਾਰੇ ਜਾਣਕਾਰੀ ਦਿਓ।",
+  "com_ui_landing_question_weather_forecast": "ਮੇਰੇ ਖੇਤਰ ਲਈ ਮੌਸਮ ਦੀ ਭਵਿੱਖਬਾਣੀ ਕੀ ਹੈ?",
+  "com_ui_landing_question_wheat_yellow_rust": "ਕਣਕ ਦੀ ਫਸਲ ਵਿੱਚ ਪੀਲੀ ਕੁੰਗੀ ਨੂੰ ਕਿਵੇਂ ਕਾਬੂ ਕੀਤਾ ਜਾਵੇ?",
+  "com_nav_notifications": "ਸੂਚਨਾਵਾਂ"
 }

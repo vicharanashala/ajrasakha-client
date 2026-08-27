@@ -2058,5 +2058,10 @@
   "com_ui_landing_chip_expert_verified": "ತಜ್ಞರಿಂದ ಪರಿಶೀಲಿಸಲಾಗಿದೆ",
   "com_ui_landing_chip_multilingual": "ಬಹುಭಾಷಾ",
   "com_ui_landing_chip_voice": "ಧ್ವನಿಯ ಮೂಲಕ ಕೇಳಿ",
-  "com_ui_landing_tagline": "ಬುದ್ಧಿವಂತಿಕೆಯಿಂದ ಬೇಸಾಯ ಮಾಡಿ. ಉತ್ತಮವಾಗಿ ಬೆಳೆಯಿರಿ."
+  "com_ui_landing_tagline": "ಬುದ್ಧಿವಂತಿಕೆಯಿಂದ ಬೇಸಾಯ ಮಾಡಿ. ಉತ್ತಮವಾಗಿ ಬೆಳೆಯಿರಿ.",
+  "com_ui_landing_question_mandi_price_paddy": "ನನ್ನ ಪ್ರದೇಶದಲ್ಲಿ ಭತ್ತದ ಬೆಳೆಯ ಪ್ರಸ್ತುತ ಮಾರುಕಟ್ಟೆ ಬೆಲೆ ಎಷ್ಟು?",
+  "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) ಬಗ್ಗೆ ಮಾಹಿತಿ ನೀಡಿ.",
+  "com_ui_landing_question_weather_forecast": "ನನ್ನ ಪ್ರದೇಶದ ಹವಾಮಾನ ಮುನ್ಸೂಚನೆ ಏನು?",
+  "com_ui_landing_question_wheat_yellow_rust": "ಗೋಧಿ ಬೆಳೆಯಲ್ಲಿ ಹಳದಿ ತುಕ್ಕು ರೋಗವನ್ನು ಹೇಗೆ ನಿಯಂತ್ರಿಸುವುದು?",
+  "com_nav_notifications": "ಅಧಿಸೂಚನೆಗಳು"
 }

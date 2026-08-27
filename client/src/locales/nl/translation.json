@@ -810,5 +810,10 @@
   "com_ui_landing_chip_multilingual": "Meertalig",
   "com_ui_landing_chip_voice": "Vraag met je stem",
   "com_ui_landing_tagline": "Boer slimmer. Groei beter.",
-  "com_banner_message": "In ontwikkeling - alleen voor test- en validatiedoeleinden"
+  "com_banner_message": "In ontwikkeling - alleen voor test- en validatiedoeleinden",
+  "com_ui_landing_question_mandi_price_paddy": "Wat is de huidige marktprijs van rijst in mijn regio?",
+  "com_ui_landing_question_pmfby_info": "Geef informatie over het programma Pradhan Mantri Fasal Bima Yojana (PMFBY).",
+  "com_ui_landing_question_weather_forecast": "Wat is de weersverwachting voor mijn regio?",
+  "com_ui_landing_question_wheat_yellow_rust": "Hoe bestrijd je gele roest in de tarweteelt?",
+  "com_nav_notifications": "Meldingen"
 }

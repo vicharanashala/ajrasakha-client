@@ -2057,5 +2057,10 @@
   "com_ui_landing_chip_expert_verified": "বিশেষজ্ঞ দ্বাৰা সত্যাপিত",
   "com_ui_landing_chip_multilingual": "বহুভাষিক",
   "com_ui_landing_chip_voice": "কণ্ঠস্বৰেৰে সোধক",
-  "com_ui_landing_tagline": "স্মাৰ্টভাৱে খেতি কৰক। ভালভাৱে বৃদ্ধি পাওক।"
+  "com_ui_landing_tagline": "স্মাৰ্টভাৱে খেতি কৰক। ভালভাৱে বৃদ্ধি পাওক।",
+  "com_ui_landing_question_mandi_price_paddy": "মোৰ অঞ্চলত ধান শস্যৰ বৰ্তমান বজাৰ মূল্য কি?",
+  "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) ৰ বিষয়ে তথ্য দিয়ক।",
+  "com_ui_landing_question_weather_forecast": "মোৰ অঞ্চলৰ বাবে বতৰৰ পূৰ্বাভাস কি?",
+  "com_ui_landing_question_wheat_yellow_rust": "ঘেঁহু শস্যত হালধীয়া মৰিচা কেনেকৈ নিয়ন্ত্ৰণ কৰিব লাগে?",
+  "com_nav_notifications": "জাননীসমূহ"
 }

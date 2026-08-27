@@ -141,5 +141,10 @@
   "com_ui_landing_chip_multilingual": "Večjezično",
   "com_ui_landing_chip_voice": "Vprašaj z glasom",
   "com_ui_landing_tagline": "Kmetujte pametneje. Rastite bolje.",
-  "com_banner_message": "V razvoju - samo za testiranje in preverjanje"
+  "com_banner_message": "V razvoju - samo za testiranje in preverjanje",
+  "com_ui_landing_question_mandi_price_paddy": "Kakšna je trenutna tržna cena riža v moji regiji?",
+  "com_ui_landing_question_pmfby_info": "Podajte informacije o programu Pradhan Mantri Fasal Bima Yojana (PMFBY).",
+  "com_ui_landing_question_weather_forecast": "Kakšna je vremenska napoved za mojo regijo?",
+  "com_ui_landing_question_wheat_yellow_rust": "Kako obvladati rumeno rjo pri pšenici?",
+  "com_nav_notifications": "Obvestila"
 }

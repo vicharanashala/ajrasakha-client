@@ -2058,5 +2058,10 @@
   "com_ui_landing_chip_expert_verified": "विशेषज्ञ द्वारा सत्यापित",
   "com_ui_landing_chip_multilingual": "बहुभाषी",
   "com_ui_landing_chip_voice": "आवाज़ से पूछें",
-  "com_ui_landing_tagline": "समझदारी से खेती करें। बेहतर उपज पाएं।"
+  "com_ui_landing_tagline": "समझदारी से खेती करें। बेहतर उपज पाएं।",
+  "com_ui_landing_question_mandi_price_paddy": "मेरे क्षेत्र में धान की फसल का वर्तमान मंडी भाव क्या है?",
+  "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) के बारे में जानकारी दें।",
+  "com_ui_landing_question_weather_forecast": "मेरे क्षेत्र के लिए मौसम का पूर्वानुमान क्या है?",
+  "com_ui_landing_question_wheat_yellow_rust": "गेहूं की फसल में पीला रतुआ कैसे नियंत्रित करें?",
+  "com_nav_notifications": "सूचनाएं"
 }

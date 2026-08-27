@@ -2058,5 +2058,10 @@
   "com_ui_landing_chip_expert_verified": "വിദഗ്ധർ പരിശോധിച്ചത്",
   "com_ui_landing_chip_multilingual": "ബഹുഭാഷ",
   "com_ui_landing_chip_voice": "ശബ്ദത്തിലൂടെ ചോദിക്കുക",
-  "com_ui_landing_tagline": "സ്മാർട്ടായി കൃഷി ചെയ്യുക. മെച്ചപ്പെട്ട വിളവെടുക്കുക."
+  "com_ui_landing_tagline": "സ്മാർട്ടായി കൃഷി ചെയ്യുക. മെച്ചപ്പെട്ട വിളവെടുക്കുക.",
+  "com_ui_landing_question_mandi_price_paddy": "എന്റെ പ്രദേശത്ത് നെല്ല് വിളയുടെ നിലവിലെ വിപണി വില എത്രയാണ്?",
+  "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) സംബന്ധിച്ച വിവരങ്ങൾ നൽകുക.",
+  "com_ui_landing_question_weather_forecast": "എന്റെ പ്രദേശത്തെ കാലാവസ്ഥാ പ്രവചനം എന്താണ്?",
+  "com_ui_landing_question_wheat_yellow_rust": "ഗോതമ്പ് വിളയിലെ മഞ്ഞ തുരുമ്പ് എങ്ങനെ നിയന്ത്രിക്കാം?",
+  "com_nav_notifications": "അറിയിപ്പുകൾ"
 }

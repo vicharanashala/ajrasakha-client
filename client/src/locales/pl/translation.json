@@ -793,5 +793,10 @@
   "com_ui_landing_chip_multilingual": "Wielojęzyczny",
   "com_ui_landing_chip_voice": "Zapytaj głosem",
   "com_ui_landing_tagline": "Uprawiaj mądrzej. Rośnij lepiej.",
-  "com_banner_message": "W trakcie tworzenia - wyłącznie do testów i walidacji"
+  "com_banner_message": "W trakcie tworzenia - wyłącznie do testów i walidacji",
+  "com_ui_landing_question_mandi_price_paddy": "Jaka jest obecna cena rynkowa ryżu w moim regionie?",
+  "com_ui_landing_question_pmfby_info": "Podaj informacje o programie Pradhan Mantri Fasal Bima Yojana (PMFBY).",
+  "com_ui_landing_question_weather_forecast": "Jaka jest prognoza pogody dla mojego regionu?",
+  "com_ui_landing_question_wheat_yellow_rust": "Jak zwalczać żółtą rdzę w uprawie pszenicy?",
+  "com_nav_notifications": "Powiadomienia"
 }

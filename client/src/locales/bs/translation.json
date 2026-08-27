@@ -5,5 +5,10 @@
   "com_ui_landing_chip_multilingual": "Višejezično",
   "com_ui_landing_chip_voice": "Pitajte glasom",
   "com_ui_landing_tagline": "Uzgajajte pametnije. Rastite bolje.",
-  "com_banner_message": "U razvoju - samo za testiranje i validaciju"
+  "com_banner_message": "U razvoju - samo za testiranje i validaciju",
+  "com_ui_landing_question_mandi_price_paddy": "Kolika je trenutna tržišna cijena pirinča u mom području?",
+  "com_ui_landing_question_pmfby_info": "Dajte informacije o programu Pradhan Mantri Fasal Bima Yojana (PMFBY).",
+  "com_ui_landing_question_weather_forecast": "Kakva je vremenska prognoza za moje područje?",
+  "com_ui_landing_question_wheat_yellow_rust": "Kako kontrolisati žutu rđu na pšenici?",
+  "com_nav_notifications": "Obavještenja"
 }

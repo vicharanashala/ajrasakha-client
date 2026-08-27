@@ -2058,5 +2058,10 @@
   "com_ui_landing_chip_expert_verified": "நிபுணர்களால் சரிபார்க்கப்பட்டது",
   "com_ui_landing_chip_multilingual": "பன்மொழி",
   "com_ui_landing_chip_voice": "குரல் மூலம் கேளுங்கள்",
-  "com_ui_landing_tagline": "புத்திசாலித்தனமாக விவசாயம் செய்யுங்கள். சிறப்பாக வளருங்கள்."
+  "com_ui_landing_tagline": "புத்திசாலித்தனமாக விவசாயம் செய்யுங்கள். சிறப்பாக வளருங்கள்.",
+  "com_ui_landing_question_mandi_price_paddy": "எனது பகுதியில் நெல் பயிரின் தற்போதைய சந்தை விலை என்ன?",
+  "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) குறித்த தகவலை வழங்கவும்.",
+  "com_ui_landing_question_weather_forecast": "எனது பகுதிக்கான வானிலை முன்னறிவிப்பு என்ன?",
+  "com_ui_landing_question_wheat_yellow_rust": "கோதுமை பயிரில் மஞ்சள் துரு நோயை எவ்வாறு கட்டுப்படுத்துவது?",
+  "com_nav_notifications": "அறிவிப்புகள்"
 }

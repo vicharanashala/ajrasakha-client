@@ -909,5 +909,10 @@
   "com_ui_landing_chip_multilingual": "Többnyelvű",
   "com_ui_landing_chip_voice": "Kérdezz hanggal",
   "com_ui_landing_tagline": "Gazdálkodj okosabban. Fejlődj jobban.",
-  "com_banner_message": "Fejlesztés alatt - csak tesztelési és validálási célokra"
+  "com_banner_message": "Fejlesztés alatt - csak tesztelési és validálási célokra",
+  "com_ui_landing_question_mandi_price_paddy": "Mi a rizs jelenlegi piaci ára a régiómban?",
+  "com_ui_landing_question_pmfby_info": "Adjon tájékoztatást a Pradhan Mantri Fasal Bima Yojana (PMFBY) programról.",
+  "com_ui_landing_question_weather_forecast": "Milyen az időjárás-előrejelzés a régiómban?",
+  "com_ui_landing_question_wheat_yellow_rust": "Hogyan lehet szabályozni a sárga rozsdát a búzatermésben?",
+  "com_nav_notifications": "Értesítések"
 }

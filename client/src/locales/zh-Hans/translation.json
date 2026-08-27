@@ -1420,5 +1420,10 @@
   "com_ui_landing_chip_multilingual": "多语言支持",
   "com_ui_landing_chip_voice": "语音提问",
   "com_ui_landing_tagline": "种得更聪明，长得更好。",
-  "com_banner_message": "开发中 - 仅供测试与验证使用"
+  "com_banner_message": "开发中 - 仅供测试与验证使用",
+  "com_ui_landing_question_mandi_price_paddy": "我所在地区的稻谷当前市场价格是多少?",
+  "com_ui_landing_question_pmfby_info": "请提供有关 Pradhan Mantri Fasal Bima Yojana (PMFBY) 项目的信息。",
+  "com_ui_landing_question_weather_forecast": "我所在地区的天气预报是什么?",
+  "com_ui_landing_question_wheat_yellow_rust": "如何防治小麦条锈病(黄锈病)?",
+  "com_nav_notifications": "通知"
 }

@@ -1541,5 +1541,10 @@
   "com_ui_landing_chip_multilingual": "Daudzvalodu",
   "com_ui_landing_chip_voice": "Jautā ar balsi",
   "com_ui_landing_tagline": "Saimniekojiet gudrāk. Augiet labāk.",
-  "com_banner_message": "Izstrādes stadijā - tikai testēšanai un validācijai"
+  "com_banner_message": "Izstrādes stadijā - tikai testēšanai un validācijai",
+  "com_ui_landing_question_mandi_price_paddy": "Kāda ir pašreizējā tirgus cena rīsiem manā reģionā?",
+  "com_ui_landing_question_pmfby_info": "Sniedziet informāciju par programmu Pradhan Mantri Fasal Bima Yojana (PMFBY).",
+  "com_ui_landing_question_weather_forecast": "Kāda ir laika prognoze manam reģionam?",
+  "com_ui_landing_question_wheat_yellow_rust": "Kā kontrolēt dzelteno rūsu kviešu kultūrā?",
+  "com_nav_notifications": "Paziņojumi"
 }

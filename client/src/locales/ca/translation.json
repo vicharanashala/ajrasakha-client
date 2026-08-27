@@ -965,5 +965,10 @@
   "com_ui_landing_chip_multilingual": "Multilingüe",
   "com_ui_landing_chip_voice": "Pregunta per veu",
   "com_ui_landing_tagline": "Conrea de manera més intel·ligent. Creix millor.",
-  "com_banner_message": "En desenvolupament - només per a proves i validació"
+  "com_banner_message": "En desenvolupament - només per a proves i validació",
+  "com_ui_landing_question_mandi_price_paddy": "Quin és el preu de mercat actual de l'arròs a la meva regió?",
+  "com_ui_landing_question_pmfby_info": "Doneu informació sobre el programa Pradhan Mantri Fasal Bima Yojana (PMFBY).",
+  "com_ui_landing_question_weather_forecast": "Quina és la previsió meteorològica per a la meva regió?",
+  "com_ui_landing_question_wheat_yellow_rust": "Com controlar el rovell groc al blat?",
+  "com_nav_notifications": "Notificacions"
 }

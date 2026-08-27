@@ -2057,5 +2057,10 @@
   "com_ui_landing_chip_expert_verified": "जाणकारांनी सत्यापित केला",
   "com_ui_landing_chip_multilingual": "बहुभाशिक",
   "com_ui_landing_chip_voice": "आवाजान विचारात",
-  "com_ui_landing_tagline": "हुशारीन शेती करात. बरे वाडात."
+  "com_ui_landing_tagline": "हुशारीन शेती करात. बरे वाडात.",
+  "com_ui_landing_question_mandi_price_paddy": "म्हज्या वाठारांत भाताच्या पिकाचो सद्याचो बाजार भाव कितलो?",
+  "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) विशीं म्हायती दियात.",
+  "com_ui_landing_question_weather_forecast": "म्हज्या वाठारा खातीर हवामानाचो अंदाज कसलो?",
+  "com_ui_landing_question_wheat_yellow_rust": "गव्हाच्या पिकांत पिवळो तांबेरो कसो नियंत्रित करचो?",
+  "com_nav_notifications": "सूचोवण्यो"
 }

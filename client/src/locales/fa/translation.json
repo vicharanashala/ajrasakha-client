@@ -909,5 +909,10 @@
   "com_ui_landing_chip_multilingual": "چندزبانه",
   "com_ui_landing_chip_voice": "پرسش با صدا",
   "com_ui_landing_tagline": "هوشمندانه‌تر بکارید. بهتر رشد کنید.",
-  "com_banner_message": "در حال توسعه - فقط برای آزمایش و اعتبارسنجی"
+  "com_banner_message": "در حال توسعه - فقط برای آزمایش و اعتبارسنجی",
+  "com_ui_landing_question_mandi_price_paddy": "قیمت فعلی بازار برنج در منطقه من چقدر است؟",
+  "com_ui_landing_question_pmfby_info": "لطفاً اطلاعاتی درباره برنامه Pradhan Mantri Fasal Bima Yojana (PMFBY) ارائه دهید.",
+  "com_ui_landing_question_weather_forecast": "پیش‌بینی آب‌وهوا برای منطقه من چیست؟",
+  "com_ui_landing_question_wheat_yellow_rust": "چگونه می‌توان زنگ زرد را در محصول گندم کنترل کرد؟",
+  "com_nav_notifications": "اعلان‌ها"
 }

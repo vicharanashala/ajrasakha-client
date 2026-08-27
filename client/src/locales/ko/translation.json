@@ -1187,5 +1187,10 @@
   "com_ui_landing_chip_multilingual": "다국어 지원",
   "com_ui_landing_chip_voice": "음성으로 질문하기",
   "com_ui_landing_tagline": "더 스마트하게 농사짓고, 더 잘 키우세요.",
-  "com_banner_message": "개발 중 - 테스트 및 검증 목적으로만 제공됩니다"
+  "com_banner_message": "개발 중 - 테스트 및 검증 목적으로만 제공됩니다",
+  "com_ui_landing_question_mandi_price_paddy": "제 지역의 벼(패디) 현재 시장 가격은 얼마인가요?",
+  "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY)에 대한 정보를 알려주세요.",
+  "com_ui_landing_question_weather_forecast": "제 지역의 일기예보는 어떻게 되나요?",
+  "com_ui_landing_question_wheat_yellow_rust": "밀 작물의 황색 녹병을 어떻게 방제하나요?",
+  "com_nav_notifications": "알림"
 }

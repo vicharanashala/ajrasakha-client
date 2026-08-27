@@ -2057,5 +2057,10 @@
   "com_ui_landing_chip_expert_verified": "विशेषज्ञैः सत्यापितम्",
   "com_ui_landing_chip_multilingual": "बहुभाषिकम्",
   "com_ui_landing_chip_voice": "स्वरेण पृच्छतु",
-  "com_ui_landing_tagline": "बुद्ध्या कृषिं कुरुत। सम्यक् वर्धयत।"
+  "com_ui_landing_tagline": "बुद्ध्या कृषिं कुरुत। सम्यक् वर्धयत।",
+  "com_ui_landing_question_mandi_price_paddy": "मम प्रदेशे व्रीहिशस्यस्य वर्तमानं विपणिमूल्यं किम्?",
+  "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) इति विषये सूचनां ददातु।",
+  "com_ui_landing_question_weather_forecast": "मम प्रदेशस्य कृते वातावरणपूर्वानुमानं किम्?",
+  "com_ui_landing_question_wheat_yellow_rust": "गोधूमशस्ये पीतकिट्टरोगः कथं नियन्त्रणीयः?",
+  "com_nav_notifications": "सूचनाः"
 }

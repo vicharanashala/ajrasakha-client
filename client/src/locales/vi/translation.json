@@ -475,5 +475,10 @@
   "com_ui_landing_chip_multilingual": "Đa ngôn ngữ",
   "com_ui_landing_chip_voice": "Hỏi bằng giọng nói",
   "com_ui_landing_tagline": "Canh tác thông minh hơn. Phát triển tốt hơn.",
-  "com_banner_message": "Đang phát triển - chỉ dành cho mục đích thử nghiệm & xác thực"
+  "com_banner_message": "Đang phát triển - chỉ dành cho mục đích thử nghiệm & xác thực",
+  "com_ui_landing_question_mandi_price_paddy": "Giá thị trường hiện tại của lúa (thóc) ở khu vực của tôi là bao nhiêu?",
+  "com_ui_landing_question_pmfby_info": "Vui lòng cung cấp thông tin về chương trình Pradhan Mantri Fasal Bima Yojana (PMFBY).",
+  "com_ui_landing_question_weather_forecast": "Dự báo thời tiết cho khu vực của tôi là gì?",
+  "com_ui_landing_question_wheat_yellow_rust": "Làm thế nào để kiểm soát bệnh gỉ sắt vàng trên cây lúa mì?",
+  "com_nav_notifications": "Thông báo"
 }

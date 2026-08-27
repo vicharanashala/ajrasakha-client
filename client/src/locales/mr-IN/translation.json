@@ -2058,5 +2058,10 @@
   "com_ui_landing_chip_expert_verified": "तज्ज्ञांनी पडताळणी केली",
   "com_ui_landing_chip_multilingual": "बहुभाषिक",
   "com_ui_landing_chip_voice": "आवाजाने विचारा",
-  "com_ui_landing_tagline": "हुशारीने शेती करा. अधिक चांगले पिकवा."
+  "com_ui_landing_tagline": "हुशारीने शेती करा. अधिक चांगले पिकवा.",
+  "com_ui_landing_question_mandi_price_paddy": "माझ्या भागात भाताच्या पिकाचा सध्याचा बाजारभाव किती आहे?",
+  "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) बद्दल माहिती द्या.",
+  "com_ui_landing_question_weather_forecast": "माझ्या भागासाठी हवामान अंदाज काय आहे?",
+  "com_ui_landing_question_wheat_yellow_rust": "गव्हाच्या पिकातील पिवळा तांबेरा कसा नियंत्रित करावा?",
+  "com_nav_notifications": "सूचना"
 }
