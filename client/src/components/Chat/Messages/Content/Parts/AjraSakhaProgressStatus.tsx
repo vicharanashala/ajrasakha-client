@@ -104,15 +104,19 @@ export default function AjraSakhaProgressStatus() {
       aria-live="polite"
       aria-atomic="true"
     >
-      <span className="mt-1.5 flex shrink-0 items-center gap-1 sm:mt-2" aria-hidden="true">
-        {[0, 1, 2].map((i) => (
-          <span
-            key={i}
-            className="ajrasakha-progress-dot size-1.5 rounded-full bg-green-600 dark:bg-green-400"
-            style={{ animationDelay: `${i * 0.16}s` }}
-          />
-        ))}
-      </span>
+      {/* The dots belong to the waiting message. A tip already carries its own lightbulb, and
+          two markers on one line read as clutter. */}
+      {!isTipVisible && (
+        <span className="mt-1.5 flex shrink-0 items-center gap-1 sm:mt-2" aria-hidden="true">
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              className="ajrasakha-progress-dot size-1.5 rounded-full bg-green-600 dark:bg-green-400"
+              style={{ animationDelay: `${i * 0.16}s` }}
+            />
+          ))}
+        </span>
+      )}
       <p
         key={isTipVisible ? `tip-${tipIndex}` : statusMessage}
         className={cn(
