@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useForm } from 'react-hook-form';
 import { Spinner } from '@librechat/client';
@@ -80,12 +80,31 @@ function ChatView({ index = 0 }: { index?: number }) {
   const isNavigating = (!messagesTree || messagesTree.length === 0) && conversationId != null;
   const showExampleQuestions = isLandingPage && EXAMPLE_QUESTIONS.length > 0;
 
+  /**
+   * The composer overlays the message list, so the list needs bottom room equal to its height
+   * or the newest message's action row ends up behind it. That height is not a constant —
+   * Voice mode is much taller than Text, and Text grows as a draft wraps — so it is measured
+   * rather than guessed.
+   */
+  const composerRef = useRef<HTMLDivElement>(null);
+  const [composerHeight, setComposerHeight] = useState(0);
+
+  useEffect(() => {
+    const element = composerRef.current;
+    if (!element || typeof ResizeObserver === 'undefined') {
+      return;
+    }
+    const observer = new ResizeObserver(() => setComposerHeight(element.offsetHeight));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [isLandingPage]);
+
   if (isLoading && conversationId !== Constants.NEW_CONVO) {
     content = <LoadingSpinner />;
   } else if ((isLoading || isNavigating) && !isLandingPage) {
     content = <LoadingSpinner />;
   } else if (!isLandingPage) {
-    content = <MessagesView messagesTree={messagesTree} />;
+    content = <MessagesView messagesTree={messagesTree} bottomInset={composerHeight} />;
   } else {
     content = <Landing centerFormOnLanding={centerFormOnLanding} hasContentBelow={showExampleQuestions} />;
   }
@@ -123,6 +142,7 @@ function ChatView({ index = 0 }: { index?: number }) {
                       layout height is unaffected by that collapse. */}
                   {showExampleQuestions && <ExampleQuestionTiles />}
                   <div
+                    ref={composerRef}
                     className={cn(
                       'w-full',
                       isLandingPage

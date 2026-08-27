@@ -698,8 +698,8 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
           (conversationId == null || conversationId === Constants.NEW_CONVO) &&
           !isSubmitting &&
           conversation?.messages?.length === 0
-          ? 'transition-all duration-200 mb-2 sm:mb-10'
-          : 'mb-2 sm:mb-10',
+          ? 'transition-all duration-200 mb-1.5 sm:mb-6'
+          : 'mb-1.5 sm:mb-6',
       )}
     >
       <div className="relative flex h-full flex-1 items-stretch md:flex-col">
@@ -739,7 +739,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               // input pill (Text mode) and the mic button (Voice mode) carry the visual
               // weight instead of an outer boxed panel. Temporary chat keeps its violet tint
               // as a subtle mode indicator.
-              'relative flex w-full flex-grow flex-col overflow-hidden rounded-3xl border border-transparent bg-transparent pb-2 text-text-primary transition-all duration-200 sm:pb-0',
+              'relative flex w-full flex-grow flex-col overflow-hidden rounded-3xl border border-transparent bg-transparent pb-0 text-text-primary transition-all duration-200',
               isTemporary && 'bg-violet-950/10',
               shakeCount > 0 && 'shake',
             )}
@@ -967,7 +967,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 <div
                   ref={voicePanelRef}
                   className={cn(
-                    'absolute inset-x-0 top-0 flex flex-col items-center justify-center gap-1 px-4 pb-1 pt-2 text-center text-text-secondary sm:pb-1.5 sm:pt-2.5',
+                    'absolute inset-x-0 top-0 flex flex-col items-center justify-center gap-1 px-4 pb-0 pt-2 text-center text-text-secondary sm:pt-2.5',
                     // See the matching comment on the Type panel above — content fades
                     // faster than the wrapper's height settles, on purpose.
                     'transition-[opacity,transform] duration-[280ms] ease-[cubic-bezier(0,0,0.2,1)] motion-reduce:transition-none [will-change:opacity,transform]',

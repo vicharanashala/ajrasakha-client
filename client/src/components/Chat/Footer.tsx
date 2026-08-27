@@ -26,7 +26,7 @@ export default function Footer({ className }: { className?: string }) {
       <div
         className={
           className ??
-          'flex items-center justify-center gap-1.5 px-2 py-1.5 text-center text-xs text-text-secondary sm:absolute sm:bottom-0 sm:left-0 sm:right-0 sm:py-2 md:px-[60px]'
+          'flex items-center justify-center gap-1.5 px-2 py-1 text-center text-xs text-text-secondary sm:absolute sm:bottom-0 sm:left-0 sm:right-0 sm:py-1.5 md:px-[60px]'
         }
         role="contentinfo"
       >

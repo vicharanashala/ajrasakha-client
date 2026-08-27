@@ -15,8 +15,10 @@ import store from '~/store';
 
 function MessagesViewContent({
   messagesTree: _messagesTree,
+  bottomInset,
 }: {
   messagesTree?: TMessage[] | null;
+  bottomInset?: number;
 }) {
   const localize = useLocalize();
   const fontSize = useAtomValue(fontSizeAtom);
@@ -95,12 +97,16 @@ function MessagesViewContent({
               width: '100%',
             }}
           >
-            {/* Clears the floating composer (see ChatView.tsx) so the last message can
-                scroll fully above it instead of being stuck underneath. The composer overlays
-                the list on every size now, so both values are sized to it: ~144px on mobile,
-                ~176px at sm+ where the taller input and the form's larger bottom margin
-                apply. */}
-            <div className="flex flex-col pb-36 pt-14 dark:bg-transparent sm:pb-44">
+            {/* Clears the floating composer (see ChatView.tsx) so the last message and its
+                action row scroll fully above it instead of being stuck underneath. Driven by
+                the composer's measured height rather than fixed values, because that height
+                varies a lot — Voice mode is far taller than Text, and Text itself grows as a
+                draft wraps. The classes stay as the fallback for the first paint, before the
+                measurement lands. */}
+            <div
+              className="flex flex-col pb-36 pt-14 dark:bg-transparent sm:pb-44"
+              style={bottomInset ? { paddingBottom: bottomInset + 16 } : undefined}
+            >
               {(_messagesTree && _messagesTree.length == 0) || _messagesTree === null ? (
                 <div
                   className={cn(
@@ -139,10 +145,17 @@ function MessagesViewContent({
   );
 }
 
-export default function MessagesView({ messagesTree }: { messagesTree?: TMessage[] | null }) {
+export default function MessagesView({
+  messagesTree,
+  bottomInset,
+}: {
+  messagesTree?: TMessage[] | null;
+  /** Height of the composer overlaying the list, in px. */
+  bottomInset?: number;
+}) {
   return (
     <MessagesViewProvider>
-      <MessagesViewContent messagesTree={messagesTree} />
+      <MessagesViewContent messagesTree={messagesTree} bottomInset={bottomInset} />
     </MessagesViewProvider>
   );
 }
