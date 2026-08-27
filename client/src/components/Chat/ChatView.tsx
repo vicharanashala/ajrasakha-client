@@ -125,14 +125,21 @@ function ChatView({ index = 0 }: { index?: number }) {
                         // in-development notice that renders outside it, while the greeting,
                         // tagline and question cards centre in the space left above. The
                         // bottom padding is what reserves that space, so the two can't
-                        // overlap. Unlike a live conversation, the composer isn't fixed to the
-                        // viewport on phones here — the notice has to sit below it, not behind
-                        // it — so this applies at every width.
+                        // overlap — driven by the composer's measured height below, since a
+                        // fixed value is wrong for Voice mode, which is far taller than Text.
+                        // Unlike a live conversation, the composer isn't fixed to the viewport
+                        // on phones here — the notice has to sit below it, not behind it — so
+                        // this applies at every width.
                         'relative flex-1 items-center justify-center overflow-y-auto pb-40 sm:pb-44'
                       : // `relative` anchors the composer, which is pulled out of flow below
                         // so the message list can run its full height underneath it.
                         'relative min-h-0 flex-1 overflow-hidden',
                   )}
+                  style={
+                    isLandingPage && composerHeight
+                      ? { paddingBottom: composerHeight + 16 }
+                      : undefined
+                  }
                 >
                   {content}
                   {/* Kept as a sibling of Landing rather than nested inside it: Landing's own
