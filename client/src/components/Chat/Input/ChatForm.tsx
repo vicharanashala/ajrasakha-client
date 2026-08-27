@@ -829,7 +829,9 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                         // No min-width: the items are icon-only here (Badge only reveals its
                         // label inside a 600px-wide @container), so the menu hugs them.
                         'z-30 flex w-max max-w-[calc(100vw-2rem)] flex-col items-stretch gap-0.5',
-                        'rounded-2xl border border-border-light bg-surface-chat p-1.5 shadow-lg outline-none',
+                        // Portaled to document.body, so it inherits nothing from the
+                        // composer — the icons inside take their colour from here.
+                        'rounded-2xl border border-border-light bg-surface-chat p-1.5 text-text-primary shadow-lg outline-none',
                         'origin-bottom translate-y-1 scale-95 opacity-0 transition-[opacity,transform] duration-200 ease-out',
                         'data-[enter]:translate-y-0 data-[enter]:scale-100 data-[enter]:opacity-100',
                         'motion-reduce:transition-none',

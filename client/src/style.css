@@ -98,7 +98,11 @@ html {
   --surface-secondary-alt: var(--gray-200);
   --surface-tertiary: var(--gray-100);
   --surface-tertiary-alt: var(--white);
-  --surface-dialog: var(--white);
+  /* Surfaces that float above the page — dialogs and popovers. Kept off the `dg-*` ramp,
+     which is deliberately green-tinted; a panel sitting on top of the page reads as a colour
+     cast rather than as elevation when it carries that tint. */
+  --surface-overlay: var(--white);
+  --surface-dialog: var(--surface-overlay);
   --surface-submit: var(--accent-green-light);
   --surface-submit-hover: var(--accent-green-dark);
   --surface-destructive: var(--red-700);
@@ -158,7 +162,8 @@ html {
   --surface-secondary-alt: var(--dg-850);
   --surface-tertiary: var(--dg-800);
   --surface-tertiary-alt: var(--dg-800);
-  --surface-dialog: var(--dg-900);
+  --surface-overlay: #171717;
+  --surface-dialog: var(--surface-overlay);
   --surface-submit: var(--accent-green-dark);
   --surface-submit-hover: var(--accent-green-light);
   --surface-destructive: var(--red-800);
@@ -171,7 +176,11 @@ html {
   --border-xheavy: var(--dg-400);
   /* These are test styles */
 
-  --background: 130 25% 3%;
+  /* Neutral, not the 130deg green hue this used to carry. `bg-background` is the fill for
+     dialogs built on OGDialogContent — terms, privacy notice, farmer profile and location —
+     and those float above the page, where the brand tint reads as a colour cast. Matches
+     --surface-overlay (#171717). */
+  --background: 0 0% 9%;
   --foreground: 0 0% 98%;
   --card: 130 22% 4.5%;
   --card-foreground: 0 0% 98%;
@@ -2692,7 +2701,8 @@ html {
 }
 
 .popover-ui:where(.dark, .dark *) {
-  background-color: var(--surface-secondary);
+  /* Neutral, not `surface-secondary` (dg-850, a green-tinted near-black). */
+  background-color: var(--surface-overlay);
   color: var(--text-secondary);
   box-shadow:
     0 10px 15px -3px rgb(0 0 0 / 0.25),
@@ -2714,9 +2724,16 @@ html {
   opacity: 0.5;
 }
 
+/* Brand-tinted highlight rather than a neutral grey, so hover and keyboard selection read as
+   the app's own accent. An opacity tint of the solid green keeps it legible on both the light
+   and the dark overlay surface, which a fixed ramp step would not. */
 .select-item[data-active-item] {
-  background-color: var(--surface-hover);
+  background-color: color-mix(in oklch, var(--accent-green-dark) 12%, transparent);
   color: var(--text-primary);
+}
+
+.dark .select-item[data-active-item] {
+  background-color: color-mix(in oklch, var(--accent-green-light) 14%, transparent);
 }
 
 .popover-ui[data-enter] {
