@@ -139,17 +139,18 @@ export default function Message(props: TMessageProps) {
                 <div
                   className={cn(
                     'flex min-w-0 max-w-full flex-grow flex-col gap-0 overflow-hidden break-all',
-                    // AI bubble uses bg-surface-tertiary: in dark mode
-                    // surface-secondary is the exact same color as the page
-                    // background (presentation), so it was invisible there.
-                    // User bubble gets a slight green tint (the app's
-                    // existing brand-green scale, already used for badges
-                    // elsewhere) so it stays visually distinct from the AI
-                    // bubble.
+                    // AI (answer) bubble: a plain neutral grey — gray-300 in light mode,
+                    // gray-700 (#2f2f2f) in dark mode. Both are standard Tailwind classes
+                    // from the palette already defined in tailwind.config.cjs (not a
+                    // bracket arbitrary-value class), so there's no JIT/compile risk. This
+                    // is kept separate from the shared --surface-tertiary token, since
+                    // that token is also used for hover states and chips elsewhere and
+                    // changing it globally would move those too. User bubble keeps the
+                    // brand-green tint so it stays visually distinct from the AI bubble.
                     !hasParallelContent &&
                       (isCreatedByUser
-                        ? 'rounded-2xl rounded-tr-sm bg-green-100 px-4 py-2.5 dark:bg-green-600/25'
-                        : 'rounded-2xl rounded-tl-sm bg-surface-tertiary px-4 py-2.5'),
+                        ? 'rounded-2xl rounded-tr-sm px-4 py-2.5 bg-[oklch(0.8348_0.1302_160.908)] dark:bg-[oklch(0.4365_0.1044_156.7556)]'
+                        : 'rounded-2xl rounded-tl-sm bg-gray-200 px-4 py-2.5 dark:bg-gray-900'),
                     isEmptyLoading && 'ajrasakha-orbit-bubble',
                   )}
                 >

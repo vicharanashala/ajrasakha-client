@@ -24,7 +24,7 @@ export default function MobileNav({
           navVisible ? localize('com_nav_close_sidebar') : localize('com_nav_open_sidebar')
         }
         aria-live="polite"
-        className="m-1 inline-flex size-10 items-center justify-center rounded-full hover:bg-surface-active-alt"
+        className="m-1 inline-flex size-10 items-center justify-center rounded-full hover:bg-gray-300 dark:hover:bg-gray-800"
         onClick={() =>
           setNavVisible((prev) => {
             localStorage.setItem('navVisible', JSON.stringify(!prev));
@@ -69,7 +69,7 @@ export default function MobileNav({
       <button
         type="button"
         aria-label={localize('com_ui_new_chat')}
-        className="m-1 inline-flex size-10 items-center justify-center rounded-full hover:bg-surface-active-alt"
+        className="m-1 inline-flex size-10 items-center justify-center rounded-full hover:bg-gray-300 dark:hover:bg-gray-800"
         onClick={() => {
           clearMessagesCache(queryClient, conversation?.conversationId);
           queryClient.invalidateQueries([QueryKeys.messages]);

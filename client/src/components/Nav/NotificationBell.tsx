@@ -132,7 +132,7 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
                         navigate('/c/new', { state: { autoQuestion: n.originalQuestion } });
                       }}
                       className={`border-b border-border-light px-4 py-3 last:border-0 ${
-                        isClickable ? 'cursor-pointer hover:bg-surface-active-alt' : 'cursor-default'
+                        isClickable ? 'cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-800' : 'cursor-default'
                       } ${!n.isVisited ? 'bg-surface-secondary' : ''}`}
                     >
                       <div className="flex items-start gap-2">
@@ -188,7 +188,7 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
               type="button"
               ref={buttonRef}
               onClick={handleToggle}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border-none bg-transparent text-text-primary duration-0 hover:bg-surface-active-alt"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border-none bg-transparent text-text-primary duration-0 hover:bg-gray-300 dark:hover:bg-gray-800"
               aria-label="Notifications"
             >
               {bellIcon}
@@ -200,7 +200,7 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
           type="button"
           ref={buttonRef}
           onClick={handleToggle}
-          className="mb-1 flex w-full items-center gap-2 rounded-xl border-none bg-transparent px-2 py-2 text-left text-sm font-medium text-text-primary duration-0 hover:bg-surface-active-alt"
+          className="mb-1 flex w-full items-center gap-2 rounded-xl border-none bg-transparent px-2 py-2 text-left text-sm font-medium text-text-primary duration-0 hover:bg-gray-300 dark:hover:bg-gray-800"
           aria-label="Notifications"
         >
           {bellIcon}

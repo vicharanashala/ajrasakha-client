@@ -143,8 +143,8 @@ const MessageRender = memo(
               // black to register as green.
               !hasParallelContent &&
                 (isUser
-                  ? 'rounded-2xl rounded-tr-sm bg-green-100 px-4 py-2.5 dark:bg-green-600/25'
-                  : 'rounded-2xl rounded-tl-sm bg-surface-tertiary px-4 py-2.5'),
+                  ? 'rounded-2xl rounded-tr-sm px-4 py-2.5 bg-[oklch(0.8348_0.1302_160.908)] dark:bg-[oklch(0.4365_0.1044_156.7556)]'
+                  : 'rounded-2xl rounded-tl-sm bg-gray-200 px-4 py-2.5 dark:bg-gray-900'),
             )}
           >
             <MessageContext.Provider

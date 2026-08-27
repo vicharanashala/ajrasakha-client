@@ -19,7 +19,7 @@ function NavContent({ links, isCollapsed, resize }: Omit<NavProps, 'defaultActiv
   return (
     <div
       data-collapsed={isCollapsed}
-      className="bg-token-sidebar-surface-primary hide-scrollbar group flex-shrink-0 overflow-x-hidden"
+      className="bg-gray-200 dark:bg-gray-900 hide-scrollbar group flex-shrink-0 overflow-x-hidden"
     >
       <div className="h-full">
         <div className="flex h-full min-h-0 flex-col">
@@ -28,6 +28,36 @@ function NavContent({ links, isCollapsed, resize }: Omit<NavProps, 'defaultActiv
               <div className="flex h-full w-full flex-col gap-1 px-3 py-2.5 group-[[data-collapsed=true]]:items-center group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
                 {links.map((link, index) => {
                   const variant = getVariant(link);
+                  const active = variant === 'default';
+                  const Icon = link.icon;
+
+                  if (link.Component) {
+                    return (
+                      <Accordion
+                        key={index}
+                        type="single"
+                        collapsible
+                        onValueChange={(val) => {
+                          if (val && isCollapsed && resize) {
+                            resize(20);
+                          }
+                        }}
+                      >
+                        <AccordionItem value={link.id} className="border-none">
+                          <link.Component
+                            {...link}
+                            active={active}
+                            isCollapsed={isCollapsed}
+                            onClick={() => setActive(link.id)}
+                          />
+                          <AccordionContent className="bg-gray-200 dark:bg-gray-900 w-full text-text-primary">
+                            <link.Render {...link} />
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    );
+                  }
+
                   return isCollapsed ? (
                     <TooltipAnchor
                       description={localize(link.title)}
@@ -47,7 +77,7 @@ function NavContent({ links, isCollapsed, resize }: Omit<NavProps, 'defaultActiv
                             resize && resize(25);
                           }}
                         >
-                          <link.icon className="h-4 w-4 text-text-secondary" />
+                          <Icon className="h-4 w-4 text-text-secondary" />
                           <span className="sr-only">{localize(link.title)}</span>
                         </Button>
                       }

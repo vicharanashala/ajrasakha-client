@@ -90,7 +90,7 @@ const ThemeToggleButton = memo(({ side = 'top' }: { side?: 'top' | 'right' }) =>
           type="button"
           aria-label={localize('com_ui_toggle_theme')}
           onClick={() => setTheme(dark ? 'light' : 'dark')}
-          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border-none bg-transparent text-text-primary duration-0 hover:bg-surface-active-alt"
+          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border-none bg-transparent text-text-primary duration-0 hover:bg-gray-300 dark:hover:bg-gray-800"
         >
           {dark ? (
             <Moon className="h-5 w-5" aria-hidden="true" />
@@ -347,7 +347,7 @@ const Nav = memo(
           <div
             data-testid="nav"
             className={cn(
-              'nav fixed left-0 top-0 z-[70] h-full bg-surface-primary-alt',
+              'nav fixed left-0 top-0 z-[70] h-full bg-gray-200 dark:bg-gray-900',
               navVisible && 'active',
             )}
             style={{
@@ -385,7 +385,7 @@ const Nav = memo(
           // thin border is the only thing separating it from the chat area.
           className={cn(
             'nav active h-full',
-            navVisible ? 'bg-surface-primary-alt' : 'border-r border-border-light bg-presentation',
+            navVisible ? 'bg-gray-200 dark:bg-gray-900' : 'border-r border-gray-200 dark:border-gray-800 bg-presentation',
           )}
           style={{ width: desktopWidth, transition: 'width 0.2s ease-out' }}
         >

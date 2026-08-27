@@ -101,7 +101,7 @@ export default function NewChat({
               data-testid="open-sidebar-button"
               aria-label={localize('com_nav_open_sidebar')}
               aria-expanded={false}
-              className="rounded-full border-none bg-transparent duration-0 hover:bg-surface-active-alt md:rounded-xl"
+              className="rounded-full border-none bg-transparent duration-0 hover:bg-gray-300 dark:hover:bg-gray-800 md:rounded-xl"
               onClick={handleToggleNav}
             >
               <Sidebar aria-hidden="true" className="max-md:hidden" />
@@ -121,7 +121,7 @@ export default function NewChat({
               data-testid="nav-new-chat-button"
               aria-label={localize('com_ui_new_chat')}
               onClick={clickHandler}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border-none bg-transparent text-text-primary duration-0 hover:bg-surface-active-alt"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border-none bg-transparent text-text-primary duration-0 hover:bg-gray-300 dark:hover:bg-gray-800"
             >
               <NewChatIcon className="icon-lg text-text-primary" />
             </button>
@@ -150,7 +150,7 @@ export default function NewChat({
                 data-testid="close-sidebar-button"
                 aria-label={localize('com_nav_close_sidebar')}
                 aria-expanded={true}
-                className="rounded-full border-none bg-transparent duration-0 hover:bg-surface-active-alt md:rounded-xl"
+                className="rounded-full border-none bg-transparent duration-0 hover:bg-gray-300 dark:hover:bg-gray-800 md:rounded-xl"
                 onClick={handleToggleNav}
               >
                 <Sidebar aria-hidden="true" className="max-md:hidden" />
@@ -168,7 +168,7 @@ export default function NewChat({
         data-testid="nav-new-chat-button"
         aria-label={localize('com_ui_new_chat')}
         onClick={clickHandler}
-        className="mb-1 flex w-full items-center gap-2 rounded-xl border-none bg-transparent px-2 py-2 text-left text-sm font-medium text-text-primary duration-0 hover:bg-surface-active-alt"
+        className="mb-1 flex w-full items-center gap-2 rounded-xl border-none bg-transparent px-2 py-2 text-left text-sm font-medium text-text-primary duration-0 hover:bg-gray-300 dark:hover:bg-gray-800"
       >
         <NewChatIcon className="icon-lg flex-shrink-0 text-text-primary" />
         <span className="truncate">{localize('com_ui_new_chat')}</span>
