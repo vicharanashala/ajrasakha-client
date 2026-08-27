@@ -1359,5 +1359,9 @@
   "com_ui_landing_chip_multilingual": "Flerspråklig",
   "com_ui_landing_chip_voice": "Spør med stemme",
   "com_ui_landing_tagline": "Dyrk smartere. Voks bedre.",
-  "com_banner_message": "Under utvikling - kun for testing og validering"
+  "com_banner_message": "Under utvikling - kun for testing og validering",
+  "com_ui_landing_question_mandi_price_paddy": "Hva er dagens markedspris på ris i mitt område?",
+  "com_ui_landing_question_pmfby_info": "Gi informasjon om programmet Pradhan Mantri Fasal Bima Yojana (PMFBY).",
+  "com_ui_landing_question_weather_forecast": "Hva er værmeldingen for mitt område?",
+  "com_ui_landing_question_wheat_yellow_rust": "Hvordan bekjempe gul rust i hveteavlingen?"
 }

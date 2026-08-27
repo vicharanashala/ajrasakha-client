@@ -1001,5 +1001,9 @@
   "com_ui_landing_chip_multilingual": "多語言支援",
   "com_ui_landing_chip_voice": "語音提問",
   "com_ui_landing_tagline": "種得更聰明，長得更好。",
-  "com_banner_message": "開發中 - 僅供測試與驗證使用"
+  "com_banner_message": "開發中 - 僅供測試與驗證使用",
+  "com_ui_landing_question_mandi_price_paddy": "我所在地區的稻穀目前的市場價格是多少?",
+  "com_ui_landing_question_pmfby_info": "請提供有關 Pradhan Mantri Fasal Bima Yojana (PMFBY) 計畫的資訊。",
+  "com_ui_landing_question_weather_forecast": "我所在地區的天氣預報是什麼?",
+  "com_ui_landing_question_wheat_yellow_rust": "如何防治小麥條銹病(黃銹病)?"
 }

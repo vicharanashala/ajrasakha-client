@@ -5,5 +5,9 @@
   "com_ui_landing_chip_multilingual": "སྐད་ཡིག་མང་པོ།",
   "com_ui_landing_chip_voice": "སྐད་ཆས་དྲི་བ་འདྲི།",
   "com_ui_landing_tagline": "འཚོ་བསྐྱེད་མཁས་པས་བྱོས། ལེགས་པར་སྐྱེད།",
-  "com_banner_message": "འཕེལ་རྒྱས་བྱེད་བཞིན་པ། - ཚོད་ལྟ་དང་བརྟག་དཔྱད་ཙམ་ཡིན།"
+  "com_banner_message": "འཕེལ་རྒྱས་བྱེད་བཞིན་པ། - ཚོད་ལྟ་དང་བརྟག་དཔྱད་ཙམ་ཡིན།",
+  "com_ui_landing_question_mandi_price_paddy": "ངའི་ས་ཁུལ་དུ་ད་ལྟའི་འབྲས་ཏོག་གི་ཚོང་གྲོང་གོང་ཚད་གང་རེད།",
+  "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) སྐོར་གྱི་ཆ་འཕྲིན་སྤྲོད་རོགས།",
+  "com_ui_landing_question_weather_forecast": "ངའི་ས་ཁུལ་གྱི་གནམ་གཤིས་ལུང་བསྟན་གང་རེད།",
+  "com_ui_landing_question_wheat_yellow_rust": "གྲོ་ལོ་ཏོག་ལ་སེར་པོའི་ནད་ཇི་ལྟར་ཚོད་འཛིན་བྱེད་དགོས་སམ།"
 }

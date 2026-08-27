@@ -2057,5 +2057,9 @@
   "com_ui_landing_chip_expert_verified": "विशेषज्ञ द्वारा सत्यापित",
   "com_ui_landing_chip_multilingual": "बहुभाषी",
   "com_ui_landing_chip_voice": "आवाज सँ पूछू",
-  "com_ui_landing_tagline": "बुद्धिमानी सँ खेती करू। नीक जेकाँ उपजाउ।"
+  "com_ui_landing_tagline": "बुद्धिमानी सँ खेती करू। नीक जेकाँ उपजाउ।",
+  "com_ui_landing_question_mandi_price_paddy": "हमर क्षेत्र मे धानक फसलक वर्तमान बजार भाव की अछि?",
+  "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) क बारे मे जानकारी दिअ।",
+  "com_ui_landing_question_weather_forecast": "हमर क्षेत्रक लेल मौसमक पूर्वानुमान की अछि?",
+  "com_ui_landing_question_wheat_yellow_rust": "गहुमक फसल मे पियर रतुआ कोना नियंत्रित करब?"
 }

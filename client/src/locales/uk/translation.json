@@ -1360,5 +1360,9 @@
   "com_ui_landing_chip_multilingual": "Багатомовність",
   "com_ui_landing_chip_voice": "Запитайте голосом",
   "com_ui_landing_tagline": "Господарюйте розумніше. Ростіть краще.",
-  "com_banner_message": "У розробці - лише для тестування та перевірки"
+  "com_banner_message": "У розробці - лише для тестування та перевірки",
+  "com_ui_landing_question_mandi_price_paddy": "Яка поточна ринкова ціна на рис у моєму регіоні?",
+  "com_ui_landing_question_pmfby_info": "Надайте інформацію про програму Pradhan Mantri Fasal Bima Yojana (PMFBY).",
+  "com_ui_landing_question_weather_forecast": "Який прогноз погоди для мого регіону?",
+  "com_ui_landing_question_wheat_yellow_rust": "Як боротися з жовтою іржею на пшениці?"
 }

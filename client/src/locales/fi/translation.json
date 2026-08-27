@@ -684,5 +684,9 @@
   "com_ui_landing_chip_multilingual": "Monikielinen",
   "com_ui_landing_chip_voice": "Kysy äänellä",
   "com_ui_landing_tagline": "Viljele älykkäämmin. Kasva paremmin.",
-  "com_banner_message": "Kehitteillä - vain testausta ja validointia varten"
+  "com_banner_message": "Kehitteillä - vain testausta ja validointia varten",
+  "com_ui_landing_question_mandi_price_paddy": "Mikä on riisin nykyinen markkinahinta alueellani?",
+  "com_ui_landing_question_pmfby_info": "Anna tietoa Pradhan Mantri Fasal Bima Yojana (PMFBY) -ohjelmasta.",
+  "com_ui_landing_question_weather_forecast": "Millainen on sääennuste alueellani?",
+  "com_ui_landing_question_wheat_yellow_rust": "Miten keltaruoste torjutaan vehnäsadossa?"
 }

@@ -815,5 +815,9 @@
   "com_ui_landing_chip_multilingual": "متعدد اللغات",
   "com_ui_landing_chip_voice": "اسأل بالصوت",
   "com_ui_landing_tagline": "زراعة أذكى. نمو أفضل.",
-  "com_banner_message": "قيد التطوير - للاختبار والتحقق فقط"
+  "com_banner_message": "قيد التطوير - للاختبار والتحقق فقط",
+  "com_ui_landing_question_mandi_price_paddy": "ما هو سعر السوق الحالي لمحصول الأرز في منطقتي؟",
+  "com_ui_landing_question_pmfby_info": "يرجى تقديم معلومات حول برنامج Pradhan Mantri Fasal Bima Yojana (PMFBY).",
+  "com_ui_landing_question_weather_forecast": "ما هو توقع الطقس لمنطقتي؟",
+  "com_ui_landing_question_wheat_yellow_rust": "كيف يمكن مكافحة الصدأ الأصفر في محصول القمح؟"
 }

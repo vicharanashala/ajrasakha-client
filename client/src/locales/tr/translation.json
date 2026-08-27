@@ -803,5 +803,9 @@
   "com_ui_landing_chip_multilingual": "Çok dilli",
   "com_ui_landing_chip_voice": "Sesle sor",
   "com_ui_landing_tagline": "Daha akıllıca ekin. Daha iyi büyüt.",
-  "com_banner_message": "Geliştirme aşamasında - yalnızca test ve doğrulama amaçlıdır"
+  "com_banner_message": "Geliştirme aşamasında - yalnızca test ve doğrulama amaçlıdır",
+  "com_ui_landing_question_mandi_price_paddy": "Bölgemde çeltik ürününün güncel piyasa fiyatı nedir?",
+  "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) hakkında bilgi verin.",
+  "com_ui_landing_question_weather_forecast": "Bölgem için hava durumu tahmini nedir?",
+  "com_ui_landing_question_wheat_yellow_rust": "Buğday ürününde sarı pas nasıl kontrol edilir?"
 }

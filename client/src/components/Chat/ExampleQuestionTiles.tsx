@@ -124,11 +124,12 @@ export default function ExampleQuestionTiles() {
       {EXAMPLE_QUESTIONS.map((question) => {
         const Icon = ICONS_BY_ID[question.id] ?? HelpCircle;
         const accent = ICON_ACCENT_BY_ID[question.id] ?? DEFAULT_ICON_ACCENT;
+        const questionText = localize(question.textKey);
         return (
           <button
             key={question.id}
             type="button"
-            onClick={() => handleSelect(question.text)}
+            onClick={() => handleSelect(questionText)}
             className={cn(
               'group flex h-full w-full cursor-pointer items-center text-start',
               'gap-2.5 rounded-xl p-2 pr-2.5 sm:gap-3.5 sm:rounded-2xl sm:p-3 sm:pr-4',
@@ -156,7 +157,7 @@ export default function ExampleQuestionTiles() {
               <Icon className="size-4 shrink-0 sm:size-5" aria-hidden="true" />
             </span>
             <span className="line-clamp-3 min-w-0 flex-1 text-balance break-words text-[13px] font-medium leading-snug text-text-primary sm:text-[15px]">
-              {question.text}
+              {questionText}
             </span>
             <ChevronRight
               className="size-4 shrink-0 text-text-tertiary transition-[transform,color] duration-200 group-hover:translate-x-0.5 group-hover:text-text-secondary motion-reduce:transition-none sm:size-5"

@@ -1,32 +1,37 @@
+import type { TranslationKeys } from '~/hooks';
+
 /**
  * Config array of tappable example questions shown on the welcome/empty-chat screen.
  * Tapping a tile sends the question immediately (see ExampleQuestionTiles.tsx) — the
  * same as if the user had typed it and hit submit.
  *
- * Add/remove/reorder entries here; no other file needs to change. `id` is only used to
- * look up an icon in ExampleQuestionTiles.tsx and as the React list key — it's fine to
- * leave a new entry without a matching icon, it'll fall back to a generic icon.
+ * `textKey` points at a translation.json key (see client/src/locales/*\/translation.json)
+ * rather than storing literal English text, so the question is localized the same way as
+ * any other UI string. Add/remove/reorder entries here; no other file needs to change.
+ * `id` is only used to look up an icon in ExampleQuestionTiles.tsx and as the React list
+ * key — it's fine to leave a new entry without a matching icon, it'll fall back to a
+ * generic icon.
  */
 export interface ExampleQuestion {
   id: string;
-  text: string;
+  textKey: TranslationKeys;
 }
 
 export const EXAMPLE_QUESTIONS: ExampleQuestion[] = [
   {
     id: 'wheat-yellow-rust',
-    text: 'How to control yellow rust in Wheat crop?',
+    textKey: 'com_ui_landing_question_wheat_yellow_rust',
   },
   {
     id: 'weather-forecast',
-    text: 'What is the weather forecast for my region?',
+    textKey: 'com_ui_landing_question_weather_forecast',
   },
   {
     id: 'mandi-price-paddy',
-    text: 'What is the current mandi price for Paddy crop in my region?',
+    textKey: 'com_ui_landing_question_mandi_price_paddy',
   },
   {
     id: 'pmfby-info',
-    text: 'Give information regarding the Pradhan Mantri Fasal Bima Yojana (PMFBY).',
+    textKey: 'com_ui_landing_question_pmfby_info',
   },
 ];

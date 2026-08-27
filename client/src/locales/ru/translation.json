@@ -1400,5 +1400,9 @@
   "com_ui_landing_chip_multilingual": "Многоязычность",
   "com_ui_landing_chip_voice": "Спросите голосом",
   "com_ui_landing_tagline": "Возделывайте умнее. Растите лучше.",
-  "com_banner_message": "В разработке - только для тестирования и проверки"
+  "com_banner_message": "В разработке - только для тестирования и проверки",
+  "com_ui_landing_question_mandi_price_paddy": "Какова текущая рыночная цена на рис в моём регионе?",
+  "com_ui_landing_question_pmfby_info": "Предоставьте информацию о программе Pradhan Mantri Fasal Bima Yojana (PMFBY).",
+  "com_ui_landing_question_weather_forecast": "Какой прогноз погоды для моего региона?",
+  "com_ui_landing_question_wheat_yellow_rust": "Как бороться с жёлтой ржавчиной на пшенице?"
 }

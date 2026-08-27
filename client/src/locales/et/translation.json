@@ -1044,5 +1044,9 @@
   "com_ui_landing_chip_multilingual": "Mitmekeelne",
   "com_ui_landing_chip_voice": "Küsi häälega",
   "com_ui_landing_tagline": "Talunda targemalt. Kasva paremini.",
-  "com_banner_message": "Arendamisel - ainult testimiseks ja valideerimiseks"
+  "com_banner_message": "Arendamisel - ainult testimiseks ja valideerimiseks",
+  "com_ui_landing_question_mandi_price_paddy": "Milline on riisi hetke turuhind minu piirkonnas?",
+  "com_ui_landing_question_pmfby_info": "Andke teavet programmi Pradhan Mantri Fasal Bima Yojana (PMFBY) kohta.",
+  "com_ui_landing_question_weather_forecast": "Milline on ilmaprognoos minu piirkonnas?",
+  "com_ui_landing_question_wheat_yellow_rust": "Kuidas tõrjuda kollast roostet nisusaagis?"
 }

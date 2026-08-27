@@ -1377,5 +1377,9 @@
   "com_ui_landing_chip_multilingual": "רב-לשוני",
   "com_ui_landing_chip_voice": "שאל בקול",
   "com_ui_landing_tagline": "עבדו את האדמה בחוכמה. גדלו טוב יותר.",
-  "com_banner_message": "בפיתוח - למטרות בדיקה ואימות בלבד"
+  "com_banner_message": "בפיתוח - למטרות בדיקה ואימות בלבד",
+  "com_ui_landing_question_mandi_price_paddy": "מה מחיר השוק הנוכחי של אורז באזור שלי?",
+  "com_ui_landing_question_pmfby_info": "ספק מידע על התוכנית Pradhan Mantri Fasal Bima Yojana (PMFBY).",
+  "com_ui_landing_question_weather_forecast": "מה תחזית מזג האוויר לאזור שלי?",
+  "com_ui_landing_question_wheat_yellow_rust": "כיצד לשלוט בחלודה הצהובה ביבול החיטה?"
 }

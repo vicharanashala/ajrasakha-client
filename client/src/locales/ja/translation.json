@@ -1425,5 +1425,9 @@
   "com_ui_landing_chip_multilingual": "多言語対応",
   "com_ui_landing_chip_voice": "音声で質問",
   "com_ui_landing_tagline": "賢く農業を。もっと良く育てよう。",
-  "com_banner_message": "開発中 - テストおよび検証のみを目的としています"
+  "com_banner_message": "開発中 - テストおよび検証のみを目的としています",
+  "com_ui_landing_question_mandi_price_paddy": "私の地域の稲(パディー)の現在の市場価格はいくらですか?",
+  "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) について教えてください。",
+  "com_ui_landing_question_weather_forecast": "私の地域の天気予報を教えてください。",
+  "com_ui_landing_question_wheat_yellow_rust": "小麦の黄さび病はどのように防除すればよいですか?"
 }
