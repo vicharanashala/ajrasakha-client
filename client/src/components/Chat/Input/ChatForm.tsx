@@ -127,6 +127,10 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [, setIsScrollable] = useState(false);
   const [visualRowCount, setVisualRowCount] = useState(1);
+  /** The composer's action row; watched for width changes so the line count stays accurate. */
+  const inputRowRef = useRef<HTMLDivElement>(null);
+  /** The draft has outgrown the textarea's max height and is scrolling inside it. */
+  const [isTextAreaScrollable, setIsTextAreaScrollable] = useState(false);
   const [isTextAreaFocused, setIsTextAreaFocused] = useState(false);
   const [backupBadges, setBackupBadges] = useState<Pick<BadgeItem, 'id'>[]>([]);
   const [showLeftOptions, setShowLeftOptions] = useState(false);
@@ -398,12 +402,46 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     }
   }, [isTextAreaFocused, textValue, setIsRequiredFeedback]);
 
+  /**
+   * How many visual lines the textarea is currently showing, which decides whether the
+   * composer stays a compact pill or becomes the expanded card.
+   *
+   * `scrollHeight` includes the textarea's vertical padding, so that has to come off before
+   * dividing by the line height — otherwise an empty textarea measures as two lines wherever
+   * the padding is tall enough (this composer uses `py-[10px] md:py-[14px]`, so desktop read
+   * 52/24 = 2 and started out expanded while mobile read 44/24 = 1 and looked right).
+   *
+   * Re-measured on width changes as well as on edits: the same text wraps differently as the
+   * composer gets narrower, and keying this off the text alone left the old shape in place
+   * until the next keystroke or a reload. The observer watches the row container rather than
+   * the textarea itself, because the textarea's own width changes as a *result* of switching
+   * layouts — observing that would let a measurement re-trigger itself.
+   */
   useEffect(() => {
-    if (textAreaRef.current) {
-      const style = window.getComputedStyle(textAreaRef.current);
-      const lineHeight = parseFloat(style.lineHeight);
-      setVisualRowCount(Math.floor(textAreaRef.current.scrollHeight / lineHeight));
+    const textArea = textAreaRef.current;
+    if (!textArea) {
+      return;
     }
+    const measure = () => {
+      const style = window.getComputedStyle(textArea);
+      const lineHeight = parseFloat(style.lineHeight);
+      if (!lineHeight) {
+        return;
+      }
+      const verticalPadding = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+      const contentHeight = textArea.scrollHeight - verticalPadding;
+      setVisualRowCount(Math.max(1, Math.round(contentHeight / lineHeight)));
+      setIsTextAreaScrollable(textArea.scrollHeight - textArea.clientHeight > 1);
+    };
+    measure();
+
+    const row = inputRowRef.current;
+    if (!row || typeof ResizeObserver === 'undefined') {
+      return;
+    }
+    const observer = new ResizeObserver(measure);
+    observer.observe(row);
+    return () => observer.disconnect();
   }, [textValue]);
 
   useEffect(() => {
@@ -436,8 +474,10 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
       cn(
         'm-0 w-full min-w-0 flex-1 resize-none bg-transparent py-[10px] placeholder-text-secondary md:py-[14px]',
         // Capped well short of the viewport so a long draft scrolls inside the composer
-        // instead of pushing the conversation off screen.
-        isCollapsed ? 'max-h-[52px]' : 'max-h-[35vh] md:max-h-[40vh]',
+        // instead of pushing the conversation off screen. Tightest on phones, where the
+        // composer strip is fixed to the bottom and shares the screen with the mode toggle
+        // and the notice line below it.
+        isCollapsed ? 'max-h-[52px]' : 'max-h-[20vh] sm:max-h-[30vh] md:max-h-[40vh]',
         // Expanded, the input is flush inside the card and lines up with the buttons below it;
         // compact, it keeps the roomier padding that suits a pill.
         isExpandedComposer ? 'px-2.5 sm:px-3' : 'px-5',
@@ -478,6 +518,19 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     store.showFeedbackReminder,
   );
   const [shakeCount] = useRecoilState(store.feedbackShake);
+
+  /**
+   * Desktop-only model selector. It sits inside the input pill while the composer is compact,
+   * and moves into the action row once it expands — there the pill's border has moved out to
+   * the card, so the action row is inside the input box too, and bottom-aligning it against a
+   * tall multi-line textarea is what made it look out of place before. Mobile portals its own
+   * copy into the top nav instead (see the portal above).
+   */
+  const modelSelectorNode = !isSmallScreen ? (
+    <div className="flex min-w-0 max-w-[10rem] items-center lg:max-w-[13rem]">
+      <ModelSelector startupConfig={startupConfig} />
+    </div>
+  ) : null;
 
   const handleMessageSubmit = methods.handleSubmit(async (data) => {
     submitMessage(data, position ?? undefined);
@@ -587,6 +640,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   <InputModeToggle inputMode={inputMode} setInputMode={setInputMode} />
                 </div>
                 <div
+                  ref={inputRowRef}
                   className={cn(
                     'flex w-full gap-1.5 transition-[border-color,padding] duration-200 sm:gap-2',
                     isRTL ? 'flex-row-reverse' : 'flex-row',
@@ -704,15 +758,18 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                       'scrollbar-hover transition-[max-height] duration-200 disabled:cursor-not-allowed',
                     )}
                   />
-                  {isCollapsed && (
+                  {/* Marks that there's more text below the fold. A gradient fading into the
+                      composer's own background, the same treatment the composer uses over the
+                      message list — the blur this replaced smeared the last line rather than
+                      letting it dissolve. */}
+                  {(isCollapsed || isTextAreaScrollable) && (
                     <div
-                      className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 transition-all duration-200"
-                      style={{
-                        backdropFilter: 'blur(2px)',
-                        WebkitMaskImage: 'linear-gradient(to top, black 15%, transparent 75%)',
-                        maskImage: 'linear-gradient(to top, black 15%, transparent 75%)',
-                      }}
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-surface-chat via-surface-chat/70 to-transparent transition-opacity duration-200"
                     />
+                  )}
+                  {!isExpandedComposer && (
+                    <div className="flex shrink-0 items-center pb-2 pr-2">{modelSelectorNode}</div>
                   )}
                   </div>
                   {/* Trailing controls. Compact, they sit at the end of the single row beside
@@ -731,11 +788,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                       isScrollable={isMoreThanThreeRows}
                       setIsCollapsed={setIsCollapsed}
                     />
-                    {!isSmallScreen && (
-                      <div className="flex min-w-0 max-w-[10rem] items-center lg:max-w-[13rem]">
-                        <ModelSelector startupConfig={startupConfig} />
-                      </div>
-                    )}
+                    {isExpandedComposer && modelSelectorNode}
                     {isSubmitting && showStopButton ? (
                       <StopButton
                         stop={handleStopGenerating}
