@@ -8,7 +8,6 @@ import type {
 } from 'librechat-data-provider';
 import { EditIcon, Clipboard, CheckMark, ContinueIcon } from '@librechat/client';
 import { useGenerationsByLatest, useLocalize } from '~/hooks';
-import { Fork } from '~/components/Conversations';
 import MessageAudio from './MessageAudio';
 import Feedback from './Feedback';
 import { cn } from '~/utils';
@@ -148,7 +147,7 @@ const HoverButtons = ({
     latestMessageId: latestMessage?.messageId,
   });
 
-  const { hideEditButton, continueSupported, forkingSupported, isEditableEndpoint } =
+  const { hideEditButton, continueSupported, isEditableEndpoint } =
     generationCapabilities;
 
   if (!conversation) {
@@ -230,15 +229,6 @@ const HoverButtons = ({
           isLast={isLast}
         />
       )}
-
-      {/* Fork Button */}
-      <Fork
-        messageId={message.messageId}
-        conversationId={conversation.conversationId}
-        forkingSupported={forkingSupported}
-        latestMessageId={latestMessage?.messageId}
-        isLast={isLast}
-      />
 
       {/* Feedback Buttons */}
       {!isCreatedByUser && handleFeedback != null && (

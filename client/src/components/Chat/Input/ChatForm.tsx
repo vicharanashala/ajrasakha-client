@@ -64,10 +64,20 @@ const INPUT_MODE_TABS: ReadonlyArray<{ mode: InputMode; label: string; Icon: typ
  * equalizer while it is listening.
  */
 const VoiceStopButton = memo(
-  ({ onStop, label }: { onStop: (e: React.MouseEvent<HTMLButtonElement>) => void; label: string }) => (
+  ({
+    onClick,
+    label,
+    isConfirming,
+  }: {
+    onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    label: string;
+    /** The first tap has been made; the next one actually stops. Shown as a stop square so
+     *  the button says what it is about to do. */
+    isConfirming: boolean;
+  }) => (
     <button
       type="button"
-      onClick={onStop}
+      onClick={onClick}
       aria-label={label}
       title={label}
       className="relative flex size-16 items-center justify-center rounded-full bg-green-500 transition-colors duration-300 hover:bg-green-400"
@@ -82,18 +92,22 @@ const VoiceStopButton = memo(
           .voice-stop-wave-bar { animation: none !important; transform: scaleY(0.7); }
         }
       `}</style>
-      <span className="flex h-6 items-center gap-[3px]" aria-hidden="true">
-        {[0, 1, 2, 3, 4].map((i) => (
-          <span
-            key={i}
-            className="voice-stop-wave-bar h-full w-[3px] rounded-full bg-white"
-            style={{
-              transformOrigin: 'center',
-              animation: `voice-stop-wave 1.1s ease-in-out ${i * 0.13}s infinite`,
-            }}
-          />
-        ))}
-      </span>
+      {isConfirming ? (
+        <span className="size-5 rounded-[4px] bg-white" aria-hidden="true" />
+      ) : (
+        <span className="flex h-6 items-center gap-[3px]" aria-hidden="true">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <span
+              key={i}
+              className="voice-stop-wave-bar h-full w-[3px] rounded-full bg-white"
+              style={{
+                transformOrigin: 'center',
+                animation: `voice-stop-wave 1.1s ease-in-out ${i * 0.13}s infinite`,
+              }}
+            />
+          ))}
+        </span>
+      )}
     </button>
   ),
 );
@@ -109,11 +123,15 @@ const InputModeToggle = memo(
   ({
     inputMode,
     setInputMode,
+    hidden = false,
   }: {
     inputMode: InputMode;
     setInputMode: React.Dispatch<React.SetStateAction<InputMode>>;
+    /** Hide it for a reason the switch itself can't see — currently while a response is
+     *  generating, when changing input mode isn't a useful action. */
+    hidden?: boolean;
   }) => {
-    const isScrollButtonVisible = useRecoilValue(store.isScrollToBottomVisible);
+    const isScrollButtonVisible = useRecoilValue(store.isScrollToBottomVisible) || hidden;
     return (
     <div
       role="tablist"
@@ -318,6 +336,19 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
    * fires on an actual transition INTO the new-chat state (tracked via the ref below), not on
    * every render while already there, so it never fights a manual tab switch mid-composition.
    */
+  /**
+   * Also re-apply it whenever the viewport crosses the breakpoint. This covers a real gap in
+   * the lazy useState initializer above: `useMediaQuery` can resolve after the first render,
+   * so a phone could mount with Type selected and stay there. Skipped while a draft is in the
+   * box, so a resize mid-sentence never hides what the user has already typed.
+   */
+  useEffect(() => {
+    if (textAreaRef.current?.value) {
+      return;
+    }
+    setInputMode(isSmallScreen ? 'voice' : 'type');
+  }, [isSmallScreen]);
+
   const prevConversationIdRef = useRef(conversationId);
   useEffect(() => {
     if (prevConversationIdRef.current !== conversationId) {
@@ -612,8 +643,45 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     </div>
   ) : null;
 
+  /**
+   * The mic doubles as the stop control while a response streams, and it is the same spot the
+   * user just tapped to send — so a single tap there is easy to fire by accident. The first
+   * tap only announces that an answer is generating; the second actually stops it. The
+   * pending state lapses on its own so a stray tap can't leave the button armed.
+   */
+  const [isStopConfirming, setIsStopConfirming] = useState(false);
+  const stopConfirmTimerRef = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => {
+    if (!isSubmitting) {
+      setIsStopConfirming(false);
+    }
+  }, [isSubmitting]);
+
+  useEffect(() => () => clearTimeout(stopConfirmTimerRef.current), []);
+
+  const handleVoiceStopClick = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      clearTimeout(stopConfirmTimerRef.current);
+      if (!isStopConfirming) {
+        setIsStopConfirming(true);
+        stopConfirmTimerRef.current = setTimeout(() => setIsStopConfirming(false), 4000);
+        return;
+      }
+      setIsStopConfirming(false);
+      setShowStopButton(false);
+      handleStopGenerating(event);
+    },
+    [isStopConfirming, handleStopGenerating, setShowStopButton],
+  );
+
   const handleMessageSubmit = methods.handleSubmit(async (data) => {
     submitMessage(data, position ?? undefined);
+    // Voice is the primary way in on a phone, so hand the composer back to the mic once the
+    // typed message is away rather than leaving an empty keyboard open.
+    if (isSmallScreen) {
+      setInputMode('voice');
+    }
   });
 
   return (
@@ -721,7 +789,11 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 >
                 {/* Mode switch centred above the composer. */}
                 <div className="flex min-h-9 w-full items-center justify-center">
-                  <InputModeToggle inputMode={inputMode} setInputMode={setInputMode} />
+                  <InputModeToggle
+                    inputMode={inputMode}
+                    setInputMode={setInputMode}
+                    hidden={isSubmitting}
+                  />
                 </div>
                 <div
                   ref={inputRowRef}
@@ -908,7 +980,11 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 {/* Voice/Text selector, stacked in normal flow above the mic button
                     (the panel is a centered flex column, so this just becomes its first
                     child) instead of pinned to a corner. */}
-                <InputModeToggle inputMode={inputMode} setInputMode={setInputMode} />
+                <InputModeToggle
+                    inputMode={inputMode}
+                    setInputMode={setInputMode}
+                    hidden={isSubmitting}
+                  />
                 {/* The actual mic button lives here (not just a decorative icon), so
                     tapping it directly starts/stops recording. Its own pulse animation
                     (see AudioRecorder.tsx) is the main "listening" indicator; this layer
@@ -939,11 +1015,13 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   )}
                   {isSubmitting && showStopButton ? (
                     <VoiceStopButton
-                      onStop={(e) => {
-                        setShowStopButton(false);
-                        handleStopGenerating(e);
-                      }}
-                      label={localize('com_nav_stop_generating')}
+                      onClick={handleVoiceStopClick}
+                      isConfirming={isStopConfirming}
+                      label={
+                        isStopConfirming
+                          ? localize('com_nav_stop_generating')
+                          : 'Answer is generating'
+                      }
                     />
                   ) : SpeechToText ? (
                     <AudioRecorder
@@ -968,7 +1046,9 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 </div>
                 <span className="text-xs font-medium sm:text-sm">
                   {isSubmitting && showStopButton
-                    ? localize('com_nav_stop_generating')
+                    ? isStopConfirming
+                      ? 'Tap again to stop responding'
+                      : 'Answer is generating…'
                     : isVoiceListening
                     ? `Listening… ${formatListeningDuration(listeningDuration)}`
                     : isTranscribing
