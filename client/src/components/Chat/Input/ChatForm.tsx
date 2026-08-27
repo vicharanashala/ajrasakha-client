@@ -59,9 +59,8 @@ const INPUT_MODE_TABS: ReadonlyArray<{ mode: InputMode; label: string; Icon: typ
 
 /**
  * Takes the mic's place in Voice mode while a response is streaming, so stopping happens on
- * the same control the user just tapped instead of a second button appearing beneath it. The
- * staggered bar delays read as a travelling wave, distinct from the mic's own in-sync
- * equalizer while it is listening.
+ * the same control the user just tapped instead of a second button appearing beneath it. A
+ * spinner while it works, distinct from the travelling wave the mic shows while listening.
  */
 const VoiceStopButton = memo(
   ({
@@ -83,30 +82,10 @@ const VoiceStopButton = memo(
       className="relative flex size-16 items-center justify-center rounded-full bg-green-500 transition-colors duration-300 hover:bg-green-400"
       style={{ boxShadow: '0 0 10px 2px rgba(117, 215, 178, 0.4)' }}
     >
-      <style>{`
-        @keyframes voice-stop-wave {
-          0%, 100% { transform: scaleY(0.3); }
-          50% { transform: scaleY(1); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .voice-stop-wave-bar { animation: none !important; transform: scaleY(0.7); }
-        }
-      `}</style>
       {isConfirming ? (
         <span className="size-5 rounded-[4px] bg-white" aria-hidden="true" />
       ) : (
-        <span className="flex h-6 items-center gap-[3px]" aria-hidden="true">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <span
-              key={i}
-              className="voice-stop-wave-bar h-full w-[3px] rounded-full bg-white"
-              style={{
-                transformOrigin: 'center',
-                animation: `voice-stop-wave 1.1s ease-in-out ${i * 0.13}s infinite`,
-              }}
-            />
-          ))}
-        </span>
+        <Spinner color="#fff" size={28} />
       )}
     </button>
   ),

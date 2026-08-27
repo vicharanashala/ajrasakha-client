@@ -117,27 +117,29 @@ export default function AudioRecorder({
 
   const renderIcon = () => {
     if (isListening === true) {
-      // Live equalizer bars in place of the mic glyph while actively recording. All 5 bars
-      // are the same height and share one animation — same duration, no per-bar delay —
-      // so they rise and fall together in perfect sync, like a set of parallel lines
-      // breathing as a single unit rather than a bouncing waveform.
+      // Live equalizer bars in place of the mic glyph while actively recording. Each bar is
+      // offset from the last, so the peak travels across them like a passing waveform —
+      // reads as sound arriving over time, which is what recording actually is.
       return (
-        <span className="flex h-5 items-center gap-0.5" aria-hidden="true">
+        <span className="flex h-5 items-center gap-[3px]" aria-hidden="true">
           <style>{`
-            @keyframes voice-mic-eq-sync {
-              0%, 100% { transform: scaleY(0.45); }
+            @keyframes voice-mic-wave {
+              0%, 100% { transform: scaleY(0.3); }
               50% { transform: scaleY(1); }
+            }
+            @media (prefers-reduced-motion: reduce) {
+              .voice-mic-wave-bar { animation: none !important; transform: scaleY(0.7); }
             }
           `}</style>
           {[0, 1, 2, 3, 4].map((i) => (
             <span
               key={i}
-              className="h-full w-0.5 rounded-full bg-white"
+              className="voice-mic-wave-bar h-full w-[3px] rounded-full bg-white"
               style={{
                 // Center-anchored, not bottom-anchored: top and bottom both draw in toward
                 // the middle as the bar shrinks, instead of the bottom staying fixed.
                 transformOrigin: 'center',
-                animation: 'voice-mic-eq-sync 1.4s ease-in-out infinite',
+                animation: `voice-mic-wave 1.1s ease-in-out ${i * 0.13}s infinite`,
               }}
             />
           ))}
@@ -147,7 +149,7 @@ export default function AudioRecorder({
     // White glyph in both themes: the button underneath is always the solid green fill,
     // so the icon colour follows the button, not the page theme.
     if (isLoading === true) {
-      return <Spinner className="stroke-white" size={28} />;
+      return <Spinner color="#fff" size={28} />;
     }
     return <ListeningIcon className="size-full stroke-white" />;
   };
