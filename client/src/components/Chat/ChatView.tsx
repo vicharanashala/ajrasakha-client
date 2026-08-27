@@ -102,7 +102,9 @@ function ChatView({ index = 0 }: { index?: number }) {
                     isLandingPage
                       ?
                         'flex-1 items-center justify-center overflow-y-auto'
-                      : 'min-h-0 flex-1 overflow-hidden',
+                      : // `relative` anchors the composer, which is pulled out of flow below
+                        // so the message list can run its full height underneath it.
+                        'relative min-h-0 flex-1 overflow-hidden',
                   )}
                 >
                   {content}
@@ -117,21 +119,29 @@ function ChatView({ index = 0 }: { index?: number }) {
                       'w-full',
                       isLandingPage
                         ? 'max-w-3xl transition-all duration-200 xl:max-w-4xl'
-                        : // Floating input bar on mobile: fixed to the viewport bottom instead
-                          // of sitting in normal flow, so the message list can scroll a full
-                          // screen's worth behind it. The opaque backdrop + rounded top corners
-                          // span the whole strip (not just the visible input pill inside it),
-                          // masking anything scrolled up underneath — the same trick Header
-                          // above already uses with its own gradient, just solid instead of
-                          // fading. Reverts to a normal in-flow, transparent block at sm+,
-                          // where there's no need to float over anything.
+                        : // The composer floats over the message list rather than sitting in
+                          // normal flow, so messages can scroll a full screen's worth behind
+                          // it instead of stopping at a hard edge above it. Its own backdrop
+                          // is a gradient that fades from the page background at the bottom
+                          // to fully transparent at the top, mirroring the Header's gradient
+                          // above but pointing the other way: content stays visible as it
+                          // passes behind the composer and mic, then dissolves out. The top
+                          // padding gives that fade room without moving the input. Fixed to
+                          // the viewport on mobile; absolute within the content column at sm+,
+                          // where the sidebar means viewport-width positioning would be wrong.
                           cn(
-                            'fixed inset-x-0 bottom-0 z-20 rounded-t-3xl bg-surface-primary pt-2',
-                            'shadow-[0_-4px_16px_rgba(0,0,0,0.25)]',
-                            'sm:static sm:z-auto sm:rounded-none sm:bg-transparent sm:pt-0 sm:shadow-none',
+                            'fixed inset-x-0 bottom-0 z-20 pt-6',
+                            'bg-gradient-to-t from-presentation via-presentation/85 to-transparent',
+                            'sm:absolute sm:pt-8',
                           ),
                     )}
                   >
+                    {/* Zero-height host for the scroll-to-bottom button (portaled in from
+                        MessagesView). Living inside the composer strip keeps the button
+                        clear of the input and mic in both modes, whatever height the
+                        composer happens to be; `h-0` keeps it from shifting the input when
+                        the button appears. */}
+                    <div id="scroll-to-bottom-portal" className="relative z-30 h-0 w-full" />
                     <ChatForm index={index} />
                     {isLandingPage ? <ConversationStarters /> : <Footer />}
                   </div>

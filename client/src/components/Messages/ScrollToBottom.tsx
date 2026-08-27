@@ -1,15 +1,23 @@
 import { forwardRef } from 'react';
+import { cn } from '~/utils';
 
 type Props = {
   scrollHandler: React.MouseEventHandler<HTMLButtonElement>;
+  /** Positioning classes; the caller decides where the button floats. Horizontal placement
+   *  must not use `translate`, since the enter/exit animations own the transform. */
+  className?: string;
 };
 
-const ScrollToBottom = forwardRef<HTMLButtonElement, Props>(({ scrollHandler }, ref) => {
+const ScrollToBottom = forwardRef<HTMLButtonElement, Props>(
+  ({ scrollHandler, className = 'absolute bottom-5 right-1/2' }, ref) => {
   return (
     <button
       ref={ref}
       onClick={scrollHandler}
-      className="premium-scroll-button absolute bottom-5 right-1/2 cursor-pointer border border-border-light bg-surface-secondary"
+      className={cn(
+        'premium-scroll-button cursor-pointer border border-border-light bg-surface-secondary',
+        className,
+      )}
       aria-label="Scroll to bottom"
     >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-text-secondary">
@@ -23,7 +31,8 @@ const ScrollToBottom = forwardRef<HTMLButtonElement, Props>(({ scrollHandler }, 
       </svg>
     </button>
   );
-});
+  },
+);
 
 ScrollToBottom.displayName = 'ScrollToBottom';
 

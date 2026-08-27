@@ -1,6 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useAtomValue } from 'jotai';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { CSSTransition } from 'react-transition-group';
 import type { TMessage } from 'librechat-data-provider';
 import { useScreenshot, useMessageScrolling, useLocalize } from '~/hooks';
@@ -23,6 +24,14 @@ function MessagesViewContent({
   const scrollButtonPreference = useRecoilValue(store.showScrollButton);
   const [currentEditId, setCurrentEditId] = useState<number | string | null>(-1);
   const scrollToBottomRef = useRef<HTMLButtonElement>(null);
+  /** Host node inside the composer strip (see ChatView). Rendering the button there keeps it
+   *  above the input and the Voice/Text toggle instead of behind them; when the host is
+   *  missing the button falls back to floating over the message list. */
+  const [scrollButtonHost, setScrollButtonHost] = useState<Element | null>(null);
+
+  useEffect(() => {
+    setScrollButtonHost(document.getElementById('scroll-to-bottom-portal'));
+  }, []);
 
   const {
     conversation,
@@ -34,6 +43,42 @@ function MessagesViewContent({
   } = useMessageScrolling(_messagesTree);
 
   const { conversationId } = conversation ?? {};
+
+  const isScrollButtonVisible = showScrollButton && scrollButtonPreference;
+  const setIsScrollToBottomVisible = useSetRecoilState(store.isScrollToBottomVisible);
+
+  useEffect(() => {
+    setIsScrollToBottomVisible(isScrollButtonVisible);
+    return () => setIsScrollToBottomVisible(false);
+  }, [isScrollButtonVisible, setIsScrollToBottomVisible]);
+
+  const scrollButtonTransition = (
+    <CSSTransition
+      in={isScrollButtonVisible}
+      timeout={{
+        enter: 550,
+        exit: 700,
+      }}
+      classNames="scroll-animation"
+      unmountOnExit={true}
+      appear={true}
+      nodeRef={scrollToBottomRef}
+    >
+      {/* Dropped into the Voice/Text switch's own slot (the host is a zero-height line at the
+          top of the composer, and that switch's row is ~40px tall below it) rather than
+          floating above it: the switch fades out exactly when this arrow appears, so the two
+          share one spot and crossfade in place instead of leaving a gap. Centred with
+          `left-0 right-0 mx-auto` rather than a translate, so it lines up with the mic and
+          the switch without fighting the enter/exit animations for the transform. */}
+      <ScrollToBottom
+        ref={scrollToBottomRef}
+        scrollHandler={handleSmoothToRef}
+        className={
+          scrollButtonHost != null ? 'absolute -bottom-9 left-0 right-0 mx-auto' : undefined
+        }
+      />
+    </CSSTransition>
+  );
 
   return (
     <>
@@ -50,10 +95,12 @@ function MessagesViewContent({
               width: '100%',
             }}
           >
-            {/* pb-36 on mobile clears the fixed/floating input bar (see ChatView.tsx) so the
-                last message can scroll fully above it instead of being hidden underneath;
-                sm+ reverts to the original pb-9 since the input sits in normal flow there. */}
-            <div className="flex flex-col pb-36 pt-14 dark:bg-transparent sm:pb-9">
+            {/* Clears the floating composer (see ChatView.tsx) so the last message can
+                scroll fully above it instead of being stuck underneath. The composer overlays
+                the list on every size now, so both values are sized to it: ~144px on mobile,
+                ~176px at sm+ where the taller input and the form's larger bottom margin
+                apply. */}
+            <div className="flex flex-col pb-36 pt-14 dark:bg-transparent sm:pb-44">
               {(_messagesTree && _messagesTree.length == 0) || _messagesTree === null ? (
                 <div
                   className={cn(
@@ -84,21 +131,10 @@ function MessagesViewContent({
             </div>
           </div>
 
-          <CSSTransition
-            in={showScrollButton && scrollButtonPreference}
-            timeout={{
-              enter: 550,
-              exit: 700,
-            }}
-            classNames="scroll-animation"
-            unmountOnExit={true}
-            appear={true}
-            nodeRef={scrollToBottomRef}
-          >
-            <ScrollToBottom ref={scrollToBottomRef} scrollHandler={handleSmoothToRef} />
-          </CSSTransition>
+          {scrollButtonHost == null && scrollButtonTransition}
         </div>
       </div>
+      {scrollButtonHost != null && createPortal(scrollButtonTransition, scrollButtonHost)}
     </>
   );
 }

@@ -25,6 +25,12 @@ const staticAtoms = {
     key: 'feedbackShake',
     default: 0,
   }),
+  /** Whether the scroll-to-bottom arrow is currently on screen. Set by MessagesView and read
+   *  by the composer, which hides the Voice/Text switch while the arrow occupies that spot. */
+  isScrollToBottomVisible: atom<boolean>({
+    key: 'isScrollToBottomVisible',
+    default: false,
+  }),
 };
 
 const localStorageAtoms = {

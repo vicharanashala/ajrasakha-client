@@ -1,5 +1,6 @@
 import { memo, useRef, useMemo, useEffect, useLayoutEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import * as Ariakit from '@ariakit/react';
 import { Plus, X, Mic, Keyboard } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useWatch } from 'react-hook-form';
@@ -56,7 +57,13 @@ const INPUT_MODE_TABS: ReadonlyArray<{ mode: InputMode; label: string; Icon: typ
   { mode: 'type', label: 'Text', Icon: Keyboard },
 ];
 
-/** Segmented Voice/Text switch shown above the composer in both input modes. */
+/**
+ * Segmented Voice/Text switch shown above the composer in both input modes. It yields the
+ * spot to the scroll-to-bottom arrow, which floats directly above the composer: while that
+ * arrow is up the switch fades out. It stays mounted rather than unmounting so the composer
+ * keeps its height and focus is not dropped mid-interaction; its tabs leave the tab order
+ * while hidden so nothing invisible can be focused.
+ */
 const InputModeToggle = memo(
   ({
     inputMode,
@@ -64,11 +71,20 @@ const InputModeToggle = memo(
   }: {
     inputMode: InputMode;
     setInputMode: React.Dispatch<React.SetStateAction<InputMode>>;
-  }) => (
+  }) => {
+    const isScrollButtonVisible = useRecoilValue(store.isScrollToBottomVisible);
+    return (
     <div
       role="tablist"
       aria-label="Input mode"
-      className="flex shrink-0 items-center gap-0.5 rounded-full bg-surface-secondary p-1"
+      aria-hidden={isScrollButtonVisible}
+      className={cn(
+        'flex shrink-0 items-center gap-0.5 rounded-full bg-surface-secondary p-1',
+        'transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none',
+        isScrollButtonVisible
+          ? 'pointer-events-none scale-95 opacity-0'
+          : 'scale-100 opacity-100',
+      )}
     >
       {INPUT_MODE_TABS.map(({ mode, label, Icon }) => {
         const isActive = inputMode === mode;
@@ -79,6 +95,7 @@ const InputModeToggle = memo(
             role="tab"
             aria-selected={isActive}
             title={label}
+            tabIndex={isScrollButtonVisible ? -1 : 0}
             onClick={() => setInputMode(mode)}
             className={cn(
               'flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium',
@@ -95,7 +112,8 @@ const InputModeToggle = memo(
         );
       })}
     </div>
-  ),
+    );
+  },
 );
 
 const ChatForm = memo(({ index = 0 }: { index?: number }) => {
@@ -139,6 +157,14 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     }, 1000);
     return () => clearInterval(interval);
   }, [isVoiceListening]);
+
+  // The "+" menu is anchored to a button that only exists in Text mode; close it on the way
+  // into Voice mode so it can't be left floating over the mic.
+  useEffect(() => {
+    if (inputMode === 'voice') {
+      setShowLeftOptions(false);
+    }
+  }, [inputMode]);
 
   useEffect(() => {
     if (pendingVoiceStop && !isTranscribing && inputMode === 'voice') {
@@ -544,56 +570,74 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 <div className="flex min-h-9 w-full items-center justify-center">
                   <InputModeToggle inputMode={inputMode} setInputMode={setInputMode} />
                 </div>
-                {/* Attachments and tool badges expand in place above the input row rather
-                    than floating, since both the panel wrapper and the composer clip
-                    overflow for the mode-swap height animation. */}
-                {showLeftOptions && (
-                  <div
-                    className={cn(
-                      '@container flex flex-wrap items-center gap-1.5 rounded-2xl border border-border-light bg-surface-chat p-2 shadow-sm',
-                      isRTL ? 'flex-row-reverse' : 'flex-row',
-                    )}
-                  >
-                    <AttachFileChat conversation={conversation} disableInputs={disableInputs} />
-                    <BadgeRow
-                      showEphemeralBadges={
-                        !isAgentsEndpoint(endpoint) && !isAssistantsEndpoint(endpoint)
-                      }
-                      isSubmitting={isSubmitting}
-                      conversationId={conversationId}
-                      onChange={setBadges}
-                      isInChat={
-                        Array.isArray(conversation?.messages) && conversation.messages.length >= 1
-                      }
-                    />
-                  </div>
-                )}
                 <div
                   className={cn(
                     'flex w-full items-end gap-2',
                     isRTL ? 'flex-row-reverse' : 'flex-row',
                   )}
                 >
-                  <button
-                    type="button"
-                    aria-label={showLeftOptions ? 'Close options' : 'Open options'}
-                    aria-expanded={showLeftOptions}
-                    onClick={() => setShowLeftOptions((prev) => !prev)}
-                    className={cn(
-                      'flex size-11 shrink-0 items-center justify-center rounded-full text-text-primary md:size-[52px]',
-                      'transition-colors duration-200 hover:bg-surface-hover',
-                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-medium',
-                      showLeftOptions ? 'bg-surface-hover' : 'bg-surface-secondary',
-                    )}
+                  {/* Attachments and tool badges open as a column anchored to this button
+                      rather than as a row inside the composer: the composer and the panel
+                      wrapper both clip overflow for the mode-swap height animation, so an
+                      in-flow panel would either be cut off or push the input down. Ariakit
+                      portals it out and handles placement, outside-click and Escape. */}
+                  <Ariakit.PopoverProvider
+                    open={showLeftOptions}
+                    setOpen={setShowLeftOptions}
+                    placement={isRTL ? 'top-end' : 'top-start'}
                   >
-                    <Plus
-                      className={cn(
-                        'size-5 transition-transform duration-200',
-                        showLeftOptions && 'rotate-45',
-                      )}
-                      aria-hidden="true"
+                    <Ariakit.PopoverDisclosure
+                      render={
+                        <button
+                          type="button"
+                          aria-label={showLeftOptions ? 'Close options' : 'Open options'}
+                          className={cn(
+                            'flex size-11 shrink-0 items-center justify-center rounded-full text-text-primary md:size-[52px]',
+                            'transition-colors duration-200 hover:bg-surface-hover',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-medium',
+                            showLeftOptions ? 'bg-surface-hover' : 'bg-surface-secondary',
+                          )}
+                        >
+                          <Plus
+                            className={cn(
+                              'size-5 transition-transform duration-200',
+                              showLeftOptions && 'rotate-45',
+                            )}
+                            aria-hidden="true"
+                          />
+                        </button>
+                      }
                     />
-                  </button>
+                    <Ariakit.Popover
+                      portal
+                      unmountOnHide
+                      gutter={8}
+                      overflowPadding={12}
+                      className={cn(
+                        // No min-width: the items are icon-only here (Badge only reveals its
+                        // label inside a 600px-wide @container), so the menu hugs them.
+                        'z-50 flex w-max max-w-[calc(100vw-2rem)] flex-col items-stretch gap-0.5',
+                        'rounded-2xl border border-border-light bg-surface-chat p-1.5 shadow-lg outline-none',
+                        'origin-bottom translate-y-1 scale-95 opacity-0 transition-[opacity,transform] duration-200 ease-out',
+                        'data-[enter]:translate-y-0 data-[enter]:scale-100 data-[enter]:opacity-100',
+                        'motion-reduce:transition-none',
+                      )}
+                    >
+                      <AttachFileChat conversation={conversation} disableInputs={disableInputs} />
+                      <BadgeRow
+                        vertical
+                        showEphemeralBadges={
+                          !isAgentsEndpoint(endpoint) && !isAssistantsEndpoint(endpoint)
+                        }
+                        isSubmitting={isSubmitting}
+                        conversationId={conversationId}
+                        onChange={setBadges}
+                        isInChat={
+                          Array.isArray(conversation?.messages) && conversation.messages.length >= 1
+                        }
+                      />
+                    </Ariakit.Popover>
+                  </Ariakit.PopoverProvider>
                   <div
                     className={cn(
                       'relative flex min-w-0 flex-1 items-end overflow-hidden border bg-surface-chat',
