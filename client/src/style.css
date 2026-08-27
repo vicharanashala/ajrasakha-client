@@ -2963,6 +2963,10 @@ html {
 }
 
 .ajrasakha-orbit-bubble {
+  /* Arc colour is a variable so each theme can pick the brand shade that reads best against
+     its own bubble: the light mint on the near-white light bubble, where the dark green went
+     muddy, and the dark green on the near-black dark one. */
+  --orbit-arc: var(--accent-green-light);
   position: relative;
   border: 1.5px solid transparent;
   background:
@@ -2970,8 +2974,8 @@ html {
     conic-gradient(
         from var(--orbit-angle),
         transparent 0deg,
-        oklch(0.4365 0.1044 156.7556) 25deg,
-        oklch(0.4365 0.1044 156.7556) 50deg,
+        var(--orbit-arc) 25deg,
+        var(--orbit-arc) 50deg,
         transparent 80deg,
         transparent 360deg
       )
@@ -2981,13 +2985,14 @@ html {
 
 /* Dark mode: match the chat area background */
 .dark .ajrasakha-orbit-bubble {
+  --orbit-arc: oklch(0.4365 0.1044 156.7556);
   background:
     linear-gradient(#08100a, #08100a) padding-box,
     conic-gradient(
         from var(--orbit-angle),
         transparent 0deg,
-        oklch(0.4365 0.1044 156.7556) 25deg,
-        oklch(0.4365 0.1044 156.7556) 50deg,
+        var(--orbit-arc) 25deg,
+        var(--orbit-arc) 50deg,
         transparent 80deg,
         transparent 360deg
       )
@@ -3011,8 +3016,8 @@ html {
   background: conic-gradient(
     from var(--orbit-angle),
     transparent 0deg,
-    oklch(0.4365 0.1044 156.7556 / 0.55) 25deg,
-    oklch(0.4365 0.1044 156.7556 / 0.55) 50deg,
+    color-mix(in oklch, var(--orbit-arc) 55%, transparent) 25deg,
+    color-mix(in oklch, var(--orbit-arc) 55%, transparent) 50deg,
     transparent 80deg,
     transparent 360deg
   );
