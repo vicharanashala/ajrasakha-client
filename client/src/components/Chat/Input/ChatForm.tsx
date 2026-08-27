@@ -166,6 +166,14 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     }
   }, [inputMode]);
 
+  // Its entries share one "which dropdown is open" atom, so clear that when the menu closes.
+  const setActiveComposerMenu = useSetRecoilState(store.activeComposerMenu);
+  useEffect(() => {
+    if (!showLeftOptions) {
+      setActiveComposerMenu(null);
+    }
+  }, [showLeftOptions, setActiveComposerMenu]);
+
   useEffect(() => {
     if (pendingVoiceStop && !isTranscribing && inputMode === 'voice') {
       setPendingVoiceStop(false);
@@ -616,7 +624,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                       className={cn(
                         // No min-width: the items are icon-only here (Badge only reveals its
                         // label inside a 600px-wide @container), so the menu hugs them.
-                        'z-50 flex w-max max-w-[calc(100vw-2rem)] flex-col items-stretch gap-0.5',
+                        'z-30 flex w-max max-w-[calc(100vw-2rem)] flex-col items-stretch gap-0.5',
                         'rounded-2xl border border-border-light bg-surface-chat p-1.5 shadow-lg outline-none',
                         'origin-bottom translate-y-1 scale-95 opacity-0 transition-[opacity,transform] duration-200 ease-out',
                         'data-[enter]:translate-y-0 data-[enter]:scale-100 data-[enter]:opacity-100',
