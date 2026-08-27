@@ -25,8 +25,8 @@ function CapabilityChip({
   label: string;
 }) {
   return (
-    <li className="flex items-center gap-1 rounded-full border border-green-600/20 bg-green-500/10 px-2 py-0.5 text-[11px] font-medium text-green-700 dark:border-green-400/25 dark:bg-green-400/10 dark:text-green-400 sm:gap-1.5 sm:px-2.5 sm:py-1 sm:text-xs">
-      <Icon className="size-3 shrink-0 sm:size-3.5" aria-hidden="true" />
+    <li className="flex items-center gap-1.5 rounded-full border border-green-600/30 bg-green-500/10 px-3.5 py-1.5 text-xs font-medium text-green-700 dark:border-green-400/30 dark:bg-green-400/10 dark:text-green-400 sm:gap-2 sm:px-4 sm:py-2 sm:text-sm">
+      <Icon className="size-4 shrink-0" aria-hidden="true" />
       {label}
     </li>
   );
@@ -87,11 +87,11 @@ export default function ExampleQuestionTiles() {
       {/* Tagline and capability pills live here rather than in Landing: Landing collapses to
           `sm:max-h-0` when centerFormOnLanding is on, so anything added there contributes no
           layout height and its overflow lands on top of these cards. */}
-      <div className="mb-3 flex flex-col items-center gap-1.5 sm:mb-5 sm:gap-2.5">
-        <p className="text-balance text-center text-[13px] font-normal leading-snug text-text-secondary sm:max-w-sm sm:text-sm">
+      <div className="mb-4 flex flex-col items-center gap-3 sm:mb-6 sm:gap-4">
+        <p className="text-balance text-center text-[15px] font-normal leading-snug text-text-secondary sm:max-w-sm sm:text-base">
           {localize('com_ui_landing_tagline')}
         </p>
-        <ul className="flex flex-wrap items-center justify-center gap-1.5">
+        <ul className="flex max-w-[360px] flex-wrap items-center justify-center gap-2.5 sm:gap-3">
           <CapabilityChip icon={Languages} label={localize('com_ui_landing_chip_multilingual')} />
           <CapabilityChip
             icon={BadgeCheck}
