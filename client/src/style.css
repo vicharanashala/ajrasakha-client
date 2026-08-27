@@ -18,17 +18,30 @@
   --gray-800: #212121;
   --gray-850: #171717;
   --gray-900: #0d0d0d;
-  --green-50: #ecfdf5;
-  --green-100: #d1fae5;
-  --green-200: #a7f3d0;
-  --green-300: #6ee7b7;
-  --green-400: #34d399;
-  --green-500: #10b981;
-  --green-600: #059669;
-  --green-700: #047857;
-  --green-800: #065f46;
-  --green-900: #064e3b;
-  --green-950: #022c22;
+  /* Brand green — exactly two approved shades. Every numbered stop below collapses to
+     one of the two (Light for lighter/light-mode roles, Dark for darker/dark-mode roles)
+     so nothing further down this file can introduce a third green by referencing the ramp. */
+  --accent-green-light: #75d7b2;
+  --accent-green-dark: #198754;
+  --green-50: var(--accent-green-light);
+  --green-100: var(--accent-green-light);
+  --green-200: var(--accent-green-light);
+  --green-300: var(--accent-green-light);
+  --green-400: var(--accent-green-light);
+  --green-500: var(--accent-green-dark);
+  --green-600: var(--accent-green-dark);
+  --green-700: var(--accent-green-dark);
+  --green-800: var(--accent-green-dark);
+  --green-900: var(--accent-green-dark);
+  --green-950: var(--accent-green-dark);
+  --dg-950: #060706;
+  --dg-900: #08100a;
+  --dg-850: #0b140d;
+  --dg-800: #0f1a10;
+  --dg-700: #162316;
+  --dg-600: #1f301f;
+  --dg-500: #2a3f2a;
+  --dg-400: #375339;
   --red-50: #fef2f2;
   --red-100: #fee2e2;
   --red-200: #fecaca;
@@ -86,8 +99,8 @@ html {
   --surface-tertiary: var(--gray-100);
   --surface-tertiary-alt: var(--white);
   --surface-dialog: var(--white);
-  --surface-submit: var(--green-700);
-  --surface-submit-hover: var(--green-800);
+  --surface-submit: var(--accent-green-light);
+  --surface-submit-hover: var(--accent-green-dark);
   --surface-destructive: var(--red-700);
   --surface-destructive-hover: var(--red-800);
   --surface-chat: var(--white);
@@ -102,8 +115,8 @@ html {
   --foreground: 0 0% 3.9%;
   --card: 0 0% 100%;
   --card-foreground: 0 0% 3.9%;
-  --primary: 0 0% 9%;
-  --primary-foreground: 0 0% 98%;
+  --primary: 157 55% 65%;
+  --primary-foreground: 0 0% 9%;
   --secondary: 0 0% 96.1%;
   --secondary-foreground: 0 0% 9%;
   --muted: 0 0% 96.1%;
@@ -114,7 +127,7 @@ html {
   --destructive-foreground: 0 0% 98%;
   --border: 0 0% 89.8%;
   --input: 0 0% 89.8%;
-  --ring: 0 0% 3.9%;
+  --ring: 157 55% 65%;
   --radius: 0.5rem;
   --chart-1: 12 76% 61%;
   --chart-2: 173 58% 39%;
@@ -125,7 +138,7 @@ html {
 }
 .dark {
   --brand-purple: #ab68ff;
-  --presentation: var(--gray-800);
+  --presentation: var(--dg-950);
   --text-primary: var(--gray-100);
   --text-secondary: var(--gray-300);
   --text-secondary-alt: var(--gray-400);
@@ -134,47 +147,47 @@ html {
   --header-primary: var(--gray-700);
   --header-hover: var(--gray-600);
   --header-button-hover: var(--gray-700);
-  --surface-active: var(--gray-500);
-  --surface-active-alt: var(--gray-700);
-  --surface-hover: var(--gray-600);
-  --surface-hover-alt: var(--gray-600);
-  --surface-primary: var(--gray-900);
-  --surface-primary-alt: var(--gray-850);
-  --surface-primary-contrast: var(--gray-850);
-  --surface-secondary: var(--gray-800);
-  --surface-secondary-alt: var(--gray-800);
-  --surface-tertiary: var(--gray-700);
-  --surface-tertiary-alt: var(--gray-700);
-  --surface-dialog: var(--gray-850);
-  --surface-submit: var(--green-700);
-  --surface-submit-hover: var(--green-800);
+  --surface-active: var(--dg-600);
+  --surface-active-alt: var(--dg-700);
+  --surface-hover: var(--dg-700);
+  --surface-hover-alt: var(--dg-700);
+  --surface-primary: var(--dg-950);
+  --surface-primary-alt: var(--dg-900);
+  --surface-primary-contrast: var(--dg-900);
+  --surface-secondary: var(--dg-850);
+  --surface-secondary-alt: var(--dg-850);
+  --surface-tertiary: var(--dg-800);
+  --surface-tertiary-alt: var(--dg-800);
+  --surface-dialog: var(--dg-900);
+  --surface-submit: var(--accent-green-dark);
+  --surface-submit-hover: var(--accent-green-light);
   --surface-destructive: var(--red-800);
   --surface-destructive-hover: var(--red-900);
-  --surface-chat: var(--gray-700);
-  --border-light: var(--gray-700);
-  --border-medium-alt: var(--gray-600);
-  --border-medium: var(--gray-600);
-  --border-heavy: var(--gray-500);
-  --border-xheavy: var(--gray-400);
+  --surface-chat: var(--dg-900);
+  --border-light: var(--dg-700);
+  --border-medium-alt: var(--dg-600);
+  --border-medium: var(--dg-600);
+  --border-heavy: var(--dg-500);
+  --border-xheavy: var(--dg-400);
   /* These are test styles */
 
-  --background: 0 0% 7%;
+  --background: 130 25% 3%;
   --foreground: 0 0% 98%;
-  --card: 0 0% 3.9%;
+  --card: 130 22% 4.5%;
   --card-foreground: 0 0% 98%;
-  --primary: 0 0% 98%;
-  --primary-foreground: 0 0% 9%;
-  --secondary: 0 0% 14.9%;
+  --primary: 152 69% 31%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 130 18% 10%;
   --secondary-foreground: 0 0% 98%;
-  --muted: 0 0% 14.9%;
-  --muted-foreground: 0 0% 63.9%;
-  --accent: 0 0% 14.9%;
+  --muted: 130 15% 9%;
+  --muted-foreground: 130 8% 62%;
+  --accent: 130 20% 11%;
   --accent-foreground: 0 0% 98%;
   --destructive: 0 62.8% 40.6%;
   --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 14.9%;
-  --input: 0 0% 14.9%;
-  --ring: 0 0% 83.1%;
+  --border: 130 18% 11%;
+  --input: 130 18% 11%;
+  --ring: 152 69% 31%;
   --chart-1: 220 70% 50%;
   --chart-2: 160 60% 45%;
   --chart-3: 30 80% 55%;
@@ -198,9 +211,9 @@ html {
   --text-primary: var(--gray-100);
   --text-secondary: var(--gray-300);
   --text-tertiary: var(--gizmo-gray-500);
-  --surface-primary: var(--gray-900);
-  --surface-secondary: var(--gray-800);
-  --surface-tertiary: var(--gray-700);
+  --surface-primary: var(--dg-950);
+  --surface-secondary: var(--dg-900);
+  --surface-tertiary: var(--dg-800);
   --border-light: rgba(217, 217, 227, 0.1);
   --border-medium: rgba(217, 217, 227, 0.15);
   --border-heavy: rgba(217, 217, 227, 0.2);
@@ -1358,12 +1371,12 @@ button {
 .btn-primary {
   --tw-bg-opacity: 1;
   --tw-text-opacity: 1;
-  background-color: rgba(16, 163, 127, var(--tw-bg-opacity));
+  background-color: rgba(25, 135, 84, var(--tw-bg-opacity));
   color: rgba(255, 255, 255, var(--tw-text-opacity));
 }
 .btn-primary:hover {
   --tw-bg-opacity: 1;
-  background-color: rgba(26, 127, 100, var(--tw-bg-opacity));
+  background-color: rgba(117, 215, 178, var(--tw-bg-opacity));
 }
 .btn-primary:focus {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width)
@@ -1380,22 +1393,22 @@ button {
 }
 .btn-primary.focus-visible {
   --tw-ring-opacity: 1;
-  --tw-ring-color: rgba(25, 195, 125, var(--tw-ring-opacity));
+  --tw-ring-color: rgba(25, 135, 84, var(--tw-ring-opacity));
 }
 .btn-primary:focus-visible {
   --tw-ring-opacity: 1;
-  --tw-ring-color: rgba(25, 195, 125, var(--tw-ring-opacity));
+  --tw-ring-color: rgba(25, 135, 84, var(--tw-ring-opacity));
 }
 .btn-primary:disabled:hover {
   --tw-bg-opacity: 1;
-  background-color: rgba(16, 163, 127, var(--tw-bg-opacity));
+  background-color: rgba(25, 135, 84, var(--tw-bg-opacity));
 }
 .btn-secondary {
   --tw-border-opacity: 1;
   --tw-bg-opacity: 1;
   --tw-text-opacity: 1;
   background-color: transparent;
-  background-color: rgba(16, 163, 156, var(--tw-bg-opacity));
+  background-color: rgba(25, 135, 84, var(--tw-bg-opacity));
   color: rgba(255, 255, 255, var(--tw-text-opacity));
 }
 .btn-secondary:hover {
@@ -1406,9 +1419,9 @@ button {
 }
 .dark .btn-secondary:hover {
   --tw-bg-opacity: 1;
-  border-color: rgba(8, 82, 78, var(--tw-border-opacity));
+  border-color: rgba(117, 215, 178, var(--tw-border-opacity));
   color: rgba(255, 255, 240, var(--tw-text-opacity));
-  background-color: rgba(8, 82, 78, var(--tw-bg-opacity));
+  background-color: rgba(117, 215, 178, var(--tw-bg-opacity));
 }
 .btn-neutral {
   --tw-bg-opacity: 1;
@@ -1514,8 +1527,8 @@ html {
 
 .dark body,
 .dark html {
-  --tw-bg-opacity: 1;
-  background-color: rgba(23, 23, 23, var(--tw-bg-opacity));
+  background: linear-gradient(160deg, #000000 0%, #030a04 45%, #061c0a 75%, #0a2a0f 100%) fixed;
+  background-color: var(--dg-950);
 }
 
 #__next,
@@ -1779,8 +1792,8 @@ html {
 }
 .dark body,
 .dark html {
-  --tw-bg-opacity: 1;
-  background-color: rgba(33, 33, 33, var(--tw-bg-opacity));
+  background: linear-gradient(160deg, #000000 0%, #030a04 45%, #061c0a 75%, #0a2a0f 100%) fixed;
+  background-color: var(--dg-950);
 }
 #__next,
 #root {

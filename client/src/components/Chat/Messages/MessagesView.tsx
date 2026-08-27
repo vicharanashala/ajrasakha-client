@@ -50,7 +50,10 @@ function MessagesViewContent({
               width: '100%',
             }}
           >
-            <div className="flex flex-col pb-9 pt-14 dark:bg-transparent">
+            {/* pb-36 on mobile clears the fixed/floating input bar (see ChatView.tsx) so the
+                last message can scroll fully above it instead of being hidden underneath;
+                sm+ reverts to the original pb-9 since the input sits in normal flow there. */}
+            <div className="flex flex-col pb-36 pt-14 dark:bg-transparent sm:pb-9">
               {(_messagesTree && _messagesTree.length == 0) || _messagesTree === null ? (
                 <div
                   className={cn(

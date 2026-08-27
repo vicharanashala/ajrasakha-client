@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useToastContext, TooltipAnchor, ListeningIcon, Spinner } from '@librechat/client';
+import { useToastContext, ListeningIcon, Spinner } from '@librechat/client';
 import { useLocalize, useSpeechToText, useGetAudioSettings } from '~/hooks';
 import { useChatFormContext } from '~/Providers';
 import { globalAudioId } from '~/common';
@@ -117,56 +117,77 @@ export default function AudioRecorder({
 
   const renderIcon = () => {
     if (isListening === true) {
-      return <ListeningIcon className="size-full stroke-emerald-400" />;
+      // Live equalizer bars in place of the mic glyph while actively recording. All 5 bars
+      // are the same height and share one animation — same duration, no per-bar delay —
+      // so they rise and fall together in perfect sync, like a set of parallel lines
+      // breathing as a single unit rather than a bouncing waveform.
+      return (
+        <span className="flex h-5 items-center gap-0.5" aria-hidden="true">
+          <style>{`
+            @keyframes voice-mic-eq-sync {
+              0%, 100% { transform: scaleY(0.45); }
+              50% { transform: scaleY(1); }
+            }
+          `}</style>
+          {[0, 1, 2, 3, 4].map((i) => (
+            <span
+              key={i}
+              className="h-full w-0.5 rounded-full bg-white"
+              style={{
+                // Center-anchored, not bottom-anchored: top and bottom both draw in toward
+                // the middle as the bar shrinks, instead of the bottom staying fixed.
+                transformOrigin: 'center',
+                animation: 'voice-mic-eq-sync 1.4s ease-in-out infinite',
+              }}
+            />
+          ))}
+        </span>
+      );
     }
     if (isLoading === true) {
-      return <Spinner className="stroke-text-secondary" size={24} />;
+      return <Spinner className="stroke-gray-900" size={28} />;
     }
-    return <ListeningIcon className="size-full stroke-text-secondary" />;
+    return <ListeningIcon className="size-full stroke-gray-900" />;
   };
 
   return (
-    <TooltipAnchor
-      description={localize('com_ui_use_micrphone')}
-      render={
-        <button
-          id="audio-recorder"
-          type="button"
-          aria-label={localize('com_ui_use_micrphone')}
-          onClick={isListening === true ? handleStopRecording : handleStartRecording}
-          disabled={disabled || isLoading === true}
-          className={cn(
-            'relative flex size-14 items-center justify-center rounded-full border-2 p-2.5 transition-colors',
-            // While listening — and still while transcribing right after, since that gap can
-            // take a second or two — a translucent surface with a glowing emerald ring, so the
-            // button reads as "busy" the whole time rather than snapping back to idle the
-            // instant recording stops. Border, glow, and icon all use the same emerald-400
-            // tone so the whole button reads as one color.
-            isListening === true || isLoading === true
-              ? 'border-emerald-400/70 bg-surface-primary/30'
-              : 'border-border-heavy hover:bg-surface-hover',
-          )}
-          style={
-            isListening === true || isLoading === true
-              ? { animation: 'voice-mic-pulse 1.8s ease-in-out infinite' }
-              : undefined
-          }
-          title={localize('com_ui_use_micrphone')}
-          aria-pressed={isListening}
-        >
-          {(isListening === true || isLoading === true) && (
-            <style>{`
-              @keyframes voice-mic-pulse {
-                0%, 100% { transform: scale(1); box-shadow: 0 0 8px 2px rgba(52, 211, 153, 0.4); }
-                50% { transform: scale(1.04); box-shadow: 0 0 14px 4px rgba(52, 211, 153, 0.2); }
-              }
-            `}</style>
-          )}
-          <span className="relative z-10 flex size-full items-center justify-center">
-            {renderIcon()}
-          </span>
-        </button>
-      }
-    />
+    <button
+      id="audio-recorder"
+      type="button"
+      aria-label={localize('com_ui_use_micrphone')}
+      onClick={isListening === true ? handleStopRecording : handleStartRecording}
+      disabled={disabled || isLoading === true}
+      className={cn(
+        // Solid green "ready" circle at rest, not just an outline — this is the button's
+        // default look (matches the always-on glowing mic treatment), not something that
+        // only appears once recording starts. Listening bumps the glow up a notch so
+        // there's still a visible state change when it's actually capturing audio.
+        'relative flex size-16 items-center justify-center rounded-full bg-green-500 p-2 transition-all duration-300 disabled:opacity-50',
+        isListening === true || isLoading === true
+          ? 'bg-emerald-400'
+          : 'hover:bg-green-400',
+      )}
+      style={{
+        boxShadow:
+          isListening === true || isLoading === true
+            ? '0 0 10px 2px rgba(117, 215, 178, 0.4)'
+            : '0 0 8px 1px rgba(25, 135, 84, 0.3)',
+        animation:
+          isListening === true || isLoading === true
+            ? 'voice-mic-pulse 1.8s ease-in-out infinite'
+            : undefined,
+      }}
+      aria-pressed={isListening}
+    >
+      <style>{`
+        @keyframes voice-mic-pulse {
+          0%, 100% { transform: scale(1); box-shadow: 0 0 10px 2px rgba(117, 215, 178, 0.4); }
+          50% { transform: scale(1.03); box-shadow: 0 0 14px 3px rgba(117, 215, 178, 0.22); }
+        }
+      `}</style>
+      <span className="relative z-10 flex size-6 items-center justify-center">
+        {renderIcon()}
+      </span>
+    </button>
   );
 }

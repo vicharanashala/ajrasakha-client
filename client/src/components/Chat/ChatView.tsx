@@ -100,7 +100,7 @@ function ChatView({ index = 0 }: { index?: number }) {
                   className={cn(
                     'flex flex-col',
                     isLandingPage
-                      ? 
+                      ?
                         'flex-1 items-center justify-center overflow-y-auto'
                       : 'min-h-0 flex-1 overflow-hidden',
                   )}
@@ -115,7 +115,21 @@ function ChatView({ index = 0 }: { index?: number }) {
                   <div
                     className={cn(
                       'w-full',
-                      isLandingPage && 'max-w-3xl transition-all duration-200 xl:max-w-4xl',
+                      isLandingPage
+                        ? 'max-w-3xl transition-all duration-200 xl:max-w-4xl'
+                        : // Floating input bar on mobile: fixed to the viewport bottom instead
+                          // of sitting in normal flow, so the message list can scroll a full
+                          // screen's worth behind it. The opaque backdrop + rounded top corners
+                          // span the whole strip (not just the visible input pill inside it),
+                          // masking anything scrolled up underneath — the same trick Header
+                          // above already uses with its own gradient, just solid instead of
+                          // fading. Reverts to a normal in-flow, transparent block at sm+,
+                          // where there's no need to float over anything.
+                          cn(
+                            'fixed inset-x-0 bottom-0 z-20 rounded-t-3xl bg-surface-primary pt-2',
+                            'shadow-[0_-4px_16px_rgba(0,0,0,0.25)]',
+                            'sm:static sm:z-auto sm:rounded-none sm:bg-transparent sm:pt-0 sm:shadow-none',
+                          ),
                     )}
                   >
                     <ChatForm index={index} />

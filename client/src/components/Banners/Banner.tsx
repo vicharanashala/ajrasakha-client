@@ -37,15 +37,25 @@ export const Banner = ({ onHeightChange }: { onHeightChange?: (height: number) =
   return (
     <div
       ref={bannerRef}
-      className="sticky top-0 z-20 flex w-full items-center justify-between bg-transparent px-3 py-2 text-black dark:text-white md:relative shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.12)]"
+      className="sticky top-0 z-20 flex w-full items-center justify-between bg-transparent px-3 py-2 md:relative"
     >
       <div id="banner-left-portal" className="z-30 flex min-w-[max-content] items-center"></div>
-      <div
-        className={cn(
-          'flex-1 whitespace-pre-line px-4 text-center text-xs text-black dark:text-white md:text-base lg:text-md',
-        )}
-        dangerouslySetInnerHTML={{ __html: formattedMessage }}
-      ></div>
+      {/* Small pill badge instead of a full-width text bar — a dev/testing notice reads as
+          a quiet status chip, not a banner that competes with the header for attention. */}
+      <div className="flex flex-1 items-center justify-center px-2">
+        <div
+          className={cn(
+            'inline-flex max-w-full items-center gap-2 rounded-full border border-border-light/60',
+            'bg-surface-secondary/80 px-3 py-1 text-xs font-medium text-text-secondary shadow-sm backdrop-blur-sm',
+          )}
+        >
+          <span className="size-1.5 shrink-0 rounded-full bg-amber-500" aria-hidden="true" />
+          <span
+            className="truncate whitespace-pre-line"
+            dangerouslySetInnerHTML={{ __html: formattedMessage }}
+          />
+        </div>
+      </div>
       {/* {!banner.persistable && (
         <Button
           size="icon"

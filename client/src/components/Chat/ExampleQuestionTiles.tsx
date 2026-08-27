@@ -14,17 +14,16 @@ const ICONS_BY_ID: Record<string, React.ComponentType<{ className?: string }>> =
 };
 
 /** Per-icon accent color, so the tile row isn't all one flat gray — each topic gets a color
- *  that fits it (crop health green, sky blue for weather, money amber, trust blue for the
+ *  that fits it (crop health green, sky blue for weather, money amber, trust purple for the
  *  insurance scheme). An id with no entry here falls back to the neutral secondary color.
- *  `chipBg` is the soft tinted circle the icon sits in on sm+ (see the desktop card below);
- *  it's sm-only since the icon stays plain/inline on the mobile row layout. */
+ *  `chipBg` is the solid colored circle the icon sits in, shown at every breakpoint. */
 const ICON_ACCENT_BY_ID: Record<string, { text: string; chipBg: string }> = {
-  'wheat-yellow-rust': { text: 'text-amber-500', chipBg: 'sm:bg-amber-500/10' },
-  'weather-forecast': { text: 'text-sky-500', chipBg: 'sm:bg-sky-500/10' },
-  'mandi-price-paddy': { text: 'text-emerald-500', chipBg: 'sm:bg-emerald-500/10' },
-  'pmfby-info': { text: 'text-blue-500', chipBg: 'sm:bg-blue-500/10' },
+  'wheat-yellow-rust': { text: 'text-white', chipBg: 'bg-green-600' },
+  'weather-forecast': { text: 'text-white', chipBg: 'bg-blue-500' },
+  'mandi-price-paddy': { text: 'text-white', chipBg: 'bg-amber-600' },
+  'pmfby-info': { text: 'text-white', chipBg: 'bg-purple-600' },
 };
-const DEFAULT_ICON_ACCENT = { text: 'text-text-secondary', chipBg: 'sm:bg-surface-tertiary' };
+const DEFAULT_ICON_ACCENT = { text: 'text-white', chipBg: 'bg-surface-tertiary' };
 
 /** Tappable example-question tiles shown on the welcome/empty-chat screen, between the
  *  greeting heading and the message input. Tapping a tile sends that question right away —
@@ -88,7 +87,7 @@ export default function ExampleQuestionTiles() {
           >
             <span
               className={cn(
-                'flex shrink-0 items-center justify-center sm:size-9 sm:rounded-xl sm:transition-colors sm:duration-300',
+                'flex size-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 sm:size-9',
                 accent.chipBg,
               )}
             >
