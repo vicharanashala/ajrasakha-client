@@ -2899,6 +2899,29 @@ html {
   animation: ajrasakha-progress-enter 0.45s ease-out both;
 }
 
+@keyframes ajrasakha-progress-dot {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.75);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.ajrasakha-progress-dot {
+  animation: ajrasakha-progress-dot 1.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ajrasakha-progress-dot {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
 @keyframes ajrasakha-progress-shimmer {
   from {
     background-position: 150% 0;

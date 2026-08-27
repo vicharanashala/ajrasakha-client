@@ -154,7 +154,13 @@ const ContentRender = memo(
                   ? 'rounded-2xl rounded-tr-sm px-4 py-2.5 bg-[oklch(0.8348_0.1302_160.908)] dark:bg-[oklch(0.4365_0.1044_156.7556)]'
                   : 'rounded-2xl rounded-tl-sm bg-gray-50 px-4 py-2.5 dark:bg-gray-900'),
               isEmptyLoading && 'ajrasakha-orbit-bubble',
-              isLast && (isUser ? 'ajrasakha-msg-in-user' : 'ajrasakha-msg-in-ai'),
+              // Not while it is the pending placeholder: that message is created with a
+              // temporary id and re-keyed when the server's real one arrives, so the bubble
+              // remounts and would play its entrance twice. The reply animates once, when the
+              // real content lands.
+              isLast &&
+                !isEmptyLoading &&
+                (isUser ? 'ajrasakha-msg-in-user' : 'ajrasakha-msg-in-ai'),
             )}
           >
             <ContentParts
