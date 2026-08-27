@@ -2939,6 +2939,54 @@ html {
   }
 }
 
+/* Message entrance, applied to the newest bubble only so loading a conversation doesn't set
+   every message animating at once.
+
+   The two differ on purpose. The user's own message rises further and faster — it was just
+   sent, so the motion reads as it travelling up out of the composer. The reply settles in
+   with a softer, slower fade and a barely-there scale, a calmer arrival for something the
+   user didn't trigger directly.
+
+   `backwards` rather than `both`: a lingering transform would leave a stacking context on the
+   bubble, and the loading ring's glow (`.ajrasakha-orbit-bubble::after`, z-index -1) would be
+   painted behind the bubble's own background and vanish. */
+@keyframes ajrasakha-msg-in-user {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ajrasakha-msg-in-ai {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ajrasakha-msg-in-user {
+  animation: ajrasakha-msg-in-user 320ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.ajrasakha-msg-in-ai {
+  animation: ajrasakha-msg-in-ai 420ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ajrasakha-msg-in-user,
+  .ajrasakha-msg-in-ai {
+    animation: none;
+  }
+}
+
 /* Animated light that runs clockwise around the actual message bubble's own
    border — applied directly to the same element that already has the bubble's
    rounded-2xl/rounded-tl-sm shape and bg-surface-tertiary fill (see ContentRender.tsx

@@ -29,11 +29,15 @@ const SubmitButton = React.memo(
             aria-label={localize('com_nav_send_message')}
             id="send-button"
             disabled={props.disabled}
+            // Brand green once there is something to send — the button is disabled while the
+            // box is empty, so the `disabled:` overrides carry the neutral resting look and
+            // the base carries the active one. Same green as the mic, so the composer's two
+            // primary actions match.
             className={cn(
-              'flex size-11 shrink-0 items-center justify-center rounded-full bg-surface-secondary text-text-primary md:size-[52px]',
-              'transition-colors duration-200 hover:bg-surface-hover',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-medium',
-              'disabled:cursor-not-allowed disabled:bg-surface-secondary disabled:text-text-secondary disabled:opacity-50 disabled:hover:bg-surface-secondary',
+              'flex size-11 shrink-0 items-center justify-center rounded-full bg-green-600 text-white md:size-[52px]',
+              'transition-[background-color,opacity] duration-200 hover:opacity-90',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600/50',
+              'disabled:cursor-not-allowed disabled:bg-surface-secondary disabled:text-text-secondary disabled:opacity-50 disabled:hover:opacity-50',
               props.className,
             )}
             data-testid="send-button"
