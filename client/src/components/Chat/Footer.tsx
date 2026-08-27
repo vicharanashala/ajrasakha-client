@@ -1,117 +1,37 @@
 import React, { useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
 import TagManager from 'react-gtm-module';
-import { Constants } from 'librechat-data-provider';
 import { useGetStartupConfig } from '~/data-provider';
 import { useLocalize } from '~/hooks';
 
+/**
+ * Sits directly beneath the chat composer and carries the in-development notice, which
+ * previously lived in the top Banner. Shown on every screen size; the legal links and
+ * version string that used to render here were removed.
+ */
 export default function Footer({ className }: { className?: string }) {
   const { data: config } = useGetStartupConfig();
   const localize = useLocalize();
 
-  const privacyPolicy = config?.interface?.privacyPolicy;
-  const termsOfService = config?.interface?.termsOfService;
-
-  const privacyPolicyRender = privacyPolicy?.externalUrl != null && (
-    <a
-      className="text-text-secondary underline"
-      href={privacyPolicy.externalUrl}
-      target={privacyPolicy.openNewTab === true ? '_blank' : undefined}
-      rel="noreferrer"
-    >
-      {localize('com_ui_privacy_policy')}
-      {privacyPolicy.openNewTab === true && (
-        <span className="sr-only">{' ' + localize('com_ui_opens_new_tab')}</span>
-      )}
-    </a>
-  );
-
-  const termsOfServiceRender = termsOfService?.externalUrl != null && (
-    <a
-      className="text-text-secondary underline"
-      href={termsOfService.externalUrl}
-      target={termsOfService.openNewTab === true ? '_blank' : undefined}
-      rel="noreferrer"
-    >
-      {localize('com_ui_terms_of_service')}
-      {termsOfService.openNewTab === true && (
-        <span className="sr-only">{' ' + localize('com_ui_opens_new_tab')}</span>
-      )}
-    </a>
-  );
-
-  const mainContentParts = (
-    typeof config?.customFooter === 'string'
-      ? config.customFooter
-      : '[LibreChat ' +
-        Constants.VERSION +
-        '](https://librechat.ai) - ' +
-        localize('com_ui_latest_footer')
-  ).split('|');
-
   useEffect(() => {
     if (config?.analyticsGtmId != null && typeof window.google_tag_manager === 'undefined') {
-      const tagManagerArgs = {
-        gtmId: config.analyticsGtmId,
-      };
-      TagManager.initialize(tagManagerArgs);
+      TagManager.initialize({ gtmId: config.analyticsGtmId });
     }
   }, [config?.analyticsGtmId]);
 
-  const mainContentRender = mainContentParts.map((text, index) => (
-    <React.Fragment key={`main-content-part-${index}`}>
-      <ReactMarkdown
-        components={{
-          a: ({ node: _n, href, children, ...otherProps }) => {
-            return (
-              <a
-                className="text-text-secondary underline"
-                href={href}
-                target="_blank"
-                rel="noreferrer"
-                {...otherProps}
-              >
-                {children}
-                <span className="sr-only">{' ' + localize('com_ui_opens_new_tab')}</span>
-              </a>
-            );
-          },
-
-          p: ({ node: _n, ...props }) => <span {...props} />,
-        }}
-      >
-        {text.trim()}
-      </ReactMarkdown>
-    </React.Fragment>
-  ));
-
-  const footerElements = [...mainContentRender, privacyPolicyRender, termsOfServiceRender].filter(
-    Boolean,
-  );
-
   return (
     <div className="relative w-full">
+      {/* In normal flow on small screens, where the composer strip is fixed to the bottom
+          and an absolutely positioned line would fall off-screen. From sm up it keeps the
+          original overlay position inside the composer's bottom margin. */}
       <div
         className={
           className ??
-          'absolute bottom-0 left-0 right-0 hidden items-center justify-center gap-2 px-2 py-2 text-center text-xs text-text-primary sm:flex md:px-[60px]'
+          'flex items-center justify-center gap-1.5 px-2 py-1.5 text-center text-xs text-text-secondary sm:absolute sm:bottom-0 sm:left-0 sm:right-0 sm:py-2 md:px-[60px]'
         }
         role="contentinfo"
       >
-        {footerElements.map((contentRender, index) => {
-          const isLastElement = index === footerElements.length - 1;
-          return (
-            <React.Fragment key={`footer-element-${index}`}>
-              {contentRender}
-              {!isLastElement && (
-                <div
-                  key={`separator-${index}`}
-                  className="h-2 border-r-[1px] border-border-medium"
-                />
-              )}
-            </React.Fragment>
-          );
-        })}
+        <span className="size-1.5 shrink-0 rounded-full bg-amber-500" aria-hidden="true" />
+        <span className="whitespace-pre-line">{localize('com_banner_message')}</span>
       </div>
     </div>
   );

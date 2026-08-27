@@ -2,22 +2,29 @@ import { OGDialog, OGDialogContent, useToastContext } from '@librechat/client';
 import { useAcceptSecondTermsMutation } from '~/data-provider';
 import { useLocalize } from '~/hooks';
 
+/**
+ * Acceptance dialog shown during onboarding after the terms. In `readOnly` mode it renders
+ * the same content for later review from the account menu: dismissable, with no
+ * accept/decline mutation.
+ */
 const ImportantNoticeModal = ({
   open,
   onOpenChange,
   onAccept,
   onDecline,
+  readOnly = false,
 }: {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onAccept: () => void;
-  onDecline: () => void;
+  onAccept?: () => void;
+  onDecline?: () => void;
+  readOnly?: boolean;
 }) => {
   const localize = useLocalize();
   const { showToast } = useToastContext();
   const acceptSecondTermsMutation = useAcceptSecondTermsMutation({
     onSuccess: () => {
-      onAccept();
+      onAccept?.();
       onOpenChange(false);
     },
     onError: () => {
@@ -30,12 +37,14 @@ const ImportantNoticeModal = ({
   };
 
   const handleDecline = () => {
-    onDecline();
+    onDecline?.();
     onOpenChange(false);
   };
 
+  // Onboarding requires an explicit choice, so dismissal is blocked there; reviewing the
+  // notice later can be closed normally.
   const handleOpenChange = (isOpen: boolean) => {
-    if (open && !isOpen) {
+    if (!readOnly && open && !isOpen) {
       return;
     }
     onOpenChange(isOpen);
@@ -44,8 +53,8 @@ const ImportantNoticeModal = ({
   return (
     <OGDialog open={open} onOpenChange={handleOpenChange}>
       <OGDialogContent
-        showCloseButton={false}
-        onInteractOutside={(e) => e.preventDefault()}
+        showCloseButton={readOnly}
+        onInteractOutside={readOnly ? undefined : (e) => e.preventDefault()}
         className="notice-modal-shell flex w-11/12 max-w-2xl flex-col overflow-y-hidden p-4 sm:w-3/4 sm:p-6 md:w-2/3 lg:w-1/2"
       >
         <section
@@ -91,6 +100,16 @@ const ImportantNoticeModal = ({
         </section>
 
         <div className="mt-2 flex shrink-0 flex-col-reverse gap-2 border-t border-border-light px-1 pt-4 sm:flex-row sm:justify-end sm:gap-3">
+          {readOnly ? (
+            <button
+              type="button"
+              onClick={() => onOpenChange(false)}
+              className="inline-flex w-full items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-6 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover sm:w-auto"
+            >
+              {localize('com_ui_close')}
+            </button>
+          ) : (
+            <>
           <button
             type="button"
             onClick={handleDecline}
@@ -108,6 +127,8 @@ const ImportantNoticeModal = ({
               ? `${localize('com_ui_important_notice_agree')}...`
               : localize('com_ui_important_notice_agree')}
           </button>
+            </>
+          )}
         </div>
       </OGDialogContent>
     </OGDialog>

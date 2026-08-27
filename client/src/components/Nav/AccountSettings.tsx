@@ -1,8 +1,10 @@
 import { useState, memo, useRef } from 'react';
 import * as Select from '@ariakit/react/select';
-import { FileText, LogOut } from 'lucide-react';
+import { FileText, LogOut, ScrollText, ShieldCheck } from 'lucide-react';
 import { LinkIcon, GearIcon, DropdownMenuSeparator, Avatar, TooltipAnchor } from '@librechat/client';
 import { MyFilesModal } from '~/components/Chat/Input/Files/MyFilesModal';
+import TermsAndConditionsModal from '~/components/ui/TermsAndConditionsModal';
+import ImportantNoticeModal from '~/components/ui/ImportantNoticeModal';
 import LogoutConfirmModal from '~/components/ui/LogoutConfirmModal';
 import { useGetStartupConfig, useGetUserBalance } from '~/data-provider';
 import { useAuthContext } from '~/hooks/AuthContext';
@@ -42,6 +44,8 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
   const [showSettings, setShowSettings] = useState(false);
   const [showFiles, setShowFiles] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const accountSettingsButtonRef = useRef<HTMLButtonElement>(null);
 
   const selectTrigger = (
@@ -139,6 +143,22 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
         )}
         <Select.SelectItem
           value=""
+          onClick={() => setShowTerms(true)}
+          className="select-item text-sm"
+        >
+          <ScrollText className="icon-md" aria-hidden="true" />
+          {localize('com_ui_terms_of_service')}
+        </Select.SelectItem>
+        <Select.SelectItem
+          value=""
+          onClick={() => setShowPrivacyPolicy(true)}
+          className="select-item text-sm"
+        >
+          <ShieldCheck className="icon-md" aria-hidden="true" />
+          {localize('com_ui_privacy_policy')}
+        </Select.SelectItem>
+        <Select.SelectItem
+          value=""
           onClick={() => setShowSettings(true)}
           className="select-item text-sm"
         >
@@ -164,6 +184,23 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
         />
       )}
       {showSettings && <Settings open={showSettings} onOpenChange={setShowSettings} />}
+      {/* Same dialogs the user accepts during onboarding, opened here purely for review. */}
+      {showTerms && (
+        <TermsAndConditionsModal
+          open={showTerms}
+          onOpenChange={setShowTerms}
+          title={startupConfig?.interface?.termsOfService?.modalTitle}
+          modalContent={startupConfig?.interface?.termsOfService?.modalContent}
+          readOnly
+        />
+      )}
+      {showPrivacyPolicy && (
+        <ImportantNoticeModal
+          open={showPrivacyPolicy}
+          onOpenChange={setShowPrivacyPolicy}
+          readOnly
+        />
+      )}
       <LogoutConfirmModal
         open={showLogoutConfirm}
         onOpenChange={setShowLogoutConfirm}

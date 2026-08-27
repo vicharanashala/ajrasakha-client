@@ -18,7 +18,7 @@ import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';
 
 /** Never shrink the model name below this, so it stays legible on very narrow screens. */
-const MODEL_NAME_MIN_FONT_SIZE = 9;
+const MODEL_NAME_MIN_FONT_SIZE = 11;
 
 function ModelSelectorContent() {
   const localize = useLocalize();
@@ -112,7 +112,7 @@ function ModelSelectorContent() {
       description={localize('com_ui_select_model')}
       render={
         <button
-          className="model-selector-trigger group flex min-w-0 items-center gap-1.5 rounded-full border border-transparent bg-transparent px-3 text-[11px] font-medium text-text-primary transition-colors duration-200 hover:bg-surface-secondary sm:text-xs"
+          className="model-selector-trigger group flex h-9 min-w-0 max-w-full items-center gap-1.5 rounded-full border border-transparent bg-transparent px-3 text-[13px] font-medium text-text-primary transition-colors duration-200 hover:bg-surface-secondary md:text-sm"
           aria-label={localize('com_ui_select_model')}
         >
           {selectedIcon && React.isValidElement(selectedIcon) && (

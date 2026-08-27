@@ -49,6 +49,55 @@ const formatListeningDuration = (totalSeconds: number) => {
   return `${minutes}:${seconds}`;
 };
 
+type InputMode = 'voice' | 'type';
+
+const INPUT_MODE_TABS: ReadonlyArray<{ mode: InputMode; label: string; Icon: typeof Mic }> = [
+  { mode: 'voice', label: 'Voice', Icon: Mic },
+  { mode: 'type', label: 'Text', Icon: Keyboard },
+];
+
+/** Segmented Voice/Text switch shown above the composer in both input modes. */
+const InputModeToggle = memo(
+  ({
+    inputMode,
+    setInputMode,
+  }: {
+    inputMode: InputMode;
+    setInputMode: React.Dispatch<React.SetStateAction<InputMode>>;
+  }) => (
+    <div
+      role="tablist"
+      aria-label="Input mode"
+      className="flex shrink-0 items-center gap-0.5 rounded-full bg-surface-secondary p-1"
+    >
+      {INPUT_MODE_TABS.map(({ mode, label, Icon }) => {
+        const isActive = inputMode === mode;
+        return (
+          <button
+            key={mode}
+            type="button"
+            role="tab"
+            aria-selected={isActive}
+            title={label}
+            onClick={() => setInputMode(mode)}
+            className={cn(
+              'flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium',
+              'transition-colors duration-200 motion-reduce:transition-none',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-medium',
+              isActive
+                ? 'bg-surface-tertiary-alt text-green-500 shadow-sm dark:text-green-400'
+                : 'text-text-secondary hover:text-text-primary',
+            )}
+          >
+            <Icon className="size-4 shrink-0" aria-hidden="true" />
+            <span>{label}</span>
+          </button>
+        );
+      })}
+    </div>
+  ),
+);
+
 const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -65,9 +114,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const [showLeftOptions, setShowLeftOptions] = useState(false);
   /** Which input mode is active by default: Voice on mobile, Type on larger screens.
    *  Still switches to Type once the user stops recording, on either size. */
-  const [inputMode, setInputMode] = useState<'voice' | 'type'>(() =>
-    isSmallScreen ? 'voice' : 'type',
-  );
+  const [inputMode, setInputMode] = useState<InputMode>(() => (isSmallScreen ? 'voice' : 'type'));
   /** Whether the mic is actively listening, to drive the "speaking now" animation. */
   const [isVoiceListening, setIsVoiceListening] = useState(false);
   /** Whether a transcript is still being produced (e.g. an external STT round-trip) after the
@@ -349,9 +396,9 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const baseClasses = useMemo(
     () =>
       cn(
-        'md:py-3.5 m-0 w-full resize-none py-[13px] placeholder-black/50 bg-transparent dark:placeholder-white/50 [&:has(textarea:focus)]:shadow-[0_2px_6px_rgba(0,0,0,.05)]',
+        'm-0 w-full min-w-0 flex-1 resize-none bg-transparent py-[10px] placeholder-text-secondary md:py-[14px]',
         isCollapsed ? 'max-h-[52px]' : 'max-h-[45vh] md:max-h-[55vh]',
-        isMoreThanThreeRows ? 'pl-4 sm:pl-5' : 'px-4 sm:px-5',
+        isMoreThanThreeRows ? 'pl-5' : 'px-5',
       ),
     [isCollapsed, isMoreThanThreeRows],
   );
@@ -441,21 +488,12 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               // white text) before the real color catches up — a white flash on every
               // switch. Keeping the width constant and only crossfading border-color (often
               // to/from transparent) avoids that entirely.
-              'relative flex w-full flex-grow flex-col overflow-hidden rounded-3xl border pb-2 text-text-primary transition-all duration-200 sm:pb-0',
-              // No visible border, fill, or shadow around the box while in Voice mode — it
-              // sits directly on the page background instead of reading as a boxed panel;
-              // the mic button is the focal point there. Temporary chat keeps its violet
-              // tint as a subtle mode indicator even in Voice mode.
-              inputMode === 'voice'
-                ? isTemporary
-                  ? 'border-transparent bg-violet-950/10'
-                  : 'border-transparent bg-transparent'
-                : cn(
-                    isTextAreaFocused ? 'shadow-lg' : 'shadow-md',
-                    isTemporary
-                      ? 'border-violet-800/60 bg-violet-950/10'
-                      : 'border-border-light bg-surface-chat',
-                  ),
+              // The composer sits directly on the page background in both modes: the rounded
+              // input pill (Text mode) and the mic button (Voice mode) carry the visual
+              // weight instead of an outer boxed panel. Temporary chat keeps its violet tint
+              // as a subtle mode indicator.
+              'relative flex w-full flex-grow flex-col overflow-hidden rounded-3xl border border-transparent bg-transparent pb-2 text-text-primary transition-all duration-200 sm:pb-0',
+              isTemporary && 'bg-violet-950/10',
               shakeCount > 0 && 'shake',
             )}
           >
@@ -483,8 +521,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 <div
                   ref={typePanelRef}
                   className={cn(
-                    'absolute inset-x-0 top-0 flex',
-                    isRTL ? 'flex-row-reverse' : 'flex-row',
+                    'absolute inset-x-0 top-0 flex flex-col gap-2 px-1 pb-1',
                     /**
                      * Deliberately shorter than the wrapper's height transition (see the
                      * outer div above). If content faded at the same pace as the height
@@ -503,7 +540,68 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   )}
                   aria-hidden={inputMode === 'voice'}
                 >
-                <div className="relative flex-1">
+                {/* Mode switch centred above the composer. */}
+                <div className="flex min-h-9 w-full items-center justify-center">
+                  <InputModeToggle inputMode={inputMode} setInputMode={setInputMode} />
+                </div>
+                {/* Attachments and tool badges expand in place above the input row rather
+                    than floating, since both the panel wrapper and the composer clip
+                    overflow for the mode-swap height animation. */}
+                {showLeftOptions && (
+                  <div
+                    className={cn(
+                      '@container flex flex-wrap items-center gap-1.5 rounded-2xl border border-border-light bg-surface-chat p-2 shadow-sm',
+                      isRTL ? 'flex-row-reverse' : 'flex-row',
+                    )}
+                  >
+                    <AttachFileChat conversation={conversation} disableInputs={disableInputs} />
+                    <BadgeRow
+                      showEphemeralBadges={
+                        !isAgentsEndpoint(endpoint) && !isAssistantsEndpoint(endpoint)
+                      }
+                      isSubmitting={isSubmitting}
+                      conversationId={conversationId}
+                      onChange={setBadges}
+                      isInChat={
+                        Array.isArray(conversation?.messages) && conversation.messages.length >= 1
+                      }
+                    />
+                  </div>
+                )}
+                <div
+                  className={cn(
+                    'flex w-full items-end gap-2',
+                    isRTL ? 'flex-row-reverse' : 'flex-row',
+                  )}
+                >
+                  <button
+                    type="button"
+                    aria-label={showLeftOptions ? 'Close options' : 'Open options'}
+                    aria-expanded={showLeftOptions}
+                    onClick={() => setShowLeftOptions((prev) => !prev)}
+                    className={cn(
+                      'flex size-11 shrink-0 items-center justify-center rounded-full text-text-primary md:size-[52px]',
+                      'transition-colors duration-200 hover:bg-surface-hover',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-medium',
+                      showLeftOptions ? 'bg-surface-hover' : 'bg-surface-secondary',
+                    )}
+                  >
+                    <Plus
+                      className={cn(
+                        'size-5 transition-transform duration-200',
+                        showLeftOptions && 'rotate-45',
+                      )}
+                      aria-hidden="true"
+                    />
+                  </button>
+                  <div
+                    className={cn(
+                      'relative flex min-w-0 flex-1 items-end overflow-hidden border bg-surface-chat',
+                      'transition-colors duration-200',
+                      isMoreThanThreeRows ? 'rounded-3xl' : 'rounded-full',
+                      isTextAreaFocused ? 'border-border-medium' : 'border-border-light',
+                    )}
+                  >
                   <TextareaAutosize
                     {...registerProps}
                     ref={(e) => {
@@ -545,13 +643,37 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                       }}
                     />
                   )}
-                </div>
-                <div className="flex flex-col items-start justify-start pr-2.5 pt-1.5">
-                  <CollapseChat
-                    isCollapsed={isCollapsed}
-                    isScrollable={isMoreThanThreeRows}
-                    setIsCollapsed={setIsCollapsed}
-                  />
+                  {isMoreThanThreeRows && (
+                    <div className="flex items-center justify-center pb-3 pr-2">
+                      <CollapseChat
+                        isCollapsed={isCollapsed}
+                        isScrollable={isMoreThanThreeRows}
+                        setIsCollapsed={setIsCollapsed}
+                      />
+                    </div>
+                  )}
+                  {!isSmallScreen && (
+                    <div className="flex max-w-[45%] shrink-0 items-center pb-2 pr-2">
+                      <ModelSelector startupConfig={startupConfig} />
+                    </div>
+                  )}
+                  </div>
+                  <div className="shrink-0">
+                    {isSubmitting && showStopButton ? (
+                      <StopButton
+                        stop={handleStopGenerating}
+                        setShowStopButton={setShowStopButton}
+                      />
+                    ) : (
+                      <SendButton
+                        ref={submitButtonRef}
+                        control={methods.control}
+                        disabled={
+                          filesLoading || isSubmitting || disableInputs || isNotAppendable
+                        }
+                      />
+                    )}
+                  </div>
                 </div>
                 </div>
                 <div
@@ -567,49 +689,10 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   )}
                   aria-hidden={inputMode !== 'voice'}
                 >
-                {/* Voice/Type selector, stacked in normal flow above the mic button
+                {/* Voice/Text selector, stacked in normal flow above the mic button
                     (the panel is a centered flex column, so this just becomes its first
                     child) instead of pinned to a corner. */}
-                <div
-                  role="tablist"
-                  aria-label="Input mode"
-                  className="relative flex shrink-0 items-center rounded-full border border-border-light/25 bg-surface-secondary/80 p-0.5 shadow-sm backdrop-blur-sm"
-                >
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={inputMode === 'voice'}
-                    aria-label="Voice"
-                    title="Voice"
-                    onClick={() => setInputMode('voice')}
-                    className={cn(
-                      'relative z-10 flex flex-1 items-center justify-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors duration-300 sm:px-3',
-                      inputMode === 'voice'
-                        ? 'text-green-400'
-                        : 'text-text-secondary hover:text-text-primary',
-                    )}
-                  >
-                    <Mic className="size-3.5 shrink-0" aria-hidden="true" />
-                    <span className="inline">Voice</span>
-                  </button>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={inputMode === 'type'}
-                    aria-label="Type"
-                    title="Type"
-                    onClick={() => setInputMode('type')}
-                    className={cn(
-                      'relative z-10 flex flex-1 items-center justify-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors duration-300 sm:px-3',
-                      inputMode === 'type'
-                        ? 'text-white'
-                        : 'text-text-secondary hover:text-text-primary',
-                    )}
-                  >
-                    <Keyboard className="size-3.5 shrink-0" aria-hidden="true" />
-                    <span className="inline">Type</span>
-                  </button>
-                </div>
+                <InputModeToggle inputMode={inputMode} setInputMode={setInputMode} />
                 {/* The actual mic button lives here (not just a decorative icon), so
                     tapping it directly starts/stops recording. Its own pulse animation
                     (see AudioRecorder.tsx) is the main "listening" indicator; this layer
@@ -681,132 +764,13 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
             {isSmallScreen &&
               mobileNavPortal &&
               createPortal(<ModelSelector startupConfig={startupConfig} />, mobileNavPortal)}
-            {/* This row is empty in Voice mode — the Plus button, mode toggle, and the
-                desktop-only model selector all hide themselves, and the Send button only
-                shows in Type mode — except while a response is actively generating, when
-                Stop still needs to be reachable. The mobile model selector doesn't depend
-                on this row at all (it portals independently above), so hiding the row here
-                doesn't affect it. Skipping the row entirely the rest of the time removes
-                its padding too, instead of leaving a blank strip of space below the mic
-                button. */}
-            {(inputMode !== 'voice' || (isSubmitting && showStopButton)) && (
-            <div
-              className={cn(
-                '@container items-between flex flex-wrap gap-1.5 pb-2 sm:gap-2',
-                isRTL ? 'flex-row-reverse' : 'flex-row',
-              )}
-            >
-              {inputMode !== 'voice' && (
-                <div className={`${isRTL ? 'mr-1.5 sm:mr-2' : 'ml-1.5 sm:ml-2'}`}>
-                  <button
-                    type="button"
-                    aria-label={showLeftOptions ? 'Close options' : 'Open options'}
-                    onClick={() => setShowLeftOptions((prev) => !prev)}
-                    className={cn(
-                      'flex size-9 items-center justify-center rounded-full p-1 transition-all duration-200',
-                      'hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-opacity-50',
-                      showLeftOptions && 'bg-surface-hover',
-                    )}
-                  >
-                    <Plus
-                      className={cn(
-                        'size-5 transition-transform duration-200',
-                        showLeftOptions && 'rotate-45',
-                      )}
-                      aria-hidden="true"
-                    />
-                  </button>
-                </div>
-              )}
-              {/* In Voice mode the selector is shown up top, parallel to the mic button,
-                  instead of here in the bottom row. */}
-              {inputMode !== 'voice' && !showLeftOptions && (
-                <div
-                  role="tablist"
-                  aria-label="Input mode"
-                  className="relative flex shrink-0 items-center rounded-full border border-border-light/25 bg-surface-secondary/80 p-0.5 shadow-sm backdrop-blur-sm"
-                >
-                  {/* sliding active-tab indicator */}
-                  <span
-                    aria-hidden="true"
-                    className={cn(
-                      'absolute inset-y-0.5 left-0.5 w-[calc(50%-2px)] rounded-full bg-emerald-600',
-                      'shadow-[0_1px_2px_rgba(0,0,0,0.18)]',
-                      'transition-transform duration-300 ease-out',
-                      inputMode === 'type' ? 'translate-x-full' : 'translate-x-0',
-                    )}
-                  />
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={inputMode === 'voice'}
-                    aria-label="Voice"
-                    title="Voice"
-                    onClick={() => setInputMode('voice')}
-                    className={cn(
-                      'relative z-10 flex flex-1 items-center justify-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors duration-300 sm:px-3',
-                      inputMode === 'voice'
-                        ? 'text-white'
-                        : 'text-text-secondary hover:text-text-primary',
-                    )}
-                  >
-                    <Mic className="size-3.5 shrink-0" aria-hidden="true" />
-                    <span className="inline">Voice</span>
-                  </button>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={inputMode === 'type'}
-                    aria-label="Type"
-                    title="Type"
-                    onClick={() => setInputMode('type')}
-                    className={cn(
-                      'relative z-10 flex flex-1 items-center justify-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors duration-300 sm:px-3',
-                      inputMode === 'type'
-                        ? 'text-white'
-                        : 'text-text-secondary hover:text-text-primary',
-                    )}
-                  >
-                    <Keyboard className="size-3.5 shrink-0" aria-hidden="true" />
-                    <span className="inline">Type</span>
-                  </button>
-                </div>
-              )}
-              {showLeftOptions && (
-                <>
-                  <div>
-                    <AttachFileChat conversation={conversation} disableInputs={disableInputs} />
-                  </div>
-                  <BadgeRow
-                    showEphemeralBadges={!isAgentsEndpoint(endpoint) && !isAssistantsEndpoint(endpoint)}
-                    isSubmitting={isSubmitting}
-                    conversationId={conversationId}
-                    onChange={setBadges}
-                    isInChat={
-                      Array.isArray(conversation?.messages) && conversation.messages.length >= 1
-                    }
-                  />
-                </>
-              )}
-              <div className="mx-auto flex" />
-              {/* Desktop-only inline model selector — the mobile version portals
-                  independently above this row, outside its Voice-mode hiding. */}
-              {!isSmallScreen && <ModelSelector startupConfig={startupConfig} />}
-              <div className={`${isRTL ? 'ml-1.5 sm:ml-2' : 'mr-1.5 sm:mr-2'}`}>
-                {isSubmitting && showStopButton ? (
-                  <StopButton stop={handleStopGenerating} setShowStopButton={setShowStopButton} />
-                ) : (
-                  endpoint &&
-                  inputMode === 'type' && (
-                    <SendButton
-                      ref={submitButtonRef}
-                      control={methods.control}
-                      disabled={filesLoading || isSubmitting || disableInputs || isNotAppendable}
-                    />
-                  )
-                )}
+            {/* Voice mode has no action row of its own; Stop still needs to be reachable
+                there while a response is generating. In Text mode the Send/Stop button lives
+                inline at the end of the input row instead. */}
+            {inputMode === 'voice' && isSubmitting && showStopButton && (
+              <div className="flex justify-center pb-2">
+                <StopButton stop={handleStopGenerating} setShowStopButton={setShowStopButton} />
               </div>
-            </div>
             )}
             {TextToSpeech && automaticPlayback && <StreamAudio index={index} />}
           </div>
