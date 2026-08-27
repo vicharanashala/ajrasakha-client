@@ -21,6 +21,7 @@ import MessagesView from './Messages/MessagesView';
 import Presentation from './Presentation';
 import ChatForm from './Input/ChatForm';
 import Landing from './Landing';
+import { EXAMPLE_QUESTIONS } from './exampleQuestions.config';
 import Header from './Header';
 import Footer from './Footer';
 import { cn } from '~/utils';
@@ -77,6 +78,7 @@ function ChatView({ index = 0 }: { index?: number }) {
     (!messagesTree || messagesTree.length === 0) &&
     (conversationId === Constants.NEW_CONVO || !conversationId);
   const isNavigating = (!messagesTree || messagesTree.length === 0) && conversationId != null;
+  const showExampleQuestions = isLandingPage && EXAMPLE_QUESTIONS.length > 0;
 
   if (isLoading && conversationId !== Constants.NEW_CONVO) {
     content = <LoadingSpinner />;
@@ -85,7 +87,7 @@ function ChatView({ index = 0 }: { index?: number }) {
   } else if (!isLandingPage) {
     content = <MessagesView messagesTree={messagesTree} />;
   } else {
-    content = <Landing centerFormOnLanding={centerFormOnLanding} />;
+    content = <Landing centerFormOnLanding={centerFormOnLanding} hasContentBelow={showExampleQuestions} />;
   }
 
   return (
@@ -113,7 +115,7 @@ function ChatView({ index = 0 }: { index?: number }) {
                       is on, and content nested inside that box would render past its zero
                       height and get visually covered by ChatForm below. As a sibling, its
                       layout height is unaffected by that collapse. */}
-                  {isLandingPage && <ExampleQuestionTiles />}
+                  {showExampleQuestions && <ExampleQuestionTiles />}
                   <div
                     className={cn(
                       'w-full',

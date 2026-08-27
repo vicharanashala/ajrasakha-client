@@ -27,7 +27,16 @@ function getTextSizeClass(text: string | undefined | null) {
   return 'text-lg sm:text-md';
 }
 
-export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: boolean }) {
+export default function Landing({
+  centerFormOnLanding,
+  hasContentBelow = false,
+}: {
+  centerFormOnLanding: boolean;
+  /** Something follows this screen (the example questions), so it drops its own bottom
+   *  padding and height-based margin and lets that block own the gap. Those two vary with the
+   *  greeting's line count, which makes the spacing below impossible to match from outside. */
+  hasContentBelow?: boolean;
+}) {
   const { conversation } = useChatContext();
   const agentsMap = useAgentsMapContext();
   const assistantMap = useAssistantsMapContext();
@@ -139,7 +148,7 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
 
   return (
     <div
-      className={`flex h-full transform-gpu flex-col items-center justify-center pb-16 transition-all duration-200 ${centerFormOnLanding ? 'max-h-full sm:max-h-0' : 'max-h-full'} ${getDynamicMargin}`}
+      className={`flex h-full transform-gpu flex-col items-center justify-center transition-all duration-200 ${hasContentBelow ? 'pb-0' : 'pb-16'} ${centerFormOnLanding ? 'max-h-full sm:max-h-0' : 'max-h-full'} ${hasContentBelow ? 'mb-0' : getDynamicMargin}`}
     >
       <div ref={contentRef} className="flex flex-col items-center gap-0 p-2">
         <div
