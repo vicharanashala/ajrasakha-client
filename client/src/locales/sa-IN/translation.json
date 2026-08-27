@@ -2062,5 +2062,10 @@
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) इति विषये सूचनां ददातु।",
   "com_ui_landing_question_weather_forecast": "मम प्रदेशस्य कृते वातावरणपूर्वानुमानं किम्?",
   "com_ui_landing_question_wheat_yellow_rust": "गोधूमशस्ये पीतकिट्टरोगः कथं नियन्त्रणीयः?",
-  "com_nav_notifications": "सूचनाः"
+  "com_nav_notifications": "सूचनाः",
+  "com_ui_answer_generating": "उत्तरं निर्मीयते…",
+  "com_ui_speech_converting": "भवतः वाक् पाठ्यरूपेण परिवर्त्यते…",
+  "com_ui_speech_listening": "शृणोति… {{duration}}",
+  "com_ui_speech_tap_to_speak": "वक्तुं स्पृशतु",
+  "com_ui_tap_stop_responding": "उत्तरं स्थगयितुं पुनः स्पृशतु"
 }

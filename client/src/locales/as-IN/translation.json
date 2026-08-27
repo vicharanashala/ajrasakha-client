@@ -2062,5 +2062,10 @@
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) ৰ বিষয়ে তথ্য দিয়ক।",
   "com_ui_landing_question_weather_forecast": "মোৰ অঞ্চলৰ বাবে বতৰৰ পূৰ্বাভাস কি?",
   "com_ui_landing_question_wheat_yellow_rust": "ঘেঁহু শস্যত হালধীয়া মৰিচা কেনেকৈ নিয়ন্ত্ৰণ কৰিব লাগে?",
-  "com_nav_notifications": "জাননীসমূহ"
+  "com_nav_notifications": "জাননীসমূহ",
+  "com_ui_answer_generating": "উত্তৰ সৃষ্টি হৈ আছে…",
+  "com_ui_speech_converting": "আপোনাৰ কণ্ঠস্বৰ লিখনিলৈ ৰূপান্তৰ কৰি থকা হৈছে…",
+  "com_ui_speech_listening": "শুনি আছে… {{duration}}",
+  "com_ui_speech_tap_to_speak": "কথা ক'বলৈ টিপক",
+  "com_ui_tap_stop_responding": "উত্তৰ দিয়া বন্ধ কৰিবলৈ পুনৰ টিপক"
 }

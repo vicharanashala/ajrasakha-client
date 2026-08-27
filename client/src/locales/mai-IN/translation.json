@@ -2062,5 +2062,10 @@
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) क बारे मे जानकारी दिअ।",
   "com_ui_landing_question_weather_forecast": "हमर क्षेत्रक लेल मौसमक पूर्वानुमान की अछि?",
   "com_ui_landing_question_wheat_yellow_rust": "गहुमक फसल मे पियर रतुआ कोना नियंत्रित करब?",
-  "com_nav_notifications": "सूचना"
+  "com_nav_notifications": "सूचना",
+  "com_ui_answer_generating": "उत्तर बनि रहल अछि…",
+  "com_ui_speech_converting": "अहाँक आवाजकेँ पाठ मे बदलल जा रहल अछि…",
+  "com_ui_speech_listening": "सुनि रहल अछि… {{duration}}",
+  "com_ui_speech_tap_to_speak": "बाजबाक लेल टैप करू",
+  "com_ui_tap_stop_responding": "उत्तर रोकबाक लेल फेर टैप करू"
 }

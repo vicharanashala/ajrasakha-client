@@ -2062,5 +2062,10 @@
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) नि थाखाय खबर होदि।",
   "com_ui_landing_question_weather_forecast": "आंनि थाखाय हावा-बानि खाबार मा?",
   "com_ui_landing_question_wheat_yellow_rust": "गहुम फसलाव हारिया रोगखौ मोनसे बेरहाबदि?",
-  "com_nav_notifications": "जाथोन"
+  "com_nav_notifications": "जाथोन",
+  "com_ui_answer_generating": "जबाब सोरजिनो जागोन…",
+  "com_ui_speech_converting": "नोंथांनि रावखौ लिरनायाव सोलायनाय जागोन…",
+  "com_ui_speech_listening": "मोनथिनো जागोन… {{duration}}",
+  "com_ui_speech_tap_to_speak": "रावনो नोब",
+  "com_ui_tap_stop_responding": "जबाब बोबथिनो थाबनायाव फिन नोब"
 }

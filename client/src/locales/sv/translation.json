@@ -637,5 +637,10 @@
   "com_ui_landing_question_pmfby_info": "Ge information om programmet Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "Vad är väderprognosen för min region?",
   "com_ui_landing_question_wheat_yellow_rust": "Hur bekämpar man gulrost i veteodlingen?",
-  "com_nav_notifications": "Aviseringar"
+  "com_nav_notifications": "Aviseringar",
+  "com_ui_answer_generating": "Genererar svar…",
+  "com_ui_speech_converting": "Konverterar ditt tal till text…",
+  "com_ui_speech_listening": "Lyssnar… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Tryck för att tala",
+  "com_ui_tap_stop_responding": "Tryck igen för att stoppa svaret"
 }

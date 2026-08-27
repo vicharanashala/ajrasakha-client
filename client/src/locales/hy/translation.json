@@ -302,5 +302,10 @@
   "com_ui_landing_question_pmfby_info": "Տրամադրեք տեղեկություններ Pradhan Mantri Fasal Bima Yojana (PMFBY) ծրագրի մասին։",
   "com_ui_landing_question_weather_forecast": "Ի՞նչ է եղանակի կանխատեսումը իմ տարածաշրջանում։",
   "com_ui_landing_question_wheat_yellow_rust": "Ինչպե՞ս վերահսկել դեղին ժանգը ցորենի բերքում։",
-  "com_nav_notifications": "Ծանուցումներ"
+  "com_nav_notifications": "Ծանուցումներ",
+  "com_ui_answer_generating": "Պատասխանը ստեղծվում է…",
+  "com_ui_speech_converting": "Ձեր խոսքը վերածվում է տեքստի…",
+  "com_ui_speech_listening": "Լսում է… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Հպեք՝ խոսելու համար",
+  "com_ui_tap_stop_responding": "Հպեք կրկին՝ պատասխանը կանգնեցնելու համար"
 }

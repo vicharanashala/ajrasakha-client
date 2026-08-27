@@ -1192,5 +1192,10 @@
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY)에 대한 정보를 알려주세요.",
   "com_ui_landing_question_weather_forecast": "제 지역의 일기예보는 어떻게 되나요?",
   "com_ui_landing_question_wheat_yellow_rust": "밀 작물의 황색 녹병을 어떻게 방제하나요?",
-  "com_nav_notifications": "알림"
+  "com_nav_notifications": "알림",
+  "com_ui_answer_generating": "답변을 생성하는 중…",
+  "com_ui_speech_converting": "음성을 텍스트로 변환하는 중…",
+  "com_ui_speech_listening": "듣는 중… {{duration}}",
+  "com_ui_speech_tap_to_speak": "탭하여 말하기",
+  "com_ui_tap_stop_responding": "다시 탭하면 응답이 중지됩니다"
 }

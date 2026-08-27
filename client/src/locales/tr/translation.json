@@ -808,5 +808,10 @@
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) hakkında bilgi verin.",
   "com_ui_landing_question_weather_forecast": "Bölgem için hava durumu tahmini nedir?",
   "com_ui_landing_question_wheat_yellow_rust": "Buğday ürününde sarı pas nasıl kontrol edilir?",
-  "com_nav_notifications": "Bildirimler"
+  "com_nav_notifications": "Bildirimler",
+  "com_ui_answer_generating": "Yanıt oluşturuluyor…",
+  "com_ui_speech_converting": "Konuşmanız metne dönüştürülüyor…",
+  "com_ui_speech_listening": "Dinleniyor… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Konuşmak için dokunun",
+  "com_ui_tap_stop_responding": "Yanıtı durdurmak için tekrar dokunun"
 }

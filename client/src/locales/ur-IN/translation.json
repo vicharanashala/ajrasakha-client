@@ -2063,5 +2063,10 @@
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) کے بارے میں معلومات دیں۔",
   "com_ui_landing_question_weather_forecast": "میرے علاقے کے لیے موسم کی پیشگوئی کیا ہے؟",
   "com_ui_landing_question_wheat_yellow_rust": "گندم کی فصل میں پیلی زنگ کو کیسے کنٹرول کیا جائے؟",
-  "com_nav_notifications": "اطلاعات"
+  "com_nav_notifications": "اطلاعات",
+  "com_ui_answer_generating": "جواب تیار ہو رہا ہے…",
+  "com_ui_speech_converting": "آپ کی آواز کو متن میں تبدیل کیا جا رہا ہے…",
+  "com_ui_speech_listening": "سن رہا ہے… {{duration}}",
+  "com_ui_speech_tap_to_speak": "بولنے کے لیے ٹیپ کریں",
+  "com_ui_tap_stop_responding": "جواب روکنے کے لیے دوبارہ ٹیپ کریں"
 }

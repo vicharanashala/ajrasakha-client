@@ -1110,5 +1110,10 @@
   "com_ui_landing_question_pmfby_info": "Forneça informações sobre o programa Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "Qual é a previsão do tempo para a minha região?",
   "com_ui_landing_question_wheat_yellow_rust": "Como controlar a ferrugem amarela na cultura do trigo?",
-  "com_nav_notifications": "Notificações"
+  "com_nav_notifications": "Notificações",
+  "com_ui_answer_generating": "Gerando resposta…",
+  "com_ui_speech_converting": "Convertendo sua fala em texto…",
+  "com_ui_speech_listening": "Ouvindo… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Toque para falar",
+  "com_ui_tap_stop_responding": "Toque novamente para parar a resposta"
 }

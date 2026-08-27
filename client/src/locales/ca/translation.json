@@ -970,5 +970,10 @@
   "com_ui_landing_question_pmfby_info": "Doneu informació sobre el programa Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "Quina és la previsió meteorològica per a la meva regió?",
   "com_ui_landing_question_wheat_yellow_rust": "Com controlar el rovell groc al blat?",
-  "com_nav_notifications": "Notificacions"
+  "com_nav_notifications": "Notificacions",
+  "com_ui_answer_generating": "S'està generant la resposta…",
+  "com_ui_speech_converting": "S'està convertint la teva veu a text…",
+  "com_ui_speech_listening": "Escoltant… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Toca per parlar",
+  "com_ui_tap_stop_responding": "Toca de nou per aturar la resposta"
 }

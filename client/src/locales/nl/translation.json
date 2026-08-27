@@ -815,5 +815,10 @@
   "com_ui_landing_question_pmfby_info": "Geef informatie over het programma Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "Wat is de weersverwachting voor mijn regio?",
   "com_ui_landing_question_wheat_yellow_rust": "Hoe bestrijd je gele roest in de tarweteelt?",
-  "com_nav_notifications": "Meldingen"
+  "com_nav_notifications": "Meldingen",
+  "com_ui_answer_generating": "Antwoord wordt gegenereerd…",
+  "com_ui_speech_converting": "Je spraak wordt omgezet in tekst…",
+  "com_ui_speech_listening": "Luistert… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Tik om te spreken",
+  "com_ui_tap_stop_responding": "Tik nogmaals om het antwoord te stoppen"
 }

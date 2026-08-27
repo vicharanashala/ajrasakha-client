@@ -1049,5 +1049,10 @@
   "com_ui_landing_question_pmfby_info": "Andke teavet programmi Pradhan Mantri Fasal Bima Yojana (PMFBY) kohta.",
   "com_ui_landing_question_weather_forecast": "Milline on ilmaprognoos minu piirkonnas?",
   "com_ui_landing_question_wheat_yellow_rust": "Kuidas tõrjuda kollast roostet nisusaagis?",
-  "com_nav_notifications": "Teated"
+  "com_nav_notifications": "Teated",
+  "com_ui_answer_generating": "Vastust genereeritakse…",
+  "com_ui_speech_converting": "Teie kõnet teisendatakse tekstiks…",
+  "com_ui_speech_listening": "Kuulan… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Puudutage, et rääkida",
+  "com_ui_tap_stop_responding": "Puudutage uuesti, et vastuse genereerimine peatada"
 }

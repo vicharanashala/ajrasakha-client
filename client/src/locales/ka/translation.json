@@ -174,5 +174,10 @@
   "com_ui_landing_question_pmfby_info": "მომაწოდეთ ინფორმაცია Pradhan Mantri Fasal Bima Yojana (PMFBY) პროგრამის შესახებ.",
   "com_ui_landing_question_weather_forecast": "როგორია ამინდის პროგნოზი ჩემი რეგიონისთვის?",
   "com_ui_landing_question_wheat_yellow_rust": "როგორ ავიცილოთ ყვითელი ჟანგი ხორბლის მოსავალში?",
-  "com_nav_notifications": "შეტყობინებები"
+  "com_nav_notifications": "შეტყობინებები",
+  "com_ui_answer_generating": "პასუხი გენერირდება…",
+  "com_ui_speech_converting": "თქვენი ხმა გარდაიქმნება ტექსტად…",
+  "com_ui_speech_listening": "ისმენს… {{duration}}",
+  "com_ui_speech_tap_to_speak": "შეეხეთ საუბრისთვის",
+  "com_ui_tap_stop_responding": "შეეხეთ კვლავ პასუხის შესაჩერებლად"
 }

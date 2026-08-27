@@ -10,5 +10,10 @@
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) སྐོར་གྱི་ཆ་འཕྲིན་སྤྲོད་རོགས།",
   "com_ui_landing_question_weather_forecast": "ངའི་ས་ཁུལ་གྱི་གནམ་གཤིས་ལུང་བསྟན་གང་རེད།",
   "com_ui_landing_question_wheat_yellow_rust": "གྲོ་ལོ་ཏོག་ལ་སེར་པོའི་ནད་ཇི་ལྟར་ཚོད་འཛིན་བྱེད་དགོས་སམ།",
-  "com_nav_notifications": "བརྡ་ཐོ།"
+  "com_nav_notifications": "བརྡ་ཐོ།",
+  "com_ui_answer_generating": "ལན་འདེབས་བཟོ་བཞིན་པ…",
+  "com_ui_speech_converting": "ཁྱེད་ཀྱི་སྐད་ཆ་ཡི་གེར་བསྒྱུར་བཞིན་པ…",
+  "com_ui_speech_listening": "ཉན་བཞིན་པ… {{duration}}",
+  "com_ui_speech_tap_to_speak": "སྨྲ་བར་ནོན་རོགས།",
+  "com_ui_tap_stop_responding": "ལན་འདེབས་མཚམས་འཇོག་ཆེད་སླར་ཡང་ནོན་རོགས།"
 }

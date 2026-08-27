@@ -10,5 +10,10 @@
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) توغرىسىدا ئۇچۇر بېرىڭ.",
   "com_ui_landing_question_weather_forecast": "مېنىڭ رايونۇمنىڭ ھاۋا ئۇچۇرى قانداق؟",
   "com_ui_landing_question_wheat_yellow_rust": "بۇغداي ھوسۇلىدىكى سېرىق زەڭ كېسىلىنى قانداق كونترول قىلغىلى بولىدۇ؟",
-  "com_nav_notifications": "ئۇقتۇرۇشلار"
+  "com_nav_notifications": "ئۇقتۇرۇشلار",
+  "com_ui_answer_generating": "جاۋاب شەكىللىنىۋاتىدۇ…",
+  "com_ui_speech_converting": "سۆزىڭىزنى تېكىستكە ئايلاندۇرۇۋاتىدۇ…",
+  "com_ui_speech_listening": "ئاڭلاۋاتىدۇ… {{duration}}",
+  "com_ui_speech_tap_to_speak": "سۆزلەش ئۈچۈن چېكىڭ",
+  "com_ui_tap_stop_responding": "جاۋابنى توختىتىش ئۈچۈن قايتا چېكىڭ"
 }

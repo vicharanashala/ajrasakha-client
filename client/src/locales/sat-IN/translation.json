@@ -2062,5 +2062,10 @@
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) ᱠᱷᱚᱱ ᱠᱷᱚᱵᱚᱨ ᱮᱢ ᱢᱮ।",
   "com_ui_landing_question_weather_forecast": "ᱟᱢᱟᱜ ᱡᱟᱭᱜᱟ ᱨᱮᱭᱟᱜ ᱦᱚᱭᱚᱢ ᱠᱷᱚᱵᱚᱨ ᱪᱮᱫ ᱠᱟᱱᱟ?",
   "com_ui_landing_question_wheat_yellow_rust": "ᱜᱮᱦᱩᱢ ᱟᱹᱰᱤ ᱨᱮ ᱦᱳᱞᱩᱫ ᱨᱚᱜ ᱚᱠᱛᱚ ᱰᱟᱦᱟᱨ ᱮᱫᱟ?",
-  "com_nav_notifications": "ᱠᱷᱚᱵᱚᱨ"
+  "com_nav_notifications": "ᱠᱷᱚᱵᱚᱨ",
+  "com_ui_answer_generating": "ᱚᱛᱚᱨ ᱛᱮᱭᱟᱨ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ…",
+  "com_ui_speech_converting": "ᱟᱢᱟᱜ ᱛᱤᱠᱤᱱ ᱚᱲᱟᱜ ᱛᱮ ᱵᱚᱫᱚᱞ ᱠᱟᱱᱟ…",
+  "com_ui_speech_listening": "ᱟᱭᱩᱢ ᱠᱟᱱᱟ… {{duration}}",
+  "com_ui_speech_tap_to_speak": "ᱨᱚᱲ ᱞᱟᱹᱜᱤᱫ ᱚᱛᱟᱭ ᱢᱮ",
+  "com_ui_tap_stop_responding": "ᱨᱚᱲ ᱵᱚᱸᱫᱚᱭ ᱞᱟᱹᱜᱤᱫ ᱫᱚᱵᱟᱹᱛᱮ ᱚᱛᱟᱭ ᱢᱮ"
 }

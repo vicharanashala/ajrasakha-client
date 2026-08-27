@@ -798,5 +798,10 @@
   "com_ui_landing_question_pmfby_info": "Podaj informacje o programie Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "Jaka jest prognoza pogody dla mojego regionu?",
   "com_ui_landing_question_wheat_yellow_rust": "Jak zwalczać żółtą rdzę w uprawie pszenicy?",
-  "com_nav_notifications": "Powiadomienia"
+  "com_nav_notifications": "Powiadomienia",
+  "com_ui_answer_generating": "Generowanie odpowiedzi…",
+  "com_ui_speech_converting": "Konwertowanie Twojej mowy na tekst…",
+  "com_ui_speech_listening": "Słucham… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Dotknij, aby mówić",
+  "com_ui_tap_stop_responding": "Dotknij ponownie, aby zatrzymać odpowiedź"
 }

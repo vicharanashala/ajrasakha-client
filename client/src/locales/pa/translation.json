@@ -2063,5 +2063,10 @@
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) ਬਾਰੇ ਜਾਣਕਾਰੀ ਦਿਓ।",
   "com_ui_landing_question_weather_forecast": "ਮੇਰੇ ਖੇਤਰ ਲਈ ਮੌਸਮ ਦੀ ਭਵਿੱਖਬਾਣੀ ਕੀ ਹੈ?",
   "com_ui_landing_question_wheat_yellow_rust": "ਕਣਕ ਦੀ ਫਸਲ ਵਿੱਚ ਪੀਲੀ ਕੁੰਗੀ ਨੂੰ ਕਿਵੇਂ ਕਾਬੂ ਕੀਤਾ ਜਾਵੇ?",
-  "com_nav_notifications": "ਸੂਚਨਾਵਾਂ"
+  "com_nav_notifications": "ਸੂਚਨਾਵਾਂ",
+  "com_ui_answer_generating": "ਜਵਾਬ ਤਿਆਰ ਹੋ ਰਿਹਾ ਹੈ…",
+  "com_ui_speech_converting": "ਤੁਹਾਡੀ ਆਵਾਜ਼ ਨੂੰ ਟੈਕਸਟ ਵਿੱਚ ਬਦਲਿਆ ਜਾ ਰਿਹਾ ਹੈ…",
+  "com_ui_speech_listening": "ਸੁਣ ਰਿਹਾ ਹੈ… {{duration}}",
+  "com_ui_speech_tap_to_speak": "ਬੋਲਣ ਲਈ ਟੈਪ ਕਰੋ",
+  "com_ui_tap_stop_responding": "ਜਵਾਬ ਰੋਕਣ ਲਈ ਦੁਬਾਰਾ ਟੈਪ ਕਰੋ"
 }
