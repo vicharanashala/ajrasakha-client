@@ -546,7 +546,7 @@
   "com_ui_select_options": "पर्याय निवडा...",
   "com_ui_submit": "सबमिट करा",
   "com_ui_yes": "होय",
-  "com_banner_message": "अनुप्रयोग सध्या विकासाधीन आहे आणि तो केवळ चाचणी आणि प्रमाणीकरणाच्या उद्देशाने प्रदान केला गेला आहे",
+  "com_banner_message": "विकासाधीन - केवळ चाचणी आणि प्रमाणीकरणासाठी",
   "chat_direction_left_to_right": "डावीकडून उजवीकडे",
   "chat_direction_right_to_left": "उजवीकडून डावीकडे",
   "com_a11y_ai_composing": "AI अद्याप उत्तर तयार करत आहे.",
@@ -2054,5 +2054,9 @@
   "com_ui_feedback_enforce_title": "अभिप्राय आवश्यक",
   "com_ui_feedback_enforce_question": "मागील प्रतिसाद कसा होता?",
   "com_ui_feedback_enforce_later": "कदाचित नंतर",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "तज्ज्ञांनी पडताळणी केली",
+  "com_ui_landing_chip_multilingual": "बहुभाषिक",
+  "com_ui_landing_chip_voice": "आवाजाने विचारा",
+  "com_ui_landing_tagline": "हुशारीने शेती करा. अधिक चांगले पिकवा."
 }

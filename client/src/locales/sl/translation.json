@@ -136,5 +136,10 @@
   "com_farmer_option_graduate": "Diplomant",
   "com_farmer_option_post_graduate": "Podiplomski",
   "com_auth_error_email_in_use": "E-poštni naslov je že v uporabi",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Preverjeno s strani strokovnjakov",
+  "com_ui_landing_chip_multilingual": "Večjezično",
+  "com_ui_landing_chip_voice": "Vprašaj z glasom",
+  "com_ui_landing_tagline": "Kmetujte pametneje. Rastite bolje.",
+  "com_banner_message": "V razvoju - samo za testiranje in preverjanje"
 }

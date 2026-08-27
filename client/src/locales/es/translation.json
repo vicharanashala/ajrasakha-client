@@ -886,5 +886,10 @@
   "com_farmer_option_under_graduate": "Pregrado",
   "com_farmer_option_graduate": "Graduado",
   "com_farmer_option_post_graduate": "Posgrado",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Verificado por expertos",
+  "com_ui_landing_chip_multilingual": "Multilingüe",
+  "com_ui_landing_chip_voice": "Pregunta por voz",
+  "com_ui_landing_tagline": "Cultiva de forma más inteligente. Crece mejor.",
+  "com_banner_message": "En desarrollo - solo para pruebas y validación"
 }

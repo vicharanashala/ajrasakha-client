@@ -798,5 +798,10 @@
   "com_farmer_option_under_graduate": "Lisans Altı",
   "com_farmer_option_graduate": "Lisans Mezunu",
   "com_farmer_option_post_graduate": "Lisansüstü",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Uzmanlarca doğrulandı",
+  "com_ui_landing_chip_multilingual": "Çok dilli",
+  "com_ui_landing_chip_voice": "Sesle sor",
+  "com_ui_landing_tagline": "Daha akıllıca ekin. Daha iyi büyüt.",
+  "com_banner_message": "Geliştirme aşamasında - yalnızca test ve doğrulama amaçlıdır"
 }

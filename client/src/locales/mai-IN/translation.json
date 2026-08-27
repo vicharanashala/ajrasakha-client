@@ -2029,7 +2029,7 @@
   "com_farmer_validation_smartphones_integer": "स्मार्टफोनक संख्या एकटा पूर्णांक होबय चाही",
   "com_farmer_validation_smartphones_range": "स्मार्टफोनक संख्या 0 सँ 20 क बीच होबय चाही",
   "com_user_message": "अहाँ",
-  "com_banner_message": "एप्लिकेशन एखन विकासक चरण मे अछि आ एकरा केवल परीक्षण आ सत्यापनक उद्देश्य सँ प्रदान कएल गे",
+  "com_banner_message": "विकासक चरण मे - केवल परीक्षण आ सत्यापनक लेल",
   "com_ui_feedback_what_worked_what_not": "कृपया हमरा बताउ जे की नीक सँ काज केलक आ की नहि केलक।",
   "com_ui_feedback_tag_useful_crop_recommendations": "उपयोगी फसल सिफारिश",
   "com_ui_feedback_tag_helpful_information": "मददगार जानकारी",
@@ -2053,5 +2053,9 @@
   "com_ui_feedback_enforce_title": "प्रतिक्रिया आवश्यक छ",
   "com_ui_feedback_enforce_question": "अघिल्लो प्रतिक्रिया कस्तो थियो?",
   "com_ui_feedback_enforce_later": "सायद पछि",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "विशेषज्ञ द्वारा सत्यापित",
+  "com_ui_landing_chip_multilingual": "बहुभाषी",
+  "com_ui_landing_chip_voice": "आवाज सँ पूछू",
+  "com_ui_landing_tagline": "बुद्धिमानी सँ खेती करू। नीक जेकाँ उपजाउ।"
 }

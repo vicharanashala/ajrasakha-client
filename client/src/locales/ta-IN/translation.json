@@ -546,7 +546,7 @@
   "com_ui_select_options": "விருப்பங்களைத் தேர்ந்தெடுக்கவும்...",
   "com_ui_submit": "சமர்ப்பிக்க",
   "com_ui_yes": "ஆம்",
-  "com_banner_message": "பயன்பாடு தற்போது உருவாக்கத்தில் உள்ளது, இது சோதனை மற்றும் சரிபார்ப்பு நோக்கங்களுக்காக மட்டுமே வழங்கப்படுகிறது",
+  "com_banner_message": "உருவாக்கத்தில் உள்ளது - சோதனை மற்றும் சரிபார்ப்புக்காக மட்டும்",
   "chat_direction_left_to_right": "இடமிருந்து வலம்",
   "chat_direction_right_to_left": "வலமிருந்து இடம்",
   "com_a11y_ai_composing": "AI இன்னும் பதிலை எழுதிக்கொண்டிருக்கிறது.",
@@ -2054,5 +2054,9 @@
   "com_ui_feedback_enforce_title": "கருத்து தேவை",
   "com_ui_feedback_enforce_question": "முந்தைய பதில் எப்படி இருந்தது?",
   "com_ui_feedback_enforce_later": "ஒருவேளை பின்னர்",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "நிபுணர்களால் சரிபார்க்கப்பட்டது",
+  "com_ui_landing_chip_multilingual": "பன்மொழி",
+  "com_ui_landing_chip_voice": "குரல் மூலம் கேளுங்கள்",
+  "com_ui_landing_tagline": "புத்திசாலித்தனமாக விவசாயம் செய்யுங்கள். சிறப்பாக வளருங்கள்."
 }

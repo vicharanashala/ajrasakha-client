@@ -1372,5 +1372,10 @@
   "com_ui_feedback_enforce_title": "נדרש משוב",
   "com_ui_feedback_enforce_question": "איך הייתה התגובה הקודמת?",
   "com_ui_feedback_enforce_later": "אולי מאוחר יותר",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "מאומת על ידי מומחים",
+  "com_ui_landing_chip_multilingual": "רב-לשוני",
+  "com_ui_landing_chip_voice": "שאל בקול",
+  "com_ui_landing_tagline": "עבדו את האדמה בחוכמה. גדלו טוב יותר.",
+  "com_banner_message": "בפיתוח - למטרות בדיקה ואימות בלבד"
 }

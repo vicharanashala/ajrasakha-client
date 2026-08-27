@@ -2024,7 +2024,7 @@
   "com_farmer_validation_smartphones_required": "കുടുംബത്തിലെ സ്മാർട്ട്ഫോണുകളുടെ എണ്ണം ആവശ്യമാണ്",
   "com_farmer_validation_state_required": "സംസ്ഥാനം ആവശ്യമാണ്",
   "com_farmer_validation_village_required": "ഗ്രാമത്തിന്റെ പേര് ആവശ്യമാണ്",
-  "com_banner_message": "ആപ്ലിക്കേഷൻ നിലവിൽ വികസിപ്പിച്ചുകൊണ്ടിരിക്കുന്നു, ഇത് പരിശോധനയ്ക്കും മൂല്യനിർണ്ണയ ആവശ്യങ്ങൾക്കും മാത്രമാണ് നൽകിയിരിക്കുന്നത്",
+  "com_banner_message": "വികസനത്തിലാണ് - പരിശോധനയ്ക്കും മൂല്യനിർണ്ണയത്തിനും മാത്രം",
   "com_farmer_validation_phone_invalid": "അസാധുവായ ഫോൺ നമ്പർ",
   "com_farmer_validation_age_minimum": "കുറഞ്ഞത് 18 വയസെങ്കിലും ഉണ്ടായിരിക്കണം",
   "com_farmer_validation_non_negative": "നെഗറ്റീവ് ആകാൻ പാടില്ല",
@@ -2054,5 +2054,9 @@
   "com_ui_feedback_enforce_title": "അഭിപ്രായം ആവശ്യമാണ്",
   "com_ui_feedback_enforce_question": "മുമ്പത്തെ പ്രതികരണം എങ്ങനെയായിരുന്നു?",
   "com_ui_feedback_enforce_later": "ഒരുപക്ഷേ പിന്നീട്",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "വിദഗ്ധർ പരിശോധിച്ചത്",
+  "com_ui_landing_chip_multilingual": "ബഹുഭാഷ",
+  "com_ui_landing_chip_voice": "ശബ്ദത്തിലൂടെ ചോദിക്കുക",
+  "com_ui_landing_tagline": "സ്മാർട്ടായി കൃഷി ചെയ്യുക. മെച്ചപ്പെട്ട വിളവെടുക്കുക."
 }

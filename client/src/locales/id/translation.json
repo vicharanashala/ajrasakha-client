@@ -374,5 +374,10 @@
   "com_farmer_option_under_graduate": "Sarjana Muda",
   "com_farmer_option_graduate": "Sarjana",
   "com_farmer_option_post_graduate": "Pascasarjana",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Terverifikasi ahli",
+  "com_ui_landing_chip_multilingual": "Multibahasa",
+  "com_ui_landing_chip_voice": "Tanya dengan suara",
+  "com_ui_landing_tagline": "Bertani lebih cerdas. Tumbuh lebih baik.",
+  "com_banner_message": "Dalam pengembangan - hanya untuk pengujian & validasi"
 }

@@ -2029,7 +2029,7 @@
   "com_farmer_validation_smartphones_integer": "স্মাৰ্টফোনৰ সংখ্যা এটা পূৰ্ণ সংখ্যা হ’ব লাগিব",
   "com_farmer_validation_smartphones_range": "স্মাৰ্টফোনৰ সংখ্যা ০ ৰ পৰা ২০ ৰ ভিতৰত হ’ব লাগিব",
   "com_user_message": "আপুনি",
-  "com_banner_message": "এপ্লিকেচনটো বৰ্তমান বিকাশৰ পৰ্যায়ত আছে আৰু কেৱল পৰীক্ষা আৰু নিশ্চিতকৰণৰ বাবেহে আগবঢ়োৱা হৈছে",
+  "com_banner_message": "বিকাশৰ পৰ্যায়ত - কেৱল পৰীক্ষা আৰু নিশ্চিতকৰণৰ বাবে",
   "com_ui_feedback_what_worked_what_not": "কি ভাল লাগিল, আৰু কি ভাল নালাগিল, আমাক জনাওক।",
   "com_ui_feedback_tag_useful_crop_recommendations": "উপযোগী শস্যৰ পৰামৰ্শ",
   "com_ui_feedback_tag_helpful_information": "সহায়ক তথ্য",
@@ -2053,5 +2053,9 @@
   "com_ui_feedback_enforce_title": "মতামত প্রয়োজন",
   "com_ui_feedback_enforce_question": "পূর্ববর্তী উত্তরটি কেমন ছিল?",
   "com_ui_feedback_enforce_later": "পরে হয়তো",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "বিশেষজ্ঞ দ্বাৰা সত্যাপিত",
+  "com_ui_landing_chip_multilingual": "বহুভাষিক",
+  "com_ui_landing_chip_voice": "কণ্ঠস্বৰেৰে সোধক",
+  "com_ui_landing_tagline": "স্মাৰ্টভাৱে খেতি কৰক। ভালভাৱে বৃদ্ধি পাওক।"
 }

@@ -546,7 +546,7 @@
   "com_ui_select_options": "ఎంపికలను ఎంచుకోండి...",
   "com_ui_submit": "సమర్పించండి",
   "com_ui_yes": "అవును",
-  "com_banner_message": "అప్లికేషన్ ప్రస్తుతం అభివృద్ధిలో ఉంది మరియు ఇది పరీక్ష మరియు ధ్రువీకరణ ప్రయోజనాల కోసం మాత్రమే అందించబడింది",
+  "com_banner_message": "అభివృద్ధిలో ఉంది - పరీక్ష మరియు ధ్రువీకరణ కోసం మాత్రమే",
   "chat_direction_left_to_right": "ఎడమ నుండి కుడికి",
   "chat_direction_right_to_left": "కుడి నుండి ఎడమకు",
   "com_a11y_ai_composing": "AI ఇంకా రచిస్తోంది.",
@@ -2054,5 +2054,9 @@
   "com_ui_feedback_enforce_title": "అభిప్రాయం అవసరం",
   "com_ui_feedback_enforce_question": "మునుపటి ప్రతిస్పందన ఎలా ఉంది?",
   "com_ui_feedback_enforce_later": "బహుశా తర్వాత",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "నిపుణులచే ధృవీకరించబడింది",
+  "com_ui_landing_chip_multilingual": "బహుభాషా",
+  "com_ui_landing_chip_voice": "వాయిస్ ద్వారా అడగండి",
+  "com_ui_landing_tagline": "తెలివిగా వ్యవసాయం చేయండి. మెరుగ్గా పండించండి."
 }

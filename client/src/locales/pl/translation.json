@@ -788,5 +788,10 @@
   "com_farmer_option_under_graduate": "Student",
   "com_farmer_option_graduate": "Absolwent",
   "com_farmer_option_post_graduate": "Studia Podyplomowe",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Zweryfikowane przez ekspertów",
+  "com_ui_landing_chip_multilingual": "Wielojęzyczny",
+  "com_ui_landing_chip_voice": "Zapytaj głosem",
+  "com_ui_landing_tagline": "Uprawiaj mądrzej. Rośnij lepiej.",
+  "com_banner_message": "W trakcie tworzenia - wyłącznie do testów i walidacji"
 }

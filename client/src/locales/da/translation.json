@@ -999,5 +999,10 @@
   "com_farmer_option_under_graduate": "Bachelorstuderende",
   "com_farmer_option_graduate": "Bachelor",
   "com_farmer_option_post_graduate": "Kandidat",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Ekspertverificeret",
+  "com_ui_landing_chip_multilingual": "Flersproget",
+  "com_ui_landing_chip_voice": "Spørg med stemme",
+  "com_ui_landing_tagline": "Dyrk smartere. Gro bedre.",
+  "com_banner_message": "Under udvikling - kun til test og validering"
 }

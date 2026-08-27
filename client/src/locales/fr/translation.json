@@ -1381,5 +1381,10 @@
   "com_ui_feedback_enforce_title": "Avis requis",
   "com_ui_feedback_enforce_question": "Comment était la réponse précédente ?",
   "com_ui_feedback_enforce_later": "Peut-être plus tard",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Vérifié par des experts",
+  "com_ui_landing_chip_multilingual": "Multilingue",
+  "com_ui_landing_chip_voice": "Demander à voix haute",
+  "com_ui_landing_tagline": "Cultivez plus intelligemment. Grandissez mieux.",
+  "com_banner_message": "En développement - uniquement à des fins de test et de validation"
 }

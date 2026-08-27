@@ -2029,7 +2029,7 @@
   "com_farmer_validation_smartphones_integer": "स्मार्ट फोनांची संख्या पुराय आंकड्यांत आसूंक जाय",
   "com_farmer_validation_smartphones_range": "स्मार्ट फोनांची संख्या 0 ते 20 मदीं आसूंक जाय",
   "com_user_message": "तुमी",
-  "com_banner_message": "हें ॲप्लिकेशन सद्या तयार जाता आनी तें फकत चाचणी (testing) आनी पडताळणीच्या (validation) उद्देशान दिल्लें आसा",
+  "com_banner_message": "सद्या तयार जाता - फकत चाचणी आनी पडताळणी खातीर",
   "com_ui_feedback_what_worked_what_not": "कितें बरे जालें आनी कितें बरे जाले ना, तें आमकां सांगात.",
   "com_ui_feedback_tag_useful_crop_recommendations": "उपेगी पिकांच्या शिफारशी",
   "com_ui_feedback_tag_helpful_information": "उपेगी म्हायती",
@@ -2053,5 +2053,9 @@
   "com_ui_feedback_enforce_title": "अभिप्राय आवश्यक",
   "com_ui_feedback_enforce_question": "मागील प्रतिसाद कसा होता?",
   "com_ui_feedback_enforce_later": "कदाचित नंतर",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "जाणकारांनी सत्यापित केला",
+  "com_ui_landing_chip_multilingual": "बहुभाशिक",
+  "com_ui_landing_chip_voice": "आवाजान विचारात",
+  "com_ui_landing_tagline": "हुशारीन शेती करात. बरे वाडात."
 }

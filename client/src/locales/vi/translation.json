@@ -470,5 +470,10 @@
   "com_ui_feedback_enforce_title": "Yêu cầu phản hồi",
   "com_ui_feedback_enforce_question": "Câu trả lời trước như thế nào?",
   "com_ui_feedback_enforce_later": "Có thể để sau",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Được chuyên gia xác minh",
+  "com_ui_landing_chip_multilingual": "Đa ngôn ngữ",
+  "com_ui_landing_chip_voice": "Hỏi bằng giọng nói",
+  "com_ui_landing_tagline": "Canh tác thông minh hơn. Phát triển tốt hơn.",
+  "com_banner_message": "Đang phát triển - chỉ dành cho mục đích thử nghiệm & xác thực"
 }

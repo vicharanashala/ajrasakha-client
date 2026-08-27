@@ -2024,7 +2024,7 @@
   "com_farmer_validation_smartphones_required": "परिवार में स्मार्टफोन की संख्या आवश्यक है",
   "com_farmer_validation_state_required": "राज्य आवश्यक है",
   "com_farmer_validation_village_required": "गाँव का नाम आवश्यक है",
-  "com_banner_message": "एप्लिकेशन अभी विकासाधीन है और यह केवल परीक्षण और सत्यापन उद्देश्यों के लिए प्रदान किया गया है",
+  "com_banner_message": "विकासाधीन - केवल परीक्षण और सत्यापन के लिए",
   "com_farmer_validation_phone_invalid": "अमान्य फ़ोन नंबर",
   "com_farmer_validation_age_minimum": "कम से कम 18 वर्ष होना चाहिए",
   "com_farmer_validation_non_negative": "ऋणात्मक नहीं हो सकता",
@@ -2054,5 +2054,9 @@
   "com_ui_feedback_enforce_title": "फ़ीडबैक आवश्यक",
   "com_ui_feedback_enforce_question": "पिछली प्रतिक्रिया कैसी थी?",
   "com_ui_feedback_enforce_later": "शायद बाद में",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "विशेषज्ञ द्वारा सत्यापित",
+  "com_ui_landing_chip_multilingual": "बहुभाषी",
+  "com_ui_landing_chip_voice": "आवाज़ से पूछें",
+  "com_ui_landing_tagline": "समझदारी से खेती करें। बेहतर उपज पाएं।"
 }

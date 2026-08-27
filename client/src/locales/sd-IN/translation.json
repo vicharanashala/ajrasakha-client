@@ -2029,7 +2029,7 @@
   "com_farmer_validation_smartphones_integer": "اسمارٽ فونز جو تعداد هڪ صحيح انگ هجڻ گهرجي",
   "com_farmer_validation_smartphones_range": "اسمارٽ فونز جو تعداد 0 کان 20 جي وچ ۾ هجڻ گهرجي",
   "com_user_message": "توهان",
-  "com_banner_message": "هي ايپليڪيشن اڃا تياري جي مرحلي ۾ آهي ۽ فقط ٽيسٽنگ لاءِ آهي",
+  "com_banner_message": "تياري جي مرحلي ۾ - فقط ٽيسٽنگ ۽ تصديق لاءِ",
   "com_ui_feedback_what_worked_what_not": "اسان کي ٻڌايو ته ڇا سٺو ڪم ڪيو ۽ ڇا نه ڪيو.",
   "com_ui_feedback_tag_useful_crop_recommendations": "فصلن لاءِ فائديمند سفارشون",
   "com_ui_feedback_tag_helpful_information": "مددگار معلومات",
@@ -2053,5 +2053,9 @@
   "com_ui_feedback_enforce_title": "راءِ گهربل آهي",
   "com_ui_feedback_enforce_question": "پوئين جواب بابت توهان جي راءِ ڇا هئي؟",
   "com_ui_feedback_enforce_later": "شايد پوءِ",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "ماهرن پاران تصديق ٿيل",
+  "com_ui_landing_chip_multilingual": "گھڻ ٻولي",
+  "com_ui_landing_chip_voice": "آواز سان پڇو",
+  "com_ui_landing_tagline": "ذهين نموني سان پوک ڪريو۔ بهتر واڌايو۔"
 }

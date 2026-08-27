@@ -1354,5 +1354,10 @@
   "com_ui_feedback_enforce_title": "Tilbakemelding kreves",
   "com_ui_feedback_enforce_question": "Hvordan var det forrige svaret?",
   "com_ui_feedback_enforce_later": "Kanskje senere",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Ekspertverifisert",
+  "com_ui_landing_chip_multilingual": "Flerspråklig",
+  "com_ui_landing_chip_voice": "Spør med stemme",
+  "com_ui_landing_tagline": "Dyrk smartere. Voks bedre.",
+  "com_banner_message": "Under utvikling - kun for testing og validering"
 }

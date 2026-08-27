@@ -2029,7 +2029,7 @@
   "com_farmer_validation_smartphones_integer": "স্মার্টফোনশিংগী মশিং অসি ইন্তিজার অমা ওইগদবনি",
   "com_farmer_validation_smartphones_range": "স্মার্টফোনশিংগী মশিং অসি 0 দগী 20 ফাওবগী মনুংদা ওইগদবনি",
   "com_user_message": "নহাক",
-  "com_banner_message": "এপ্লিকেশন অসি হৌজিক শেমগৎলি অমসুং মসি টেস্টিং অমসুং ভেলিডেশনগী পান্দমদখক পীরিবনি",
+  "com_banner_message": "হৌজিক শেমগৎলি - টেস্টিং অমসুং ভেলিডেশনগীদমক খক্তা",
   "com_ui_feedback_what_worked_what_not": "করিগুম্বা ফজবা ওইরবা অমসুং ফজবা ওইদ্রবা অদু আইখোয়দা হায়বিয়ু।",
   "com_ui_feedback_tag_useful_crop_recommendations": "কান্নবা লৌউশিংগী পাউতাকশিং",
   "com_ui_feedback_tag_helpful_information": "কান্নবা ঈপাউ",
@@ -2053,5 +2053,9 @@
   "com_ui_feedback_enforce_title": "ফিডবেক দরকার",
   "com_ui_feedback_enforce_question": "মমাংগী পাউখুম অসি করম্না লৈরম্বগে?",
   "com_ui_feedback_enforce_later": "মতুংদা পীরমগনি",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Мэргэжилтнээр баталгаажсан",
+  "com_ui_landing_chip_multilingual": "Олон хэлтэй",
+  "com_ui_landing_chip_voice": "Дуугаар асуух",
+  "com_ui_landing_tagline": "Ухаалгаар тариалж, илүү сайн ургуул."
 }
