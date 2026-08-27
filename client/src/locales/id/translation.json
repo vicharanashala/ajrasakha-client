@@ -384,5 +384,10 @@
   "com_ui_landing_question_pmfby_info": "Berikan informasi mengenai program Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "Bagaimana prakiraan cuaca untuk wilayah saya?",
   "com_ui_landing_question_wheat_yellow_rust": "Bagaimana cara mengendalikan karat kuning pada tanaman gandum?",
-  "com_nav_notifications": "Notifikasi"
+  "com_nav_notifications": "Notifikasi",
+  "com_ui_answer_generating": "Jawaban sedang dibuat…",
+  "com_ui_speech_converting": "Mengonversi suara Anda menjadi teks…",
+  "com_ui_speech_listening": "Mendengarkan… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Ketuk untuk berbicara",
+  "com_ui_tap_stop_responding": "Ketuk lagi untuk menghentikan respons"
 }

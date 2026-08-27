@@ -2063,5 +2063,10 @@
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) സംബന്ധിച്ച വിവരങ്ങൾ നൽകുക.",
   "com_ui_landing_question_weather_forecast": "എന്റെ പ്രദേശത്തെ കാലാവസ്ഥാ പ്രവചനം എന്താണ്?",
   "com_ui_landing_question_wheat_yellow_rust": "ഗോതമ്പ് വിളയിലെ മഞ്ഞ തുരുമ്പ് എങ്ങനെ നിയന്ത്രിക്കാം?",
-  "com_nav_notifications": "അറിയിപ്പുകൾ"
+  "com_nav_notifications": "അറിയിപ്പുകൾ",
+  "com_ui_answer_generating": "ഉത്തരം സൃഷ്ടിക്കുന്നു…",
+  "com_ui_speech_converting": "നിങ്ങളുടെ സംസാരം ടെക്സ്റ്റാക്കി മാറ്റുന്നു…",
+  "com_ui_speech_listening": "കേൾക്കുന്നു… {{duration}}",
+  "com_ui_speech_tap_to_speak": "സംസാരിക്കാൻ ടാപ്പ് ചെയ്യുക",
+  "com_ui_tap_stop_responding": "പ്രതികരണം നിർത്താൻ വീണ്ടും ടാപ്പ് ചെയ്യുക"
 }

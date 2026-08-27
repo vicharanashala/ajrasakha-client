@@ -820,5 +820,10 @@
   "com_ui_landing_question_pmfby_info": "يرجى تقديم معلومات حول برنامج Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "ما هو توقع الطقس لمنطقتي؟",
   "com_ui_landing_question_wheat_yellow_rust": "كيف يمكن مكافحة الصدأ الأصفر في محصول القمح؟",
-  "com_nav_notifications": "الإشعارات"
+  "com_nav_notifications": "الإشعارات",
+  "com_ui_answer_generating": "جارٍ إنشاء الإجابة…",
+  "com_ui_speech_converting": "جارٍ تحويل كلامك إلى نص…",
+  "com_ui_speech_listening": "الاستماع… {{duration}}",
+  "com_ui_speech_tap_to_speak": "اضغط للتحدث",
+  "com_ui_tap_stop_responding": "اضغط مرة أخرى لإيقاف الاستجابة"
 }

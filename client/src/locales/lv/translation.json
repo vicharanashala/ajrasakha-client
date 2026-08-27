@@ -1546,5 +1546,10 @@
   "com_ui_landing_question_pmfby_info": "Sniedziet informāciju par programmu Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "Kāda ir laika prognoze manam reģionam?",
   "com_ui_landing_question_wheat_yellow_rust": "Kā kontrolēt dzelteno rūsu kviešu kultūrā?",
-  "com_nav_notifications": "Paziņojumi"
+  "com_nav_notifications": "Paziņojumi",
+  "com_ui_answer_generating": "Atbilde tiek ģenerēta…",
+  "com_ui_speech_converting": "Jūsu runa tiek pārveidota tekstā…",
+  "com_ui_speech_listening": "Klausās… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Pieskarieties, lai runātu",
+  "com_ui_tap_stop_responding": "Pieskarieties vēlreiz, lai apturētu atbildi"
 }

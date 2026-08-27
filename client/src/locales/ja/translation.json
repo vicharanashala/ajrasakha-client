@@ -1430,5 +1430,10 @@
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) について教えてください。",
   "com_ui_landing_question_weather_forecast": "私の地域の天気予報を教えてください。",
   "com_ui_landing_question_wheat_yellow_rust": "小麦の黄さび病はどのように防除すればよいですか?",
-  "com_nav_notifications": "通知"
+  "com_nav_notifications": "通知",
+  "com_ui_answer_generating": "回答を生成しています…",
+  "com_ui_speech_converting": "音声をテキストに変換しています…",
+  "com_ui_speech_listening": "聞き取り中… {{duration}}",
+  "com_ui_speech_tap_to_speak": "タップして話す",
+  "com_ui_tap_stop_responding": "もう一度タップすると応答を停止します"
 }

@@ -1382,5 +1382,10 @@
   "com_ui_landing_question_pmfby_info": "ספק מידע על התוכנית Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "מה תחזית מזג האוויר לאזור שלי?",
   "com_ui_landing_question_wheat_yellow_rust": "כיצד לשלוט בחלודה הצהובה ביבול החיטה?",
-  "com_nav_notifications": "התראות"
+  "com_nav_notifications": "התראות",
+  "com_ui_answer_generating": "התשובה נוצרת…",
+  "com_ui_speech_converting": "ממיר את הדיבור שלך לטקסט…",
+  "com_ui_speech_listening": "מקשיב… {{duration}}",
+  "com_ui_speech_tap_to_speak": "הקש כדי לדבר",
+  "com_ui_tap_stop_responding": "הקש שוב כדי לעצור את התגובה"
 }

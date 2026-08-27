@@ -146,5 +146,10 @@
   "com_ui_landing_question_pmfby_info": "Podajte informacije o programu Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "Kakšna je vremenska napoved za mojo regijo?",
   "com_ui_landing_question_wheat_yellow_rust": "Kako obvladati rumeno rjo pri pšenici?",
-  "com_nav_notifications": "Obvestila"
+  "com_nav_notifications": "Obvestila",
+  "com_ui_answer_generating": "Odgovor se ustvarja…",
+  "com_ui_speech_converting": "Vaš govor se pretvarja v besedilo…",
+  "com_ui_speech_listening": "Poslušam… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Dotaknite se za govor",
+  "com_ui_tap_stop_responding": "Dotaknite se znova, da ustavite odgovor"
 }

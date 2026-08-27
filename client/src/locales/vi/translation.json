@@ -480,5 +480,10 @@
   "com_ui_landing_question_pmfby_info": "Vui lòng cung cấp thông tin về chương trình Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "Dự báo thời tiết cho khu vực của tôi là gì?",
   "com_ui_landing_question_wheat_yellow_rust": "Làm thế nào để kiểm soát bệnh gỉ sắt vàng trên cây lúa mì?",
-  "com_nav_notifications": "Thông báo"
+  "com_nav_notifications": "Thông báo",
+  "com_ui_answer_generating": "Đang tạo câu trả lời…",
+  "com_ui_speech_converting": "Đang chuyển giọng nói của bạn thành văn bản…",
+  "com_ui_speech_listening": "Đang nghe… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Nhấn để nói",
+  "com_ui_tap_stop_responding": "Nhấn lại để dừng phản hồi"
 }

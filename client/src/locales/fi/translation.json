@@ -689,5 +689,10 @@
   "com_ui_landing_question_pmfby_info": "Anna tietoa Pradhan Mantri Fasal Bima Yojana (PMFBY) -ohjelmasta.",
   "com_ui_landing_question_weather_forecast": "Millainen on sääennuste alueellani?",
   "com_ui_landing_question_wheat_yellow_rust": "Miten keltaruoste torjutaan vehnäsadossa?",
-  "com_nav_notifications": "Ilmoitukset"
+  "com_nav_notifications": "Ilmoitukset",
+  "com_ui_answer_generating": "Vastausta luodaan…",
+  "com_ui_speech_converting": "Muunnetaan puhettasi tekstiksi…",
+  "com_ui_speech_listening": "Kuunnellaan… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Napauta puhuaksesi",
+  "com_ui_tap_stop_responding": "Napauta uudelleen pysäyttääksesi vastauksen"
 }

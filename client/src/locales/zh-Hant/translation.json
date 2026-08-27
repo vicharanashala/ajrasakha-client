@@ -1006,5 +1006,10 @@
   "com_ui_landing_question_pmfby_info": "請提供有關 Pradhan Mantri Fasal Bima Yojana (PMFBY) 計畫的資訊。",
   "com_ui_landing_question_weather_forecast": "我所在地區的天氣預報是什麼?",
   "com_ui_landing_question_wheat_yellow_rust": "如何防治小麥條銹病(黃銹病)?",
-  "com_nav_notifications": "通知"
+  "com_nav_notifications": "通知",
+  "com_ui_answer_generating": "正在生成回答…",
+  "com_ui_speech_converting": "正在將您的語音轉換為文字…",
+  "com_ui_speech_listening": "正在聆聽… {{duration}}",
+  "com_ui_speech_tap_to_speak": "點擊說話",
+  "com_ui_tap_stop_responding": "再次點擊以停止回答"
 }

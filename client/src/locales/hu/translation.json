@@ -914,5 +914,10 @@
   "com_ui_landing_question_pmfby_info": "Adjon tájékoztatást a Pradhan Mantri Fasal Bima Yojana (PMFBY) programról.",
   "com_ui_landing_question_weather_forecast": "Milyen az időjárás-előrejelzés a régiómban?",
   "com_ui_landing_question_wheat_yellow_rust": "Hogyan lehet szabályozni a sárga rozsdát a búzatermésben?",
-  "com_nav_notifications": "Értesítések"
+  "com_nav_notifications": "Értesítések",
+  "com_ui_answer_generating": "Válasz generálása…",
+  "com_ui_speech_converting": "Beszédének szöveggé alakítása…",
+  "com_ui_speech_listening": "Figyel… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Koppintson a beszédhez",
+  "com_ui_tap_stop_responding": "Koppintson újra a válasz leállításához"
 }

@@ -1001,7 +1001,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                       label={
                         isStopConfirming
                           ? localize('com_nav_stop_generating')
-                          : 'Answer is generating'
+                          : localize('com_ui_answer_generating')
                       }
                     />
                   ) : SpeechToText ? (
@@ -1028,13 +1028,15 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 <span className="text-xs font-medium sm:text-sm">
                   {isSubmitting && showStopButton
                     ? isStopConfirming
-                      ? 'Tap again to stop responding'
-                      : 'Answer is generating…'
+                      ? localize('com_ui_tap_stop_responding')
+                      : localize('com_ui_answer_generating')
                     : isVoiceListening
-                    ? `Listening… ${formatListeningDuration(listeningDuration)}`
+                    ? localize('com_ui_speech_listening', {
+                        duration: formatListeningDuration(listeningDuration),
+                      })
                     : isTranscribing
-                      ? 'Converting your speech to text…'
-                      : 'Tap to speak'}
+                      ? localize('com_ui_speech_converting')
+                      : localize('com_ui_speech_tap_to_speak')}
                 </span>
                 {isTranscribing && !isVoiceListening && (
                   <div className="flex items-center justify-center gap-1.5 text-emerald-400">

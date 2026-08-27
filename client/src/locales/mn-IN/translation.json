@@ -2062,5 +2062,10 @@
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) গী মতাংদা তথ্য পীবিয়ু।",
   "com_ui_landing_question_weather_forecast": "ঐগী য়ুমফমগী মমাংদা লৈরিবা মৌসম করিনো?",
   "com_ui_landing_question_wheat_yellow_rust": "গমের অমসুং য়েলো রাস্ট শস্যদা করমনা নিয়ন্ত্রণ তৌগনি?",
-  "com_nav_notifications": "ৱাফম"
+  "com_nav_notifications": "ৱাফম",
+  "com_ui_answer_generating": "পাঙথোক্লিবা শেম্লি…",
+  "com_ui_speech_converting": "নহাক্কী ৱাহৈদবু তেক্স্তদা হোংদোক্লি…",
+  "com_ui_speech_listening": "তাজরি… {{duration}}",
+  "com_ui_speech_tap_to_speak": "ৱারী শানবা চাপ তৌবিয়ু",
+  "com_ui_tap_stop_responding": "পাঙথোকপা লোয়সিন্নবা আমুক তান্না চাপ তৌবিয়ু"
 }

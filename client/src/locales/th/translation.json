@@ -955,5 +955,10 @@
   "com_ui_landing_question_pmfby_info": "กรุณาให้ข้อมูลเกี่ยวกับโครงการ Pradhan Mantri Fasal Bima Yojana (PMFBY)",
   "com_ui_landing_question_weather_forecast": "พยากรณ์อากาศสำหรับพื้นที่ของฉันเป็นอย่างไร?",
   "com_ui_landing_question_wheat_yellow_rust": "จะควบคุมโรคราสนิมสีเหลืองในข้าวสาลีได้อย่างไร?",
-  "com_nav_notifications": "การแจ้งเตือน"
+  "com_nav_notifications": "การแจ้งเตือน",
+  "com_ui_answer_generating": "กำลังสร้างคำตอบ…",
+  "com_ui_speech_converting": "กำลังแปลงเสียงพูดของคุณเป็นข้อความ…",
+  "com_ui_speech_listening": "กำลังฟัง… {{duration}}",
+  "com_ui_speech_tap_to_speak": "แตะเพื่อพูด",
+  "com_ui_tap_stop_responding": "แตะอีกครั้งเพื่อหยุดการตอบกลับ"
 }

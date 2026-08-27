@@ -1365,5 +1365,10 @@
   "com_ui_landing_question_pmfby_info": "Надайте інформацію про програму Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "Який прогноз погоди для мого регіону?",
   "com_ui_landing_question_wheat_yellow_rust": "Як боротися з жовтою іржею на пшениці?",
-  "com_nav_notifications": "Сповіщення"
+  "com_nav_notifications": "Сповіщення",
+  "com_ui_answer_generating": "Відповідь генерується…",
+  "com_ui_speech_converting": "Перетворення вашого мовлення на текст…",
+  "com_ui_speech_listening": "Слухаю… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Торкніться, щоб говорити",
+  "com_ui_tap_stop_responding": "Торкніться ще раз, щоб зупинити відповідь"
 }

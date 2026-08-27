@@ -1544,5 +1544,10 @@
   "com_ui_landing_question_pmfby_info": "Geben Sie Informationen zum Programm Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "Wie lautet die Wettervorhersage für meine Region?",
   "com_ui_landing_question_wheat_yellow_rust": "Wie bekämpft man Gelbrost im Weizen?",
-  "com_nav_notifications": "Benachrichtigungen"
+  "com_nav_notifications": "Benachrichtigungen",
+  "com_ui_answer_generating": "Antwort wird generiert…",
+  "com_ui_speech_converting": "Ihre Sprache wird in Text umgewandelt…",
+  "com_ui_speech_listening": "Hört zu… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Zum Sprechen tippen",
+  "com_ui_tap_stop_responding": "Erneut tippen, um die Antwort zu stoppen"
 }

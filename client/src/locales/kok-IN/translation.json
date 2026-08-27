@@ -2062,5 +2062,10 @@
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) विशीं म्हायती दियात.",
   "com_ui_landing_question_weather_forecast": "म्हज्या वाठारा खातीर हवामानाचो अंदाज कसलो?",
   "com_ui_landing_question_wheat_yellow_rust": "गव्हाच्या पिकांत पिवळो तांबेरो कसो नियंत्रित करचो?",
-  "com_nav_notifications": "सूचोवण्यो"
+  "com_nav_notifications": "सूचोवण्यो",
+  "com_ui_answer_generating": "जबाब तयार जाता…",
+  "com_ui_speech_converting": "तुमचो आवाज मजकुरांत बदलतना…",
+  "com_ui_speech_listening": "आयकता… {{duration}}",
+  "com_ui_speech_tap_to_speak": "उलोवपाक टॅप करात",
+  "com_ui_tap_stop_responding": "जबाब दिवप बंद करूंक परत टॅप करात"
 }

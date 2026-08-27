@@ -1009,5 +1009,10 @@
   "com_ui_landing_question_pmfby_info": "Giv information om Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "Hvad er vejrudsigten for mit område?",
   "com_ui_landing_question_wheat_yellow_rust": "Hvordan bekæmpes gul rust i hvedeafgrøden?",
-  "com_nav_notifications": "Notifikationer"
+  "com_nav_notifications": "Notifikationer",
+  "com_ui_answer_generating": "Svar genereres…",
+  "com_ui_speech_converting": "Konverterer din tale til tekst…",
+  "com_ui_speech_listening": "Lytter… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Tryk for at tale",
+  "com_ui_tap_stop_responding": "Tryk igen for at stoppe svaret"
 }

@@ -914,5 +914,10 @@
   "com_ui_landing_question_pmfby_info": "لطفاً اطلاعاتی درباره برنامه Pradhan Mantri Fasal Bima Yojana (PMFBY) ارائه دهید.",
   "com_ui_landing_question_weather_forecast": "پیش‌بینی آب‌وهوا برای منطقه من چیست؟",
   "com_ui_landing_question_wheat_yellow_rust": "چگونه می‌توان زنگ زرد را در محصول گندم کنترل کرد؟",
-  "com_nav_notifications": "اعلان‌ها"
+  "com_nav_notifications": "اعلان‌ها",
+  "com_ui_answer_generating": "پاسخ در حال تولید است…",
+  "com_ui_speech_converting": "در حال تبدیل گفتار شما به متن…",
+  "com_ui_speech_listening": "در حال گوش دادن… {{duration}}",
+  "com_ui_speech_tap_to_speak": "برای صحبت کردن ضربه بزنید",
+  "com_ui_tap_stop_responding": "برای توقف پاسخ دوباره ضربه بزنید"
 }

@@ -1391,5 +1391,10 @@
   "com_ui_landing_question_pmfby_info": "Donnez des informations sur le programme Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "Quelles sont les prévisions météorologiques pour ma région ?",
   "com_ui_landing_question_wheat_yellow_rust": "Comment lutter contre la rouille jaune dans la culture du blé ?",
-  "com_nav_notifications": "Notifications"
+  "com_nav_notifications": "Notifications",
+  "com_ui_answer_generating": "Génération de la réponse…",
+  "com_ui_speech_converting": "Conversion de votre voix en texte…",
+  "com_ui_speech_listening": "Écoute… {{duration}}",
+  "com_ui_speech_tap_to_speak": "Appuyez pour parler",
+  "com_ui_tap_stop_responding": "Appuyez à nouveau pour arrêter la réponse"
 }
