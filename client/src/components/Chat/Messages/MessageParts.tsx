@@ -152,7 +152,11 @@ export default function Message(props: TMessageProps) {
                         ? 'rounded-2xl rounded-tr-sm px-4 py-2.5 bg-[oklch(0.8348_0.1302_160.908)] dark:bg-[oklch(0.4365_0.1044_156.7556)]'
                         : 'rounded-2xl rounded-tl-sm bg-gray-50 px-4 py-2.5 dark:bg-gray-900'),
                     isEmptyLoading && 'ajrasakha-orbit-bubble',
+                    // Not while it is the pending placeholder: that message is created
+                    // with a temporary id and re-keyed when the server's real one arrives, so
+                    // the bubble remounts and would play its entrance twice.
                     isLast &&
+                      !isEmptyLoading &&
                       (isCreatedByUser ? 'ajrasakha-msg-in-user' : 'ajrasakha-msg-in-ai'),
                   )}
                 >

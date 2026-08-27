@@ -1,6 +1,8 @@
 import { act, render, screen } from '@testing-library/react';
 import AjraSakhaProgressStatus, {
-  AJRASAKHA_REPEATING_PROGRESS_MESSAGE,
+  AJRASAKHA_INITIAL_MESSAGE,
+  AJRASAKHA_LONG_WAIT_UPDATES,
+  AJRASAKHA_TIPS,
 } from './AjraSakhaProgressStatus';
 
 describe('AjraSakhaProgressStatus', () => {
@@ -12,28 +14,40 @@ describe('AjraSakhaProgressStatus', () => {
     jest.useRealTimers();
   });
 
-  it('shows each configured status before repeating the final status every 30 seconds', () => {
+  it('shows the opening message, then hands over to the tips and cycles them', () => {
     render(<AjraSakhaProgressStatus />);
 
-    expect(screen.getByRole('status')).toHaveTextContent(
-      '⏳ Your request is being processed. This usually takes around 10–20 seconds.',
-    );
+    expect(screen.getByRole('status')).toHaveTextContent(AJRASAKHA_INITIAL_MESSAGE);
 
-    act(() => jest.advanceTimersByTime(5_000));
-    expect(screen.getByRole('status')).toHaveTextContent(
-      '🧠 Still working on your request. Thanks for your patience.',
-    );
+    act(() => jest.advanceTimersByTime(6_000));
+    expect(screen.getByRole('status')).toHaveTextContent(AJRASAKHA_TIPS[0]);
+    expect(screen.getByRole('status')).not.toHaveTextContent(AJRASAKHA_INITIAL_MESSAGE);
 
-    act(() => jest.advanceTimersByTime(55_000));
-    expect(screen.getByRole('status')).toHaveTextContent(
-      "🔄 I'm still processing your request. Complex requests can occasionally take up to a minute or more.",
-    );
+    act(() => jest.advanceTimersByTime(8_000));
+    expect(screen.getByRole('status')).toHaveTextContent(AJRASAKHA_TIPS[1]);
+  });
+
+  it('wraps back to the first tip after the last one', () => {
+    render(<AjraSakhaProgressStatus />);
+
+    act(() => jest.advanceTimersByTime(6_000 + 8_000 * AJRASAKHA_TIPS.length));
+    expect(screen.getByRole('status')).toHaveTextContent(AJRASAKHA_TIPS[0]);
+  });
+
+  it('interrupts the tips with a reassurance at each long-wait mark', () => {
+    render(<AjraSakhaProgressStatus />);
 
     act(() => jest.advanceTimersByTime(30_000));
-    expect(screen.getByRole('status')).toHaveTextContent(AJRASAKHA_REPEATING_PROGRESS_MESSAGE);
+    expect(screen.getByRole('status')).toHaveTextContent(AJRASAKHA_LONG_WAIT_UPDATES[0].message);
 
-    act(() => jest.advanceTimersByTime(30_000));
-    expect(screen.getByRole('status')).toHaveTextContent(AJRASAKHA_REPEATING_PROGRESS_MESSAGE);
+    // ...and hands back to the tips once it has been on screen long enough to read.
+    act(() => jest.advanceTimersByTime(8_000));
+    expect(screen.getByRole('status')).not.toHaveTextContent(
+      AJRASAKHA_LONG_WAIT_UPDATES[0].message,
+    );
+
+    act(() => jest.advanceTimersByTime(22_000));
+    expect(screen.getByRole('status')).toHaveTextContent(AJRASAKHA_LONG_WAIT_UPDATES[1].message);
   });
 
   it('clears its timers when the pending response placeholder unmounts', () => {
