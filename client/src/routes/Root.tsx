@@ -24,6 +24,7 @@ import {
   useUpdateFarmerPlatformMutation,
 } from '~/data-provider';
 import { Nav, MobileNav, NAV_WIDTH } from '~/components/Nav';
+import { cn } from '~/utils';
 import {
   TermsAndConditionsModal,
   ImportantNoticeModal,
@@ -140,7 +141,7 @@ export default function Root() {
                 <div className="relative z-0 flex h-full w-full overflow-hidden">
                   <Nav navVisible={navVisible} setNavVisible={setNavVisible} />
                   <div
-                    className="relative flex h-full max-w-full flex-1 flex-col overflow-hidden"
+                    className="relative isolate flex h-full max-w-full flex-1 flex-col overflow-hidden bg-presentation"
                     style={
                       isSmallScreen
                         ? {
@@ -152,6 +153,20 @@ export default function Root() {
                         : undefined
                     }
                   >
+                    {/* Soft brand-green glow washing down from the very top of the app
+                        column, behind the mobile nav as well as the chat area. Decorative:
+                        `-z-10` puts it under the content and `isolate` on this column keeps
+                        that negative index from escaping behind the sidebar. Dark mode uses
+                        the lighter brand green at a lower alpha, since the dark green on a
+                        near-black page reads as a colour cast rather than light. */}
+                    <div
+                      aria-hidden="true"
+                      className={cn(
+                        'pointer-events-none absolute inset-x-0 top-0 -z-10 h-56 sm:h-72',
+                        'bg-[radial-gradient(120%_100%_at_50%_0%,rgba(25,135,84,0.13),transparent_72%)]',
+                        'dark:bg-[radial-gradient(120%_100%_at_50%_0%,rgba(117,215,178,0.09),transparent_72%)]',
+                      )}
+                    />
                     <MobileNav navVisible={navVisible} setNavVisible={setNavVisible} />
                     <Outlet context={{ navVisible, setNavVisible } satisfies ContextType} />
                   </div>
