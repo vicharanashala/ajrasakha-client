@@ -1534,5 +1534,10 @@
   "com_ui_feedback_enforce_title": "Feedback erforderlich",
   "com_ui_feedback_enforce_question": "Wie war die vorherige Antwort?",
   "com_ui_feedback_enforce_later": "Vielleicht später",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Expertengeprüft",
+  "com_ui_landing_chip_multilingual": "Mehrsprachig",
+  "com_ui_landing_chip_voice": "Per Sprache fragen",
+  "com_ui_landing_tagline": "Klüger anbauen. Besser wachsen.",
+  "com_banner_message": "In Entwicklung - nur zu Test- und Validierungszwecken"
 }

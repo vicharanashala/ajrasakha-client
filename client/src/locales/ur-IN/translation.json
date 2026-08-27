@@ -546,7 +546,7 @@
   "com_ui_select_options": "اختیارات منتخب کریں...",
   "com_ui_submit": "جمع کریں",
   "com_ui_yes": "ہاں",
-  "com_banner_message": "ایپلیکیشن فی الحال ترقی کے تحت ہے اور یہ صرف جانچ اور توثیق کے مقاصد کے لیے فراہم کی گئی ہے۔",
+  "com_banner_message": "ترقی کے تحت ہے - صرف جانچ اور توثیق کے لیے",
   "chat_direction_left_to_right": "بائیں سے دائیں",
   "chat_direction_right_to_left": "دائیں سے بائیں",
   "com_a11y_ai_composing": "AI ابھی لکھ رہا ہے۔",
@@ -2054,5 +2054,9 @@
   "com_ui_feedback_enforce_title": "رائے درکار ہے",
   "com_ui_feedback_enforce_question": "پچھلا جواب کیسا تھا؟",
   "com_ui_feedback_enforce_later": "شاید بعد میں",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "ماہرین کی توثیق شدہ",
+  "com_ui_landing_chip_multilingual": "کثیر لسانی",
+  "com_ui_landing_chip_voice": "آواز سے پوچھیں",
+  "com_ui_landing_tagline": "ہوشیاری سے کھیتی کریں۔ بہتر اگائیں۔"
 }

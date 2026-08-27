@@ -805,5 +805,10 @@
   "com_farmer_option_under_graduate": "Vysokoškolák",
   "com_farmer_option_graduate": "Absolvent",
   "com_farmer_option_post_graduate": "Postgraduální",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Ověřeno odborníky",
+  "com_ui_landing_chip_multilingual": "Vícejazyčné",
+  "com_ui_landing_chip_voice": "Zeptejte se hlasem",
+  "com_ui_landing_tagline": "Hospodařte chytřeji. Rosťte lépe.",
+  "com_banner_message": "Ve vývoji - pouze pro testování a ověřování"
 }

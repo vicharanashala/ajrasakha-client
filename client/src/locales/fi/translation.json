@@ -679,5 +679,10 @@
   "com_farmer_option_under_graduate": "Perustutkinto-opiskelija",
   "com_farmer_option_graduate": "Korkeakoulututkinto",
   "com_farmer_option_post_graduate": "Jatkotutkinto",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Asiantuntijoiden vahvistama",
+  "com_ui_landing_chip_multilingual": "Monikielinen",
+  "com_ui_landing_chip_voice": "Kysy äänellä",
+  "com_ui_landing_tagline": "Viljele älykkäämmin. Kasva paremmin.",
+  "com_banner_message": "Kehitteillä - vain testausta ja validointia varten"
 }

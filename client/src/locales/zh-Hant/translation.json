@@ -996,5 +996,10 @@
   "com_farmer_option_under_graduate": "大學以下",
   "com_farmer_option_graduate": "大學畢業",
   "com_farmer_option_post_graduate": "研究所畢業",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "專家認證",
+  "com_ui_landing_chip_multilingual": "多語言支援",
+  "com_ui_landing_chip_voice": "語音提問",
+  "com_ui_landing_tagline": "種得更聰明，長得更好。",
+  "com_banner_message": "開發中 - 僅供測試與驗證使用"
 }

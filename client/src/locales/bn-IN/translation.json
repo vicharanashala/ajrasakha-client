@@ -2024,7 +2024,7 @@
   "com_farmer_validation_smartphones_required": "পরিবারে স্মার্টফোনের সংখ্যা আবশ্যক",
   "com_farmer_validation_state_required": "রাজ্য আবশ্যক",
   "com_farmer_validation_village_required": "গ্রামের নাম আবশ্যক",
-  "com_banner_message": "অ্যাপ্লিকেশনটি বর্তমানে বিকাশের অধীনে রয়েছে এবং এটি শুধুমাত্র পরীক্ষা এবং বৈধতার উদ্দেশ্যে সরবরাহ করা হয়েছে",
+  "com_banner_message": "বিকাশাধীন - শুধুমাত্র পরীক্ষা ও বৈধতার জন্য",
   "com_farmer_validation_phone_invalid": "অবৈধ ফোন নম্বর",
   "com_farmer_validation_age_minimum": "অন্তত ১৮ বছর হতে হবে",
   "com_farmer_validation_non_negative": "ঋণাত্মক হতে পারবে না",
@@ -2054,5 +2054,9 @@
   "com_ui_feedback_enforce_title": "মতামত প্রয়োজন",
   "com_ui_feedback_enforce_question": "পূর্ববর্তী উত্তরটি কেমন ছিল?",
   "com_ui_feedback_enforce_later": "পরে হয়তো",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "বিশেষজ্ঞ দ্বারা যাচাইকৃত",
+  "com_ui_landing_chip_multilingual": "বহুভাষিক",
+  "com_ui_landing_chip_voice": "ভয়েস দিয়ে জিজ্ঞাসা করুন",
+  "com_ui_landing_tagline": "স্মার্টভাবে চাষ করুন। আরও ভালো ফলন পান।"
 }

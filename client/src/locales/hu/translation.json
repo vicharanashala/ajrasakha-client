@@ -904,5 +904,10 @@
   "com_farmer_option_under_graduate": "Alapképzés alatt",
   "com_farmer_option_graduate": "Diplomás",
   "com_farmer_option_post_graduate": "Posztgraduális",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Szakértők által ellenőrizve",
+  "com_ui_landing_chip_multilingual": "Többnyelvű",
+  "com_ui_landing_chip_voice": "Kérdezz hanggal",
+  "com_ui_landing_tagline": "Gazdálkodj okosabban. Fejlődj jobban.",
+  "com_banner_message": "Fejlesztés alatt - csak tesztelési és validálási célokra"
 }

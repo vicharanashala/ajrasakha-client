@@ -979,5 +979,10 @@
   "com_farmer_option_under_graduate": "Non Laureato",
   "com_farmer_option_graduate": "Laureato",
   "com_farmer_option_post_graduate": "Post Laurea",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Verificato da esperti",
+  "com_ui_landing_chip_multilingual": "Multilingue",
+  "com_ui_landing_chip_voice": "Chiedi con la voce",
+  "com_ui_landing_tagline": "Coltiva in modo più intelligente. Cresci meglio.",
+  "com_banner_message": "In sviluppo - solo per test e convalida"
 }

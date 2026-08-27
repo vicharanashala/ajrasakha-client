@@ -1039,5 +1039,10 @@
   "com_ui_feedback_tag_not_satisfied": "Ei ole rahul",
   "com_ui_feedback_tag_will_not_recommend": "Ei soovita teistele",
   "com_ui_feedback_tag_inappropriate_response": "Sobimatu vastus",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Ekspertide kinnitatud",
+  "com_ui_landing_chip_multilingual": "Mitmekeelne",
+  "com_ui_landing_chip_voice": "Küsi häälega",
+  "com_ui_landing_tagline": "Talunda targemalt. Kasva paremini.",
+  "com_banner_message": "Arendamisel - ainult testimiseks ja valideerimiseks"
 }

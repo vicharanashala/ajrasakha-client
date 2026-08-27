@@ -1334,5 +1334,10 @@
   "com_ui_feedback_enforce_title": "Feedback necessário",
   "com_ui_feedback_enforce_question": "Como foi a resposta anterior?",
   "com_ui_feedback_enforce_later": "Talvez mais tarde",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Verificado por especialistas",
+  "com_ui_landing_chip_multilingual": "Multilingue",
+  "com_ui_landing_chip_voice": "Pergunte por voz",
+  "com_ui_landing_tagline": "Cultive de forma mais inteligente. Cresça melhor.",
+  "com_banner_message": "Em desenvolvimento - apenas para testes e validação"
 }

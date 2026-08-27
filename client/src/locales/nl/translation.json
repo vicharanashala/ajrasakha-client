@@ -805,5 +805,10 @@
   "com_ui_feedback_enforce_title": "Feedback vereist",
   "com_ui_feedback_enforce_question": "Hoe was het vorige antwoord?",
   "com_ui_feedback_enforce_later": "Misschien later",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Door experts geverifieerd",
+  "com_ui_landing_chip_multilingual": "Meertalig",
+  "com_ui_landing_chip_voice": "Vraag met je stem",
+  "com_ui_landing_tagline": "Boer slimmer. Groei beter.",
+  "com_banner_message": "In ontwikkeling - alleen voor test- en validatiedoeleinden"
 }

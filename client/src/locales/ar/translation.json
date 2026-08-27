@@ -810,5 +810,10 @@
   "com_farmer_validation_landholding_valid": "يجب أن تكون الحيازة الزراعية رقمًا صحيحًا.",
   "com_farmer_validation_smartphones_integer": "يجب أن يكون عدد الهواتف الذكية عددًا صحيحًا",
   "com_farmer_validation_smartphones_range": "يجب أن يكون عدد الهواتف الذكية بين 0 و20",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "موثّق من خبراء",
+  "com_ui_landing_chip_multilingual": "متعدد اللغات",
+  "com_ui_landing_chip_voice": "اسأل بالصوت",
+  "com_ui_landing_tagline": "زراعة أذكى. نمو أفضل.",
+  "com_banner_message": "قيد التطوير - للاختبار والتحقق فقط"
 }

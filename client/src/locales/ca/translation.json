@@ -960,5 +960,10 @@
   "com_farmer_option_under_graduate": "Estudis universitaris incomplets",
   "com_farmer_option_graduate": "Graduat",
   "com_farmer_option_post_graduate": "Postgraduat",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Verificat per experts",
+  "com_ui_landing_chip_multilingual": "Multilingüe",
+  "com_ui_landing_chip_voice": "Pregunta per veu",
+  "com_ui_landing_tagline": "Conrea de manera més intel·ligent. Creix millor.",
+  "com_banner_message": "En desenvolupament - només per a proves i validació"
 }

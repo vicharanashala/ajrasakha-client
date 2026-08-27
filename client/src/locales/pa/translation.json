@@ -721,7 +721,7 @@
   "com_ui_select_options": "ਵਿਕਲਪ ਚੁਣੋ...",
   "com_ui_submit": "ਜਮ੍ਹਾਂ ਕਰੋ",
   "com_ui_yes": "ਹਾਂ",
-  "com_banner_message": "ਇਹ ਐਪਲੀਕੇਸ਼ਨ ਇਸ ਸਮੇਂ ਵਿਕਾਸ ਅਧੀਨ ਹੈ ਅਤੇ ਇਹ ਸਿਰਫ਼ ਟੈਸਟਿੰਗ ਅਤੇ ਤਸਦੀਕ ਦੇ ਉਦੇਸ਼ ਲਈ ਪ੍ਰਦਾਨ ਕੀਤੀ ਗਈ ਹੈ।",
+  "com_banner_message": "ਵਿਕਾਸ ਅਧੀਨ - ਸਿਰਫ਼ ਟੈਸਟਿੰਗ ਅਤੇ ਤਸਦੀਕ ਲਈ",
   "com_agents_avatar_upload_error": "ਏਜੰਟ ਦਾ ਅਵਤਾਰ ਅੱਪਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
   "com_agents_category_aftersales": "ਵਿਕਰੀ ਤੋਂ ਬਾਅਦ (After Sales)",
   "com_agents_category_aftersales_description": "ਵਿਕਰੀ ਤੋਂ ਬਾਅਦ ਸਹਾਇਤਾ, ਰੱਖ-ਰਖਾਅ ਅਤੇ ਗਾਹਕ ਸੇਵਾ ਵਿੱਚ ਮਾਹਰ ਏਜੰਟ",
@@ -2054,5 +2054,9 @@
   "com_ui_feedback_enforce_title": "ਫੀਡਬੈਕ ਲੋੜੀਂਦਾ ਹੈ",
   "com_ui_feedback_enforce_question": "ਪਿਛਲਾ ਜਵਾਬ ਕਿਵੇਂ ਸੀ?",
   "com_ui_feedback_enforce_later": "ਸ਼ਾਇਦ ਬਾਅਦ ਵਿੱਚ",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "ਮਾਹਿਰਾਂ ਦੁਆਰਾ ਪ੍ਰਮਾਣਿਤ",
+  "com_ui_landing_chip_multilingual": "ਬਹੁਭਾਸ਼ੀ",
+  "com_ui_landing_chip_voice": "ਆਵਾਜ਼ ਨਾਲ ਪੁੱਛੋ",
+  "com_ui_landing_tagline": "ਸਮਾਰਟ ਤਰੀਕੇ ਨਾਲ ਖੇਤੀ ਕਰੋ। ਬਿਹਤਰ ਉਗਾਓ।"
 }

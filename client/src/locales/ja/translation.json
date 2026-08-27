@@ -1420,5 +1420,10 @@
   "com_ui_feedback_enforce_title": "フィードバックが必要です",
   "com_ui_feedback_enforce_question": "前回の回答はいかがでしたか？",
   "com_ui_feedback_enforce_later": "後で",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "専門家による検証済み",
+  "com_ui_landing_chip_multilingual": "多言語対応",
+  "com_ui_landing_chip_voice": "音声で質問",
+  "com_ui_landing_tagline": "賢く農業を。もっと良く育てよう。",
+  "com_banner_message": "開発中 - テストおよび検証のみを目的としています"
 }

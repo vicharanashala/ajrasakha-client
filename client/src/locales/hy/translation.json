@@ -292,5 +292,10 @@
   "com_farmer_option_graduate": "Բարձրագույն",
   "com_farmer_option_post_graduate": "Հետբարձրագույն",
   "com_auth_error_email_in_use": "Էլ. փոստն արդեն օգտագործվում է",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Հաստատված է փորձագետների կողմից",
+  "com_ui_landing_chip_multilingual": "Բազմալեզու",
+  "com_ui_landing_chip_voice": "Հարցրեք ձայնով",
+  "com_ui_landing_tagline": "Մշակեք ավելի խելացի: Աճեք ավելի լավ:",
+  "com_banner_message": "Մշակման փուլում է - միայն թեստավորման և վավերացման նպատակով"
 }

@@ -546,7 +546,7 @@
   "com_ui_select_options": "વિકલ્પો પસંદ કરો...",
   "com_ui_submit": "સબમિટ કરો",
   "com_ui_yes": "હા",
-  "com_banner_message": "એપ્લિકેશન હાલમાં વિકાસ હેઠળ છે અને તે ફક્ત પરીક્ષણ અને માન્યતા હેતુઓ માટે પ્રદાન કરવામાં આવી છે",
+  "com_banner_message": "વિકાસ હેઠળ - ફક્ત પરીક્ષણ અને માન્યતા માટે",
   "chat_direction_left_to_right": "ડાબેથી જમણે",
   "chat_direction_right_to_left": "જમણેથી ડાબે",
   "com_a11y_ai_composing": "AI હજુ પણ લખી રહ્યું છે.",
@@ -2054,5 +2054,9 @@
   "com_ui_feedback_enforce_title": "અભિપ્રાય જરૂરી",
   "com_ui_feedback_enforce_question": "અગાઉનો પ્રતિસાદ કેવો હતો?",
   "com_ui_feedback_enforce_later": "કદાચ પછી",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "નિષ્ણાત દ્વારા ચકાસાયેલ",
+  "com_ui_landing_chip_multilingual": "બહુભાષી",
+  "com_ui_landing_chip_voice": "અવાજથી પૂછો",
+  "com_ui_landing_tagline": "સ્માર્ટ રીતે ખેતી કરો. વધુ સારી રીતે ઉગાડો."
 }

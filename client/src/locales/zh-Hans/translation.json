@@ -1415,5 +1415,10 @@
   "com_ui_feedback_enforce_title": "需要反馈",
   "com_ui_feedback_enforce_question": "上一次的回答怎么样？",
   "com_ui_feedback_enforce_later": "稍后再说",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "专家认证",
+  "com_ui_landing_chip_multilingual": "多语言支持",
+  "com_ui_landing_chip_voice": "语音提问",
+  "com_ui_landing_tagline": "种得更聪明，长得更好。",
+  "com_banner_message": "开发中 - 仅供测试与验证使用"
 }

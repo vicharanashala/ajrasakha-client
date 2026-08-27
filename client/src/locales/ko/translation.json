@@ -1182,5 +1182,10 @@
   "com_ui_feedback_enforce_title": "피드백 필요",
   "com_ui_feedback_enforce_question": "이전 응답은 어떠셨나요?",
   "com_ui_feedback_enforce_later": "나중에",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "전문가 검증 완료",
+  "com_ui_landing_chip_multilingual": "다국어 지원",
+  "com_ui_landing_chip_voice": "음성으로 질문하기",
+  "com_ui_landing_tagline": "더 스마트하게 농사짓고, 더 잘 키우세요.",
+  "com_banner_message": "개발 중 - 테스트 및 검증 목적으로만 제공됩니다"
 }

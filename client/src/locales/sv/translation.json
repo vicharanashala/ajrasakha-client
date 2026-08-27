@@ -627,5 +627,10 @@
   "com_farmer_option_under_graduate": "Grundutbildning",
   "com_farmer_option_graduate": "Examen",
   "com_farmer_option_post_graduate": "Forskarutbildning",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Expertverifierad",
+  "com_ui_landing_chip_multilingual": "Flerspråkig",
+  "com_ui_landing_chip_voice": "Fråga med rösten",
+  "com_ui_landing_tagline": "Odla smartare. Väx bättre.",
+  "com_banner_message": "Under utveckling - endast för testning och validering"
 }

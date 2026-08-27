@@ -2029,7 +2029,7 @@
   "com_farmer_validation_smartphones_integer": "سمارٹ فونَن ہِنٛز تَعداد گَژھِ اَکھ اِینٛٹیجَر آسٕنؠ",
   "com_farmer_validation_smartphones_range": "سمارٹ فونَن ہِنٛز تَعداد گَژھِ 0 تہٕ 20 ہَس دَرمِیان آسٕنؠ",
   "com_user_message": "تُہؠ",
-  "com_banner_message": "یہِ ایٚپ چھُ فی الحال ڈیٚویٚلپمیٚنٛٹَس مَنٛز تہٕ سِرِف ٹیٚسٹِنٛگ تہٕ تَصدیٖقٕچ غَرض سۭتہِ فَراہَم کَرنہٕ یِوان",
+  "com_banner_message": "ڈیٚویٚلپمینٛٹَس مَنٛز - سِرِف ٹیٚسٹِنٛگ تہٕ تَصدیٖقٕ خٲطرٕ",
   "com_ui_feedback_what_worked_what_not": "یِم چھُ ٹھیٖک کٲم کٔرۍمُت تہٕ یِم نَہ کٔرۍمُت، تِم اَسہِ وُچھاو۔",
   "com_ui_feedback_tag_useful_crop_recommendations": "فٲیدٕ مَنٛد فَصل سِفٲرِشہٕ",
   "com_ui_feedback_tag_helpful_information": "مَدَدگار مَعلوٗمات",
@@ -2053,5 +2053,9 @@
   "com_ui_feedback_enforce_title": "رائے درکار ہے",
   "com_ui_feedback_enforce_question": "پچھلا جواب کیسا تھا؟",
   "com_ui_feedback_enforce_later": "شاید بعد میں",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "ماہرین ہنٕدِس طرفہ تصدیق کرمُت",
+  "com_ui_landing_chip_multilingual": "کثیر لسانی",
+  "com_ui_landing_chip_voice": "آواز سِتؠ پوچھِو",
+  "com_ui_landing_tagline": "ذہین طریقہ سان کھیتی کریو۔ بہتر واڈیو۔"
 }

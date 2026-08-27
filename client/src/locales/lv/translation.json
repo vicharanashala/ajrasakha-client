@@ -1536,5 +1536,10 @@
   "com_ui_feedback_enforce_title": "Nepieciešama atsauksme",
   "com_ui_feedback_enforce_question": "Kāda bija iepriekšējā atbilde?",
   "com_ui_feedback_enforce_later": "Varbūt vēlāk",
-  "com_ui_feedback_enforce_skipped": "Skipping feedback..."
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_landing_chip_expert_verified": "Ekspertu pārbaudīts",
+  "com_ui_landing_chip_multilingual": "Daudzvalodu",
+  "com_ui_landing_chip_voice": "Jautā ar balsi",
+  "com_ui_landing_tagline": "Saimniekojiet gudrāk. Augiet labāk.",
+  "com_banner_message": "Izstrādes stadijā - tikai testēšanai un validācijai"
 }
