@@ -121,7 +121,7 @@ export default function ExampleQuestionTiles() {
           stacked on a desktop viewport is taller than the landing area can hold. The card
           itself keeps the same row layout at both widths. */}
       <div className="grid w-full grid-cols-1 gap-2 sm:gap-3 md:grid-cols-2">
-      {EXAMPLE_QUESTIONS.map((question) => {
+      {EXAMPLE_QUESTIONS.map((question, index) => {
         const Icon = ICONS_BY_ID[question.id] ?? HelpCircle;
         const accent = ICON_ACCENT_BY_ID[question.id] ?? DEFAULT_ICON_ACCENT;
         return (
@@ -131,6 +131,10 @@ export default function ExampleQuestionTiles() {
             onClick={() => handleSelect(question.text)}
             className={cn(
               'group flex h-full w-full cursor-pointer items-center text-start',
+              // Short viewports (an iPhone SE is 667px tall) cannot fit four of these
+              // above the composer, and the overflow runs underneath it. Showing three
+              // keeps the screen whole.
+              index >= 3 && '[@media(max-height:700px)]:hidden',
               'gap-2.5 rounded-xl p-2 pr-2.5 sm:gap-3.5 sm:rounded-2xl sm:p-3 sm:pr-4',
               // `border-light` is nearly invisible against the dark surfaces, so dark mode
               // gets a translucent white hairline instead.
