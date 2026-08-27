@@ -1404,5 +1404,6 @@
   "com_ui_landing_question_mandi_price_paddy": "Какова текущая рыночная цена на рис в моём регионе?",
   "com_ui_landing_question_pmfby_info": "Предоставьте информацию о программе Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "Какой прогноз погоды для моего региона?",
-  "com_ui_landing_question_wheat_yellow_rust": "Как бороться с жёлтой ржавчиной на пшенице?"
+  "com_ui_landing_question_wheat_yellow_rust": "Как бороться с жёлтой ржавчиной на пшенице?",
+  "com_nav_notifications": "Уведомления"
 }

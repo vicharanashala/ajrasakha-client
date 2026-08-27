@@ -636,5 +636,6 @@
   "com_ui_landing_question_mandi_price_paddy": "Vad är det aktuella marknadspriset på ris i min region?",
   "com_ui_landing_question_pmfby_info": "Ge information om programmet Pradhan Mantri Fasal Bima Yojana (PMFBY).",
   "com_ui_landing_question_weather_forecast": "Vad är väderprognosen för min region?",
-  "com_ui_landing_question_wheat_yellow_rust": "Hur bekämpar man gulrost i veteodlingen?"
+  "com_ui_landing_question_wheat_yellow_rust": "Hur bekämpar man gulrost i veteodlingen?",
+  "com_nav_notifications": "Aviseringar"
 }

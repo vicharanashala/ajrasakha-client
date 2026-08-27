@@ -954,5 +954,6 @@
   "com_ui_landing_question_mandi_price_paddy": "ราคาตลาดปัจจุบันของข้าวเปลือกในพื้นที่ของฉันเท่าไร?",
   "com_ui_landing_question_pmfby_info": "กรุณาให้ข้อมูลเกี่ยวกับโครงการ Pradhan Mantri Fasal Bima Yojana (PMFBY)",
   "com_ui_landing_question_weather_forecast": "พยากรณ์อากาศสำหรับพื้นที่ของฉันเป็นอย่างไร?",
-  "com_ui_landing_question_wheat_yellow_rust": "จะควบคุมโรคราสนิมสีเหลืองในข้าวสาลีได้อย่างไร?"
+  "com_ui_landing_question_wheat_yellow_rust": "จะควบคุมโรคราสนิมสีเหลืองในข้าวสาลีได้อย่างไร?",
+  "com_nav_notifications": "การแจ้งเตือน"
 }
