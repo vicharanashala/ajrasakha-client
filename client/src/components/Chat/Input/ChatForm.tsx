@@ -934,7 +934,16 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 instead, so it still hides along with everything else there in Voice mode. */}
             {isSmallScreen &&
               mobileNavPortal &&
-              createPortal(<ModelSelector startupConfig={startupConfig} />, mobileNavPortal)}
+              createPortal(
+                <ModelSelector
+                  startupConfig={startupConfig}
+                  // Sits on the bare nav bar rather than inside the input, so it needs its own
+                  // surface to read as a control. Borrows the composer pill's treatment —
+                  // same radius, border token and chat surface — so the two read as one family.
+                  triggerClassName="justify-start gap-2 rounded-full border border-border-light bg-surface-chat px-3 shadow-sm transition-colors hover:border-border-medium hover:bg-surface-hover"
+                />,
+                mobileNavPortal,
+              )}
             {/* Voice mode has no action row of its own; Stop still needs to be reachable
                 there while a response is generating. In Text mode the Send/Stop button lives
                 inline at the end of the input row instead. */}

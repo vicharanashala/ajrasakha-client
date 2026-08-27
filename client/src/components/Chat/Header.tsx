@@ -62,8 +62,10 @@ export default function Header() {
     </div>
   );
 
+  // No fill or rule of its own: the bar floats over the message list and its controls carry
+  // their own backgrounds. It used to paint a downward gradient, which read as a drop shadow.
   return (
-    <div className="via-presentation/70 md:from-presentation/80 md:via-presentation/50 2xl:from-presentation/0 absolute top-0 z-10 flex h-14 w-full items-center justify-between bg-gradient-to-b from-presentation to-transparent px-1.5 py-2 font-semibold text-text-primary sm:p-2 2xl:via-transparent">
+    <div className="absolute top-0 z-10 flex h-14 w-full items-center justify-between bg-transparent px-1.5 py-2 font-semibold text-text-primary sm:p-2">
       <div className="hide-scrollbar flex w-full items-center justify-between gap-1.5 overflow-x-auto sm:gap-2">
         <div className="mx-1 flex w-full flex-1 items-center">
           {!isSmallScreen && bannerPortal ? createPortal(modelSelectorNodes, bannerPortal) : null}

@@ -20,7 +20,7 @@ import { cn } from '~/utils';
 /** Never shrink the model name below this, so it stays legible on very narrow screens. */
 const MODEL_NAME_MIN_FONT_SIZE = 11;
 
-function ModelSelectorContent() {
+function ModelSelectorContent({ triggerClassName }: { triggerClassName?: string }) {
   const localize = useLocalize();
 
   const {
@@ -152,6 +152,7 @@ function ModelSelectorContent() {
         onSearch={(value) => setSearchValue(value)}
         combobox={<input id="model-search" placeholder=" " />}
         comboboxLabel={localize('com_endpoint_search_models')}
+        className={triggerClassName}
         trigger={trigger}
       >
         {searchResults ? (
@@ -180,7 +181,10 @@ function ModelSelectorContent() {
   );
 }
 
-export default function ModelSelector({ startupConfig }: ModelSelectorProps) {
+export default function ModelSelector({
+  startupConfig,
+  triggerClassName,
+}: ModelSelectorProps & { triggerClassName?: string }) {
   const interfaceConfig = startupConfig?.interface ?? getConfigDefaults().interface;
   const modelSpecs = startupConfig?.modelSpecs?.list ?? [];
 
@@ -192,7 +196,7 @@ export default function ModelSelector({ startupConfig }: ModelSelectorProps) {
   return (
     <ModelSelectorChatProvider>
       <ModelSelectorProvider startupConfig={startupConfig}>
-        <ModelSelectorContent />
+        <ModelSelectorContent triggerClassName={triggerClassName} />
       </ModelSelectorProvider>
     </ModelSelectorChatProvider>
   );

@@ -3120,9 +3120,12 @@ html {
    CSS (rather than Tailwind arbitrary-value classes) so the sizing is
    guaranteed to compile regardless of the Tailwind JIT content scan/cache. */
 .model-selector-trigger {
-  height: 2.125rem;
+  height: 2.25rem;
   width: fit-content;
-  max-width: 130px;
+  /* Three quarters of whatever the nav gives it, so the name is largely readable without the
+     control running the full width of the bar. The name auto-shrinks to fit (see
+     MODEL_NAME_MIN_FONT_SIZE) and only falls back to an ellipsis past that. */
+  max-width: 75%;
 }
 
 @media (min-width: 640px) {
