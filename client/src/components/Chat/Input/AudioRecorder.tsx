@@ -144,10 +144,12 @@ export default function AudioRecorder({
         </span>
       );
     }
+    // White glyph in both themes: the button underneath is always the solid green fill,
+    // so the icon colour follows the button, not the page theme.
     if (isLoading === true) {
-      return <Spinner className="stroke-gray-900" size={28} />;
+      return <Spinner className="stroke-white" size={28} />;
     }
-    return <ListeningIcon className="size-full stroke-gray-900" />;
+    return <ListeningIcon className="size-full stroke-white" />;
   };
 
   return (
