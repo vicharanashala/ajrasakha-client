@@ -58,6 +58,47 @@ const INPUT_MODE_TABS: ReadonlyArray<{ mode: InputMode; label: string; Icon: typ
 ];
 
 /**
+ * Takes the mic's place in Voice mode while a response is streaming, so stopping happens on
+ * the same control the user just tapped instead of a second button appearing beneath it. The
+ * staggered bar delays read as a travelling wave, distinct from the mic's own in-sync
+ * equalizer while it is listening.
+ */
+const VoiceStopButton = memo(
+  ({ onStop, label }: { onStop: (e: React.MouseEvent<HTMLButtonElement>) => void; label: string }) => (
+    <button
+      type="button"
+      onClick={onStop}
+      aria-label={label}
+      title={label}
+      className="relative flex size-16 items-center justify-center rounded-full bg-green-500 transition-colors duration-300 hover:bg-green-400"
+      style={{ boxShadow: '0 0 10px 2px rgba(117, 215, 178, 0.4)' }}
+    >
+      <style>{`
+        @keyframes voice-stop-wave {
+          0%, 100% { transform: scaleY(0.3); }
+          50% { transform: scaleY(1); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .voice-stop-wave-bar { animation: none !important; transform: scaleY(0.7); }
+        }
+      `}</style>
+      <span className="flex h-6 items-center gap-[3px]" aria-hidden="true">
+        {[0, 1, 2, 3, 4].map((i) => (
+          <span
+            key={i}
+            className="voice-stop-wave-bar h-full w-[3px] rounded-full bg-white"
+            style={{
+              transformOrigin: 'center',
+              animation: `voice-stop-wave 1.1s ease-in-out ${i * 0.13}s infinite`,
+            }}
+          />
+        ))}
+      </span>
+    </button>
+  ),
+);
+
+/**
  * Segmented Voice/Text switch shown above the composer in both input modes. It yields the
  * spot to the scroll-to-bottom arrow, which floats directly above the composer: while that
  * arrow is up the switch fades out. It stays mounted rather than unmounting so the composer
@@ -896,7 +937,15 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                       />
                     </>
                   )}
-                  {SpeechToText ? (
+                  {isSubmitting && showStopButton ? (
+                    <VoiceStopButton
+                      onStop={(e) => {
+                        setShowStopButton(false);
+                        handleStopGenerating(e);
+                      }}
+                      label={localize('com_nav_stop_generating')}
+                    />
+                  ) : SpeechToText ? (
                     <AudioRecorder
                       methods={methods}
                       ask={submitMessage}
@@ -918,7 +967,9 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   )}
                 </div>
                 <span className="text-xs font-medium sm:text-sm">
-                  {isVoiceListening
+                  {isSubmitting && showStopButton
+                    ? localize('com_nav_stop_generating')
+                    : isVoiceListening
                     ? `Listening… ${formatListeningDuration(listeningDuration)}`
                     : isTranscribing
                       ? 'Converting your speech to text…'
@@ -951,11 +1002,6 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
             {/* Voice mode has no action row of its own; Stop still needs to be reachable
                 there while a response is generating. In Text mode the Send/Stop button lives
                 inline at the end of the input row instead. */}
-            {inputMode === 'voice' && isSubmitting && showStopButton && (
-              <div className="flex justify-center pb-2">
-                <StopButton stop={handleStopGenerating} setShowStopButton={setShowStopButton} />
-              </div>
-            )}
             {TextToSpeech && automaticPlayback && <StreamAudio index={index} />}
           </div>
         </div>
