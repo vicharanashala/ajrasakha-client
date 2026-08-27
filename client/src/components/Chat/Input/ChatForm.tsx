@@ -131,6 +131,11 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const inputRowRef = useRef<HTMLDivElement>(null);
   /** The draft has outgrown the textarea's max height and is scrolling inside it. */
   const [isTextAreaScrollable, setIsTextAreaScrollable] = useState(false);
+  /** Mirrors visualRowCount for the measuring effect, which needs the previous value without
+   *  re-subscribing, plus the row width and text length the last measurement ran against. */
+  const visualRowCountRef = useRef(1);
+  const measuredWidthRef = useRef(0);
+  const expandedAtLengthRef = useRef<number | null>(null);
   const [isTextAreaFocused, setIsTextAreaFocused] = useState(false);
   const [backupBadges, setBackupBadges] = useState<Pick<BadgeItem, 'id'>[]>([]);
   const [showLeftOptions, setShowLeftOptions] = useState(false);
@@ -430,7 +435,32 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
       }
       const verticalPadding = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
       const contentHeight = textArea.scrollHeight - verticalPadding;
-      setVisualRowCount(Math.max(1, Math.round(contentHeight / lineHeight)));
+      let rows = Math.max(1, Math.round(contentHeight / lineHeight));
+
+      /**
+       * Expanding gives the textarea the full row width, since the buttons move off its line.
+       * Text that needed two lines in the compact layout can therefore fit on one once
+       * expanded, which would collapse it, re-narrow it, and wrap again — a loop, very visible
+       * with one long unbroken word. So the layout only collapses back when the draft is
+       * actually shorter than it was when it expanded; growing text never triggers it.
+       */
+      const length = textArea.value.length;
+      if (rows > 1) {
+        if (visualRowCountRef.current <= 1) {
+          expandedAtLengthRef.current = length;
+        }
+      } else if (
+        visualRowCountRef.current > 1 &&
+        expandedAtLengthRef.current != null &&
+        length >= expandedAtLengthRef.current
+      ) {
+        rows = visualRowCountRef.current;
+      } else {
+        expandedAtLengthRef.current = null;
+      }
+
+      visualRowCountRef.current = rows;
+      setVisualRowCount(rows);
       setIsTextAreaScrollable(textArea.scrollHeight - textArea.clientHeight > 1);
     };
     measure();
@@ -439,7 +469,16 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     if (!row || typeof ResizeObserver === 'undefined') {
       return;
     }
-    const observer = new ResizeObserver(measure);
+    // Width only. The row's height changes as a direct result of switching layouts, so
+    // re-measuring on that would let every switch trigger the next one.
+    const observer = new ResizeObserver((entries) => {
+      const width = entries[0]?.contentRect.width ?? 0;
+      if (Math.abs(width - measuredWidthRef.current) < 1) {
+        return;
+      }
+      measuredWidthRef.current = width;
+      measure();
+    });
     observer.observe(row);
     return () => observer.disconnect();
   }, [textValue]);
