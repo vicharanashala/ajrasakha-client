@@ -11,9 +11,12 @@ export default function StopButton({ stop, setShowStopButton, className = '' }) 
       render={
         <button
           type="button"
+          // Same neutral circle as the send button it replaces, rather than a filled
+          // `bg-text-primary` one: that fill inverts with the theme, so in dark mode it
+          // turned into a white disc that read as a different control entirely.
           className={cn(
-            'flex size-11 shrink-0 items-center justify-center rounded-full bg-text-primary text-surface-primary md:size-[52px]',
-            'transition-opacity duration-200 hover:opacity-90',
+            'flex size-11 shrink-0 items-center justify-center rounded-full bg-surface-secondary text-text-primary md:size-[52px]',
+            'transition-colors duration-200 hover:bg-surface-hover',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-medium',
             className,
           )}
@@ -29,9 +32,9 @@ export default function StopButton({ stop, setShowStopButton, className = '' }) 
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="text-surface-primary"
+            className="size-5"
           >
-            <rect x="7" y="7" width="10" height="10" rx="1.25" fill="currentColor"></rect>
+            <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"></rect>
           </svg>
         </button>
       }
