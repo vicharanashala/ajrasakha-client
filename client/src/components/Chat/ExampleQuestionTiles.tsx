@@ -48,13 +48,28 @@ const ICONS_BY_ID: Record<string, React.ComponentType<{ className?: string }>> =
  * colour rather than the 100/200 steps of each ramp, because this theme collapses its green
  * ramp onto two brand shades — a `bg-green-100` here would come out fully saturated.
  */
-const ICON_ACCENT_BY_ID: Record<string, string> = {
-  'wheat-yellow-rust': 'bg-green-500/15 text-green-600 dark:text-green-400',
-  'weather-forecast': 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
-  'mandi-price-paddy': 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
-  'pmfby-info': 'bg-purple-500/15 text-purple-600 dark:text-purple-400',
+const ICON_ACCENT_BY_ID: Record<string, { tile: string; hover: string }> = {
+  'wheat-yellow-rust': {
+    tile: 'bg-green-500/15 text-green-600 dark:text-green-400',
+    hover: 'hover:border-green-500/40 dark:hover:border-green-400/40',
+  },
+  'weather-forecast': {
+    tile: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
+    hover: 'hover:border-blue-500/40 dark:hover:border-blue-400/40',
+  },
+  'mandi-price-paddy': {
+    tile: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
+    hover: 'hover:border-amber-500/40 dark:hover:border-amber-400/40',
+  },
+  'pmfby-info': {
+    tile: 'bg-purple-500/15 text-purple-600 dark:text-purple-400',
+    hover: 'hover:border-purple-500/40 dark:hover:border-purple-400/40',
+  },
 };
-const DEFAULT_ICON_ACCENT = 'bg-surface-tertiary text-text-secondary';
+const DEFAULT_ICON_ACCENT = {
+  tile: 'bg-surface-tertiary text-text-secondary',
+  hover: 'hover:border-border-heavy',
+};
 
 /** Tappable example-question cards shown on the welcome/empty-chat screen, between the
  *  greeting heading and the message input. Tapping one sends that question right away —
@@ -77,17 +92,19 @@ export default function ExampleQuestionTiles() {
   return (
     <div
       className={cn(
-        'animate-fadeIn mb-4 flex w-full max-w-xl flex-col items-center px-4 sm:mb-6 md:max-w-3xl',
-        // Same value as the tagline-to-cards gap below, so this block sits evenly between the
-        // greeting and the questions. Landing drops its own bottom padding and margin when
-        // these render (its `hasContentBelow` prop), so this is the whole gap.
-        'mt-3 sm:mt-5',
+        'animate-fadeIn flex w-full max-w-xl flex-col items-center px-4 md:max-w-3xl',
+        // Spacing widens as the sections get further apart: greeting to tagline, tagline to
+        // cards (below), then cards to the composer. The bottom margin doubles as what lifts
+        // the whole block clear of the composer, since the landing column is bottom-aligned
+        // from sm up. Landing drops its own bottom padding and margin when these render (its
+        // `hasContentBelow` prop), so `mt` here is the entire gap under the greeting.
+        'mb-6 mt-4 sm:mb-0 sm:mt-7',
       )}
     >
       {/* Tagline and capability pills live here rather than in Landing: Landing collapses to
           `sm:max-h-0` when centerFormOnLanding is on, so anything added there contributes no
           layout height and its overflow lands on top of these cards. */}
-      <div className="mb-4 flex flex-col items-center gap-3 sm:mb-6 sm:gap-4">
+      <div className="mb-9 flex flex-col items-center gap-3 sm:mb-9 sm:gap-4">
         <p className="text-balance text-center text-[15px] font-normal leading-snug text-text-secondary sm:max-w-sm sm:text-base">
           {localize('com_ui_landing_tagline')}
         </p>
@@ -115,10 +132,15 @@ export default function ExampleQuestionTiles() {
             className={cn(
               'group flex h-full w-full cursor-pointer items-center text-start',
               'gap-2.5 rounded-xl p-2 pr-2.5 sm:gap-3.5 sm:rounded-2xl sm:p-3 sm:pr-4',
-              'border border-border-light bg-surface-chat',
+              // `border-light` is nearly invisible against the dark surfaces, so dark mode
+              // gets a translucent white hairline instead.
+              'border border-border-light bg-surface-chat dark:border-white/10',
               'shadow-[0_1px_2px_0_rgba(0,0,0,0.04),0_4px_12px_0_rgba(0,0,0,0.03)]',
-              'transition-[background-color,border-color,box-shadow] duration-200 ease-out',
-              'hover:border-border-medium hover:bg-surface-tertiary hover:shadow-md',
+              'transition-[background-color,border-color,box-shadow,transform] duration-200 ease-out',
+              'hover:bg-surface-tertiary hover:shadow-md active:scale-[0.99]',
+              // The border picks up the card's own accent on hover, so each one lights up in
+              // its own colour rather than all four going the same grey.
+              accent.hover,
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-medium',
               'motion-reduce:transition-none',
             )}
@@ -126,7 +148,9 @@ export default function ExampleQuestionTiles() {
             <span
               className={cn(
                 'flex size-9 shrink-0 items-center justify-center rounded-xl sm:size-11 sm:rounded-2xl',
-                accent,
+                'transition-transform duration-200 ease-out group-hover:scale-105',
+                'motion-reduce:transition-none motion-reduce:group-hover:scale-100',
+                accent.tile,
               )}
             >
               <Icon className="size-4 shrink-0 sm:size-5" aria-hidden="true" />
@@ -135,7 +159,7 @@ export default function ExampleQuestionTiles() {
               {question.text}
             </span>
             <ChevronRight
-              className="size-4 shrink-0 text-text-tertiary transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none sm:size-5"
+              className="size-4 shrink-0 text-text-tertiary transition-[transform,color] duration-200 group-hover:translate-x-0.5 group-hover:text-text-secondary motion-reduce:transition-none sm:size-5"
               aria-hidden="true"
             />
           </button>

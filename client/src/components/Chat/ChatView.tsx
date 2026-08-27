@@ -102,8 +102,14 @@ function ChatView({ index = 0 }: { index?: number }) {
                   className={cn(
                     'flex flex-col',
                     isLandingPage
-                      ?
-                        'flex-1 items-center justify-center overflow-y-auto'
+                      ? // The composer is pinned to the bottom of this box, just above the
+                        // in-development notice that renders outside it, while the greeting,
+                        // tagline and question cards centre in the space left above. The
+                        // bottom padding is what reserves that space, so the two can't
+                        // overlap. Unlike a live conversation, the composer isn't fixed to the
+                        // viewport on phones here — the notice has to sit below it, not behind
+                        // it — so this applies at every width.
+                        'relative flex-1 items-center justify-center overflow-y-auto pb-40 sm:pb-44'
                       : // `relative` anchors the composer, which is pulled out of flow below
                         // so the message list can run its full height underneath it.
                         'relative min-h-0 flex-1 overflow-hidden',
@@ -120,7 +126,7 @@ function ChatView({ index = 0 }: { index?: number }) {
                     className={cn(
                       'w-full',
                       isLandingPage
-                        ? 'max-w-3xl transition-all duration-200 xl:max-w-4xl'
+                        ? 'absolute inset-x-0 bottom-0 mx-auto max-w-3xl transition-all duration-200 xl:max-w-4xl'
                         : // The composer floats over the message list rather than sitting in
                           // normal flow, so messages can scroll a full screen's worth behind
                           // it instead of stopping at a hard edge above it. Its own backdrop

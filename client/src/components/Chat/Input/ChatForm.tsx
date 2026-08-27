@@ -581,11 +581,15 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
       className={cn(
         'mx-auto flex w-full flex-row gap-3 px-2 transition-[max-width] duration-300',
         maximizeChatSpace ? 'max-w-full' : 'md:max-w-3xl xl:max-w-4xl',
+        // The welcome screen used to hold the composer 112px clear of the bottom, which left a
+        // wide gap between it and the in-development notice below. It now keeps the same
+        // spacing as a live conversation, so the composer and its Voice/Text switch sit
+        // directly above that notice.
         centerFormOnLanding &&
           (conversationId == null || conversationId === Constants.NEW_CONVO) &&
           !isSubmitting &&
           conversation?.messages?.length === 0
-          ? 'transition-all duration-200 mb-2 sm:mb-28'
+          ? 'transition-all duration-200 mb-2 sm:mb-10'
           : 'mb-2 sm:mb-10',
       )}
     >
