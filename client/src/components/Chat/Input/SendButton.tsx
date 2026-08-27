@@ -9,10 +9,16 @@ import { cn } from '~/utils';
 type SendButtonProps = {
   disabled: boolean;
   control: Control<{ text: string }>;
+  /** Size override; the composer shrinks its buttons in the expanded card layout. */
+  className?: string;
 };
 
 const SubmitButton = React.memo(
-  forwardRef((props: { disabled: boolean }, ref: React.ForwardedRef<HTMLButtonElement>) => {
+  forwardRef(
+    (
+      props: { disabled: boolean; className?: string },
+      ref: React.ForwardedRef<HTMLButtonElement>,
+    ) => {
     const localize = useLocalize();
     return (
       <TooltipAnchor
@@ -28,6 +34,7 @@ const SubmitButton = React.memo(
               'transition-colors duration-200 hover:bg-surface-hover',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-medium',
               'disabled:cursor-not-allowed disabled:bg-surface-secondary disabled:text-text-secondary disabled:opacity-50 disabled:hover:bg-surface-secondary',
+              props.className,
             )}
             data-testid="send-button"
             type="submit"
@@ -36,8 +43,9 @@ const SubmitButton = React.memo(
           </button>
         }
       />
-    );
-  }),
+      );
+    },
+  ),
 );
 
 const SendButton = React.memo(
@@ -45,7 +53,13 @@ const SendButton = React.memo(
     const data = useWatch({ control: props.control });
     /** Always render the button so the input row doesn't lose its send action while empty;
      *  disable it instead of hiding it until there's text to send. */
-    return <SubmitButton ref={ref} disabled={props.disabled || !data.text} />;
+    return (
+      <SubmitButton
+        ref={ref}
+        disabled={props.disabled || !data.text}
+        className={props.className}
+      />
+    );
   }),
 );
 

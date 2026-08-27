@@ -426,15 +426,23 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   }, [backupBadges, setBadges, setIsEditingBadges]);
 
   const isMoreThanThreeRows = visualRowCount > 3;
+  /** Once the textarea grows past a single line the composer stops being one compact row and
+   *  becomes a card: the input takes the full width and the action buttons wrap onto their own
+   *  line beneath it, so they never fight the growing text for horizontal space. */
+  const isExpandedComposer = visualRowCount > 1;
 
   const baseClasses = useMemo(
     () =>
       cn(
         'm-0 w-full min-w-0 flex-1 resize-none bg-transparent py-[10px] placeholder-text-secondary md:py-[14px]',
-        isCollapsed ? 'max-h-[52px]' : 'max-h-[45vh] md:max-h-[55vh]',
-        isMoreThanThreeRows ? 'pl-5' : 'px-5',
+        // Capped well short of the viewport so a long draft scrolls inside the composer
+        // instead of pushing the conversation off screen.
+        isCollapsed ? 'max-h-[52px]' : 'max-h-[35vh] md:max-h-[40vh]',
+        // Expanded, the input is flush inside the card and lines up with the buttons below it;
+        // compact, it keeps the roomier padding that suits a pill.
+        isExpandedComposer ? 'px-2.5 sm:px-3' : 'px-5',
       ),
-    [isCollapsed, isMoreThanThreeRows],
+    [isCollapsed, isExpandedComposer],
   );
 
   // Location permission
@@ -580,8 +588,14 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                 </div>
                 <div
                   className={cn(
-                    'flex w-full items-end gap-2',
+                    'flex w-full gap-1.5 transition-[border-color,padding] duration-200 sm:gap-2',
                     isRTL ? 'flex-row-reverse' : 'flex-row',
+                    isExpandedComposer
+                      ? cn(
+                          'flex-wrap items-center rounded-3xl border bg-surface-chat p-1.5 sm:p-2',
+                          isTextAreaFocused ? 'border-border-medium' : 'border-border-light',
+                        )
+                      : 'items-end border border-transparent',
                   )}
                 >
                   {/* Attachments and tool badges open as a column anchored to this button
@@ -600,7 +614,8 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                           type="button"
                           aria-label={showLeftOptions ? 'Close options' : 'Open options'}
                           className={cn(
-                            'flex size-11 shrink-0 items-center justify-center rounded-full text-text-primary md:size-[52px]',
+                            'flex shrink-0 items-center justify-center rounded-full text-text-primary',
+                            isExpandedComposer ? 'order-2 size-9 sm:size-10' : 'size-11 md:size-[52px]',
                             'transition-colors duration-200 hover:bg-surface-hover',
                             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-medium',
                             showLeftOptions ? 'bg-surface-hover' : 'bg-surface-secondary',
@@ -648,10 +663,14 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   </Ariakit.PopoverProvider>
                   <div
                     className={cn(
-                      'relative flex min-w-0 flex-1 items-end overflow-hidden border bg-surface-chat',
-                      'transition-colors duration-200',
-                      isMoreThanThreeRows ? 'rounded-3xl' : 'rounded-full',
-                      isTextAreaFocused ? 'border-border-medium' : 'border-border-light',
+                      'relative flex min-w-0 items-end overflow-hidden transition-colors duration-200',
+                      isExpandedComposer
+                        ? // Full width on its own line; the card around it draws the border now.
+                          'order-1 w-full basis-full'
+                        : cn(
+                            'flex-1 rounded-full border bg-surface-chat',
+                            isTextAreaFocused ? 'border-border-medium' : 'border-border-light',
+                          ),
                     )}
                   >
                   <TextareaAutosize
@@ -695,31 +714,39 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                       }}
                     />
                   )}
-                  {isMoreThanThreeRows && (
-                    <div className="flex items-center justify-center pb-3 pr-2">
-                      <CollapseChat
-                        isCollapsed={isCollapsed}
-                        isScrollable={isMoreThanThreeRows}
-                        setIsCollapsed={setIsCollapsed}
-                      />
-                    </div>
-                  )}
-                  {!isSmallScreen && (
-                    <div className="flex max-w-[45%] shrink-0 items-center pb-2 pr-2">
-                      <ModelSelector startupConfig={startupConfig} />
-                    </div>
-                  )}
                   </div>
-                  <div className="shrink-0">
+                  {/* Trailing controls. Compact, they sit at the end of the single row beside
+                      the input; expanded, the row wraps and this group takes the far end of the
+                      line below the input, opposite the "+" button. Keeping them in one group
+                      across both layouts means the model selector and textarea never remount
+                      when the composer changes shape. */}
+                  <div
+                    className={cn(
+                      'flex shrink-0 items-center gap-1.5 sm:gap-2',
+                      isExpandedComposer && cn('order-3', isRTL ? 'mr-auto' : 'ml-auto'),
+                    )}
+                  >
+                    <CollapseChat
+                      isCollapsed={isCollapsed}
+                      isScrollable={isMoreThanThreeRows}
+                      setIsCollapsed={setIsCollapsed}
+                    />
+                    {!isSmallScreen && (
+                      <div className="flex min-w-0 max-w-[10rem] items-center lg:max-w-[13rem]">
+                        <ModelSelector startupConfig={startupConfig} />
+                      </div>
+                    )}
                     {isSubmitting && showStopButton ? (
                       <StopButton
                         stop={handleStopGenerating}
                         setShowStopButton={setShowStopButton}
+                        className={isExpandedComposer ? 'size-9 sm:size-10 md:size-10' : undefined}
                       />
                     ) : (
                       <SendButton
                         ref={submitButtonRef}
                         control={methods.control}
+                        className={isExpandedComposer ? 'size-9 sm:size-10 md:size-10' : undefined}
                         disabled={
                           filesLoading || isSubmitting || disableInputs || isNotAppendable
                         }

@@ -2,7 +2,7 @@ import { TooltipAnchor } from '@librechat/client';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';
 
-export default function StopButton({ stop, setShowStopButton }) {
+export default function StopButton({ stop, setShowStopButton, className = '' }) {
   const localize = useLocalize();
 
   return (
@@ -15,6 +15,7 @@ export default function StopButton({ stop, setShowStopButton }) {
             'flex size-11 shrink-0 items-center justify-center rounded-full bg-text-primary text-surface-primary md:size-[52px]',
             'transition-opacity duration-200 hover:opacity-90',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-medium',
+            className,
           )}
           aria-label={localize('com_nav_stop_generating')}
           onClick={(e) => {
