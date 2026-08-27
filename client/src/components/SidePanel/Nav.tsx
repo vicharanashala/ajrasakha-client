@@ -19,7 +19,7 @@ function NavContent({ links, isCollapsed, resize }: Omit<NavProps, 'defaultActiv
   return (
     <div
       data-collapsed={isCollapsed}
-      className="bg-gray-200 dark:bg-gray-900 hide-scrollbar group flex-shrink-0 overflow-x-hidden"
+      className="bg-gray-50 dark:bg-gray-900 hide-scrollbar group flex-shrink-0 overflow-x-hidden"
     >
       <div className="h-full">
         <div className="flex h-full min-h-0 flex-col">
@@ -50,7 +50,7 @@ function NavContent({ links, isCollapsed, resize }: Omit<NavProps, 'defaultActiv
                             isCollapsed={isCollapsed}
                             onClick={() => setActive(link.id)}
                           />
-                          <AccordionContent className="bg-gray-200 dark:bg-gray-900 w-full text-text-primary">
+                          <AccordionContent className="bg-gray-50 dark:bg-gray-900 w-full text-text-primary">
                             <link.Render {...link} />
                           </AccordionContent>
                         </AccordionItem>

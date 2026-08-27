@@ -2966,17 +2966,32 @@ html {
   position: relative;
   border: 1.5px solid transparent;
   background:
-    linear-gradient(var(--surface-tertiary), var(--surface-tertiary)) padding-box,
+    linear-gradient(#f9fafb, #f9fafb) padding-box,
     conic-gradient(
         from var(--orbit-angle),
         transparent 0deg,
-        rgb(16 185 129) 25deg,
-        rgb(34 211 238) 50deg,
+        oklch(0.4365 0.1044 156.7556) 25deg,
+        oklch(0.4365 0.1044 156.7556) 50deg,
         transparent 80deg,
         transparent 360deg
       )
       border-box;
-  animation: ajrasakha-orbit-spin 2.6s linear infinite alternate;
+  animation: ajrasakha-orbit-spin 1.5s ease-in-out infinite alternate;
+}
+
+/* Dark mode: match the chat area background */
+.dark .ajrasakha-orbit-bubble {
+  background:
+    linear-gradient(#08100a, #08100a) padding-box,
+    conic-gradient(
+        from var(--orbit-angle),
+        transparent 0deg,
+        oklch(0.4365 0.1044 156.7556) 25deg,
+        oklch(0.4365 0.1044 156.7556) 50deg,
+        transparent 80deg,
+        transparent 360deg
+      )
+      border-box;
 }
 
 @keyframes ajrasakha-orbit-spin {
@@ -2985,13 +3000,7 @@ html {
   }
 }
 
-/* A soft, blurred echo of the same rotating arc, sitting just outside the
-   bubble's edge for the glow. It shares the same --orbit-angle custom
-   property and stays in lock-step with the crisp ring above (no separate
-   timing to drift out of sync). Built the same "mask away the fill, keep
-   only the border band" way as the ring, then blurred — a static inset with
-   no transform, so it can't sweep outside the bubble the way an earlier,
-   rotated-element version of this effect did. */
+/* A soft, blurred glow around the bubble border using the same solid green. */
 .ajrasakha-orbit-bubble::after {
   content: '';
   position: absolute;
@@ -3002,8 +3011,8 @@ html {
   background: conic-gradient(
     from var(--orbit-angle),
     transparent 0deg,
-    rgb(16 185 129 / 0.55) 25deg,
-    rgb(34 211 238 / 0.55) 50deg,
+    oklch(0.4365 0.1044 156.7556 / 0.55) 25deg,
+    oklch(0.4365 0.1044 156.7556 / 0.55) 50deg,
     transparent 80deg,
     transparent 360deg
   );
@@ -3013,7 +3022,7 @@ html {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   filter: blur(5px);
-  animation: ajrasakha-orbit-spin 2.6s linear infinite alternate;
+  animation: ajrasakha-orbit-spin 1.5s ease-in-out infinite alternate;
   pointer-events: none;
 }
 
