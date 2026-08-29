@@ -524,3 +524,19 @@ export const useMCPServerConnectionStatusQuery = (
     },
   );
 };
+
+export const useGetUserMessageHistoryQuery = (
+  params?: { cursor?: string, pageSize?: number },
+  config?: UseQueryOptions<q.MessagesListResponse>,
+): QueryObserverResult<q.MessagesListResponse> => {
+  return useQuery<q.MessagesListResponse>(
+    [QueryKeys.messages, 'history', params],
+    () => dataService.getUserMessageHistory(params),
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: 'always',
+      ...config,
+    },
+  );
+};
