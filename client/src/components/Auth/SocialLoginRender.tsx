@@ -117,8 +117,11 @@ function SocialLoginRender({
     ),
   };
 
+  const hasSocialLogins = startupConfig.socialLogins && startupConfig.socialLogins.length > 0;
+
   return (
-    startupConfig.socialLoginEnabled && (
+    startupConfig.socialLoginEnabled &&
+    hasSocialLogins && (
       <>
         {startupConfig.emailLoginEnabled && (
           <>
@@ -131,7 +134,9 @@ function SocialLoginRender({
           </>
         )}
         <div className="mt-2">
-          {startupConfig.socialLogins?.map((provider) => providerComponents[provider] || null)}
+          {startupConfig.socialLogins?.map(
+            (provider) => providerComponents[provider as keyof typeof providerComponents] || null,
+          )}
         </div>
       </>
     )
