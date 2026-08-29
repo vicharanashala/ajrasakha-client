@@ -1,4 +1,5 @@
 export * from './chain';
+export * from './agricultureMemory';
 export * from './edges';
 export * from './initialize';
 export * from './legacy';

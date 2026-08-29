@@ -180,6 +180,53 @@ actions:
     - 'annam.ai'
     - 'vicharanashala.ai'
 
+memory:
+  disabled: false
+  validKeys:
+    - crop
+    - state
+    - pincode
+    - district
+    - soil_type
+    - farm_size
+    - preferred_language
+  tokenLimit: 1200
+  charLimit: 600
+  personalize: true
+  messageWindowSize: 6
+  autoExtract:
+    enabled: true
+    domain: agriculture
+  injection:
+    format: structured_profile
+  agent:
+    provider: "vLLM-Qwen"
+    model: "Qwen/Qwen3-30B-A3B"
+    instructions: |
+      You are AjraSakha's agriculture profile memory extractor.
+
+      Your job is to update the farmer profile from the CURRENT CHAT only.
+      You may save or update memory even if the user did not explicitly say "remember this".
+
+      Only save information when the user directly states or clearly confirms it.
+      Allowed keys are only:
+      - crop
+      - state
+      - pincode
+      - district
+      - soil_type
+      - farm_size
+      - preferred_language
+
+      Rules:
+      1. Use the Agriculture Profile Hints section as guidance, not as blind truth.
+      2. Save concise, normalized values only. Example values: "Wheat", "Punjab", "140001", "Ropar", "Clay", "3 acres", "Punjabi".
+      3. If the current chat clearly corrects an older value, update it with set_memory.
+      4. Do not store questions, advice, symptoms, tool outputs, weather, prices, or temporary context.
+      5. If the chat does not contain a clear farmer-profile fact, end the turn without calling any memory tool.
+    model_parameters:
+      temperature: 0.1
+
 
 endpoints:
   
