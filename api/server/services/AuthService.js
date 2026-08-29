@@ -370,7 +370,7 @@ const resetPassword = async (userId, token, password) => {
  * @param {ISession | null} [session=null]
  * @returns
  */
-const setAuthTokens = async (userId, res, _session = null) => {
+const setAuthTokens = async (userId, res, _session = null, existingRefreshToken = null) => {
   try {
     let session = _session;
     let refreshToken;
@@ -379,7 +379,13 @@ const setAuthTokens = async (userId, res, _session = null) => {
 
     if (session && session._id && session.expiration != null) {
       refreshTokenExpires = session.expiration.getTime();
-      refreshToken = await generateRefreshToken(session);
+      
+      // If we already have a valid refresh token, reuse it to prevent rotation race conditions
+      if (existingRefreshToken) {
+        refreshToken = existingRefreshToken;
+      } else {
+        refreshToken = await generateRefreshToken(session);
+      }
     } else {
       const result = await createSession(userId, { expiresIn });
       session = result.session;
