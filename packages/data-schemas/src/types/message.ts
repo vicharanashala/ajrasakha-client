@@ -25,6 +25,10 @@ export interface IMessage extends Document {
     rating: TFeedbackRating;
     tag: TFeedbackTag | undefined;
     text?: string;
+    status?: 'open' | 'accepted' | 'rejected';
+    reviewNote?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
   };
   _meiliIndex?: boolean;
   files?: unknown[];
