@@ -1,51 +1,57 @@
 import { Lightbulb } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import type { TranslationKeys } from '~/hooks';
+import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';
 
 /** The one line shown while the request is still young; after this the panel hands over to
- *  the rotating tips, which carry the "still working" signal along with the dots. */
-export const AJRASAKHA_INITIAL_MESSAGE = "Preparing your response. It'll appear here automatically.";
+ *  the rotating tips, which carry the "still working" signal along with the dots.
+ *  Holds a translation key rather than text, since useLocalize() can only be called from
+ *  inside a component. */
+export const AJRASAKHA_INITIAL_MESSAGE: TranslationKeys = 'com_ui_ajrasakha_initial_message';
 
 /** Reassurance at the points where a wait starts to feel wrong. These interrupt the tips
  *  briefly rather than replacing them, so the user hears that the request is still alive and
  *  then goes back to reading something useful. */
-export const AJRASAKHA_LONG_WAIT_UPDATES = [
+export const AJRASAKHA_LONG_WAIT_UPDATES: ReadonlyArray<{
+  delay: number;
+  messageKey: TranslationKeys;
+}> = [
   {
     delay: 30_000,
-    message: "This is taking longer than usual — still preparing a better answer for you.",
+    messageKey: 'com_ui_ajrasakha_long_wait_taking_longer',
   },
   {
     delay: 60_000,
-    message:
-      'Still working on it, pulling together information from several sources to get this right.',
+    messageKey: 'com_ui_ajrasakha_long_wait_pulling_together',
   },
 ] as const;
 
-export const AJRASAKHA_TIPS = [
+export const AJRASAKHA_TIPS: readonly TranslationKeys[] = [
   // Asking better questions
-  'Ask in your own language — Hindi, Punjabi, Malayalam and more all work.',
-  'Name your district and nearest mandi to get prices for your area.',
-  'Mention the crop and its growth stage for a more specific answer.',
-  'Describe symptoms in detail — leaf colour, spots, and which leaves are affected.',
-  'Share your soil test values to get fertiliser advice matched to your field.',
-  'Ask for quantities per acre or hectare so you can apply them directly.',
-  'Give a time window for weather questions, like the next five days.',
-  'Name a scheme directly, such as PMFBY, to get its details and eligibility.',
-  'Mention whether your field is irrigated or rain-fed for better sowing advice.',
-  'Say how large your plot is when asking about seed, water, or input quantities.',
+  'com_ui_ajrasakha_tip_own_language',
+  'com_ui_ajrasakha_tip_mandi_price',
+  'com_ui_ajrasakha_tip_crop_stage',
+  'com_ui_ajrasakha_tip_symptoms',
+  'com_ui_ajrasakha_tip_soil_test',
+  'com_ui_ajrasakha_tip_quantities',
+  'com_ui_ajrasakha_tip_weather_window',
+  'com_ui_ajrasakha_tip_scheme_name',
+  'com_ui_ajrasakha_tip_irrigation',
+  'com_ui_ajrasakha_tip_plot_size',
   // Using the app
-  'Tap the mic to ask by voice instead of typing.',
-  'Use the Voice and Text switch above the box to change how you ask.',
-  'Ask follow-up questions — the conversation is remembered.',
-  'Tap the speaker icon under an answer to have it read aloud.',
-  'Tap the copy icon under an answer to save it or share it with someone.',
-  'Edit your own message to rephrase a question without starting over.',
-  'Start a new chat when you move to a different topic or crop.',
-  'Allow location access so weather and prices match where you farm.',
-  'Use the arrow button to jump back to the newest message in a long answer.',
+  'com_ui_ajrasakha_tip_voice_mic',
+  'com_ui_ajrasakha_tip_voice_text_switch',
+  'com_ui_ajrasakha_tip_follow_up',
+  'com_ui_ajrasakha_tip_speaker_icon',
+  'com_ui_ajrasakha_tip_copy_icon',
+  'com_ui_ajrasakha_tip_edit_message',
+  'com_ui_ajrasakha_tip_new_chat',
+  'com_ui_ajrasakha_tip_location_access',
+  'com_ui_ajrasakha_tip_jump_to_newest',
   // Getting the most out of it
-  'Rate answers with the thumbs icons — it helps AjraSakha improve.',
-  'AjraSakha is in development — check critical decisions with your local KVK.',
+  'com_ui_ajrasakha_tip_rate_answers',
+  'com_ui_ajrasakha_tip_in_development',
 ] as const;
 
 /** How long the opening line holds before the tips take over. */
@@ -56,9 +62,10 @@ const TIP_ROTATION_INTERVAL = 8_000;
 const LONG_WAIT_MESSAGE_DURATION = 8_000;
 
 export default function AjraSakhaProgressStatus() {
+  const localize = useLocalize();
   const [isShowingTip, setIsShowingTip] = useState(false);
   const [tipIndex, setTipIndex] = useState(0);
-  const [longWaitMessage, setLongWaitMessage] = useState<string | null>(null);
+  const [longWaitMessageKey, setLongWaitMessageKey] = useState<TranslationKeys | null>(null);
 
   useEffect(() => {
     const handover = window.setTimeout(() => setIsShowingTip(true), INITIAL_MESSAGE_DURATION);
@@ -78,13 +85,13 @@ export default function AjraSakhaProgressStatus() {
 
   useEffect(() => {
     const timeouts: number[] = [];
-    AJRASAKHA_LONG_WAIT_UPDATES.forEach(({ delay, message }) => {
+    AJRASAKHA_LONG_WAIT_UPDATES.forEach(({ delay, messageKey }) => {
       timeouts.push(
         window.setTimeout(() => {
-          setLongWaitMessage(message);
+          setLongWaitMessageKey(messageKey);
           // Pushed onto the same list so unmount clears it too, whichever stage it is at.
           timeouts.push(
-            window.setTimeout(() => setLongWaitMessage(null), LONG_WAIT_MESSAGE_DURATION),
+            window.setTimeout(() => setLongWaitMessageKey(null), LONG_WAIT_MESSAGE_DURATION),
           );
         }, delay),
       );
@@ -92,9 +99,10 @@ export default function AjraSakhaProgressStatus() {
     return () => timeouts.forEach(window.clearTimeout);
   }, []);
 
-  const tip = AJRASAKHA_TIPS[tipIndex];
+  const tip = localize(AJRASAKHA_TIPS[tipIndex]);
   /** A long-wait update outranks everything; otherwise the opening line until the tips start. */
-  const statusMessage = longWaitMessage ?? (isShowingTip ? null : AJRASAKHA_INITIAL_MESSAGE);
+  const statusMessageKey = longWaitMessageKey ?? (isShowingTip ? null : AJRASAKHA_INITIAL_MESSAGE);
+  const statusMessage = statusMessageKey ? localize(statusMessageKey) : null;
   const isTipVisible = statusMessage == null;
 
   return (
