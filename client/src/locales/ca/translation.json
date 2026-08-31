@@ -1001,5 +1001,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "Valora les respostes amb les icones de polze — això ajuda AjraSakha a millorar.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha està en desenvolupament — comprova les decisions crítiques amb el teu KVK local.",
   "com_ui_feedback_tag_response_within_2_hours": "Resposta rebuda en menys de 2 hores",
-  "com_ui_feedback_tag_response_after_2_hours": "Resposta rebuda després de 2 hores"
+  "com_ui_feedback_tag_response_after_2_hours": "Resposta rebuda després de 2 hores",
+  "com_nav_log_out_confirm_message": "Segur que vols tancar la sessió?"
 }

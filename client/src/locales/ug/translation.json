@@ -41,5 +41,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "باش بارماق سىنبەلگىلىرى بىلەن جاۋابلارغا باھا بېرىڭ — بۇ AjraSakha نىڭ تەرەققىي قىلىشىغا ياردەم بېرىدۇ.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha تېخى تەرەققىي قىلىۋاتىدۇ — مۇھىم قارارلارنى يەرلىك KVK بىلەن جەزملەشتۈرۈڭ.",
   "com_ui_feedback_tag_response_within_2_hours": "2 سائەت ئىچىدە جاۋاب ئېلىندى",
-  "com_ui_feedback_tag_response_after_2_hours": "2 سائەتتىن كېيىن جاۋاب ئېلىندى"
+  "com_ui_feedback_tag_response_after_2_hours": "2 سائەتتىن كېيىن جاۋاب ئېلىندى",
+  "com_nav_log_out_confirm_message": "راستىنلا تىزىمدىن چىقماقچىمۇسىز؟"
 }

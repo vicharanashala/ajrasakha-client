@@ -1040,5 +1040,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "Bedøm svar med tommelfingerikonerne — det hjælper AjraSakha med at blive bedre.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha er under udvikling — tjek vigtige beslutninger med dit lokale KVK.",
   "com_ui_feedback_tag_response_within_2_hours": "Svar modtaget inden for 2 timer",
-  "com_ui_feedback_tag_response_after_2_hours": "Svar modtaget efter 2 timer"
+  "com_ui_feedback_tag_response_after_2_hours": "Svar modtaget efter 2 timer",
+  "com_nav_log_out_confirm_message": "Er du sikker på, at du vil logge ud?"
 }

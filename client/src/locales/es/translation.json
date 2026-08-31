@@ -927,5 +927,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "Califica las respuestas con los iconos de pulgar — ayuda a AjraSakha a mejorar.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha está en desarrollo — consulta las decisiones importantes con tu KVK local.",
   "com_ui_feedback_tag_response_within_2_hours": "Respuesta recibida en menos de 2 horas",
-  "com_ui_feedback_tag_response_after_2_hours": "Respuesta recibida después de 2 horas"
+  "com_ui_feedback_tag_response_after_2_hours": "Respuesta recibida después de 2 horas",
+  "com_nav_log_out_confirm_message": "¿Seguro que quieres cerrar sesión?"
 }

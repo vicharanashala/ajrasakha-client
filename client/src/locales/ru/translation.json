@@ -1436,5 +1436,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "Оценивайте ответы значками «палец вверх» и «палец вниз» — это помогает улучшать AjraSakha.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha находится в разработке — важные решения проверяйте со своим местным KVK.",
   "com_ui_feedback_tag_response_within_2_hours": "Ответ получен в течение 2 часов",
-  "com_ui_feedback_tag_response_after_2_hours": "Ответ получен после 2 часов"
+  "com_ui_feedback_tag_response_after_2_hours": "Ответ получен после 2 часов",
+  "com_nav_log_out_confirm_message": "Вы уверены, что хотите выйти?"
 }

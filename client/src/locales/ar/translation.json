@@ -851,5 +851,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "قيّم الإجابات باستخدام أيقونات الإبهام — هذا يساعد AjraSakha على التحسن.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha لا تزال قيد التطوير — تحقق من القرارات المهمة مع مركز KVK المحلي الخاص بك.",
   "com_ui_feedback_tag_response_within_2_hours": "تم استلام الرد خلال ساعتين",
-  "com_ui_feedback_tag_response_after_2_hours": "تم استلام الرد بعد مرور ساعتين"
+  "com_ui_feedback_tag_response_after_2_hours": "تم استلام الرد بعد مرور ساعتين",
+  "com_nav_log_out_confirm_message": "هل أنت متأكد أنك تريد تسجيل الخروج؟"
 }

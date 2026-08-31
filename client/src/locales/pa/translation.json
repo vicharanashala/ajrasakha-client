@@ -2094,5 +2094,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "ਥੰਬਸ ਆਈਕਨਾਂ ਨਾਲ ਜਵਾਬਾਂ ਨੂੰ ਰੇਟ ਕਰੋ — ਇਹ AjraSakha ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣ ਵਿੱਚ ਮਦਦ ਕਰਦਾ ਹੈ।",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha ਹਾਲੇ ਵਿਕਾਸ ਅਧੀਨ ਹੈ — ਅਹਿਮ ਫੈਸਲੇ ਆਪਣੇ ਸਥਾਨਕ KVK ਨਾਲ ਜਾਂਚ ਲਓ।",
   "com_ui_feedback_tag_response_within_2_hours": "2 ਘੰਟਿਆਂ ਦੇ ਅੰਦਰ ਜਵਾਬ ਮਿਲਿਆ",
-  "com_ui_feedback_tag_response_after_2_hours": "2 ਘੰਟਿਆਂ ਬਾਅਦ ਜਵਾਬ ਮਿਲਿਆ"
+  "com_ui_feedback_tag_response_after_2_hours": "2 ਘੰਟਿਆਂ ਬਾਅਦ ਜਵਾਬ ਮਿਲਿਆ",
+  "com_nav_log_out_confirm_message": "ਕੀ ਤੁਸੀਂ ਯਕੀਨਨ ਲੌਗ ਆਊਟ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?"
 }

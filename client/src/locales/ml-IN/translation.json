@@ -2094,5 +2094,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "തംബ്സ് ഐക്കണുകൾ ഉപയോഗിച്ച് ഉത്തരങ്ങൾ റേറ്റ് ചെയ്യൂ — ഇത് AjraSakha മെച്ചപ്പെടുത്താൻ സഹായിക്കുന്നു.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha വികസനത്തിലാണ് — നിർണായക തീരുമാനങ്ങൾ നിങ്ങളുടെ പ്രാദേശിക KVK-യുമായി ഉറപ്പാക്കൂ.",
   "com_ui_feedback_tag_response_within_2_hours": "2 മണിക്കൂറിനുള്ളിൽ മറുപടി ലഭിച്ചു",
-  "com_ui_feedback_tag_response_after_2_hours": "2 മണിക്കൂറിന് ശേഷം മറുപടി ലഭിച്ചു"
+  "com_ui_feedback_tag_response_after_2_hours": "2 മണിക്കൂറിന് ശേഷം മറുപടി ലഭിച്ചു",
+  "com_nav_log_out_confirm_message": "നിങ്ങൾക്ക് ലോഗ് ഔട്ട് ചെയ്യണമെന്ന് ഉറപ്പാണോ?"
 }

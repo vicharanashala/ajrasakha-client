@@ -2094,5 +2094,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "થમ્બ્સ આઇકનથી જવાબોને રેટ કરો — તે AjraSakha ને સુધારવામાં મદદ કરે છે.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha હજુ વિકાસ હેઠળ છે — મહત્વપૂર્ણ નિર્ણયો તમારા સ્થાનિક KVK સાથે તપાસો.",
   "com_ui_feedback_tag_response_within_2_hours": "2 કલાકની અંદર જવાબ મળ્યો",
-  "com_ui_feedback_tag_response_after_2_hours": "2 કલાક પછી જવાબ મળ્યો"
+  "com_ui_feedback_tag_response_after_2_hours": "2 કલાક પછી જવાબ મળ્યો",
+  "com_nav_log_out_confirm_message": "શું તમે ખરેખર લૉગ આઉટ કરવા માંગો છો?"
 }

@@ -177,5 +177,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "Ocenite odgovore z ikonama palca — to pomaga izboljšati AjraSakha.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha je še v razvoju — pomembne odločitve preverite pri svojem lokalnem KVK.",
   "com_ui_feedback_tag_response_within_2_hours": "Odgovor prejet v 2 urah",
-  "com_ui_feedback_tag_response_after_2_hours": "Odgovor prejet po 2 urah"
+  "com_ui_feedback_tag_response_after_2_hours": "Odgovor prejet po 2 urah",
+  "com_nav_log_out_confirm_message": "Ali ste prepričani, da se želite odjaviti?"
 }

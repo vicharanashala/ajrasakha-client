@@ -1456,5 +1456,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "使用点赞/点踩图标为答案评分——这有助于 AjraSakha 不断改进。",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha 仍在开发中——重要决策请与当地 KVK 核实。",
   "com_ui_feedback_tag_response_within_2_hours": "2小时内收到回复",
-  "com_ui_feedback_tag_response_after_2_hours": "2小时后收到回复"
+  "com_ui_feedback_tag_response_after_2_hours": "2小时后收到回复",
+  "com_nav_log_out_confirm_message": "确定要退出登录吗？"
 }

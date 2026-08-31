@@ -2093,5 +2093,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "अङ्गुष्ठचिह्नैः उत्तराणि मूल्याङ्कयत — एतत् AjraSakha-सुधारणे साहाय्यं करोति।",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha इदानीं विकासावस्थायाम् अस्ति — महत्त्वपूर्णान् निर्णयान् स्वस्थानीयेन KVK सह सत्यापयत।",
   "com_ui_feedback_tag_response_within_2_hours": "2 घण्टाभ्यन्तरे उत्तरं प्राप्तम्",
-  "com_ui_feedback_tag_response_after_2_hours": "2 घण्टानन्तरं उत्तरं प्राप्तम्"
+  "com_ui_feedback_tag_response_after_2_hours": "2 घण्टानन्तरं उत्तरं प्राप्तम्",
+  "com_nav_log_out_confirm_message": "किं भवान् निश्चयेन निर्गन्तुम् इच्छति?"
 }

@@ -41,5 +41,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "Ocijenite odgovore ikonama palca — to pomaže AjraSakhi da se poboljša.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha je u razvoju — provjerite važne odluke sa svojim lokalnim KVK-om.",
   "com_ui_feedback_tag_response_within_2_hours": "Odgovor primljen u roku od 2 sata",
-  "com_ui_feedback_tag_response_after_2_hours": "Odgovor primljen nakon 2 sata"
+  "com_ui_feedback_tag_response_after_2_hours": "Odgovor primljen nakon 2 sata",
+  "com_nav_log_out_confirm_message": "Jeste li sigurni da se želite odjaviti?"
 }

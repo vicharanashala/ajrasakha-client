@@ -2094,5 +2094,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "थम्ब्स आइकन से जवाबों को रेट करें — इससे AjraSakha को बेहतर बनाने में मदद मिलती है।",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha अभी विकास के अधीन है — महत्वपूर्ण फैसलों के लिए अपने स्थानीय KVK से जांच करें।",
   "com_ui_feedback_tag_response_within_2_hours": "2 घंटे के भीतर जवाब मिला",
-  "com_ui_feedback_tag_response_after_2_hours": "2 घंटे के बाद जवाब मिला"
+  "com_ui_feedback_tag_response_after_2_hours": "2 घंटे के बाद जवाब मिला",
+  "com_nav_log_out_confirm_message": "क्या आप वाकई लॉग आउट करना चाहते हैं?"
 }

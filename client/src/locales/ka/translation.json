@@ -205,5 +205,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "შეაფასეთ პასუხები ცერა თითის ხატულებით — ეს ეხმარება AjraSakha-ს გაუმჯობესებაში.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha ჯერ კიდევ დამუშავების პროცესშია — მნიშვნელოვანი გადაწყვეტილებები გადაამოწმეთ თქვენს ადგილობრივ KVK-სთან.",
   "com_ui_feedback_tag_response_within_2_hours": "პასუხი მიღებულია 2 საათში",
-  "com_ui_feedback_tag_response_after_2_hours": "პასუხი მიღებულია 2 საათის შემდეგ"
+  "com_ui_feedback_tag_response_after_2_hours": "პასუხი მიღებულია 2 საათის შემდეგ",
+  "com_nav_log_out_confirm_message": "დარწმუნებული ხართ, რომ გსურთ გამოსვლა?"
 }

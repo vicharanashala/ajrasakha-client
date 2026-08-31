@@ -945,5 +945,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "با نمادهای شست به پاسخ‌ها امتیاز دهید — این به بهبود AjraSakha کمک می‌کند.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha هنوز در حال توسعه است — تصمیمات مهم را با KVK محلی خود بررسی کنید.",
   "com_ui_feedback_tag_response_within_2_hours": "پاسخ ظرف 2 ساعت دریافت شد",
-  "com_ui_feedback_tag_response_after_2_hours": "پاسخ پس از 2 ساعت دریافت شد"
+  "com_ui_feedback_tag_response_after_2_hours": "پاسخ پس از 2 ساعت دریافت شد",
+  "com_nav_log_out_confirm_message": "آیا مطمئن هستید که می‌خواهید خارج شوید؟"
 }

@@ -2094,5 +2094,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "انگوٹھے کے آئیکنز سے جوابات کو درجہ دیں — اس سے AjraSakha کو بہتر بنانے میں مدد ملتی ہے۔",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha ابھی زیرِ تشکیل ہے — اہم فیصلوں کی تصدیق اپنے مقامی KVK سے کریں۔",
   "com_ui_feedback_tag_response_within_2_hours": "2 گھنٹے کے اندر جواب موصول ہوا",
-  "com_ui_feedback_tag_response_after_2_hours": "2 گھنٹے کے بعد جواب موصول ہوا"
+  "com_ui_feedback_tag_response_after_2_hours": "2 گھنٹے کے بعد جواب موصول ہوا",
+  "com_nav_log_out_confirm_message": "کیا آپ واقعی لاگ آؤٹ کرنا چاہتے ہیں؟"
 }

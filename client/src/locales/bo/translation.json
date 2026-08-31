@@ -41,5 +41,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "མཐེབ་སྐྱེད་རྣམ་པར་ལན་ལ་ཐང་ཚད་སྤྲོད་རོགས — འདིས་ AjraSakha ལེགས་སུ་གཏོང་ལ་རོགས་རམ་བྱེད་ཀྱི་རེད།",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha ད་དུང་གསར་སྤེལ་གྱི་གནས་སྐབས་ཡིན། གནད་འགག་ཅན་གྱི་ཐག་གཅོད་རྣམས་ཁྱེད་ཀྱི་ཉེ་འཁྲིས་ KVK དང་ལྷན་ཞིབ་བཤེར་གྱིས།",
   "com_ui_feedback_tag_response_within_2_hours": "ལན་འདེབས་ཆུ་ཚོད་2 ནང་ཐོབ་སོང་།",
-  "com_ui_feedback_tag_response_after_2_hours": "ལན་འདེབས་ཆུ་ཚོད་2 རྗེས་ཐོབ་སོང་།"
+  "com_ui_feedback_tag_response_after_2_hours": "ལན་འདེབས་ཆུ་ཚོད་2 རྗེས་ཐོབ་སོང་།",
+  "com_nav_log_out_confirm_message": "ཁྱེད་རང་ཐོན་འགྲོ་འདོད་པ་ངེས་གཏན་ཡིན་ནམ།"
 }

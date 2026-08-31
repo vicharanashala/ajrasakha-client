@@ -839,5 +839,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "Yanıtları başparmak simgeleriyle değerlendirin — bu, AjraSakha'nın gelişmesine yardımcı olur.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha hâlâ geliştirme aşamasındadır — kritik kararları yerel KVK'nız ile doğrulayın.",
   "com_ui_feedback_tag_response_within_2_hours": "Yanıt 2 Saat İçinde Alındı",
-  "com_ui_feedback_tag_response_after_2_hours": "Yanıt 2 Saatten Sonra Alındı"
+  "com_ui_feedback_tag_response_after_2_hours": "Yanıt 2 Saatten Sonra Alındı",
+  "com_nav_log_out_confirm_message": "Çıkış yapmak istediğinize emin misiniz?"
 }

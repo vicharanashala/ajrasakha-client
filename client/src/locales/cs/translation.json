@@ -846,5 +846,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "Hodnoťte odpovědi pomocí ikon palce — pomáhá to AjraSakha se zlepšovat.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha se stále vyvíjí — důležitá rozhodnutí si ověřte se svým místním KVK.",
   "com_ui_feedback_tag_response_within_2_hours": "Odpověď obdržena do 2 hodin",
-  "com_ui_feedback_tag_response_after_2_hours": "Odpověď obdržena po 2 hodinách"
+  "com_ui_feedback_tag_response_after_2_hours": "Odpověď obdržena po 2 hodinách",
+  "com_nav_log_out_confirm_message": "Opravdu se chcete odhlásit?"
 }

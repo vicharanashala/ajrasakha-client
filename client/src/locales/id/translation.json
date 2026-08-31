@@ -415,5 +415,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "Nilai jawaban dengan ikon jempol — ini membantu AjraSakha menjadi lebih baik.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha masih dalam pengembangan — periksa keputusan penting dengan KVK setempat Anda.",
   "com_ui_feedback_tag_response_within_2_hours": "Respons diterima dalam 2 jam",
-  "com_ui_feedback_tag_response_after_2_hours": "Respons diterima setelah 2 jam"
+  "com_ui_feedback_tag_response_after_2_hours": "Respons diterima setelah 2 jam",
+  "com_nav_log_out_confirm_message": "Apakah Anda yakin ingin keluar?"
 }

@@ -2093,5 +2093,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "বুঢ়াআঙুলিৰ আইকনেৰে উত্তৰবোৰ ৰেট কৰক — ই AjraSakhaক উন্নত হ'বলৈ সহায় কৰে।",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha এতিয়াও উন্নয়নাধীন — গুৰুত্বপূৰ্ণ সিদ্ধান্তবোৰ আপোনাৰ স্থানীয় KVKৰ সৈতে পৰীক্ষা কৰি লওক।",
   "com_ui_feedback_tag_response_within_2_hours": "সঁহাৰি 2 ঘণ্টাৰ ভিতৰত পোৱা গৈছিল",
-  "com_ui_feedback_tag_response_after_2_hours": "সঁহাৰি 2 ঘণ্টাৰ পিছত পোৱা গৈছিল"
+  "com_ui_feedback_tag_response_after_2_hours": "সঁহাৰি 2 ঘণ্টাৰ পিছত পোৱা গৈছিল",
+  "com_nav_log_out_confirm_message": "আপুনি লগ আউট কৰিবলৈ নিশ্চিত নেকি?"
 }

@@ -1413,5 +1413,6 @@
   "com_ui_ajrasakha_tip_rate_answers": "אפשר לדרג תשובות באמצעות סמלי האגודל — זה עוזר ל-AjraSakha להשתפר.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha עדיין בפיתוח — כדאי לבדוק החלטות קריטיות מול ה-KVK המקומי שלך.",
   "com_ui_feedback_tag_response_within_2_hours": "התקבלה תגובה תוך שעתיים",
-  "com_ui_feedback_tag_response_after_2_hours": "התקבלה תגובה לאחר שעתיים"
+  "com_ui_feedback_tag_response_after_2_hours": "התקבלה תגובה לאחר שעתיים",
+  "com_nav_log_out_confirm_message": "האם אתה בטוח שברצונך להתנתק?"
 }
