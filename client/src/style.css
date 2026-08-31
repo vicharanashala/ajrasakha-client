@@ -142,7 +142,7 @@ html {
 }
 .dark {
   --brand-purple: #ab68ff;
-  --presentation: var(--dg-950);
+  --presentation: #0a0a0a;
   --text-primary: var(--gray-100);
   --text-secondary: var(--gray-300);
   --text-secondary-alt: var(--gray-400);
@@ -151,29 +151,29 @@ html {
   --header-primary: var(--gray-700);
   --header-hover: var(--gray-600);
   --header-button-hover: var(--gray-700);
-  --surface-active: var(--dg-600);
-  --surface-active-alt: var(--dg-700);
+  --surface-active: var(--gray-600);
+  --surface-active-alt: var(--gray-700);
   --surface-hover: #262626;
   --surface-hover-alt: #262626;
-  --surface-primary: var(--dg-950);
-  --surface-primary-alt: var(--dg-900);
-  --surface-primary-contrast: var(--dg-900);
-  --surface-secondary: var(--dg-850);
-  --surface-secondary-alt: var(--dg-850);
-  --surface-tertiary: var(--dg-800);
-  --surface-tertiary-alt: var(--dg-800);
+  --surface-primary: #0a0a0a;
+  --surface-primary-alt: var(--gray-900);
+  --surface-primary-contrast: var(--gray-900);
+  --surface-secondary: var(--gray-850);
+  --surface-secondary-alt: var(--gray-850);
+  --surface-tertiary: var(--gray-800);
+  --surface-tertiary-alt: var(--gray-800);
   --surface-overlay: #171717;
   --surface-dialog: var(--surface-overlay);
   --surface-submit: var(--accent-green-dark);
   --surface-submit-hover: var(--accent-green-light);
   --surface-destructive: var(--red-800);
   --surface-destructive-hover: var(--red-900);
-  --surface-chat: var(--dg-900);
+  --surface-chat: var(--gray-900);
   --border-light: #262626;
-  --border-medium-alt: var(--dg-600);
-  --border-medium: var(--dg-600);
-  --border-heavy: var(--dg-500);
-  --border-xheavy: var(--dg-400);
+  --border-medium-alt: var(--gray-600);
+  --border-medium: var(--gray-600);
+  --border-heavy: var(--gray-500);
+  --border-xheavy: var(--gray-400);
   /* These are test styles */
 
   /* Neutral, not the 130deg green hue this used to carry. `bg-background` is the fill for
