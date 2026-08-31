@@ -2047,27 +2047,60 @@ html {
     transform: scale3d(1.25, 1.25, 1);
   }
 }
+/* Pre-first-token indicator: a sprout that grows and settles from its base, in brand green.
+   Drawn as a mask so the glyph takes its colour from `background-color` and can flip per
+   theme without a second asset. */
+@keyframes sproutGrow {
+  0%,
+  100% {
+    transform: scale(0.78);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 .submitting .result-thinking:empty:last-child:after {
   -webkit-font-smoothing: subpixel-antialiased;
-  -webkit-animation: pulseSize 1.25s ease-in-out infinite;
-  animation: pulseSize 1.25s ease-in-out infinite;
+  -webkit-animation: sproutGrow 1.6s ease-in-out infinite;
+  animation: sproutGrow 1.6s ease-in-out infinite;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  background-color: #0d0d0d;
-  background-color: var(--text-primary);
-  border-radius: 50%;
+  background-color: var(--accent-green-dark);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M11 22V11.5h2V22z'/%3E%3Cpath fill='%23000' d='M11.4 14.2C11.4 8.9 7.6 5.4 2 5.4c0 5.3 3.8 8.8 9.4 8.8z'/%3E%3Cpath fill='%23000' d='M13 12.6c0-4.7 3.2-7.8 8-7.8 0 4.7-3.2 7.8-8 7.8z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M11 22V11.5h2V22z'/%3E%3Cpath fill='%23000' d='M11.4 14.2C11.4 8.9 7.6 5.4 2 5.4c0 5.3 3.8 8.8 9.4 8.8z'/%3E%3Cpath fill='%23000' d='M13 12.6c0-4.7 3.2-7.8 8-7.8 0 4.7-3.2 7.8-8 7.8z'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
   box-sizing: border-box;
   content: ' ';
   display: block;
-  height: 12px;
+  height: 16px;
   position: absolute;
-  top: -11px;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-transform-origin: center;
-  transform-origin: center;
-  width: 12px;
+  top: -14px;
+  /* Grows from the base like a plant rather than from its middle. */
+  -webkit-transform-origin: 50% 100%;
+  transform-origin: 50% 100%;
+  width: 16px;
   will-change: transform;
+}
+
+.dark .submitting .result-thinking:empty:last-child:after {
+  background-color: var(--accent-green-light);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .submitting .result-thinking:empty:last-child:after {
+    -webkit-animation: none;
+    animation: none;
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .shadow-stroke {
@@ -2906,6 +2939,59 @@ html {
   animation: fadeIn 0.5s ease-out forwards;
 }
 
+/* Send button: the icon lifts away along its own diagonal and a fresh one settles back in,
+   so a submit reads as the message leaving rather than the button flashing in place. */
+@keyframes sendLaunch {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  45% {
+    transform: translate(10px, -10px) scale(0.9);
+    opacity: 0;
+  }
+  46% {
+    transform: translate(-8px, 8px) scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-sendLaunch {
+  animation: sendLaunch 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Landing entrance: elements rise into place one after another, continuing the per-character
+   greeting animation rather than dropping the whole block in at once. The delay is set
+   per element with an inline `animation-delay`. */
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* `backwards`, not `both`: the element holds the start state through its delay, but once the
+   animation finishes nothing is retained, so the cards' own hover and active transforms still
+   apply afterwards. */
+.animate-riseIn {
+  animation: riseIn 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-sendLaunch,
+  .animate-riseIn {
+    animation: none;
+  }
+}
+
 @keyframes ajrasakha-progress-enter {
   from {
     opacity: 0;
@@ -2941,6 +3027,33 @@ html {
   .ajrasakha-progress-dot {
     animation: none;
     opacity: 0.6;
+  }
+}
+
+/* Waiting marker: a sprout that grows and settles from its base, so the pause reads as
+   something taking root rather than a generic spinner. Anchored at the bottom so it rises
+   from the stem instead of swelling from its middle. */
+@keyframes ajrasakha-progress-sprout {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(0.82) rotate(-4deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(3deg);
+  }
+}
+
+.ajrasakha-progress-sprout {
+  animation: ajrasakha-progress-sprout 1.8s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ajrasakha-progress-sprout {
+    animation: none;
+    opacity: 0.8;
   }
 }
 
