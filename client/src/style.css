@@ -119,7 +119,7 @@ html {
   --foreground: 0 0% 3.9%;
   --card: 0 0% 100%;
   --card-foreground: 0 0% 3.9%;
-  --primary: 157 55% 65%;
+  --primary: 0 0% 45%;
   --primary-foreground: 0 0% 9%;
   --secondary: 0 0% 96.1%;
   --secondary-foreground: 0 0% 9%;
@@ -131,7 +131,7 @@ html {
   --destructive-foreground: 0 0% 98%;
   --border: 0 0% 89.8%;
   --input: 0 0% 89.8%;
-  --ring: 157 55% 65%;
+  --ring: 0 0% 45%;
   --radius: 0.5rem;
   --chart-1: 12 76% 61%;
   --chart-2: 173 58% 39%;
@@ -153,8 +153,8 @@ html {
   --header-button-hover: var(--gray-700);
   --surface-active: var(--dg-600);
   --surface-active-alt: var(--dg-700);
-  --surface-hover: var(--dg-700);
-  --surface-hover-alt: var(--dg-700);
+  --surface-hover: #262626;
+  --surface-hover-alt: #262626;
   --surface-primary: var(--dg-950);
   --surface-primary-alt: var(--dg-900);
   --surface-primary-contrast: var(--dg-900);
@@ -169,7 +169,7 @@ html {
   --surface-destructive: var(--red-800);
   --surface-destructive-hover: var(--red-900);
   --surface-chat: var(--dg-900);
-  --border-light: var(--dg-700);
+  --border-light: #262626;
   --border-medium-alt: var(--dg-600);
   --border-medium: var(--dg-600);
   --border-heavy: var(--dg-500);
@@ -182,21 +182,21 @@ html {
      --surface-overlay (#171717). */
   --background: 0 0% 9%;
   --foreground: 0 0% 98%;
-  --card: 130 22% 4.5%;
+  --card: 0 0% 5%;
   --card-foreground: 0 0% 98%;
-  --primary: 152 69% 31%;
+  --primary: 0 0% 50%;
   --primary-foreground: 0 0% 98%;
-  --secondary: 130 18% 10%;
+  --secondary: 0 0% 10%;
   --secondary-foreground: 0 0% 98%;
-  --muted: 130 15% 9%;
-  --muted-foreground: 130 8% 62%;
-  --accent: 130 20% 11%;
+  --muted: 0 0% 9%;
+  --muted-foreground: 0 0% 62%;
+  --accent: 0 0% 11%;
   --accent-foreground: 0 0% 98%;
   --destructive: 0 62.8% 40.6%;
   --destructive-foreground: 0 0% 98%;
-  --border: 130 18% 11%;
-  --input: 130 18% 11%;
-  --ring: 152 69% 31%;
+  --border: 0 0% 15%;
+  --input: 0 0% 15%;
+  --ring: 0 0% 50%;
   --chart-1: 220 70% 50%;
   --chart-2: 160 60% 45%;
   --chart-3: 30 80% 55%;

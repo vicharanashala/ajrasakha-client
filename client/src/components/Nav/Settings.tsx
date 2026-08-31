@@ -274,12 +274,11 @@ export default function Settings({ open, onOpenChange }: TDialogProps) {
                         key={value}
                         className={cn(
                           'group relative flex w-full items-center justify-start gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200 ease-in-out',
-                          'text-text-secondary hover:bg-green-600/10 hover:text-text-primary',
-                          'dark:hover:bg-green-400/10',
+                          'text-text-secondary hover:bg-gray-500/10 hover:text-text-primary',
+                          'dark:hover:bg-gray-400/10',
                           'focus:outline-none focus-visible:ring-2 focus-visible:ring-border-xheavy',
-                          // Selected tab carries the brand accent rather than a neutral grey.
-                          'radix-state-active:bg-green-600/15 radix-state-active:text-green-700',
-                          'dark:radix-state-active:bg-green-400/15 dark:radix-state-active:text-green-400',
+                          'radix-state-active:bg-gray-500/15 radix-state-active:text-text-primary',
+                          'dark:radix-state-active:bg-gray-400/15 dark:radix-state-active:text-gray-200',
                         )}
                         value={value}
                         ref={(el) => (tabRefs.current[value] = el)}
