@@ -11,7 +11,9 @@ module.exports = {
   darkMode: ['class'],
   theme: {
     fontFamily: {
-      sans: ['Inter', 'sans-serif'],
+      // Anek first (Latin plus nine Indian scripts); Inter behind it for Greek, Cyrillic and
+      // the scripts Anek does not cover.
+      sans: ['Anek', 'Inter', 'sans-serif'],
       mono: ['Roboto Mono', 'monospace'],
     },
     // fontFamily: {

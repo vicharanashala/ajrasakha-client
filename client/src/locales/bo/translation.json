@@ -1,5 +1,8 @@
 {
   "com_auth_error_email_in_use": "གློག་འཕྲིན་འདི་བེད་སྤྱོད་བྱས་ཟིན་པ།",
+  "com_auth_panel_expert_verified_description": "བསླབ་བྱ་རྣམས་ཁྱེད་ལ་མ་སླེབས་གོང་ཞིང་ལས་མཁས་པས་ཞིབ་བཤེར་བྱེད།",
+  "com_auth_panel_multilingual_description": "ཁྱེད་ཀྱིས་བཤད་སའི་སྐད་ཡིག་ནང་དྲི་བ་འདྲི་ནས་ལན་ཐོབ།",
+  "com_auth_panel_voice_description": "དྲི་བ་འབྲི་བའི་ཚབ་ཏུ་ཁ་ནས་ཤོད།",
   "com_ui_feedback_enforce_skipped": "Skipping feedback...",
   "com_ui_landing_chip_expert_verified": "མཁས་པས་ཞིབ་བཤེར་བྱས་པ།",
   "com_ui_landing_chip_multilingual": "སྐད་ཡིག་མང་པོ།",
