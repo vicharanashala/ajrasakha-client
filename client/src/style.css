@@ -42,6 +42,13 @@
   --dg-600: #1f301f;
   --dg-500: #2a3f2a;
   --dg-400: #375339;
+  /* Light-mode counterpart to the `dg-*` ramp: same green hue at a fraction of the
+     saturation, so light mode carries the brand tint without reading as coloured. */
+  --lg-50: #f8fbf9;
+  --lg-100: #f2f7f3;
+  --lg-200: #e9f0eb;
+  --lg-300: #dde6e0;
+  --lg-400: #ccd8d0;
   --red-50: #fef2f2;
   --red-100: #fee2e2;
   --red-200: #fecaca;
@@ -87,17 +94,17 @@ html {
   --header-primary: var(--white);
   --header-hover: var(--gray-50);
   --header-button-hover: var(--gray-50);
-  --surface-active: var(--gray-100);
-  --surface-active-alt: var(--gray-200);
-  --surface-hover: var(--gray-200);
-  --surface-hover-alt: var(--gray-300);
+  --surface-active: var(--lg-200);
+  --surface-active-alt: var(--lg-300);
+  --surface-hover: var(--lg-300);
+  --surface-hover-alt: var(--lg-400);
   --surface-primary: var(--white);
-  --surface-primary-alt: var(--gray-50);
-  --surface-primary-contrast: var(--gray-100);
-  --surface-secondary: var(--gray-50);
-  --surface-secondary-alt: var(--gray-200);
-  --surface-tertiary: var(--gray-100);
-  --surface-tertiary-alt: var(--white);
+  --surface-primary-alt: var(--lg-100);
+  --surface-primary-contrast: var(--lg-200);
+  --surface-secondary: var(--lg-100);
+  --surface-secondary-alt: var(--lg-300);
+  --surface-tertiary: var(--lg-200);
+  --surface-tertiary-alt: var(--lg-50);
   /* Surfaces that float above the page — dialogs and popovers. Kept off the `dg-*` ramp,
      which is deliberately green-tinted; a panel sitting on top of the page reads as a colour
      cast rather than as elevation when it carries that tint. */
@@ -107,7 +114,7 @@ html {
   --surface-submit-hover: var(--accent-green-dark);
   --surface-destructive: var(--red-700);
   --surface-destructive-hover: var(--red-800);
-  --surface-chat: var(--white);
+  --surface-chat: var(--lg-50);
   --border-light: var(--gray-200);
   --border-medium-alt: var(--gray-300);
   --border-medium: var(--gray-300);
