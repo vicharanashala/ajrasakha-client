@@ -280,7 +280,7 @@ const FarmerLocationModal = ({
 
   const fieldClass = 'mb-4';
   const inputClass =
-    'mt-1.5 block w-full rounded-lg border border-border-medium bg-surface-primary px-3 py-2 text-sm text-text-primary placeholder-text-secondary transition-colors focus:border-border-heavy focus:outline-none focus:ring-1 focus:ring-border-heavy';
+    'mt-1.5 block h-12 w-full rounded-xl border border-border-medium bg-transparent px-3.5 text-base text-text-primary placeholder-text-secondary transition-colors focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600';
   const integerRegex = /^\d+$/;
   const decimalRegex = /^\d+(\.\d+)?$/;
 

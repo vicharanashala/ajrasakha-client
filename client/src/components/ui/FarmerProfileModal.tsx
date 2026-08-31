@@ -103,7 +103,7 @@ function ChoiceCards({
               'focus-within:ring-2 focus-within:ring-green-600/40',
               isSelected
                 ? 'border-green-600 bg-green-500/10 font-semibold text-green-700 dark:border-green-400 dark:bg-green-400/10 dark:text-green-400'
-                : 'border-border-medium bg-surface-primary text-text-primary hover:bg-surface-hover',
+                : 'border-border-medium bg-transparent text-text-primary hover:bg-surface-hover',
             )}
           >
             <input
@@ -142,7 +142,7 @@ function CountStepper({
 }) {
   const current = Number.isFinite(value) ? (value as number) : min;
   const stepButtonClass =
-    'flex size-12 shrink-0 items-center justify-center rounded-xl border border-border-medium bg-surface-primary text-text-primary transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600/40 disabled:cursor-not-allowed disabled:opacity-40';
+    'flex size-12 shrink-0 items-center justify-center rounded-xl border border-border-medium bg-transparent text-text-primary transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600/40 disabled:cursor-not-allowed disabled:opacity-40';
 
   return (
     <div className="mt-1.5 flex items-center gap-2">
@@ -167,7 +167,7 @@ function CountStepper({
         onChange={(event) =>
           onChange(Number.isNaN(event.target.valueAsNumber) ? undefined : event.target.valueAsNumber)
         }
-        className="h-12 w-full min-w-0 rounded-xl border border-border-medium bg-surface-primary text-center text-base font-semibold text-text-primary transition-colors focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
+        className="h-12 w-full min-w-0 rounded-xl border border-border-medium bg-transparent text-center text-base font-semibold text-text-primary transition-colors focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
       />
       <button
         type="button"
@@ -507,7 +507,7 @@ const FarmerProfileModal = ({
   };
 
   const inputClass =
-    'mt-1.5 block h-12 w-full rounded-xl border border-border-medium bg-surface-primary px-3.5 text-base text-text-primary placeholder-text-secondary transition-colors focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600';
+    'mt-1.5 block h-12 w-full rounded-xl border border-border-medium bg-transparent px-3.5 text-base text-text-primary placeholder-text-secondary transition-colors focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600';
   const errorClass = 'mt-1 text-xs text-red-500';
   const sectionTitleClass = 'mb-4 flex items-center gap-3';
   const sectionBadgeClass =
@@ -1127,7 +1127,7 @@ const FarmerProfileModal = ({
                           isCompleted
                             ? 'border-green-600 bg-green-600 text-white'
                             : isActive
-                              ? 'border-green-600 bg-surface-primary text-green-600'
+                              ? 'border-green-600 bg-transparent text-green-600'
                               : 'border-border-light bg-surface-secondary text-text-tertiary',
                         )}
                       >

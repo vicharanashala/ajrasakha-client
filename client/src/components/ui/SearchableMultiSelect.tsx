@@ -72,7 +72,7 @@ const SearchableMultiSelect = ({
         type="button"
         onClick={handleToggle}
         disabled={disabled}
-        className={`flex min-h-12 w-full items-center justify-between rounded-xl border border-border-medium bg-surface-primary px-3.5 py-2.5 text-left text-base focus:outline-none focus:ring-1 focus:ring-green-600 disabled:cursor-not-allowed disabled:opacity-50 ${
+        className={`flex min-h-12 w-full items-center justify-between rounded-xl border border-border-medium bg-transparent px-3.5 py-2.5 text-left text-base focus:outline-none focus:ring-1 focus:ring-green-600 disabled:cursor-not-allowed disabled:opacity-50 ${
           selectedDisplay ? 'text-text-primary' : 'text-text-secondary'
         }`}
       >
@@ -90,7 +90,7 @@ const SearchableMultiSelect = ({
 
       {open && (
         <div
-          className={`absolute z-[300] w-full rounded-md border border-border-heavy bg-surface-primary shadow-lg ${
+          className={`absolute z-[300] w-full rounded-md border border-border-heavy bg-surface-dialog shadow-lg ${
             openUpward ? 'bottom-full mb-1' : 'mt-1'
           }`}
         >
