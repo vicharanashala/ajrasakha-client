@@ -20,7 +20,13 @@ import { cn } from '~/utils';
 /** Never shrink the model name below this, so it stays legible on very narrow screens. */
 const MODEL_NAME_MIN_FONT_SIZE = 11;
 
-function ModelSelectorContent({ triggerClassName }: { triggerClassName?: string }) {
+function ModelSelectorContent({
+  triggerClassName,
+  containerClassName,
+}: {
+  triggerClassName?: string;
+  containerClassName?: string;
+}) {
   const localize = useLocalize();
 
   const {
@@ -139,7 +145,7 @@ function ModelSelectorContent({ triggerClassName }: { triggerClassName?: string 
   );
 
   return (
-    <div className="relative flex w-fit flex-col items-center">
+    <div className={cn('relative flex w-fit flex-col items-center', containerClassName)}>
       <Menu
         values={selectedValues}
         onValuesChange={(values: Record<string, any>) => {
@@ -184,7 +190,8 @@ function ModelSelectorContent({ triggerClassName }: { triggerClassName?: string 
 export default function ModelSelector({
   startupConfig,
   triggerClassName,
-}: ModelSelectorProps & { triggerClassName?: string }) {
+  containerClassName,
+}: ModelSelectorProps & { triggerClassName?: string; containerClassName?: string }) {
   const interfaceConfig = startupConfig?.interface ?? getConfigDefaults().interface;
   const modelSpecs = startupConfig?.modelSpecs?.list ?? [];
 
@@ -196,7 +203,10 @@ export default function ModelSelector({
   return (
     <ModelSelectorChatProvider>
       <ModelSelectorProvider startupConfig={startupConfig}>
-        <ModelSelectorContent triggerClassName={triggerClassName} />
+        <ModelSelectorContent
+          triggerClassName={triggerClassName}
+          containerClassName={containerClassName}
+        />
       </ModelSelectorProvider>
     </ModelSelectorChatProvider>
   );

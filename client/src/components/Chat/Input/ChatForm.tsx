@@ -1075,10 +1075,13 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               createPortal(
                 <ModelSelector
                   startupConfig={startupConfig}
+                  // Fills the nav bar's free space instead of shrink-wrapping to the model
+                  // name, so long names keep their size rather than being auto-shrunk.
+                  containerClassName="w-full"
                   // Sits on the bare nav bar rather than inside the input, so it needs its own
                   // surface to read as a control. Borrows the composer pill's treatment —
                   // same radius, border token and chat surface — so the two read as one family.
-                  triggerClassName="justify-start gap-2 rounded-full border border-border-light bg-surface-chat px-3 shadow-sm transition-colors hover:border-border-medium hover:bg-surface-hover"
+                  triggerClassName="w-full justify-start gap-2 rounded-full border border-border-light bg-surface-chat px-3 shadow-sm transition-colors hover:border-border-medium hover:bg-surface-hover"
                 />,
                 mobileNavPortal,
               )}
