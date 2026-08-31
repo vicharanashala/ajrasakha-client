@@ -61,6 +61,11 @@ function AuthLayout({
   const [isLangOpen, setIsLangOpen] = useState(() => {
     return !localStorage.getItem('lang_selected');
   });
+  /** True when the dialog was opened from the footer rather than automatically on a first
+   *  visit. Dismissing a first-visit prompt falls back to the browser language; dismissing a
+   *  deliberate visit must leave the current choice alone. */
+  const [isLangOpenedManually, setIsLangOpenedManually] = useState(false);
+
   const [langcode, setLangcode] = useRecoilState(store.lang);
 
 
@@ -86,6 +91,17 @@ function AuthLayout({
     },
     [setLangcode],
   );
+
+  /** Dismissing the first-visit prompt falls back to the browser language, since no choice
+   *  has been made yet. Dismissing a dialog the user opened themselves must leave their
+   *  current language untouched. */
+  const closeLangDialog = useCallback(() => {
+    if (!isLangOpenedManually) {
+      handleLangChange('auto');
+    }
+    setIsLangOpenedManually(false);
+    setIsLangOpen(false);
+  }, [handleLangChange, isLangOpenedManually]);
 
   const hasStartupConfigError = startupConfigError !== null && startupConfigError !== undefined;
   const DisplayError = () => {
@@ -134,10 +150,7 @@ function AuthLayout({
         <Dialog
           as="div"
           className="relative z-50"
-          onClose={() => {
-            handleLangChange('auto');
-            setIsLangOpen(false);
-          }}
+          onClose={closeLangDialog}
         >
           {' '}
           {/* Backdrop */}
@@ -168,7 +181,7 @@ function AuthLayout({
                   </h2>
 
                   <button
-                    onClick={() => setIsLangOpen(false)}
+                    onClick={closeLangDialog}
                     className="rounded-md p-1 text-gray-500 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                     aria-label="Close"
                   >
@@ -187,18 +200,50 @@ function AuthLayout({
         </Dialog>
       </Transition>
 
+      {/* In-development notice. The Banner component still renders, but its copy was
+          commented out when that notice moved to the chat Footer — and the auth screens have
+          no composer for it to sit under, so they carry it here instead. Same string the
+          important-notice modal uses, so there is nothing new to translate. */}
+      <div
+        role="status"
+        className="w-full bg-black/[0.04] px-4 py-3 text-center text-sm font-medium text-text-primary dark:bg-white/[0.06] sm:text-base"
+      >
+        {localize('com_ui_important_notice_p1')}
+      </div>
       <Banner />
       <DisplayError />
-      {/* Pinned to the corner from md up, where there is room for it. On a phone it would
-          sit on top of the footer links, so below md it joins the flex column as its last
-          row instead. */}
+      {/* Theme and language sit together: both are things a first-time visitor may need to
+          set before they can read the form at all. Pinned to the corner from md up, where
+          there is room for it. On a phone it would sit on top of the footer links, so below
+          md it joins the flex column as its last row instead. */}
       <div
         className={cn(
-          'order-last flex justify-center pb-3',
-          'md:absolute md:bottom-0 md:left-0 md:block md:m-4 md:origin-bottom-left md:scale-75 md:pb-0',
+          'order-last flex items-center justify-start gap-1 px-4 pb-2',
+          'md:absolute md:bottom-0 md:left-0 md:m-2 md:justify-start md:pb-0',
         )}
       >
-        <ThemeSelector />
+        <ThemeSelector returnThemeOnly />
+        {/* An icon button rather than the labelled dropdown, so it reads as a pair with the
+            theme toggle beside it. It opens the language dialog this layout already renders
+            on a first visit — a better picker on a phone than a footer dropdown. */}
+        <button
+          type="button"
+          onClick={() => {
+            setIsLangOpenedManually(true);
+            setIsLangOpen(true);
+          }}
+          aria-label={localize('com_nav_language')}
+          title={localize('com_nav_language')}
+          className={cn(
+            // Mirrors ThemeSelector's own button: same padding, radius and hover.
+            'flex items-center rounded-lg p-2 text-text-primary transition-colors',
+            'hover:bg-surface-hover',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600',
+            'focus-visible:ring-offset-2 dark:focus-visible:ring-0',
+          )}
+        >
+          <Languages className="size-5" aria-hidden="true" />
+        </button>
       </div>
 
       <main className="flex flex-grow items-center justify-center px-4 py-6 sm:py-8">
