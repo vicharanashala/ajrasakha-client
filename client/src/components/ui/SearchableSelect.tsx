@@ -62,7 +62,7 @@ const SearchableSelect = ({
         type="button"
         onClick={handleOpen}
         disabled={disabled}
-        className={`flex w-full items-center justify-between rounded-md border border-border-heavy bg-surface-secondary px-3 py-2 text-sm text-left focus:outline-none focus:ring-1 focus:ring-green-500 disabled:cursor-not-allowed disabled:opacity-50 ${
+        className={`flex h-12 w-full items-center justify-between rounded-xl border border-border-medium bg-surface-primary px-3.5 text-base text-left focus:outline-none focus:ring-1 focus:ring-green-600 disabled:cursor-not-allowed disabled:opacity-50 ${
           value ? 'text-text-primary' : 'text-text-secondary'
         }`}
       >

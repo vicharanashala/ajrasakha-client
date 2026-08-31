@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import { useRecoilState } from 'recoil';
 import { useQuery } from '@tanstack/react-query';
 import { useForm, Controller } from 'react-hook-form';
+import type { FieldPath } from 'react-hook-form';
 import useGeolocation from '~/hooks/useGeolocation';
 import { SearchableSelect, SearchableMultiSelect } from '~/components/ui';
 import LogoutConfirmModal from '~/components/ui/LogoutConfirmModal';
@@ -25,6 +26,8 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
+  Minus,
+  Plus,
 } from 'lucide-react';
 import { dataService } from 'librechat-data-provider';
 import type { IFarmerProfile } from 'librechat-data-provider';
@@ -65,6 +68,142 @@ type FarmerProfileForm = {
   };
   landhold: string;
 };
+
+// ── Shared controls ──────────────────────────────────────────────────────────
+
+type ChoiceOption = { label: string; value: string };
+
+/** Tappable option cards in place of a dropdown or a radio row. A real radio input sits
+ *  inside each card, visually hidden, so arrow-key navigation, form semantics and screen
+ *  reader announcements all behave natively while the card carries the styling. */
+function ChoiceCards({
+  name,
+  options,
+  value,
+  onChange,
+  gridClassName = 'grid-cols-2 sm:grid-cols-3',
+}: {
+  name: string;
+  options: ChoiceOption[];
+  value?: string;
+  onChange: (value: string) => void;
+  /** Column layout for this field; long labels want fewer columns. */
+  gridClassName?: string;
+}) {
+  return (
+    <div className={cn('mt-1.5 grid gap-2', gridClassName)}>
+      {options.map((option) => {
+        const isSelected = value === option.value;
+        return (
+          <label
+            key={option.value}
+            className={cn(
+              'flex min-h-[46px] cursor-pointer items-center justify-center rounded-xl border px-3 py-2.5',
+              'text-center text-sm transition-colors',
+              'focus-within:ring-2 focus-within:ring-green-600/40',
+              isSelected
+                ? 'border-green-600 bg-green-500/10 font-semibold text-green-700 dark:border-green-400 dark:bg-green-400/10 dark:text-green-400'
+                : 'border-border-medium bg-surface-primary text-text-primary hover:bg-surface-hover',
+            )}
+          >
+            <input
+              type="radio"
+              name={name}
+              value={option.value}
+              checked={isSelected}
+              onChange={() => onChange(option.value)}
+              className="sr-only"
+            />
+            {option.label}
+          </label>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Minus/plus stepper for small whole-number counts. The number input stays in the middle
+ *  rather than being replaced by a read-only display, so it remains the accessible control
+ *  and anyone who prefers typing still can; the buttons just save opening a keyboard. */
+function CountStepper({
+  id,
+  value,
+  onChange,
+  min = 0,
+  max = 20,
+}: {
+  id: string;
+  value?: number;
+  /** Undefined when the field is cleared, so the `required` rule reports it as missing
+   *  rather than a stray NaN falling through to the whole-number rule. */
+  onChange: (value: number | undefined) => void;
+  min?: number;
+  max?: number;
+}) {
+  const current = Number.isFinite(value) ? (value as number) : min;
+  const stepButtonClass =
+    'flex size-12 shrink-0 items-center justify-center rounded-xl border border-border-medium bg-surface-primary text-text-primary transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600/40 disabled:cursor-not-allowed disabled:opacity-40';
+
+  return (
+    <div className="mt-1.5 flex items-center gap-2">
+      <button
+        type="button"
+        aria-hidden="true"
+        tabIndex={-1}
+        disabled={current <= min}
+        onClick={() => onChange(Math.max(min, current - 1))}
+        className={stepButtonClass}
+      >
+        <Minus className="size-4" />
+      </button>
+      <input
+        id={id}
+        type="number"
+        inputMode="numeric"
+        min={min}
+        max={max}
+        step={1}
+        value={Number.isFinite(value) ? value : ''}
+        onChange={(event) =>
+          onChange(Number.isNaN(event.target.valueAsNumber) ? undefined : event.target.valueAsNumber)
+        }
+        className="h-12 w-full min-w-0 rounded-xl border border-border-medium bg-surface-primary text-center text-base font-semibold text-text-primary transition-colors focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
+      />
+      <button
+        type="button"
+        aria-hidden="true"
+        tabIndex={-1}
+        disabled={current >= max}
+        onClick={() => onChange(Math.min(max, current + 1))}
+        className={stepButtonClass}
+      >
+        <Plus className="size-4" />
+      </button>
+    </div>
+  );
+}
+
+/** Footer actions. Brand green in both themes: the `surface-submit` token resolves to the
+ *  pale mint in light mode, where white label text on it falls under the contrast minimum. */
+const PRIMARY_ACTION_CLASS = cn(
+  'inline-flex h-12 w-full items-center justify-center rounded-full px-6 text-sm font-semibold',
+  'bg-green-600 text-white',
+  'shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_2px_8px_-2px_rgba(25,135,84,0.5)]',
+  'dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_2px_10px_-2px_rgba(117,215,178,0.3)]',
+  'transition-[background-color,box-shadow,transform,opacity] duration-200 hover:opacity-90',
+  'active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100',
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600/50',
+  'sm:w-auto sm:min-w-[9rem]',
+);
+
+const SECONDARY_ACTION_CLASS = cn(
+  'inline-flex h-12 w-full items-center justify-center rounded-full px-6 text-sm font-medium',
+  'border border-border-medium bg-transparent text-text-primary',
+  'transition-colors duration-200 hover:bg-surface-hover',
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-heavy',
+  'disabled:cursor-not-allowed disabled:opacity-50',
+  'sm:w-auto sm:min-w-[7rem]',
+);
 
 // ── Component ────────────────────────────────────────────────────────────────
 
@@ -368,7 +507,7 @@ const FarmerProfileModal = ({
   };
 
   const inputClass =
-    'mt-1.5 block w-full rounded-lg border border-border-medium bg-surface-primary px-3 py-2 text-sm text-text-primary placeholder-text-secondary transition-colors focus:border-border-heavy focus:outline-none focus:ring-1 focus:ring-border-heavy';
+    'mt-1.5 block h-12 w-full rounded-xl border border-border-medium bg-surface-primary px-3.5 text-base text-text-primary placeholder-text-secondary transition-colors focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600';
   const errorClass = 'mt-1 text-xs text-red-500';
   const sectionTitleClass = 'mb-4 flex items-center gap-3';
   const sectionBadgeClass =
@@ -839,11 +978,18 @@ const FarmerProfileModal = ({
     { label: noLabel, value: 'no' },
   ];
 
-  const SECTIONS: { icon: typeof User; title: string; fields: (keyof FarmerProfileForm)[] }[] = [
+  const SECTIONS: {
+    icon: typeof User;
+    title: string;
+    fields: FieldPath<FarmerProfileForm>[];
+  }[] = [
     {
       icon: User,
       title: localize('com_farmer_profile_demographic_details'),
       fields: [
+        'languagePreference',
+        'location.latitude',
+        'location.longitude',
         'farmerName',
         'age',
         'gender',
@@ -917,8 +1063,20 @@ const FarmerProfileModal = ({
         </OGDialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex min-h-0 flex-1 flex-col">
-          <input type="hidden" {...register('location.latitude')} />
-          <input type="hidden" {...register('location.longitude')} />
+          {/* Required: without coordinates the saved profile stays incomplete server-side,
+              and the user is asked for their location again on every load. */}
+          <input
+            type="hidden"
+            {...register('location.latitude', {
+              required: localize('com_farmer_validation_field_required'),
+            })}
+          />
+          <input
+            type="hidden"
+            {...register('location.longitude', {
+              required: localize('com_farmer_validation_field_required'),
+            })}
+          />
 
           {/* ── Notice — pinned above the scrollable area ── */}
           {/* <p className="shrink-0 px-1 pb-3 text-xs font-medium text-red-500 sm:text-sm">
@@ -928,15 +1086,27 @@ const FarmerProfileModal = ({
           <div className="flex min-h-0 flex-1 flex-col px-1 py-2">
             {/* ── Progress — compact bar on mobile — pinned, does not scroll with the form ── */}
             <div className="mb-4 shrink-0 sm:hidden">
-              <div className="mb-1.5 flex items-center justify-between gap-2 text-xs font-medium text-text-secondary">
-                <span>
-                  Section {currentSection + 1} of {SECTIONS.length}
+              {/* The stepper below is too wide for a phone, so the same information is carried
+                  by the section's own icon, its position in the run, and a progress bar. */}
+              <div className="mb-3 flex items-center gap-2.5">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-green-500/10 text-green-600 dark:bg-green-400/10 dark:text-green-400">
+                  {(() => {
+                    const SectionIcon = SECTIONS[currentSection].icon;
+                    return <SectionIcon className="size-4" aria-hidden="true" />;
+                  })()}
                 </span>
-                <span className="truncate text-text-primary">{SECTIONS[currentSection].title}</span>
+                <div className="min-w-0">
+                  <p className="text-[11px] font-medium text-text-tertiary">
+                    Section {currentSection + 1} of {SECTIONS.length}
+                  </p>
+                  <p className="truncate text-sm font-semibold text-text-primary">
+                    {SECTIONS[currentSection].title}
+                  </p>
+                </div>
               </div>
               <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-tertiary">
                 <div
-                  className="h-full rounded-full bg-surface-submit transition-all duration-300"
+                  className="h-full rounded-full bg-green-600 transition-all duration-300"
                   style={{ width: `${((currentSection + 1) / SECTIONS.length) * 100}%` }}
                 />
               </div>
@@ -955,9 +1125,9 @@ const FarmerProfileModal = ({
                         className={cn(
                           'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
                           isCompleted
-                            ? 'border-surface-submit bg-surface-submit text-white'
+                            ? 'border-green-600 bg-green-600 text-white'
                             : isActive
-                              ? 'border-surface-submit bg-surface-primary text-surface-submit'
+                              ? 'border-green-600 bg-surface-primary text-green-600'
                               : 'border-border-light bg-surface-secondary text-text-tertiary',
                         )}
                       >
@@ -980,7 +1150,7 @@ const FarmerProfileModal = ({
                       <div
                         className={cn(
                           'mx-2 mb-5 h-0.5 flex-1 rounded-full transition-colors',
-                          isCompleted ? 'bg-surface-submit' : 'bg-border-light',
+                          isCompleted ? 'bg-green-600' : 'bg-border-light',
                         )}
                       />
                     )}
@@ -1035,6 +1205,9 @@ const FarmerProfileModal = ({
                   className={inputClass}
                   {...register('farmerName', {
                     required: localize('com_farmer_validation_farmer_name_required'),
+                    validate: (value) =>
+                      String(value ?? '').trim().length > 0 ||
+                      localize('com_farmer_validation_farmer_name_required'),
                   })}
                 />
                 {errors.farmerName && <p className={errorClass}>{errors.farmerName.message}</p>}
@@ -1075,11 +1248,12 @@ const FarmerProfileModal = ({
                     control={control}
                     rules={{ required: localize('com_farmer_validation_gender_required') }}
                     render={({ field }) => (
-                      <SearchableSelect
-                        options={genderOptions}
+                      <ChoiceCards
+                        name="gender"
+                        options={genderOptions.map((option) => ({ label: option, value: option }))}
                         value={field.value ?? ''}
                         onChange={field.onChange}
-                        placeholder={localize('com_farmer_placeholder_select_gender')}
+                        gridClassName="grid-cols-3"
                       />
                     )}
                   />
@@ -1131,6 +1305,9 @@ const FarmerProfileModal = ({
                   )}
                   {locationError && <span className="text-sm text-red-500">{locationError}</span>}
                 </div>
+                {errors.location?.latitude && (
+                  <p className={errorClass}>{errors.location.latitude.message}</p>
+                )}
               </div>
 
               {/* ── State → District → Block → Village ── */}
@@ -1162,6 +1339,9 @@ const FarmerProfileModal = ({
                     className={inputClass}
                     {...register('customState', {
                       required: localize('com_farmer_validation_custom_state_required'),
+                      // Drops the field from the form when the user switches away from
+                      // "Other", so its rule cannot block submission while hidden.
+                      shouldUnregister: true,
                     })}
                   />
                   {errors.customState && (
@@ -1203,6 +1383,9 @@ const FarmerProfileModal = ({
                     className={inputClass}
                     {...register('customDistrict', {
                       required: localize('com_farmer_validation_custom_district_required'),
+                      // Drops the field from the form when the user switches away from
+                      // "Other", so its rule cannot block submission while hidden.
+                      shouldUnregister: true,
                     })}
                   />
                   {errors.customDistrict && (
@@ -1243,6 +1426,9 @@ const FarmerProfileModal = ({
                     className={inputClass}
                     {...register('customBlock', {
                       required: localize('com_farmer_validation_custom_block_required'),
+                      // Drops the field from the form when the user switches away from
+                      // "Other", so its rule cannot block submission while hidden.
+                      shouldUnregister: true,
                     })}
                   />
                   {errors.customBlock && <p className={errorClass}>{errors.customBlock.message}</p>}
@@ -1281,6 +1467,9 @@ const FarmerProfileModal = ({
                     className={inputClass}
                     {...register('customVillage', {
                       required: localize('com_farmer_validation_custom_village_required'),
+                      // Drops the field from the form when the user switches away from
+                      // "Other", so its rule cannot block submission while hidden.
+                      shouldUnregister: true,
                     })}
                   />
                   {errors.customVillage && (
@@ -1332,6 +1521,9 @@ const FarmerProfileModal = ({
                     className={inputClass}
                     {...register('customKVK', {
                       required: localize('com_farmer_validation_custom_kvk_required'),
+                      // Drops the field from the form when the user switches away from
+                      // "Other", so its rule cannot block submission while hidden.
+                      shouldUnregister: true,
                     })}
                   />
                   {errors.customKVK && (
@@ -1533,24 +1725,20 @@ const FarmerProfileModal = ({
 
               <div className={fieldClass}>
                 <Label>{localize('com_farmer_label_awareness_kcc')}{requiredMark}</Label>
-                <div className="mt-2 flex gap-6">
-                  {yesNoOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className="flex cursor-pointer items-center gap-2 text-sm text-text-primary"
-                    >
-                      <input
-                        type="radio"
-                        value={option.value}
-                        className="accent-green-600"
-                        {...register('awarenessOfKCC', {
-                          required: localize('com_farmer_validation_field_required'),
-                        })}
-                      />
-                      {option.label}
-                    </label>
-                  ))}
-                </div>
+                <Controller
+                  name="awarenessOfKCC"
+                  control={control}
+                  rules={{ required: localize('com_farmer_validation_field_required') }}
+                  render={({ field }) => (
+                    <ChoiceCards
+                      name="awarenessOfKCC"
+                      options={yesNoOptions}
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      gridClassName="grid-cols-2"
+                    />
+                  )}
+                />
                 {errors.awarenessOfKCC && (
                   <p className={errorClass}>{errors.awarenessOfKCC.message}</p>
                 )}
@@ -1558,24 +1746,20 @@ const FarmerProfileModal = ({
 
               <div className={fieldClass}>
                 <Label>{localize('com_farmer_label_usage_agri_apps')}{requiredMark}</Label>
-                <div className="mt-2 flex gap-6">
-                  {yesNoOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className="flex cursor-pointer items-center gap-2 text-sm text-text-primary"
-                    >
-                      <input
-                        type="radio"
-                        value={option.value}
-                        className="accent-green-600"
-                        {...register('usesAgriApps', {
-                          required: localize('com_farmer_validation_field_required'),
-                        })}
-                      />
-                      {option.label}
-                    </label>
-                  ))}
-                </div>
+                <Controller
+                  name="usesAgriApps"
+                  control={control}
+                  rules={{ required: localize('com_farmer_validation_field_required') }}
+                  render={({ field }) => (
+                    <ChoiceCards
+                      name="usesAgriApps"
+                      options={yesNoOptions}
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      gridClassName="grid-cols-2"
+                    />
+                  )}
+                />
                 {errors.usesAgriApps && <p className={errorClass}>{errors.usesAgriApps.message}</p>}
               </div>
             </>
@@ -1603,11 +1787,15 @@ const FarmerProfileModal = ({
                   control={control}
                   rules={{ required: localize('com_farmer_validation_field_required') }}
                   render={({ field }) => (
-                    <SearchableSelect
-                      options={educationOptions}
+                    <ChoiceCards
+                      name="highestEducatedPerson"
+                      options={educationOptions.map((option) => ({
+                        label: option,
+                        value: option,
+                      }))}
                       value={field.value ?? ''}
                       onChange={field.onChange}
-                      placeholder={localize('com_farmer_placeholder_select_education_level')}
+                      gridClassName="grid-cols-1 sm:grid-cols-3"
                     />
                   )}
                 />
@@ -1618,18 +1806,11 @@ const FarmerProfileModal = ({
 
               <div className={fieldClass}>
                 <Label htmlFor="numberOfSmartphones">{localize('com_farmer_label_smartphone_count')}{requiredMark}</Label>
-                <Input
-                  id="numberOfSmartphones"
-                  type="number"
-                  placeholder={localize('com_farmer_placeholder_smartphone_count')}
-                  defaultValue={0}
-                  min={0}
-                  max={20}
-                  step={1}
-                  className={inputClass}
-                  {...register('numberOfSmartphones', {
+                <Controller
+                  name="numberOfSmartphones"
+                  control={control}
+                  rules={{
                     required: localize('com_farmer_validation_smartphones_required'),
-                    valueAsNumber: true,
                     validate: {
                       isInteger: (value) =>
                         Number.isInteger(value) ||
@@ -1638,7 +1819,16 @@ const FarmerProfileModal = ({
                         (value >= 0 && value <= 20) ||
                         localize('com_farmer_validation_smartphones_range'),
                     },
-                  })}
+                  }}
+                  render={({ field }) => (
+                    <CountStepper
+                      id="numberOfSmartphones"
+                      value={field.value}
+                      onChange={field.onChange}
+                      min={0}
+                      max={20}
+                    />
+                  )}
                 />
                 {errors.numberOfSmartphones && (
                   <p className={errorClass}>{errors.numberOfSmartphones.message}</p>
@@ -1667,7 +1857,7 @@ const FarmerProfileModal = ({
                 type="button"
                 onClick={handlePreviousSection}
                 disabled={saveMutation.isLoading}
-                className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-border-heavy bg-surface-secondary px-6 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                className={cn(SECONDARY_ACTION_CLASS, 'gap-1.5')}
               >
                 <ChevronLeft className="h-4 w-4" />
                 {localize('com_ui_back')}
@@ -1677,7 +1867,7 @@ const FarmerProfileModal = ({
               <button
                 type="submit"
                 disabled={saveMutation.isLoading}
-                className="inline-flex w-full items-center justify-center rounded-lg bg-surface-submit px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                className={cn(PRIMARY_ACTION_CLASS, 'disabled:cursor-not-allowed disabled:opacity-50')}
               >
                 {saveMutation.isLoading ? `${localize('com_ui_submit')}...` : localize('com_ui_submit')}
               </button>
@@ -1685,7 +1875,7 @@ const FarmerProfileModal = ({
               <button
                 type="button"
                 onClick={handleNextSection}
-                className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-surface-submit px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 sm:w-auto"
+                className={cn(PRIMARY_ACTION_CLASS, 'gap-1.5')}
               >
                 {localize('com_ui_next')}
                 <ChevronRight className="h-4 w-4" />
