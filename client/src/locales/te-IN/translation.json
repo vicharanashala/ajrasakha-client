@@ -2092,5 +2092,7 @@
   "com_ui_ajrasakha_tip_location_access": "మీరు వ్యవసాయం చేసే ప్రాంతానికి తగినట్లుగా వాతావరణం మరియు ధరలు సరిపోలేలా లొకేషన్ యాక్సెస్‌ను అనుమతించండి.",
   "com_ui_ajrasakha_tip_jump_to_newest": "పొడవైన సమాధానంలో అత్యంత ఇటీవలి సందేశానికి తిరిగి వెళ్లడానికి బాణం బటన్‌ను ఉపయోగించండి.",
   "com_ui_ajrasakha_tip_rate_answers": "థంబ్స్ ఐకాన్‌లతో సమాధానాలను రేట్ చేయండి — ఇది AjraSakha మెరుగుపడటానికి సహాయపడుతుంది.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha ఇంకా అభివృద్ధి దశలో ఉంది — కీలకమైన నిర్ణయాలను మీ స్థానిక KVKతో ధృవీకరించుకోండి."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha ఇంకా అభివృద్ధి దశలో ఉంది — కీలకమైన నిర్ణయాలను మీ స్థానిక KVKతో ధృవీకరించుకోండి.",
+  "com_ui_feedback_tag_response_within_2_hours": "2 గంటల్లో ప్రతిస్పందన వచ్చింది",
+  "com_ui_feedback_tag_response_after_2_hours": "2 గంటల తర్వాత ప్రతిస్పందన వచ్చింది"
 }

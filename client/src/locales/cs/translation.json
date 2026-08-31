@@ -844,5 +844,7 @@
   "com_ui_ajrasakha_tip_location_access": "Povolte přístup k poloze, aby počasí a ceny odpovídaly místu, kde hospodaříte.",
   "com_ui_ajrasakha_tip_jump_to_newest": "Pomocí tlačítka se šipkou přejděte zpět na nejnovější zprávu v dlouhé odpovědi.",
   "com_ui_ajrasakha_tip_rate_answers": "Hodnoťte odpovědi pomocí ikon palce — pomáhá to AjraSakha se zlepšovat.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha se stále vyvíjí — důležitá rozhodnutí si ověřte se svým místním KVK."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha se stále vyvíjí — důležitá rozhodnutí si ověřte se svým místním KVK.",
+  "com_ui_feedback_tag_response_within_2_hours": "Odpověď obdržena do 2 hodin",
+  "com_ui_feedback_tag_response_after_2_hours": "Odpověď obdržena po 2 hodinách"
 }

@@ -39,5 +39,7 @@
   "com_ui_ajrasakha_tip_location_access": "ھاۋا رايى ۋە باھالارنىڭ ئېتىزىڭىزغا ماس كېلىشى ئۈچۈن ئورۇن ئىجازىتىگە رۇخسەت قىلىڭ.",
   "com_ui_ajrasakha_tip_jump_to_newest": "ئۇزۇن جاۋابتا ئەڭ يېڭى ئۇچۇرغا قايتىش ئۈچۈن يا ئوق كۇنۇپكىسىنى ئىشلىتىڭ.",
   "com_ui_ajrasakha_tip_rate_answers": "باش بارماق سىنبەلگىلىرى بىلەن جاۋابلارغا باھا بېرىڭ — بۇ AjraSakha نىڭ تەرەققىي قىلىشىغا ياردەم بېرىدۇ.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha تېخى تەرەققىي قىلىۋاتىدۇ — مۇھىم قارارلارنى يەرلىك KVK بىلەن جەزملەشتۈرۈڭ."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha تېخى تەرەققىي قىلىۋاتىدۇ — مۇھىم قارارلارنى يەرلىك KVK بىلەن جەزملەشتۈرۈڭ.",
+  "com_ui_feedback_tag_response_within_2_hours": "2 سائەت ئىچىدە جاۋاب ئېلىندى",
+  "com_ui_feedback_tag_response_after_2_hours": "2 سائەتتىن كېيىن جاۋاب ئېلىندى"
 }

@@ -1018,5 +1018,7 @@
   "com_ui_ajrasakha_tip_location_access": "Consenti l'accesso alla posizione così meteo e prezzi corrispondono al luogo in cui coltivi.",
   "com_ui_ajrasakha_tip_jump_to_newest": "Usa il pulsante freccia per tornare al messaggio più recente in una risposta lunga.",
   "com_ui_ajrasakha_tip_rate_answers": "Valuta le risposte con le icone del pollice — aiuta AjraSakha a migliorare.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha è in fase di sviluppo — verifica le decisioni importanti con il tuo KVK locale."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha è in fase di sviluppo — verifica le decisioni importanti con il tuo KVK locale.",
+  "com_ui_feedback_tag_response_within_2_hours": "Risposta ricevuta entro 2 ore",
+  "com_ui_feedback_tag_response_after_2_hours": "Risposta ricevuta dopo 2 ore"
 }

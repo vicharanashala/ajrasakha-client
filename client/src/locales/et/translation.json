@@ -1078,5 +1078,7 @@
   "com_ui_ajrasakha_tip_location_access": "Luba asukoha kasutamine, et ilm ja hinnad vastaksid sinu põllu asukohale.",
   "com_ui_ajrasakha_tip_jump_to_newest": "Kasuta noolenuppu, et hüpata pika vastuse puhul tagasi kõige uuema sõnumi juurde.",
   "com_ui_ajrasakha_tip_rate_answers": "Hinda vastuseid pöidlaikoonidega — see aitab AjraSakhal areneda.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha on arendamisel — olulised otsused kontrolli üle oma kohaliku KVK-ga."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha on arendamisel — olulised otsused kontrolli üle oma kohaliku KVK-ga.",
+  "com_ui_feedback_tag_response_within_2_hours": "Vastus saadud 2 tunni jooksul",
+  "com_ui_feedback_tag_response_after_2_hours": "Vastus saadud pärast 2 tundi"
 }

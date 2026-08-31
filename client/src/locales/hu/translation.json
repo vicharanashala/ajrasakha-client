@@ -943,5 +943,7 @@
   "com_ui_ajrasakha_tip_location_access": "Engedélyezd a helymeghatározás használatát, hogy az időjárás és az árak megfeleljenek a gazdálkodásod helyszínének.",
   "com_ui_ajrasakha_tip_jump_to_newest": "Használd a nyíl gombot, hogy egy hosszú válaszban visszaugorj a legújabb üzenethez.",
   "com_ui_ajrasakha_tip_rate_answers": "Értékeld a válaszokat a hüvelykujj ikonokkal — ez segít az AjraSakhának fejlődni.",
-  "com_ui_ajrasakha_tip_in_development": "Az AjraSakha még fejlesztés alatt áll — a fontos döntéseket egyeztesd a helyi KVK-val."
+  "com_ui_ajrasakha_tip_in_development": "Az AjraSakha még fejlesztés alatt áll — a fontos döntéseket egyeztesd a helyi KVK-val.",
+  "com_ui_feedback_tag_response_within_2_hours": "Válasz 2 órán belül érkezett",
+  "com_ui_feedback_tag_response_after_2_hours": "Válasz 2 óra után érkezett"
 }

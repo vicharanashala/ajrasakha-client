@@ -2091,5 +2091,7 @@
   "com_ui_ajrasakha_tip_location_access": "ᱡᱟᱜᱟ ᱦᱟᱛᱟᱣ ᱦᱩᱰᱤᱧ ᱮᱢ ᱢᱮ ᱡᱮᱢᱚᱱ ᱦᱚᱭ ᱦᱚᱲᱢᱚ ᱟᱨ ᱫᱟᱢ ᱟᱢᱟᱜ ᱪᱟᱥ ᱡᱟᱭᱜᱟ ᱥᱟᱶᱜᱮ ᱡᱚᱠᱷᱤᱛ ᱦᱩᱭᱮᱠᱟ।",
   "com_ui_ajrasakha_tip_jump_to_newest": "ᱵᱟᱲᱟᱭ ᱡᱟᱣᱟᱵ ᱨᱮ ᱥᱮᱫᱟᱜ ᱠᱟᱛᱷᱟ ᱛᱟᱶ ᱨᱩᱣᱟᱲ ᱞᱟᱹᱜᱤᱫ ᱴᱤᱨ ᱵᱚᱛᱚᱢ ᱵᱮᱵᱚᱦᱟᱨ ᱢᱮ।",
   "com_ui_ajrasakha_tip_rate_answers": "ᱠᱷᱚᱸᱴᱮ ᱚᱞ ᱠᱚ ᱥᱟᱶᱜᱮ ᱡᱟᱣᱟᱵ ᱨᱮᱭᱟᱜ ᱢᱟᱱ ᱮᱢ ᱢᱮ — ᱱᱚᱶᱟ ᱛᱮ AjraSakha ᱵᱮᱥ ᱦᱩᱭᱩᱜᱼᱟ।",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha ᱱᱤᱛᱚᱜ ᱛᱮᱭᱟᱨ ᱦᱩᱭᱩᱜ ᱨᱮ ᱢᱮᱱᱟᱜᱼᱟ — ᱵᱟᱹᱲᱛᱤ ᱡᱟᱨᱩᱨᱤ ᱵᱤᱪᱟᱨ ᱠᱚ ᱟᱢᱟᱜ ᱞᱚᱠᱟᱞ KVK ᱥᱟᱶᱜᱮ ᱴᱷᱤᱠ ᱞᱮᱠᱷᱟ ᱢᱮ।"
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha ᱱᱤᱛᱚᱜ ᱛᱮᱭᱟᱨ ᱦᱩᱭᱩᱜ ᱨᱮ ᱢᱮᱱᱟᱜᱼᱟ — ᱵᱟᱹᱲᱛᱤ ᱡᱟᱨᱩᱨᱤ ᱵᱤᱪᱟᱨ ᱠᱚ ᱟᱢᱟᱜ ᱞᱚᱠᱟᱞ KVK ᱥᱟᱶᱜᱮ ᱴᱷᱤᱠ ᱞᱮᱠᱷᱟ ᱢᱮ।",
+  "com_ui_feedback_tag_response_within_2_hours": "2 घण्टा भितर रे जाबाब नामेना",
+  "com_ui_feedback_tag_response_after_2_hours": "2 घण्टा तायोम ते जाबाब नामेना"
 }

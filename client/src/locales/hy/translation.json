@@ -331,5 +331,7 @@
   "com_ui_ajrasakha_tip_location_access": "Թույլատրեք տեղադրության հասանելիությունը, որպեսզի եղանակը և գները համապատասխանեն ձեր տնտեսության վայրին։",
   "com_ui_ajrasakha_tip_jump_to_newest": "Օգտագործեք սլաքի կոճակը՝ երկար պատասխանում ամենավերջին հաղորդագրությանը վերադառնալու համար։",
   "com_ui_ajrasakha_tip_rate_answers": "Գնահատեք պատասխանները բթամատի պատկերակներով — դա օգնում է AjraSakha-ին կատարելագործվել։",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha-ն դեռ մշակման փուլում է — կարևոր որոշումները ստուգեք ձեր տեղական KVK-ի հետ։"
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha-ն դեռ մշակման փուլում է — կարևոր որոշումները ստուգեք ձեր տեղական KVK-ի հետ։",
+  "com_ui_feedback_tag_response_within_2_hours": "Պատասխանը ստացվել է 2 ժամվա ընթացքում",
+  "com_ui_feedback_tag_response_after_2_hours": "Պատասխանը ստացվել է 2 ժամից հետո"
 }

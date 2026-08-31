@@ -2092,5 +2092,7 @@
   "com_ui_ajrasakha_tip_location_access": "स्थान (लोकेशन) एक्सेस की अनुमति दें ताकि मौसम और भाव आपके खेती वाले स्थान से मेल खाएं।",
   "com_ui_ajrasakha_tip_jump_to_newest": "लंबे जवाब में सबसे नए संदेश पर वापस जाने के लिए एरो बटन का इस्तेमाल करें।",
   "com_ui_ajrasakha_tip_rate_answers": "थम्ब्स आइकन से जवाबों को रेट करें — इससे AjraSakha को बेहतर बनाने में मदद मिलती है।",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha अभी विकास के अधीन है — महत्वपूर्ण फैसलों के लिए अपने स्थानीय KVK से जांच करें।"
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha अभी विकास के अधीन है — महत्वपूर्ण फैसलों के लिए अपने स्थानीय KVK से जांच करें।",
+  "com_ui_feedback_tag_response_within_2_hours": "2 घंटे के भीतर जवाब मिला",
+  "com_ui_feedback_tag_response_after_2_hours": "2 घंटे के बाद जवाब मिला"
 }

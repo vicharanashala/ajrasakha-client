@@ -2092,5 +2092,7 @@
   "com_ui_ajrasakha_tip_location_access": "مقام تک رسائی کی اجازت دیں تاکہ موسم اور قیمتیں آپ کے کھیتی باڑی کے علاقے سے مطابقت رکھیں۔",
   "com_ui_ajrasakha_tip_jump_to_newest": "لمبے جواب میں تازہ ترین پیغام پر واپس جانے کے لیے ایرو بٹن استعمال کریں۔",
   "com_ui_ajrasakha_tip_rate_answers": "انگوٹھے کے آئیکنز سے جوابات کو درجہ دیں — اس سے AjraSakha کو بہتر بنانے میں مدد ملتی ہے۔",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha ابھی زیرِ تشکیل ہے — اہم فیصلوں کی تصدیق اپنے مقامی KVK سے کریں۔"
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha ابھی زیرِ تشکیل ہے — اہم فیصلوں کی تصدیق اپنے مقامی KVK سے کریں۔",
+  "com_ui_feedback_tag_response_within_2_hours": "2 گھنٹے کے اندر جواب موصول ہوا",
+  "com_ui_feedback_tag_response_after_2_hours": "2 گھنٹے کے بعد جواب موصول ہوا"
 }

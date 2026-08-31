@@ -943,5 +943,7 @@
   "com_ui_ajrasakha_tip_location_access": "دسترسی به موقعیت مکانی را مجاز کنید تا هوا و قیمت‌ها با محل کشاورزی شما مطابقت داشته باشند.",
   "com_ui_ajrasakha_tip_jump_to_newest": "برای بازگشت به جدیدترین پیام در یک پاسخ طولانی، از دکمه فلش استفاده کنید.",
   "com_ui_ajrasakha_tip_rate_answers": "با نمادهای شست به پاسخ‌ها امتیاز دهید — این به بهبود AjraSakha کمک می‌کند.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha هنوز در حال توسعه است — تصمیمات مهم را با KVK محلی خود بررسی کنید."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha هنوز در حال توسعه است — تصمیمات مهم را با KVK محلی خود بررسی کنید.",
+  "com_ui_feedback_tag_response_within_2_hours": "پاسخ ظرف 2 ساعت دریافت شد",
+  "com_ui_feedback_tag_response_after_2_hours": "پاسخ پس از 2 ساعت دریافت شد"
 }

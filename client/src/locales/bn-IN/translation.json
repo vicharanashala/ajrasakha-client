@@ -2092,5 +2092,7 @@
   "com_ui_ajrasakha_tip_location_access": "আবহাওয়া ও দাম আপনার চাষের জায়গার সাথে মিলিয়ে দিতে অবস্থান অ্যাক্সেসের অনুমতি দিন।",
   "com_ui_ajrasakha_tip_jump_to_newest": "দীর্ঘ উত্তরে সর্বশেষ বার্তায় ফিরে যেতে অ্যারো বাটন ব্যবহার করুন।",
   "com_ui_ajrasakha_tip_rate_answers": "থাম্বস আইকন দিয়ে উত্তর রেট করুন — এটি AjraSakha-কে উন্নত হতে সাহায্য করে।",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha এখনও উন্নয়নাধীন — গুরুত্বপূর্ণ সিদ্ধান্তের ক্ষেত্রে আপনার স্থানীয় KVK-র সাথে যাচাই করুন।"
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha এখনও উন্নয়নাধীন — গুরুত্বপূর্ণ সিদ্ধান্তের ক্ষেত্রে আপনার স্থানীয় KVK-র সাথে যাচাই করুন।",
+  "com_ui_feedback_tag_response_within_2_hours": "2 ঘণ্টার মধ্যে উত্তর পাওয়া গেছে",
+  "com_ui_feedback_tag_response_after_2_hours": "2 ঘণ্টার পরে উত্তর পাওয়া গেছে"
 }

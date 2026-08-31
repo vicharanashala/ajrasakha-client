@@ -666,5 +666,7 @@
   "com_ui_ajrasakha_tip_location_access": "Tillåt platsåtkomst så att väder och priser matchar där du brukar din mark.",
   "com_ui_ajrasakha_tip_jump_to_newest": "Använd pilknappen för att hoppa tillbaka till det senaste meddelandet i ett långt svar.",
   "com_ui_ajrasakha_tip_rate_answers": "Betygsätt svar med tumikonerna — det hjälper till att förbättra AjraSakha.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha är under utveckling — kontrollera viktiga beslut med din lokala KVK."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha är under utveckling — kontrollera viktiga beslut med din lokala KVK.",
+  "com_ui_feedback_tag_response_within_2_hours": "Svar mottaget inom 2 timmar",
+  "com_ui_feedback_tag_response_after_2_hours": "Svar mottaget efter 2 timmar"
 }

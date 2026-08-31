@@ -1393,5 +1393,7 @@
   "com_ui_ajrasakha_tip_location_access": "Tillat tilgang til posisjon, slik at vær og priser samsvarer med stedet du driver jordbruk.",
   "com_ui_ajrasakha_tip_jump_to_newest": "Bruk pilknappen for å hoppe tilbake til den nyeste meldingen i et langt svar.",
   "com_ui_ajrasakha_tip_rate_answers": "Vurder svar med tommel-ikonene — det hjelper AjraSakha med å bli bedre.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha er under utvikling — sjekk viktige beslutninger med din lokale KVK."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha er under utvikling — sjekk viktige beslutninger med din lokale KVK.",
+  "com_ui_feedback_tag_response_within_2_hours": "Svar mottatt innen 2 timer",
+  "com_ui_feedback_tag_response_after_2_hours": "Svar mottatt etter 2 timer"
 }

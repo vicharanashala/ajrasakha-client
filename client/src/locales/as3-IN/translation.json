@@ -2091,5 +2091,7 @@
   "com_ui_ajrasakha_tip_location_access": "বতৰ আৰু মূল্য আপোনাৰ খেতিপথাৰৰ ঠাইৰ সৈতে মিল খোৱাকৈ থিয় হ'বলৈ অৱস্থান ব্যৱহাৰৰ অনুমতি দিয়ক।",
   "com_ui_ajrasakha_tip_jump_to_newest": "দীঘলীয়া উত্তৰত আটাইতকৈ নতুন বাৰ্তালৈ উভতি যাবলৈ কাঁড় বুটামটো ব্যৱহাৰ কৰক।",
   "com_ui_ajrasakha_tip_rate_answers": "বুঢ়াআঙুলিৰ আইকনেৰে উত্তৰবোৰ ৰেট কৰক — ই AjraSakhaক উন্নত হ'বলৈ সহায় কৰে।",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha এতিয়াও উন্নয়নাধীন — গুৰুত্বপূৰ্ণ সিদ্ধান্তবোৰ আপোনাৰ স্থানীয় KVKৰ সৈতে পৰীক্ষা কৰি লওক।"
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha এতিয়াও উন্নয়নাধীন — গুৰুত্বপূৰ্ণ সিদ্ধান্তবোৰ আপোনাৰ স্থানীয় KVKৰ সৈতে পৰীক্ষা কৰি লওক।",
+  "com_ui_feedback_tag_response_within_2_hours": "সঁহাৰি 2 ঘণ্টাৰ ভিতৰত পোৱা গৈছিল",
+  "com_ui_feedback_tag_response_after_2_hours": "সঁহাৰি 2 ঘণ্টাৰ পিছত পোৱা গৈছিল"
 }

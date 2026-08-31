@@ -1394,5 +1394,7 @@
   "com_ui_ajrasakha_tip_location_access": "Дозвольте доступ до геолокації, щоб погода та ціни відповідали місцю, де ви господарюєте.",
   "com_ui_ajrasakha_tip_jump_to_newest": "Використовуйте кнопку зі стрілкою, щоб повернутися до найновішого повідомлення в довгій відповіді.",
   "com_ui_ajrasakha_tip_rate_answers": "Оцінюйте відповіді значками «подобається/не подобається» — це допомагає AjraSakha ставати кращим.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha перебуває на етапі розробки — перевіряйте важливі рішення у вашому місцевому KVK."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha перебуває на етапі розробки — перевіряйте важливі рішення у вашому місцевому KVK.",
+  "com_ui_feedback_tag_response_within_2_hours": "Відповідь отримано протягом 2 годин",
+  "com_ui_feedback_tag_response_after_2_hours": "Відповідь отримано через 2 години"
 }

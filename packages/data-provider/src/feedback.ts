@@ -13,6 +13,7 @@ export const FEEDBACK_REASON_KEYS = [
   'not_satisfied',
   'will_not_recommend',
   'inappropriate_response',
+  'response_after_2_hours',
   // 'other_thumbsup',
 
   // Up
@@ -25,6 +26,7 @@ export const FEEDBACK_REASON_KEYS = [
   'very_satisfied',
   'recommend_to_others',
   'user_friendly_language',
+  'response_within_2_hours',
   // 'other_thumbsdown',
   'other',
 ] as const;
@@ -89,6 +91,12 @@ export const FEEDBACK_TAGS: TFeedbackTag[] = [
     direction: 'thumbsDown',
     icon: 'Ban',
   },
+  {
+    key: 'response_after_2_hours',
+    label: 'com_ui_feedback_tag_response_after_2_hours',
+    direction: 'thumbsDown',
+    icon: 'Hourglass',
+  },
   // {
   //   key: 'other_thumbsdown',
   //   label: 'com_ui_feedback_tag_other',
@@ -150,6 +158,12 @@ export const FEEDBACK_TAGS: TFeedbackTag[] = [
     label: 'com_ui_feedback_tag_user_friendly_language',
     direction: 'thumbsUp',
     icon: 'MessageCircle',
+  },
+  {
+    key: 'response_within_2_hours',
+    label: 'com_ui_feedback_tag_response_within_2_hours',
+    direction: 'thumbsUp',
+    icon: 'Timer',
   },
   {
     key: 'other',

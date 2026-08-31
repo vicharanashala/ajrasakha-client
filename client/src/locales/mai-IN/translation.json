@@ -2091,5 +2091,7 @@
   "com_ui_ajrasakha_tip_location_access": "लोकेशन एक्सेसकेँ अनुमति दिअ जाहिसँ मौसम आ भाव अहाँक खेतक अनुसार भेटय।",
   "com_ui_ajrasakha_tip_jump_to_newest": "लम्बा जवाबमे नमहर संदेश पर वापस जेबाक लेल एरो बटनक प्रयोग करू।",
   "com_ui_ajrasakha_tip_rate_answers": "थम्स आइकनसँ जवाबकेँ रेटिंग दिअ — एहिसँ AjraSakha केँ सुधारबामे मदति भेटैत अछि।",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha अखनो विकासाधीन अछि — महत्वपूर्ण निर्णय अपन स्थानीय KVK सँ जाँचि लिअ।"
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha अखनो विकासाधीन अछि — महत्वपूर्ण निर्णय अपन स्थानीय KVK सँ जाँचि लिअ।",
+  "com_ui_feedback_tag_response_within_2_hours": "2 घंटा के भीतर उत्तर भेटल",
+  "com_ui_feedback_tag_response_after_2_hours": "2 घंटा के बाद उत्तर भेटल"
 }

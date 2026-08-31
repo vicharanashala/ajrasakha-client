@@ -1575,5 +1575,7 @@
   "com_ui_ajrasakha_tip_location_access": "Atļaujiet piekļuvi atrašanās vietai, lai laika apstākļi un cenas atbilstu jūsu saimniecības atrašanās vietai.",
   "com_ui_ajrasakha_tip_jump_to_newest": "Izmantojiet bultiņas pogu, lai garā atbildē atgrieztos pie jaunākā ziņojuma.",
   "com_ui_ajrasakha_tip_rate_answers": "Novērtējiet atbildes ar īkšķu ikonām — tas palīdz uzlabot AjraSakha.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha vēl tiek izstrādāta — svarīgus lēmumus pārbaudiet arī ar vietējo KVK."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha vēl tiek izstrādāta — svarīgus lēmumus pārbaudiet arī ar vietējo KVK.",
+  "com_ui_feedback_tag_response_within_2_hours": "Atbilde saņemta 2 stundu laikā",
+  "com_ui_feedback_tag_response_after_2_hours": "Atbilde saņemta pēc 2 stundām"
 }

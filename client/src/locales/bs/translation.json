@@ -39,5 +39,7 @@
   "com_ui_ajrasakha_tip_location_access": "Dozvolite pristup lokaciji kako bi vrijeme i cijene odgovarali mjestu gdje se bavite poljoprivredom.",
   "com_ui_ajrasakha_tip_jump_to_newest": "Koristite dugme sa strelicom da se vratite na najnoviju poruku u dugom odgovoru.",
   "com_ui_ajrasakha_tip_rate_answers": "Ocijenite odgovore ikonama palca — to pomaže AjraSakhi da se poboljša.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha je u razvoju — provjerite važne odluke sa svojim lokalnim KVK-om."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha je u razvoju — provjerite važne odluke sa svojim lokalnim KVK-om.",
+  "com_ui_feedback_tag_response_within_2_hours": "Odgovor primljen u roku od 2 sata",
+  "com_ui_feedback_tag_response_after_2_hours": "Odgovor primljen nakon 2 sata"
 }

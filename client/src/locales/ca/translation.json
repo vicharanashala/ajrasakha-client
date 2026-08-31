@@ -999,5 +999,7 @@
   "com_ui_ajrasakha_tip_location_access": "Permet l'accés a la ubicació perquè el temps i els preus coincideixin amb el lloc on cultives.",
   "com_ui_ajrasakha_tip_jump_to_newest": "Utilitza el botó de fletxa per tornar al missatge més recent en una resposta llarga.",
   "com_ui_ajrasakha_tip_rate_answers": "Valora les respostes amb les icones de polze — això ajuda AjraSakha a millorar.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha està en desenvolupament — comprova les decisions crítiques amb el teu KVK local."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha està en desenvolupament — comprova les decisions crítiques amb el teu KVK local.",
+  "com_ui_feedback_tag_response_within_2_hours": "Resposta rebuda en menys de 2 hores",
+  "com_ui_feedback_tag_response_after_2_hours": "Resposta rebuda després de 2 hores"
 }

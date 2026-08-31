@@ -2092,5 +2092,7 @@
   "com_ui_ajrasakha_tip_location_access": "સ્થાનની ઍક્સેસને મંજૂરી આપો જેથી હવામાન અને ભાવ તમે જ્યાં ખેતી કરો છો તેને અનુરૂપ હોય.",
   "com_ui_ajrasakha_tip_jump_to_newest": "લાંબા જવાબમાં નવીનતમ સંદેશ પર પાછા જવા માટે એરો બટનનો ઉપયોગ કરો.",
   "com_ui_ajrasakha_tip_rate_answers": "થમ્બ્સ આઇકનથી જવાબોને રેટ કરો — તે AjraSakha ને સુધારવામાં મદદ કરે છે.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha હજુ વિકાસ હેઠળ છે — મહત્વપૂર્ણ નિર્ણયો તમારા સ્થાનિક KVK સાથે તપાસો."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha હજુ વિકાસ હેઠળ છે — મહત્વપૂર્ણ નિર્ણયો તમારા સ્થાનિક KVK સાથે તપાસો.",
+  "com_ui_feedback_tag_response_within_2_hours": "2 કલાકની અંદર જવાબ મળ્યો",
+  "com_ui_feedback_tag_response_after_2_hours": "2 કલાક પછી જવાબ મળ્યો"
 }

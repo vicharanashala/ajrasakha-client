@@ -175,5 +175,7 @@
   "com_ui_ajrasakha_tip_location_access": "Dovolite dostop do lokacije, da bodo vreme in cene ustrezali kraju, kjer kmetujete.",
   "com_ui_ajrasakha_tip_jump_to_newest": "Uporabite puščični gumb, da skočite nazaj na najnovejše sporočilo v dolgem odgovoru.",
   "com_ui_ajrasakha_tip_rate_answers": "Ocenite odgovore z ikonama palca — to pomaga izboljšati AjraSakha.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha je še v razvoju — pomembne odločitve preverite pri svojem lokalnem KVK."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha je še v razvoju — pomembne odločitve preverite pri svojem lokalnem KVK.",
+  "com_ui_feedback_tag_response_within_2_hours": "Odgovor prejet v 2 urah",
+  "com_ui_feedback_tag_response_after_2_hours": "Odgovor prejet po 2 urah"
 }

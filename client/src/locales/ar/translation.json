@@ -849,5 +849,7 @@
   "com_ui_ajrasakha_tip_location_access": "اسمح بالوصول إلى الموقع حتى تتطابق أسعار وحالة الطقس مع مكان زراعتك.",
   "com_ui_ajrasakha_tip_jump_to_newest": "استخدم زر السهم للعودة إلى أحدث رسالة في إجابة طويلة.",
   "com_ui_ajrasakha_tip_rate_answers": "قيّم الإجابات باستخدام أيقونات الإبهام — هذا يساعد AjraSakha على التحسن.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha لا تزال قيد التطوير — تحقق من القرارات المهمة مع مركز KVK المحلي الخاص بك."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha لا تزال قيد التطوير — تحقق من القرارات المهمة مع مركز KVK المحلي الخاص بك.",
+  "com_ui_feedback_tag_response_within_2_hours": "تم استلام الرد خلال ساعتين",
+  "com_ui_feedback_tag_response_after_2_hours": "تم استلام الرد بعد مرور ساعتين"
 }

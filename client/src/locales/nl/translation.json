@@ -844,5 +844,7 @@
   "com_ui_ajrasakha_tip_location_access": "Sta locatietoegang toe zodat weer en prijzen overeenkomen met waar je boert.",
   "com_ui_ajrasakha_tip_jump_to_newest": "Gebruik de pijlknop om terug te springen naar het nieuwste bericht in een lang antwoord.",
   "com_ui_ajrasakha_tip_rate_answers": "Beoordeel antwoorden met de duimpictogrammen — dat helpt AjraSakha verbeteren.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha is in ontwikkeling — controleer belangrijke beslissingen bij je lokale KVK."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha is in ontwikkeling — controleer belangrijke beslissingen bij je lokale KVK.",
+  "com_ui_feedback_tag_response_within_2_hours": "Antwoord ontvangen binnen 2 uur",
+  "com_ui_feedback_tag_response_after_2_hours": "Antwoord ontvangen na 2 uur"
 }

@@ -984,5 +984,7 @@
   "com_ui_ajrasakha_tip_location_access": "อนุญาตการเข้าถึงตำแหน่งที่ตั้งเพื่อให้สภาพอากาศและราคาตรงกับพื้นที่เพาะปลูกของคุณ",
   "com_ui_ajrasakha_tip_jump_to_newest": "ใช้ปุ่มลูกศรเพื่อกลับไปยังข้อความล่าสุดในคำตอบที่ยาว",
   "com_ui_ajrasakha_tip_rate_answers": "ให้คะแนนคำตอบด้วยไอคอนถูกใจ/ไม่ถูกใจ — ช่วยให้ AjraSakha พัฒนาให้ดียิ่งขึ้น",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha ยังอยู่ระหว่างการพัฒนา — โปรดตรวจสอบการตัดสินใจที่สำคัญกับ KVK ในพื้นที่ของคุณ"
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha ยังอยู่ระหว่างการพัฒนา — โปรดตรวจสอบการตัดสินใจที่สำคัญกับ KVK ในพื้นที่ของคุณ",
+  "com_ui_feedback_tag_response_within_2_hours": "ได้รับคำตอบภายใน 2 ชั่วโมง",
+  "com_ui_feedback_tag_response_after_2_hours": "ได้รับคำตอบหลังจาก 2 ชั่วโมง"
 }

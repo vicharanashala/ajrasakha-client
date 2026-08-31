@@ -203,5 +203,7 @@
   "com_ui_ajrasakha_tip_location_access": "დართეთ ნებართვა მდებარეობაზე წვდომაზე, რომ ამინდი და ფასები შეესაბამებოდეს თქვენი მეურნეობის ადგილს.",
   "com_ui_ajrasakha_tip_jump_to_newest": "გამოიყენეთ ისრის ღილაკი, რომ დაბრუნდეთ ყველაზე ახალ შეტყობინებაზე გრძელ პასუხში.",
   "com_ui_ajrasakha_tip_rate_answers": "შეაფასეთ პასუხები ცერა თითის ხატულებით — ეს ეხმარება AjraSakha-ს გაუმჯობესებაში.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha ჯერ კიდევ დამუშავების პროცესშია — მნიშვნელოვანი გადაწყვეტილებები გადაამოწმეთ თქვენს ადგილობრივ KVK-სთან."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha ჯერ კიდევ დამუშავების პროცესშია — მნიშვნელოვანი გადაწყვეტილებები გადაამოწმეთ თქვენს ადგილობრივ KVK-სთან.",
+  "com_ui_feedback_tag_response_within_2_hours": "პასუხი მიღებულია 2 საათში",
+  "com_ui_feedback_tag_response_after_2_hours": "პასუხი მიღებულია 2 საათის შემდეგ"
 }

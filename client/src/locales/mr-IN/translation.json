@@ -2092,5 +2092,7 @@
   "com_ui_ajrasakha_tip_location_access": "तुम्ही शेती करता त्या ठिकाणाशी जुळणारे हवामान आणि दर मिळण्यासाठी लोकेशन अॅक्सेसला परवानगी द्या.",
   "com_ui_ajrasakha_tip_jump_to_newest": "दीर्घ उत्तरात नवीनतम संदेशाकडे परत जाण्यासाठी बाणाचे बटण वापरा.",
   "com_ui_ajrasakha_tip_rate_answers": "थंब्स आयकॉनने उत्तरांना रेटिंग द्या — यामुळे AjraSakha सुधारण्यास मदत होते.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha अजून विकसित होत आहे — महत्त्वाचे निर्णय तुमच्या स्थानिक KVK कडे तपासून घ्या."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha अजून विकसित होत आहे — महत्त्वाचे निर्णय तुमच्या स्थानिक KVK कडे तपासून घ्या.",
+  "com_ui_feedback_tag_response_within_2_hours": "2 तासांच्या आत प्रतिसाद मिळाला",
+  "com_ui_feedback_tag_response_after_2_hours": "2 तासांनंतर प्रतिसाद मिळाला"
 }

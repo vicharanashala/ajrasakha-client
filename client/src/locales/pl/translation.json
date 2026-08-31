@@ -827,5 +827,7 @@
   "com_ui_ajrasakha_tip_location_access": "Zezwól na dostęp do lokalizacji, aby pogoda i ceny odpowiadały miejscu, w którym gospodarujesz.",
   "com_ui_ajrasakha_tip_jump_to_newest": "Użyj przycisku strzałki, aby wrócić do najnowszej wiadomości w długiej odpowiedzi.",
   "com_ui_ajrasakha_tip_rate_answers": "Oceniaj odpowiedzi za pomocą ikon kciuka — to pomaga ulepszać AjraSakha.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha jest w fazie rozwoju — ważne decyzje sprawdzaj ze swoim lokalnym KVK."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha jest w fazie rozwoju — ważne decyzje sprawdzaj ze swoim lokalnym KVK.",
+  "com_ui_feedback_tag_response_within_2_hours": "Odpowiedź otrzymana w ciągu 2 godzin",
+  "com_ui_feedback_tag_response_after_2_hours": "Odpowiedź otrzymana po 2 godzinach"
 }

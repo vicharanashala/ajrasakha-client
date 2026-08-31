@@ -2091,5 +2091,7 @@
   "com_ui_ajrasakha_tip_location_access": "لوڪيشن جي اجازت ڏيو ته جيئن موسم ۽ اگهه توهان جي پوک واري جاءِ مطابق هجن.",
   "com_ui_ajrasakha_tip_jump_to_newest": "ڊگهي جواب ۾ نئين ترين پيغام ڏانهن موٽڻ لاءِ تير وارو بٽڻ استعمال ڪريو.",
   "com_ui_ajrasakha_tip_rate_answers": "آنگوٺي جي نشانن سان جوابن کي درجو ڏيو — هي AjraSakha کي بهتر بنائڻ ۾ مدد ڪري ٿو.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha اڃا تيار ٿي رهيو آهي — اهم فيصلا پنهنجي مقامي KVK سان تصديق ڪريو."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha اڃا تيار ٿي رهيو آهي — اهم فيصلا پنهنجي مقامي KVK سان تصديق ڪريو.",
+  "com_ui_feedback_tag_response_within_2_hours": "2 कलाकन अंदर जवाब मिलियो",
+  "com_ui_feedback_tag_response_after_2_hours": "2 कलाकन खान पोइ जवाब मिलियो"
 }

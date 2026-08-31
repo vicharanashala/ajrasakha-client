@@ -1035,5 +1035,7 @@
   "com_ui_ajrasakha_tip_location_access": "允許存取位置資訊,以便天氣和價格與您所在的種植地點相符。",
   "com_ui_ajrasakha_tip_jump_to_newest": "在較長的回答中,可使用箭頭按鈕跳回最新訊息。",
   "com_ui_ajrasakha_tip_rate_answers": "使用讚/踩圖示為答案評分——這有助於 AjraSakha 不斷改進。",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha 仍在開發中——重要決策請與當地 KVK 核實。"
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha 仍在開發中——重要決策請與當地 KVK 核實。",
+  "com_ui_feedback_tag_response_within_2_hours": "2小時內收到回覆",
+  "com_ui_feedback_tag_response_after_2_hours": "2小時後收到回覆"
 }

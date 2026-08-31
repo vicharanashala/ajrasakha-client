@@ -1221,5 +1221,7 @@
   "com_ui_ajrasakha_tip_location_access": "위치 접근을 허용하면 날씨와 가격이 농사짓는 지역에 맞게 표시됩니다.",
   "com_ui_ajrasakha_tip_jump_to_newest": "긴 답변에서 최신 메시지로 돌아가려면 화살표 버튼을 사용하세요.",
   "com_ui_ajrasakha_tip_rate_answers": "좋아요/싫어요 아이콘으로 답변을 평가해 주세요 — AjraSakha가 개선되는 데 도움이 됩니다.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha는 개발 중입니다 — 중요한 결정은 현지 KVK에서 반드시 확인하세요."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha는 개발 중입니다 — 중요한 결정은 현지 KVK에서 반드시 확인하세요.",
+  "com_ui_feedback_tag_response_within_2_hours": "2시간 이내 응답",
+  "com_ui_feedback_tag_response_after_2_hours": "2시간 이후 응답"
 }

@@ -2092,5 +2092,7 @@
   "com_ui_ajrasakha_tip_location_access": "ಹವಾಮಾನ ಮತ್ತು ಬೆಲೆಗಳು ನೀವು ಕೃಷಿ ಮಾಡುವ ಸ್ಥಳಕ್ಕೆ ಹೊಂದಿಕೆಯಾಗಲು ಸ್ಥಳ ಪ್ರವೇಶವನ್ನು ಅನುಮತಿಸಿ.",
   "com_ui_ajrasakha_tip_jump_to_newest": "ಉದ್ದವಾದ ಉತ್ತರದಲ್ಲಿ ಇತ್ತೀಚಿನ ಸಂದೇಶಕ್ಕೆ ಹಿಂತಿರುಗಲು ಬಾಣದ ಗುಂಡಿಯನ್ನು ಬಳಸಿ.",
   "com_ui_ajrasakha_tip_rate_answers": "ಥಂಬ್ಸ್ ಐಕಾನ್‌ಗಳೊಂದಿಗೆ ಉತ್ತರಗಳನ್ನು ರೇಟ್ ಮಾಡಿ — ಇದು AjraSakha ಸುಧಾರಿಸಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha ಇನ್ನೂ ಅಭಿವೃದ್ಧಿಯಲ್ಲಿದೆ — ಮುಖ್ಯ ನಿರ್ಧಾರಗಳನ್ನು ನಿಮ್ಮ ಸ್ಥಳೀಯ KVK ಯೊಂದಿಗೆ ಪರಿಶೀಲಿಸಿ."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha ಇನ್ನೂ ಅಭಿವೃದ್ಧಿಯಲ್ಲಿದೆ — ಮುಖ್ಯ ನಿರ್ಧಾರಗಳನ್ನು ನಿಮ್ಮ ಸ್ಥಳೀಯ KVK ಯೊಂದಿಗೆ ಪರಿಶೀಲಿಸಿ.",
+  "com_ui_feedback_tag_response_within_2_hours": "2 ಗಂಟೆಗಳ ಒಳಗೆ ಪ್ರತಿಕ್ರಿಯೆ ಸ್ವೀಕರಿಸಲಾಗಿದೆ",
+  "com_ui_feedback_tag_response_after_2_hours": "2 ಗಂಟೆಗಳ ನಂತರ ಪ್ರತಿಕ್ರಿಯೆ ಸ್ವೀಕರಿಸಲಾಗಿದೆ"
 }

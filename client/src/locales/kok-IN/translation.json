@@ -2091,5 +2091,7 @@
   "com_ui_ajrasakha_tip_location_access": "हवामान आनी किमती तुमच्या शेतीच्या जाग्याकडेन जुळचें म्हणून लोकेशन प्रवेशाक परवानगी दियात.",
   "com_ui_ajrasakha_tip_jump_to_newest": "लांब जबाबांत सगल्यांत नव्या संदेशाकडेन परत वचपाक बाणाचें बटन वापरात.",
   "com_ui_ajrasakha_tip_rate_answers": "थम्ब आयकनांनी जबाबांक रेटींग दियात — हाका लागून AjraSakha सुदारपाक मजत जाता.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha अजून विकसीत जाता आसा — म्हत्वाचे निर्णय तुमच्या थळाव्या KVK कडेन तपासात."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha अजून विकसीत जाता आसा — म्हत्वाचे निर्णय तुमच्या थळाव्या KVK कडेन तपासात.",
+  "com_ui_feedback_tag_response_within_2_hours": "प्रतिसाद 2 वरांच्या आत मेळळो",
+  "com_ui_feedback_tag_response_after_2_hours": "प्रतिसाद 2 वरां उपरांत मेळळो"
 }

@@ -1459,5 +1459,7 @@
   "com_ui_ajrasakha_tip_location_access": "位置情報へのアクセスを許可すると、天気や価格があなたの農地の場所に合わせて表示されます。",
   "com_ui_ajrasakha_tip_jump_to_newest": "長い回答の中で最新のメッセージに戻るには、矢印ボタンを使ってください。",
   "com_ui_ajrasakha_tip_rate_answers": "「いいね」アイコンで回答を評価してください — AjraSakhaの改善に役立ちます。",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakhaは開発中です — 重要な判断は、お近くのKVKにもご確認ください。"
+  "com_ui_ajrasakha_tip_in_development": "AjraSakhaは開発中です — 重要な判断は、お近くのKVKにもご確認ください。",
+  "com_ui_feedback_tag_response_within_2_hours": "2時間以内の返信",
+  "com_ui_feedback_tag_response_after_2_hours": "2時間経過後の返信"
 }

@@ -2091,5 +2091,7 @@
   "com_ui_ajrasakha_tip_location_access": "مقام رسائی اجازت دِیو تاکہ موسم تہٕ قیٚمتہٕ توٚہہٕ ہٕنٛدِ کھیتہٕ ہٕنٛز جاے سٟتؠ میٚل کھایو۔",
   "com_ui_ajrasakha_tip_jump_to_newest": "ٹؠٚٹھ جوابس منٛز نوٚ ترین پیغامس واپس ووٚنہٕ خٲطرٕ تیٖر بٹن استعمال کریو۔",
   "com_ui_ajrasakha_tip_rate_answers": "تھمز آیٖکونن سٟتؠ جوابن ہٕنٛز درجہٕ بندی کریو — یہ چھُ AjraSakha بہتر بنٲونہٕ منٛز مدد کران۔",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha چھُ ترقی منٛز — اہم فیصلہٕ اپنِس مقامی KVK سٟتؠ چیٚک کریو۔"
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha چھُ ترقی منٛز — اہم فیصلہٕ اپنِس مقامی KVK سٟتؠ چیٚک کریو۔",
+  "com_ui_feedback_tag_response_within_2_hours": "جواب 2 گھنٹن منٛز مِلیو",
+  "com_ui_feedback_tag_response_after_2_hours": "جواب 2 گھنٹن پتہٕ مِلیو"
 }

@@ -509,5 +509,7 @@
   "com_ui_ajrasakha_tip_location_access": "Cho phép truy cập vị trí để thời tiết và giá cả khớp với nơi bạn canh tác.",
   "com_ui_ajrasakha_tip_jump_to_newest": "Dùng nút mũi tên để quay lại tin nhắn mới nhất trong một câu trả lời dài.",
   "com_ui_ajrasakha_tip_rate_answers": "Đánh giá câu trả lời bằng biểu tượng ngón tay cái — điều này giúp AjraSakha cải thiện.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha vẫn đang trong quá trình phát triển — hãy kiểm tra các quyết định quan trọng với KVK tại địa phương của bạn."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha vẫn đang trong quá trình phát triển — hãy kiểm tra các quyết định quan trọng với KVK tại địa phương của bạn.",
+  "com_ui_feedback_tag_response_within_2_hours": "Nhận được phản hồi trong vòng 2 giờ",
+  "com_ui_feedback_tag_response_after_2_hours": "Nhận được phản hồi sau 2 giờ"
 }

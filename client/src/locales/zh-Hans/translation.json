@@ -1454,5 +1454,7 @@
   "com_ui_ajrasakha_tip_location_access": "允许访问位置信息,以便天气和价格与您所在的种植地点相匹配。",
   "com_ui_ajrasakha_tip_jump_to_newest": "在较长的回答中,可使用箭头按钮跳回最新消息。",
   "com_ui_ajrasakha_tip_rate_answers": "使用点赞/点踩图标为答案评分——这有助于 AjraSakha 不断改进。",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha 仍在开发中——重要决策请与当地 KVK 核实。"
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha 仍在开发中——重要决策请与当地 KVK 核实。",
+  "com_ui_feedback_tag_response_within_2_hours": "2小时内收到回复",
+  "com_ui_feedback_tag_response_after_2_hours": "2小时后收到回复"
 }
