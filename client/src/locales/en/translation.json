@@ -2123,5 +2123,8 @@
   "com_ui_ajrasakha_tip_location_access": "Allow location access so weather and prices match where you farm.",
   "com_ui_ajrasakha_tip_jump_to_newest": "Use the arrow button to jump back to the newest message in a long answer.",
   "com_ui_ajrasakha_tip_rate_answers": "Rate answers with the thumbs icons — it helps AjraSakha improve.",
-  "com_ui_ajrasakha_tip_in_development": "AjraSakha is in development — check critical decisions with your local KVK."
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha is in development — check critical decisions with your local KVK.",
+  "com_auth_panel_expert_verified_description": "Advice checked by agricultural experts before it reaches you.",
+ "com_auth_panel_multilingual_description": "Ask and get answers in the language you speak.",
+"com_auth_panel_voice_description": "Speak your question instead of typing it."
 }
