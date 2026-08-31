@@ -1,5 +1,8 @@
 {
   "com_auth_error_email_in_use": "E-mail je već u upotrebi",
+  "com_auth_panel_expert_verified_description": "Savjete provjeravaju poljoprivredni stručnjaci prije nego što stignu do vas.",
+  "com_auth_panel_multilingual_description": "Pitajte i dobijte odgovore na jeziku kojim govorite.",
+  "com_auth_panel_voice_description": "Izgovorite pitanje umjesto da ga kucate.",
   "com_ui_feedback_enforce_skipped": "Skipping feedback...",
   "com_ui_landing_chip_expert_verified": "Verifikovano od stručnjaka",
   "com_ui_landing_chip_multilingual": "Višejezično",

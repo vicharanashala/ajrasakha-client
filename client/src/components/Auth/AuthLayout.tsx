@@ -1,4 +1,6 @@
 import { ThemeSelector } from '@librechat/client';
+import { BadgeCheck, Languages, Mic } from 'lucide-react';
+import { cn } from '~/utils';
 import { TStartupConfig } from 'librechat-data-provider';
 import { ErrorMessage } from '~/components/Auth/ErrorMessage';
 import { TranslationKeys, useLocalize } from '~/hooks';
@@ -32,6 +34,29 @@ function AuthLayout({
   error: TranslationKeys | null;
 }) {
   const localize = useLocalize();
+  /** Login and registration are where someone may not know the product yet; a password-reset
+   *  screen does not need the pitch. */
+  const isEntryScreen = pathname.includes('login') || pathname.includes('register');
+  /** What the brand panel says the product does. Titles reuse the capability chips from the
+   *  landing screen; each carries a line of its own so the panel explains the product rather
+   *  than listing three words. */
+  const brandPoints = [
+    {
+      Icon: BadgeCheck,
+      titleKey: 'com_ui_landing_chip_expert_verified',
+      descriptionKey: 'com_auth_panel_expert_verified_description',
+    },
+    {
+      Icon: Mic,
+      titleKey: 'com_ui_landing_chip_voice',
+      descriptionKey: 'com_auth_panel_voice_description',
+    },
+    {
+      Icon: Languages,
+      titleKey: 'com_ui_landing_chip_multilingual',
+      descriptionKey: 'com_auth_panel_multilingual_description',
+    },
+  ] as const;
 
   const [isLangOpen, setIsLangOpen] = useState(() => {
     return !localStorage.getItem('lang_selected');
@@ -93,7 +118,18 @@ function AuthLayout({
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-white dark:bg-gray-900">
+    <div className="relative isolate flex min-h-screen flex-col bg-white dark:bg-gray-900 supports-[min-height:100svh]:min-h-svh">
+      {/* Decorative brand wash falling from the top of the page, matching the one behind the
+          chat column, so signing in looks like the same product. First in the DOM and
+          negatively stacked so every later sibling paints over it without its own z-index.
+
+          From sm only. Below that the card has no frame and fills the width, so an opaque
+          card over a tinted page reads as a seam rather than as elevation — and the floating
+          labels punch opaque chips that cannot match a gradient behind them either. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 hidden h-72 bg-[radial-gradient(120%_100%_at_50%_0%,rgba(25,135,84,0.13),transparent_72%)] dark:bg-[radial-gradient(120%_100%_at_50%_0%,rgba(117,215,178,0.09),transparent_72%)] sm:block"
+      />
       <Transition appear show={isLangOpen}>
         <Dialog
           as="div"
@@ -152,35 +188,112 @@ function AuthLayout({
       </Transition>
 
       <Banner />
-      <BlinkAnimation active={isFetching}>
-        <div className="mt-6 h-10 w-full bg-cover">
-          <img
-            src="assets/annam-logo.png"
-            className="h-full w-full object-contain"
-            alt={localize('com_ui_logo', { 0: startupConfig?.appTitle ?? 'LibreChat' })}
-          />
-        </div>
-      </BlinkAnimation>
       <DisplayError />
-      <div className="absolute bottom-0 left-0 origin-bottom-left scale-75 md:m-4">
+      {/* Pinned to the corner from md up, where there is room for it. On a phone it would
+          sit on top of the footer links, so below md it joins the flex column as its last
+          row instead. */}
+      <div
+        className={cn(
+          'order-last flex justify-center pb-3',
+          'md:absolute md:bottom-0 md:left-0 md:block md:m-4 md:origin-bottom-left md:scale-75 md:pb-0',
+        )}
+      >
         <ThemeSelector />
       </div>
 
-      <main className="flex flex-grow items-center justify-center">
-        <div className="w-authPageWidth overflow-hidden bg-white px-6 py-4 dark:bg-gray-900 sm:max-w-md sm:rounded-lg">
-          {!hasStartupConfigError && !isFetching && header && (
-            <h1
-              className="mb-4 text-center text-3xl font-semibold text-black dark:text-white"
-              style={{ userSelect: 'none' }}
-            >
-              {header}
-            </h1>
+      <main className="flex flex-grow items-center justify-center px-4 py-6 sm:py-8">
+        <div
+          className={cn(
+            'w-full sm:max-w-md',
+            // From lg the brand panel and the form sit side by side in one frame, so the
+            // wrapper owns the border and shadow and the card drops its own. Below lg this
+            // wrapper is inert and the card is the whole layout.
+            'lg:flex lg:w-full lg:max-w-4xl lg:overflow-hidden lg:rounded-3xl',
+            'lg:border lg:border-border-light dark:lg:border-white/10',
+            'lg:shadow-[0_1px_2px_0_rgba(0,0,0,0.04),0_18px_44px_0_rgba(0,0,0,0.08)] dark:lg:shadow-none',
           )}
-          {children}
-          {!pathname.includes('2fa') &&
-            (pathname.includes('login') || pathname.includes('register')) && (
+        >
+          {/* Brand panel — desktop only. Phones get the card alone. The wordmark is pinned
+              to the top and the message owns the centre, so the panel has a reading order
+              rather than being one evenly spaced stack. */}
+          <aside
+            className={cn(
+              'hidden lg:flex lg:w-[44%] lg:shrink-0 lg:flex-col lg:p-10',
+              'lg:bg-[linear-gradient(160deg,#198754,#0f5c3a)] lg:text-white',
+            )}
+          >
+            {/* The wordmark's type is dark green, which all but disappears on this panel,
+                so the whole lockup is knocked out to white. Sized by width, since it is a
+                wide lockup rather than a square mark. */}
+            <img
+              src="assets/annam.png"
+              alt=""
+              aria-hidden="true"
+              className="h-auto w-40 object-contain brightness-0 invert"
+            />
+            <div className="flex flex-1 flex-col justify-center gap-7 py-10">
+              <h2 className="max-w-[18rem] text-2xl font-semibold leading-snug">
+                {localize('com_ui_landing_tagline')}
+              </h2>
+              <ul className="flex flex-col gap-5">
+                {brandPoints.map(({ Icon, titleKey, descriptionKey }) => (
+                  <li key={titleKey} className="flex gap-3.5">
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/15">
+                      <Icon className="size-4" aria-hidden="true" />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold">{localize(titleKey)}</p>
+                      <p className="mt-1 text-[13px] leading-relaxed text-white/80">
+                        {localize(descriptionKey)}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </aside>
+
+          <div
+            className={cn(
+              'bg-white px-1 py-2 dark:bg-gray-900',
+              // A real container from sm up, so the form has edges instead of floating on
+              // the page. Phones get the form full-width with no frame to pay for.
+              'sm:rounded-2xl sm:border sm:border-border-light sm:px-7 sm:py-7 dark:sm:border-white/10',
+              'sm:shadow-[0_1px_2px_0_rgba(0,0,0,0.04),0_12px_32px_0_rgba(0,0,0,0.06)] dark:sm:shadow-none',
+              'lg:flex-1 lg:rounded-none lg:border-0 lg:px-10 lg:py-12 lg:shadow-none',
+            )}
+          >
+            <div className="mb-5 flex flex-col items-center gap-2.5 sm:mb-6 sm:gap-3 lg:items-start">
+              <div className="flex items-center gap-3">
+                {/* Blinks while the startup config loads — the cue the page-top strip used
+                    to carry. */}
+                <BlinkAnimation active={isFetching}>
+                  <img
+                    src="assets/annam-logo.png"
+                    className="size-9 shrink-0 object-contain sm:size-10"
+                    alt={localize('com_ui_logo', { 0: startupConfig?.appTitle ?? 'LibreChat' })}
+                  />
+                </BlinkAnimation>
+                {!hasStartupConfigError && !isFetching && header && (
+                  <h1
+                    className="text-2xl font-semibold text-text-primary sm:text-3xl"
+                    style={{ userSelect: 'none' }}
+                  >
+                    {header}
+                  </h1>
+                )}
+              </div>
+              {isEntryScreen && (
+                <p className="text-balance text-center text-sm text-text-secondary lg:hidden">
+                  {localize('com_ui_landing_tagline')}
+                </p>
+              )}
+            </div>
+            {children}
+            {!pathname.includes('2fa') && isEntryScreen && (
               <SocialLoginRender startupConfig={startupConfig} />
             )}
+          </div>
         </div>
       </main>
       <Footer startupConfig={startupConfig} />

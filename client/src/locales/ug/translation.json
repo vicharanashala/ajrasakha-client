@@ -1,5 +1,8 @@
 {
   "com_auth_error_email_in_use": "ئېلخەت ئاللىقاچان ئىشلىتىلىۋاتىدۇ",
+  "com_auth_panel_expert_verified_description": "مەسلىھەتلەر سىزگە يېتىپ كېلىشتىن بۇرۇن يېزا ئىگىلىك مۇتەخەسسىسلىرى تەرىپىدىن تەكشۈرۈلىدۇ.",
+  "com_auth_panel_multilingual_description": "ئۆزىڭىز سۆزلەيدىغان تىلدا سوراڭ ۋە جاۋاب ئېلىڭ.",
+  "com_auth_panel_voice_description": "سوئالىڭىزنى يازماي، ئېيتىڭ.",
   "com_ui_feedback_enforce_skipped": "Skipping feedback...",
   "com_ui_landing_chip_expert_verified": "مۇتەخەسسىسلەر تەرىپىدىن دەلىللەنگەن",
   "com_ui_landing_chip_multilingual": "كۆپ تىللىق",
