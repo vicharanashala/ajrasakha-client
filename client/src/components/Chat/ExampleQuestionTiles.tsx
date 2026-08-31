@@ -71,6 +71,12 @@ const DEFAULT_ICON_ACCENT = {
   hover: 'hover:border-border-heavy',
 };
 
+/** Entrance timing for the landing block. The greeting animates per character above this
+ *  component, so the tagline starts after it has had a moment and the cards follow in turn. */
+const TAGLINE_ENTRANCE_DELAY_MS = 120;
+const CARD_ENTRANCE_BASE_DELAY_MS = 260;
+const CARD_ENTRANCE_STEP_MS = 70;
+
 /** Tappable example-question cards shown on the welcome/empty-chat screen, between the
  *  greeting heading and the message input. Tapping one sends that question right away —
  *  the same as typing it and hitting submit — rather than just populating the input box. */
@@ -92,7 +98,7 @@ export default function ExampleQuestionTiles() {
   return (
     <div
       className={cn(
-        'animate-fadeIn flex w-full max-w-xl flex-col items-center px-4 md:max-w-3xl',
+        'flex w-full max-w-xl flex-col items-center px-4 md:max-w-3xl',
         // Spacing widens as the sections get further apart: greeting to tagline, tagline to
         // cards (below), then cards to the composer. The bottom margin doubles as what lifts
         // the whole block clear of the composer, since the landing column is bottom-aligned
@@ -104,7 +110,10 @@ export default function ExampleQuestionTiles() {
       {/* Tagline and capability pills live here rather than in Landing: Landing collapses to
           `sm:max-h-0` when centerFormOnLanding is on, so anything added there contributes no
           layout height and its overflow lands on top of these cards. */}
-      <div className="mb-9 flex flex-col items-center gap-3 sm:mb-9 sm:gap-4">
+      <div
+        className="animate-riseIn mb-9 flex flex-col items-center gap-3 sm:mb-9 sm:gap-4"
+        style={{ animationDelay: `${TAGLINE_ENTRANCE_DELAY_MS}ms` }}
+      >
         <p className="text-balance text-center text-[15px] font-normal leading-snug text-text-secondary sm:max-w-sm sm:text-base">
           {localize('com_ui_landing_tagline')}
         </p>
@@ -130,7 +139,12 @@ export default function ExampleQuestionTiles() {
             key={question.id}
             type="button"
             onClick={() => handleSelect(questionText)}
+            // Cards rise in one after another, picking up where the tagline leaves off.
+            style={{
+              animationDelay: `${CARD_ENTRANCE_BASE_DELAY_MS + index * CARD_ENTRANCE_STEP_MS}ms`,
+            }}
             className={cn(
+              'animate-riseIn',
               'group flex h-full w-full cursor-pointer items-center text-start',
               // Short viewports (an iPhone SE is 667px tall) cannot fit four of these
               // above the composer, and the overflow runs underneath it. Showing three

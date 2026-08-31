@@ -980,7 +980,27 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     <>
                       <style>{`
                         @keyframes voice-orb-ring-outer { to { transform: rotate(-360deg); } }
+                        @keyframes voice-orb-ripple {
+                          0% { transform: scale(0.82); opacity: 0.45; }
+                          100% { transform: scale(1.8); opacity: 0; }
+                        }
+                        @media (prefers-reduced-motion: reduce) {
+                          .voice-orb-ripple { animation: none !important; opacity: 0.2; transform: scale(1.2); }
+                        }
                       `}</style>
+                      {/* Rings spreading outward from the mic, like rings on water — the
+                          calmest way to show the app is picking up sound, and slow enough
+                          not to compete with the equalizer bars on the button itself. */}
+                      {[0, 1].map((ripple) => (
+                        <span
+                          key={ripple}
+                          aria-hidden="true"
+                          className="voice-orb-ripple pointer-events-none absolute size-20 rounded-full border border-[#75D7B2]"
+                          style={{
+                            animation: `voice-orb-ripple 2.6s ease-out ${ripple * 1.3}s infinite`,
+                          }}
+                        />
+                      ))}
                       <span
                         className="absolute inline-block size-20 rounded-full opacity-40"
                         style={{

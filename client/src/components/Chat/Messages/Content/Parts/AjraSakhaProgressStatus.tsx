@@ -1,4 +1,4 @@
-import { Lightbulb } from 'lucide-react';
+import { Lightbulb, Sprout } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { TranslationKeys } from '~/hooks';
 import { useLocalize } from '~/hooks';
@@ -112,18 +112,17 @@ export default function AjraSakhaProgressStatus() {
       aria-live="polite"
       aria-atomic="true"
     >
-      {/* The dots belong to the waiting message. A tip already carries its own lightbulb, and
-          two markers on one line read as clutter. */}
+      {/* The sprout belongs to the waiting message. A tip already carries its own lightbulb,
+          and two markers on one line read as clutter. Top margins are per-breakpoint because
+          the paragraph's line height changes with its type scale. */}
       {!isTipVisible && (
-        <span className="mt-1.5 flex shrink-0 items-center gap-1 sm:mt-2" aria-hidden="true">
-          {[0, 1, 2].map((i) => (
-            <span
-              key={i}
-              className="ajrasakha-progress-dot size-1.5 rounded-full bg-green-600 dark:bg-green-400"
-              style={{ animationDelay: `${i * 0.16}s` }}
-            />
-          ))}
-        </span>
+        <Sprout
+          className={cn(
+            'ajrasakha-progress-sprout shrink-0 text-green-600 dark:text-green-400',
+            'mt-0.5 size-4 sm:mt-[3px] sm:size-[18px] md:mt-[5px]',
+          )}
+          aria-hidden="true"
+        />
       )}
       <p
         key={isTipVisible ? `tip-${tipIndex}` : statusMessage}
