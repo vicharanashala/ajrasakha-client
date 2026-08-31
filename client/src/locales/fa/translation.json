@@ -949,5 +949,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha هنوز در حال توسعه است — تصمیمات مهم را با KVK محلی خود بررسی کنید.",
   "com_ui_feedback_tag_response_within_2_hours": "پاسخ ظرف 2 ساعت دریافت شد",
   "com_ui_feedback_tag_response_after_2_hours": "پاسخ پس از 2 ساعت دریافت شد",
-  "com_nav_log_out_confirm_message": "آیا مطمئن هستید که می‌خواهید خارج شوید؟"
+  "com_nav_log_out_confirm_message": "آیا مطمئن هستید که می‌خواهید خارج شوید؟",
+  "com_nav_notifications_mark_all_read": "علامت‌گذاری همه به‌عنوان خوانده‌شده",
+  "com_nav_notifications_new_count": "{{0}} جدید",
+  "com_nav_notifications_type_info": "اطلاعات",
+  "com_nav_notifications_type_alert": "هشدار",
+  "com_nav_notifications_empty_title": "به‌روز هستید",
+  "com_nav_notifications_empty_subtitle": "توصیه‌ها، هشدارها و به‌روزرسانی‌های جدید اینجا نمایش داده می‌شوند.",
+  "com_nav_notifications_time_just_now": "همین الان",
+  "com_nav_notifications_time_minutes_ago": "{{0}} دقیقه پیش",
+  "com_nav_notifications_time_hours_ago": "{{0}} ساعت پیش",
+  "com_nav_notifications_time_yesterday": "دیروز",
+  "com_nav_notifications_time_days_ago": "{{0}} روز پیش"
 }

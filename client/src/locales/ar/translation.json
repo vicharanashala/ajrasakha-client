@@ -855,5 +855,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha لا تزال قيد التطوير — تحقق من القرارات المهمة مع مركز KVK المحلي الخاص بك.",
   "com_ui_feedback_tag_response_within_2_hours": "تم استلام الرد خلال ساعتين",
   "com_ui_feedback_tag_response_after_2_hours": "تم استلام الرد بعد مرور ساعتين",
-  "com_nav_log_out_confirm_message": "هل أنت متأكد أنك تريد تسجيل الخروج؟"
+  "com_nav_log_out_confirm_message": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+  "com_nav_notifications_mark_all_read": "تعليم الكل كمقروء",
+  "com_nav_notifications_new_count": "{{0}} جديد",
+  "com_nav_notifications_type_info": "معلومات",
+  "com_nav_notifications_type_alert": "تنبيه",
+  "com_nav_notifications_empty_title": "أنت على اطلاع بكل شيء",
+  "com_nav_notifications_empty_subtitle": "ستظهر النصائح والتنبيهات والتحديثات الجديدة هنا.",
+  "com_nav_notifications_time_just_now": "الآن",
+  "com_nav_notifications_time_minutes_ago": "منذ {{0}} د",
+  "com_nav_notifications_time_hours_ago": "منذ {{0}} س",
+  "com_nav_notifications_time_yesterday": "أمس",
+  "com_nav_notifications_time_days_ago": "منذ {{0}} يوم"
 }

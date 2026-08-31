@@ -931,5 +931,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha está en desarrollo — consulta las decisiones importantes con tu KVK local.",
   "com_ui_feedback_tag_response_within_2_hours": "Respuesta recibida en menos de 2 horas",
   "com_ui_feedback_tag_response_after_2_hours": "Respuesta recibida después de 2 horas",
-  "com_nav_log_out_confirm_message": "¿Seguro que quieres cerrar sesión?"
+  "com_nav_log_out_confirm_message": "¿Seguro que quieres cerrar sesión?",
+  "com_nav_notifications_mark_all_read": "Marcar todo como leído",
+  "com_nav_notifications_new_count": "{{0}} nuevas",
+  "com_nav_notifications_type_info": "Info",
+  "com_nav_notifications_type_alert": "Alerta",
+  "com_nav_notifications_empty_title": "Estás al día",
+  "com_nav_notifications_empty_subtitle": "Los nuevos avisos, alertas y actualizaciones aparecerán aquí.",
+  "com_nav_notifications_time_just_now": "Ahora mismo",
+  "com_nav_notifications_time_minutes_ago": "hace {{0}} min",
+  "com_nav_notifications_time_hours_ago": "hace {{0}} h",
+  "com_nav_notifications_time_yesterday": "Ayer",
+  "com_nav_notifications_time_days_ago": "hace {{0}} d"
 }

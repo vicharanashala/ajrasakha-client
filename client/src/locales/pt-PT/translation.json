@@ -1379,5 +1379,16 @@
   "com_ui_ajrasakha_tip_in_development": "O AjraSakha está em desenvolvimento — confirme decisões importantes com o KVK da sua zona.",
   "com_ui_feedback_tag_response_within_2_hours": "Resposta recebida no prazo de 2 horas",
   "com_ui_feedback_tag_response_after_2_hours": "Resposta recebida depois de 2 horas",
-  "com_nav_log_out_confirm_message": "Tem a certeza de que pretende terminar sessão?"
+  "com_nav_log_out_confirm_message": "Tem a certeza de que pretende terminar sessão?",
+  "com_nav_notifications_mark_all_read": "Marcar tudo como lido",
+  "com_nav_notifications_new_count": "{{0}} novas",
+  "com_nav_notifications_type_info": "Info",
+  "com_nav_notifications_type_alert": "Alerta",
+  "com_nav_notifications_empty_title": "Está tudo em dia",
+  "com_nav_notifications_empty_subtitle": "Novos avisos, alertas e atualizações vão aparecer aqui.",
+  "com_nav_notifications_time_just_now": "Mesmo agora",
+  "com_nav_notifications_time_minutes_ago": "há {{0}} min",
+  "com_nav_notifications_time_hours_ago": "há {{0}} h",
+  "com_nav_notifications_time_yesterday": "Ontem",
+  "com_nav_notifications_time_days_ago": "há {{0}} d"
 }

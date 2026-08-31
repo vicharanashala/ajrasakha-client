@@ -672,5 +672,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha är under utveckling — kontrollera viktiga beslut med din lokala KVK.",
   "com_ui_feedback_tag_response_within_2_hours": "Svar mottaget inom 2 timmar",
   "com_ui_feedback_tag_response_after_2_hours": "Svar mottaget efter 2 timmar",
-  "com_nav_log_out_confirm_message": "Är du säker på att du vill logga ut?"
+  "com_nav_log_out_confirm_message": "Är du säker på att du vill logga ut?",
+  "com_nav_notifications_mark_all_read": "Markera alla som lästa",
+  "com_nav_notifications_new_count": "{{0}} nya",
+  "com_nav_notifications_type_info": "Info",
+  "com_nav_notifications_type_alert": "Varning",
+  "com_nav_notifications_empty_title": "Du har koll på läget",
+  "com_nav_notifications_empty_subtitle": "Nya råd, varningar och uppdateringar visas här.",
+  "com_nav_notifications_time_just_now": "Nyss",
+  "com_nav_notifications_time_minutes_ago": "{{0}} min sedan",
+  "com_nav_notifications_time_hours_ago": "{{0}} tim sedan",
+  "com_nav_notifications_time_yesterday": "Igår",
+  "com_nav_notifications_time_days_ago": "{{0}} d sedan"
 }

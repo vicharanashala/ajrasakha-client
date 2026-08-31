@@ -2098,5 +2098,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha ఇంకా అభివృద్ధి దశలో ఉంది — కీలకమైన నిర్ణయాలను మీ స్థానిక KVKతో ధృవీకరించుకోండి.",
   "com_ui_feedback_tag_response_within_2_hours": "2 గంటల్లో ప్రతిస్పందన వచ్చింది",
   "com_ui_feedback_tag_response_after_2_hours": "2 గంటల తర్వాత ప్రతిస్పందన వచ్చింది",
-  "com_nav_log_out_confirm_message": "మీరు ఖచ్చితంగా లాగ్ అవుట్ చేయాలనుకుంటున్నారా?"
+  "com_nav_log_out_confirm_message": "మీరు ఖచ్చితంగా లాగ్ అవుట్ చేయాలనుకుంటున్నారా?",
+  "com_nav_notifications_mark_all_read": "అన్నీ చదివినట్లు గుర్తుంచు",
+  "com_nav_notifications_new_count": "{{0}} కొత్తవి",
+  "com_nav_notifications_type_info": "సమాచారం",
+  "com_nav_notifications_type_alert": "హెచ్చరిక",
+  "com_nav_notifications_empty_title": "మీరు అన్నీ చూశారు",
+  "com_nav_notifications_empty_subtitle": "కొత్త సలహాలు, హెచ్చరికలు మరియు నవీకరణలు ఇక్కడ కనిపిస్తాయి.",
+  "com_nav_notifications_time_just_now": "ఇప్పుడే",
+  "com_nav_notifications_time_minutes_ago": "{{0}} ని. క్రితం",
+  "com_nav_notifications_time_hours_ago": "{{0}} గం. క్రితం",
+  "com_nav_notifications_time_yesterday": "నిన్న",
+  "com_nav_notifications_time_days_ago": "{{0}} రో. క్రితం"
 }

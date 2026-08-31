@@ -1579,5 +1579,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha befindet sich in der Entwicklung — besprechen Sie wichtige Entscheidungen mit Ihrem örtlichen KVK.",
   "com_ui_feedback_tag_response_within_2_hours": "Antwort innerhalb von 2 Stunden erhalten",
   "com_ui_feedback_tag_response_after_2_hours": "Antwort nach 2 Stunden erhalten",
-  "com_nav_log_out_confirm_message": "Möchten Sie sich wirklich abmelden?"
+  "com_nav_log_out_confirm_message": "Möchten Sie sich wirklich abmelden?",
+  "com_nav_notifications_mark_all_read": "Alle als gelesen markieren",
+  "com_nav_notifications_new_count": "{{0}} neu",
+  "com_nav_notifications_type_info": "Info",
+  "com_nav_notifications_type_alert": "Warnung",
+  "com_nav_notifications_empty_title": "Du bist auf dem neuesten Stand",
+  "com_nav_notifications_empty_subtitle": "Neue Hinweise, Warnungen und Updates werden hier angezeigt.",
+  "com_nav_notifications_time_just_now": "Gerade eben",
+  "com_nav_notifications_time_minutes_ago": "vor {{0}} Min.",
+  "com_nav_notifications_time_hours_ago": "vor {{0}} Std.",
+  "com_nav_notifications_time_yesterday": "Gestern",
+  "com_nav_notifications_time_days_ago": "vor {{0}} Tg."
 }

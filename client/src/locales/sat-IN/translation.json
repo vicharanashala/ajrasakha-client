@@ -2097,5 +2097,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha ᱱᱤᱛᱚᱜ ᱛᱮᱭᱟᱨ ᱦᱩᱭᱩᱜ ᱨᱮ ᱢᱮᱱᱟᱜᱼᱟ — ᱵᱟᱹᱲᱛᱤ ᱡᱟᱨᱩᱨᱤ ᱵᱤᱪᱟᱨ ᱠᱚ ᱟᱢᱟᱜ ᱞᱚᱠᱟᱞ KVK ᱥᱟᱶᱜᱮ ᱴᱷᱤᱠ ᱞᱮᱠᱷᱟ ᱢᱮ।",
   "com_ui_feedback_tag_response_within_2_hours": "2 घण्टा भितर रे जाबाब नामेना",
   "com_ui_feedback_tag_response_after_2_hours": "2 घण्टा तायोम ते जाबाब नामेना",
-  "com_nav_log_out_confirm_message": "ᱟᱢ ᱥᱟᱹᱨᱤ ᱠᱟᱱᱟᱢ ᱡᱮ ᱟᱢ ᱞᱚᱜ ᱟᱩᱴ ᱠᱚᱨᱚᱜ ᱥᱟᱱᱟᱢᱼᱟ?"
+  "com_nav_log_out_confirm_message": "ᱟᱢ ᱥᱟᱹᱨᱤ ᱠᱟᱱᱟᱢ ᱡᱮ ᱟᱢ ᱞᱚᱜ ᱟᱩᱴ ᱠᱚᱨᱚᱜ ᱥᱟᱱᱟᱢᱼᱟ?",
+  "com_nav_notifications_mark_all_read": "ᱡᱚᱛᱚ ᱯᱟᱲᱦᱟᱣ ᱞᱮᱠᱟ ᱪᱤᱱᱦᱟᱹ ᱢᱮ",
+  "com_nav_notifications_new_count": "{{0}} ᱱᱟᱣᱟ",
+  "com_nav_notifications_type_info": "ᱠᱷᱚᱵᱚᱨ",
+  "com_nav_notifications_type_alert": "ᱥᱚᱛᱚᱨᱠᱛᱟ",
+  "com_nav_notifications_empty_title": "ᱟᱢ ᱡᱚᱛᱚ ᱧᱮᱞ ᱠᱮᱰᱟ ᱢᱮᱱᱟᱢᱟ",
+  "com_nav_notifications_empty_subtitle": "ᱱᱟᱣᱟ ᱛᱟᱠᱚᱨᱩᱨ, ᱥᱚᱛᱚᱨᱠᱛᱟ ᱟᱨ ᱟᱯᱰᱮᱴ ᱱᱚᱶᱰᱮ ᱧᱮᱞᱚᱜᱼᱟ ᱾",
+  "com_nav_notifications_time_just_now": "ᱱᱤᱛᱚᱜ",
+  "com_nav_notifications_time_minutes_ago": "{{0}} ᱢᱤᱱᱤᱴ ᱞᱟᱦᱟ",
+  "com_nav_notifications_time_hours_ago": "{{0}} ᱴᱟᱶᱤ ᱞᱟᱦᱟ",
+  "com_nav_notifications_time_yesterday": "ᱦᱚᱞᱟ",
+  "com_nav_notifications_time_days_ago": "{{0}} ᱫᱤᱱ ᱞᱟᱦᱟ"
 }

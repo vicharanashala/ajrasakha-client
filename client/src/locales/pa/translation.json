@@ -2098,5 +2098,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha ਹਾਲੇ ਵਿਕਾਸ ਅਧੀਨ ਹੈ — ਅਹਿਮ ਫੈਸਲੇ ਆਪਣੇ ਸਥਾਨਕ KVK ਨਾਲ ਜਾਂਚ ਲਓ।",
   "com_ui_feedback_tag_response_within_2_hours": "2 ਘੰਟਿਆਂ ਦੇ ਅੰਦਰ ਜਵਾਬ ਮਿਲਿਆ",
   "com_ui_feedback_tag_response_after_2_hours": "2 ਘੰਟਿਆਂ ਬਾਅਦ ਜਵਾਬ ਮਿਲਿਆ",
-  "com_nav_log_out_confirm_message": "ਕੀ ਤੁਸੀਂ ਯਕੀਨਨ ਲੌਗ ਆਊਟ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?"
+  "com_nav_log_out_confirm_message": "ਕੀ ਤੁਸੀਂ ਯਕੀਨਨ ਲੌਗ ਆਊਟ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?",
+  "com_nav_notifications_mark_all_read": "ਸਾਰੇ ਪੜ੍ਹੇ ਵਜੋਂ ਨਿਸ਼ਾਨਬੱਧ ਕਰੋ",
+  "com_nav_notifications_new_count": "{{0}} ਨਵੇਂ",
+  "com_nav_notifications_type_info": "ਜਾਣਕਾਰੀ",
+  "com_nav_notifications_type_alert": "ਚੇਤਾਵਨੀ",
+  "com_nav_notifications_empty_title": "ਤੁਸੀਂ ਸਭ ਕੁਝ ਦੇਖ ਲਿਆ ਹੈ",
+  "com_nav_notifications_empty_subtitle": "ਨਵੀਆਂ ਸਲਾਹਾਂ, ਚੇਤਾਵਨੀਆਂ ਅਤੇ ਅੱਪਡੇਟ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੇ।",
+  "com_nav_notifications_time_just_now": "ਹੁਣੇ ਹੀ",
+  "com_nav_notifications_time_minutes_ago": "{{0}} ਮਿੰਟ ਪਹਿਲਾਂ",
+  "com_nav_notifications_time_hours_ago": "{{0}} ਘੰਟੇ ਪਹਿਲਾਂ",
+  "com_nav_notifications_time_yesterday": "ਕੱਲ੍ਹ",
+  "com_nav_notifications_time_days_ago": "{{0}} ਦਿਨ ਪਹਿਲਾਂ"
 }

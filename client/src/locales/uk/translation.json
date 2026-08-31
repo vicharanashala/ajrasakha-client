@@ -1400,5 +1400,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha перебуває на етапі розробки — перевіряйте важливі рішення у вашому місцевому KVK.",
   "com_ui_feedback_tag_response_within_2_hours": "Відповідь отримано протягом 2 годин",
   "com_ui_feedback_tag_response_after_2_hours": "Відповідь отримано через 2 години",
-  "com_nav_log_out_confirm_message": "Ви впевнені, що хочете вийти?"
+  "com_nav_log_out_confirm_message": "Ви впевнені, що хочете вийти?",
+  "com_nav_notifications_mark_all_read": "Позначити всі як прочитані",
+  "com_nav_notifications_new_count": "{{0}} нових",
+  "com_nav_notifications_type_info": "Інфо",
+  "com_nav_notifications_type_alert": "Сповіщення",
+  "com_nav_notifications_empty_title": "Ви нічого не пропустили",
+  "com_nav_notifications_empty_subtitle": "Нові поради, сповіщення та оновлення з'являтимуться тут.",
+  "com_nav_notifications_time_just_now": "Щойно",
+  "com_nav_notifications_time_minutes_ago": "{{0}} хв тому",
+  "com_nav_notifications_time_hours_ago": "{{0}} год тому",
+  "com_nav_notifications_time_yesterday": "Вчора",
+  "com_nav_notifications_time_days_ago": "{{0}} дн тому"
 }

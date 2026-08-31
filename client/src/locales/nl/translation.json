@@ -850,5 +850,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha is in ontwikkeling — controleer belangrijke beslissingen bij je lokale KVK.",
   "com_ui_feedback_tag_response_within_2_hours": "Antwoord ontvangen binnen 2 uur",
   "com_ui_feedback_tag_response_after_2_hours": "Antwoord ontvangen na 2 uur",
-  "com_nav_log_out_confirm_message": "Weet je zeker dat je wilt uitloggen?"
+  "com_nav_log_out_confirm_message": "Weet je zeker dat je wilt uitloggen?",
+  "com_nav_notifications_mark_all_read": "Alles als gelezen markeren",
+  "com_nav_notifications_new_count": "{{0}} nieuw",
+  "com_nav_notifications_type_info": "Info",
+  "com_nav_notifications_type_alert": "Waarschuwing",
+  "com_nav_notifications_empty_title": "Je bent helemaal bij",
+  "com_nav_notifications_empty_subtitle": "Nieuwe adviezen, waarschuwingen en updates verschijnen hier.",
+  "com_nav_notifications_time_just_now": "Zojuist",
+  "com_nav_notifications_time_minutes_ago": "{{0}} min geleden",
+  "com_nav_notifications_time_hours_ago": "{{0}} u geleden",
+  "com_nav_notifications_time_yesterday": "Gisteren",
+  "com_nav_notifications_time_days_ago": "{{0}} d geleden"
 }

@@ -2098,5 +2098,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha വികസനത്തിലാണ് — നിർണായക തീരുമാനങ്ങൾ നിങ്ങളുടെ പ്രാദേശിക KVK-യുമായി ഉറപ്പാക്കൂ.",
   "com_ui_feedback_tag_response_within_2_hours": "2 മണിക്കൂറിനുള്ളിൽ മറുപടി ലഭിച്ചു",
   "com_ui_feedback_tag_response_after_2_hours": "2 മണിക്കൂറിന് ശേഷം മറുപടി ലഭിച്ചു",
-  "com_nav_log_out_confirm_message": "നിങ്ങൾക്ക് ലോഗ് ഔട്ട് ചെയ്യണമെന്ന് ഉറപ്പാണോ?"
+  "com_nav_log_out_confirm_message": "നിങ്ങൾക്ക് ലോഗ് ഔട്ട് ചെയ്യണമെന്ന് ഉറപ്പാണോ?",
+  "com_nav_notifications_mark_all_read": "എല്ലാം വായിച്ചതായി അടയാളപ്പെടുത്തുക",
+  "com_nav_notifications_new_count": "{{0}} പുതിയവ",
+  "com_nav_notifications_type_info": "വിവരം",
+  "com_nav_notifications_type_alert": "മുന്നറിയിപ്പ്",
+  "com_nav_notifications_empty_title": "നിങ്ങൾ എല്ലാം കണ്ടുകഴിഞ്ഞു",
+  "com_nav_notifications_empty_subtitle": "പുതിയ ഉപദേശങ്ങളും മുന്നറിയിപ്പുകളും അപ്‌ഡേറ്റുകളും ഇവിടെ ദൃശ്യമാകും.",
+  "com_nav_notifications_time_just_now": "ഇപ്പോൾ",
+  "com_nav_notifications_time_minutes_ago": "{{0}} മി മുമ്പ്",
+  "com_nav_notifications_time_hours_ago": "{{0}} മണി മുമ്പ്",
+  "com_nav_notifications_time_yesterday": "ഇന്നലെ",
+  "com_nav_notifications_time_days_ago": "{{0}} ദി മുമ്പ്"
 }

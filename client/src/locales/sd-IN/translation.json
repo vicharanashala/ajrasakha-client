@@ -2097,5 +2097,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha اڃا تيار ٿي رهيو آهي — اهم فيصلا پنهنجي مقامي KVK سان تصديق ڪريو.",
   "com_ui_feedback_tag_response_within_2_hours": "2 कलाकन अंदर जवाब मिलियो",
   "com_ui_feedback_tag_response_after_2_hours": "2 कलाकन खान पोइ जवाब मिलियो",
-  "com_nav_log_out_confirm_message": "क्या तव्हां खे पक्कू यक़ीन आहे ते तव्हां लॉगआउट कर्ण चाहो था?"
+  "com_nav_log_out_confirm_message": "क्या तव्हां खे पक्कू यक़ीन आहे ते तव्हां लॉगआउट कर्ण चाहो था?",
+  "com_nav_notifications_mark_all_read": "سڀ پڙهيل طور نشان لڳايو",
+  "com_nav_notifications_new_count": "{{0}} نيون",
+  "com_nav_notifications_type_info": "معلومات",
+  "com_nav_notifications_type_alert": "خبردار",
+  "com_nav_notifications_empty_title": "توهان سڀ ڪجهه ڏسي ورتو آهي",
+  "com_nav_notifications_empty_subtitle": "نيون صلاحون، خبردارون ۽ تازيون خبرون هتي ڏيکارجن گيون.",
+  "com_nav_notifications_time_just_now": "هاڻي ئي",
+  "com_nav_notifications_time_minutes_ago": "{{0}} منٽ اڳ",
+  "com_nav_notifications_time_hours_ago": "{{0}} ڪلاڪ اڳ",
+  "com_nav_notifications_time_yesterday": "ڪالهه",
+  "com_nav_notifications_time_days_ago": "{{0}} ڏينهن اڳ"
 }

@@ -45,5 +45,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha ད་དུང་གསར་སྤེལ་གྱི་གནས་སྐབས་ཡིན། གནད་འགག་ཅན་གྱི་ཐག་གཅོད་རྣམས་ཁྱེད་ཀྱི་ཉེ་འཁྲིས་ KVK དང་ལྷན་ཞིབ་བཤེར་གྱིས།",
   "com_ui_feedback_tag_response_within_2_hours": "ལན་འདེབས་ཆུ་ཚོད་2 ནང་ཐོབ་སོང་།",
   "com_ui_feedback_tag_response_after_2_hours": "ལན་འདེབས་ཆུ་ཚོད་2 རྗེས་ཐོབ་སོང་།",
-  "com_nav_log_out_confirm_message": "ཁྱེད་རང་ཐོན་འགྲོ་འདོད་པ་ངེས་གཏན་ཡིན་ནམ།"
+  "com_nav_log_out_confirm_message": "ཁྱེད་རང་ཐོན་འགྲོ་འདོད་པ་ངེས་གཏན་ཡིན་ནམ།",
+  "com_nav_notifications_mark_all_read": "ཡོངས་རྫོགས་ཀློག་ཟིན་དུ་རྟགས་བཀོད།",
+  "com_nav_notifications_new_count": "གསར་པ་ {{0}}",
+  "com_nav_notifications_type_info": "ཆ་འཕྲིན།",
+  "com_nav_notifications_type_alert": "ཉེན་བརྡ།",
+  "com_nav_notifications_empty_title": "ཁྱེད་ཀྱིས་ཡོངས་རྫོགས་ཀློག་ཟིན།",
+  "com_nav_notifications_empty_subtitle": "གསར་པའི་སྙན་ཞུ་དང་ཉེན་བརྡ། དེ་བཞིན་གསར་སྒྱུར་རྣམས་འདིར་སྟོན་ངེས།",
+  "com_nav_notifications_time_just_now": "ད་ལྟ།",
+  "com_nav_notifications_time_minutes_ago": "སྐར་མ་ {{0}} སྔོན།",
+  "com_nav_notifications_time_hours_ago": "ཆུ་ཚོད་ {{0}} སྔོན།",
+  "com_nav_notifications_time_yesterday": "ཁ་སང་།",
+  "com_nav_notifications_time_days_ago": "ཉིན་ {{0}} སྔོན།"
 }

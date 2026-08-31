@@ -45,5 +45,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha je u razvoju — provjerite važne odluke sa svojim lokalnim KVK-om.",
   "com_ui_feedback_tag_response_within_2_hours": "Odgovor primljen u roku od 2 sata",
   "com_ui_feedback_tag_response_after_2_hours": "Odgovor primljen nakon 2 sata",
-  "com_nav_log_out_confirm_message": "Jeste li sigurni da se želite odjaviti?"
+  "com_nav_log_out_confirm_message": "Jeste li sigurni da se želite odjaviti?",
+  "com_nav_notifications_mark_all_read": "Označi sve kao pročitano",
+  "com_nav_notifications_new_count": "{{0}} novo",
+  "com_nav_notifications_type_info": "Info",
+  "com_nav_notifications_type_alert": "Upozorenje",
+  "com_nav_notifications_empty_title": "U toku ste sa svime",
+  "com_nav_notifications_empty_subtitle": "Novi savjeti, upozorenja i ažuriranja pojaviće se ovdje.",
+  "com_nav_notifications_time_just_now": "Upravo sada",
+  "com_nav_notifications_time_minutes_ago": "prije {{0}} min",
+  "com_nav_notifications_time_hours_ago": "prije {{0}} h",
+  "com_nav_notifications_time_yesterday": "Juče",
+  "com_nav_notifications_time_days_ago": "prije {{0}} d"
 }

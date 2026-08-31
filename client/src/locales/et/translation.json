@@ -1084,5 +1084,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha on arendamisel — olulised otsused kontrolli üle oma kohaliku KVK-ga.",
   "com_ui_feedback_tag_response_within_2_hours": "Vastus saadud 2 tunni jooksul",
   "com_ui_feedback_tag_response_after_2_hours": "Vastus saadud pärast 2 tundi",
-  "com_nav_log_out_confirm_message": "Kas oled kindel, et soovid välja logida?"
+  "com_nav_log_out_confirm_message": "Kas oled kindel, et soovid välja logida?",
+  "com_nav_notifications_mark_all_read": "Märgi kõik loetuks",
+  "com_nav_notifications_new_count": "{{0}} uut",
+  "com_nav_notifications_type_info": "Info",
+  "com_nav_notifications_type_alert": "Hoiatus",
+  "com_nav_notifications_empty_title": "Oled kõigega kursis",
+  "com_nav_notifications_empty_subtitle": "Uued nõuanded, hoiatused ja värskendused kuvatakse siin.",
+  "com_nav_notifications_time_just_now": "Just praegu",
+  "com_nav_notifications_time_minutes_ago": "{{0}} min tagasi",
+  "com_nav_notifications_time_hours_ago": "{{0}} t tagasi",
+  "com_nav_notifications_time_yesterday": "Eile",
+  "com_nav_notifications_time_days_ago": "{{0}} p tagasi"
 }

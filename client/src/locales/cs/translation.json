@@ -850,5 +850,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha se stále vyvíjí — důležitá rozhodnutí si ověřte se svým místním KVK.",
   "com_ui_feedback_tag_response_within_2_hours": "Odpověď obdržena do 2 hodin",
   "com_ui_feedback_tag_response_after_2_hours": "Odpověď obdržena po 2 hodinách",
-  "com_nav_log_out_confirm_message": "Opravdu se chcete odhlásit?"
+  "com_nav_log_out_confirm_message": "Opravdu se chcete odhlásit?",
+  "com_nav_notifications_mark_all_read": "Označit vše jako přečtené",
+  "com_nav_notifications_new_count": "{{0}} nových",
+  "com_nav_notifications_type_info": "Info",
+  "com_nav_notifications_type_alert": "Upozornění",
+  "com_nav_notifications_empty_title": "Nic vám neuniklo",
+  "com_nav_notifications_empty_subtitle": "Nová doporučení, upozornění a aktualizace se zobrazí zde.",
+  "com_nav_notifications_time_just_now": "Právě teď",
+  "com_nav_notifications_time_minutes_ago": "před {{0}} min",
+  "com_nav_notifications_time_hours_ago": "před {{0}} h",
+  "com_nav_notifications_time_yesterday": "Včera",
+  "com_nav_notifications_time_days_ago": "před {{0}} d"
 }

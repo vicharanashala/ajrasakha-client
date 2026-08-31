@@ -2097,5 +2097,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha अजून विकसीत जाता आसा — म्हत्वाचे निर्णय तुमच्या थळाव्या KVK कडेन तपासात.",
   "com_ui_feedback_tag_response_within_2_hours": "प्रतिसाद 2 वरांच्या आत मेळळो",
   "com_ui_feedback_tag_response_after_2_hours": "प्रतिसाद 2 वरां उपरांत मेळळो",
-  "com_nav_log_out_confirm_message": "तुमी खरेंच लॉग आवट करपाचें आसा काय?"
+  "com_nav_log_out_confirm_message": "तुमी खरेंच लॉग आवट करपाचें आसा काय?",
+  "com_nav_notifications_mark_all_read": "सगळें वाचलां म्हूण चिन्नां करचें",
+  "com_nav_notifications_new_count": "{{0}} नवें",
+  "com_nav_notifications_type_info": "म्हायती",
+  "com_nav_notifications_type_alert": "इशारो",
+  "com_nav_notifications_empty_title": "तुमी सगळें पळयलां",
+  "com_nav_notifications_empty_subtitle": "नवीन सल्ले, इशारे आनी अद्यतनां हांगा दिसतलीं.",
+  "com_nav_notifications_time_just_now": "आताच",
+  "com_nav_notifications_time_minutes_ago": "{{0}} मिनटां आदीं",
+  "com_nav_notifications_time_hours_ago": "{{0}} वरां आदीं",
+  "com_nav_notifications_time_yesterday": "काल",
+  "com_nav_notifications_time_days_ago": "{{0}} दीस आदीं"
 }

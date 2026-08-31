@@ -1041,5 +1041,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha 仍在開發中——重要決策請與當地 KVK 核實。",
   "com_ui_feedback_tag_response_within_2_hours": "2小時內收到回覆",
   "com_ui_feedback_tag_response_after_2_hours": "2小時後收到回覆",
-  "com_nav_log_out_confirm_message": "確定要登出嗎？"
+  "com_nav_log_out_confirm_message": "確定要登出嗎？",
+  "com_nav_notifications_mark_all_read": "全部標記為已讀",
+  "com_nav_notifications_new_count": "{{0}} 則新消息",
+  "com_nav_notifications_type_info": "資訊",
+  "com_nav_notifications_type_alert": "警示",
+  "com_nav_notifications_empty_title": "您已查看全部內容",
+  "com_nav_notifications_empty_subtitle": "新的建議、警示和更新將顯示在這裡。",
+  "com_nav_notifications_time_just_now": "剛剛",
+  "com_nav_notifications_time_minutes_ago": "{{0}} 分鐘前",
+  "com_nav_notifications_time_hours_ago": "{{0}} 小時前",
+  "com_nav_notifications_time_yesterday": "昨天",
+  "com_nav_notifications_time_days_ago": "{{0}} 天前"
 }

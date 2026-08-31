@@ -2097,5 +2097,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha چھُ ترقی منٛز — اہم فیصلہٕ اپنِس مقامی KVK سٟتؠ چیٚک کریو۔",
   "com_ui_feedback_tag_response_within_2_hours": "جواب 2 گھنٹن منٛز مِلیو",
   "com_ui_feedback_tag_response_after_2_hours": "جواب 2 گھنٹن پتہٕ مِلیو",
-  "com_nav_log_out_confirm_message": "کیہ توہہ یقینن لاگ آؤٹ کرُن چھو گیوان؟"
+  "com_nav_log_out_confirm_message": "کیہ توہہ یقینن لاگ آؤٹ کرُن چھو گیوان؟",
+  "com_nav_notifications_mark_all_read": "سٲری پؠوٹھمُت نِشان بناوٕو",
+  "com_nav_notifications_new_count": "{{0}} نٔو",
+  "com_nav_notifications_type_info": "معلومات",
+  "com_nav_notifications_type_alert": "الرٹ",
+  "com_nav_notifications_empty_title": "توہہِ چھُو سب کہین پؠوٹھمُت",
+  "com_nav_notifications_empty_subtitle": "نٔوے صلاح، الرٹ تہٕ تازٕہ کاریٕ ییہِ ہِتہِ ظٲہر گژھن۔",
+  "com_nav_notifications_time_just_now": "ہاں گاش",
+  "com_nav_notifications_time_minutes_ago": "{{0}} مِنَٹ بر۫انہٕ",
+  "com_nav_notifications_time_hours_ago": "{{0}} گٲنٹہٕ بر۫انہٕ",
+  "com_nav_notifications_time_yesterday": "رٲث",
+  "com_nav_notifications_time_days_ago": "{{0}} دۄہ بر۫انہٕ"
 }

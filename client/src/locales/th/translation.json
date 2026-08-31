@@ -990,5 +990,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha ยังอยู่ระหว่างการพัฒนา — โปรดตรวจสอบการตัดสินใจที่สำคัญกับ KVK ในพื้นที่ของคุณ",
   "com_ui_feedback_tag_response_within_2_hours": "ได้รับคำตอบภายใน 2 ชั่วโมง",
   "com_ui_feedback_tag_response_after_2_hours": "ได้รับคำตอบหลังจาก 2 ชั่วโมง",
-  "com_nav_log_out_confirm_message": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?"
+  "com_nav_log_out_confirm_message": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?",
+  "com_nav_notifications_mark_all_read": "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด",
+  "com_nav_notifications_new_count": "{{0}} รายการใหม่",
+  "com_nav_notifications_type_info": "ข้อมูล",
+  "com_nav_notifications_type_alert": "แจ้งเตือน",
+  "com_nav_notifications_empty_title": "คุณดูครบทุกอย่างแล้ว",
+  "com_nav_notifications_empty_subtitle": "คำแนะนำ การแจ้งเตือน และการอัปเดตใหม่จะแสดงที่นี่",
+  "com_nav_notifications_time_just_now": "เมื่อสักครู่",
+  "com_nav_notifications_time_minutes_ago": "{{0}} นาทีที่แล้ว",
+  "com_nav_notifications_time_hours_ago": "{{0}} ชม. ที่แล้ว",
+  "com_nav_notifications_time_yesterday": "เมื่อวาน",
+  "com_nav_notifications_time_days_ago": "{{0}} วันที่แล้ว"
 }

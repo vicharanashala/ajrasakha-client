@@ -724,5 +724,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha on vielä kehitteillä — tarkista tärkeät päätökset paikallisesta KVK:sta.",
   "com_ui_feedback_tag_response_within_2_hours": "Vastaus saatu 2 tunnin sisällä",
   "com_ui_feedback_tag_response_after_2_hours": "Vastaus saatu yli 2 tunnin kuluttua",
-  "com_nav_log_out_confirm_message": "Haluatko varmasti kirjautua ulos?"
+  "com_nav_log_out_confirm_message": "Haluatko varmasti kirjautua ulos?",
+  "com_nav_notifications_mark_all_read": "Merkitse kaikki luetuiksi",
+  "com_nav_notifications_new_count": "{{0}} uutta",
+  "com_nav_notifications_type_info": "Info",
+  "com_nav_notifications_type_alert": "Hälytys",
+  "com_nav_notifications_empty_title": "Olet ajan tasalla",
+  "com_nav_notifications_empty_subtitle": "Uudet neuvot, hälytykset ja päivitykset näkyvät täällä.",
+  "com_nav_notifications_time_just_now": "Juuri nyt",
+  "com_nav_notifications_time_minutes_ago": "{{0}} min sitten",
+  "com_nav_notifications_time_hours_ago": "{{0}} t sitten",
+  "com_nav_notifications_time_yesterday": "Eilen",
+  "com_nav_notifications_time_days_ago": "{{0}} pv sitten"
 }

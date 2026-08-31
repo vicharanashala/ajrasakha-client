@@ -2097,5 +2097,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha अखनो विकासाधीन अछि — महत्वपूर्ण निर्णय अपन स्थानीय KVK सँ जाँचि लिअ।",
   "com_ui_feedback_tag_response_within_2_hours": "2 घंटा के भीतर उत्तर भेटल",
   "com_ui_feedback_tag_response_after_2_hours": "2 घंटा के बाद उत्तर भेटल",
-  "com_nav_log_out_confirm_message": "की अहाँ सचमुच लॉग आउट करय चाहैत छी?"
+  "com_nav_log_out_confirm_message": "की अहाँ सचमुच लॉग आउट करय चाहैत छी?",
+  "com_nav_notifications_mark_all_read": "सभटा पढ़ल चिन्हित करू",
+  "com_nav_notifications_new_count": "{{0}} नव",
+  "com_nav_notifications_type_info": "जानकारी",
+  "com_nav_notifications_type_alert": "चेतावनी",
+  "com_nav_notifications_empty_title": "अहाँ सभटा देखि लेलहुँ अछि",
+  "com_nav_notifications_empty_subtitle": "नव सलाह, चेतावनी आ अपडेट एतय देखार होयत।",
+  "com_nav_notifications_time_just_now": "एखने",
+  "com_nav_notifications_time_minutes_ago": "{{0}} मिनट पहिने",
+  "com_nav_notifications_time_hours_ago": "{{0}} घंटा पहिने",
+  "com_nav_notifications_time_yesterday": "काल्हि",
+  "com_nav_notifications_time_days_ago": "{{0}} दिन पहिने"
 }

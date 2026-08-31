@@ -1399,5 +1399,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha er under utvikling — sjekk viktige beslutninger med din lokale KVK.",
   "com_ui_feedback_tag_response_within_2_hours": "Svar mottatt innen 2 timer",
   "com_ui_feedback_tag_response_after_2_hours": "Svar mottatt etter 2 timer",
-  "com_nav_log_out_confirm_message": "Er du sikker på at du vil logge ut?"
+  "com_nav_log_out_confirm_message": "Er du sikker på at du vil logge ut?",
+  "com_nav_notifications_mark_all_read": "Merk alle som lest",
+  "com_nav_notifications_new_count": "{{0}} nye",
+  "com_nav_notifications_type_info": "Info",
+  "com_nav_notifications_type_alert": "Varsel",
+  "com_nav_notifications_empty_title": "Du er à jour",
+  "com_nav_notifications_empty_subtitle": "Nye råd, varsler og oppdateringer vises her.",
+  "com_nav_notifications_time_just_now": "Akkurat nå",
+  "com_nav_notifications_time_minutes_ago": "{{0}} min siden",
+  "com_nav_notifications_time_hours_ago": "{{0}} t siden",
+  "com_nav_notifications_time_yesterday": "I går",
+  "com_nav_notifications_time_days_ago": "{{0}} d siden"
 }

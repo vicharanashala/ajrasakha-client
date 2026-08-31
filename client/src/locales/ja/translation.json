@@ -1465,5 +1465,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakhaは開発中です — 重要な判断は、お近くのKVKにもご確認ください。",
   "com_ui_feedback_tag_response_within_2_hours": "2時間以内の返信",
   "com_ui_feedback_tag_response_after_2_hours": "2時間経過後の返信",
-  "com_nav_log_out_confirm_message": "ログアウトしてもよろしいですか?"
+  "com_nav_log_out_confirm_message": "ログアウトしてもよろしいですか?",
+  "com_nav_notifications_mark_all_read": "すべて既読にする",
+  "com_nav_notifications_new_count": "新着{{0}}件",
+  "com_nav_notifications_type_info": "情報",
+  "com_nav_notifications_type_alert": "警告",
+  "com_nav_notifications_empty_title": "すべて確認済みです",
+  "com_nav_notifications_empty_subtitle": "新しいアドバイス、警告、更新はここに表示されます。",
+  "com_nav_notifications_time_just_now": "たった今",
+  "com_nav_notifications_time_minutes_ago": "{{0}}分前",
+  "com_nav_notifications_time_hours_ago": "{{0}}時間前",
+  "com_nav_notifications_time_yesterday": "昨日",
+  "com_nav_notifications_time_days_ago": "{{0}}日前"
 }

@@ -209,5 +209,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha ჯერ კიდევ დამუშავების პროცესშია — მნიშვნელოვანი გადაწყვეტილებები გადაამოწმეთ თქვენს ადგილობრივ KVK-სთან.",
   "com_ui_feedback_tag_response_within_2_hours": "პასუხი მიღებულია 2 საათში",
   "com_ui_feedback_tag_response_after_2_hours": "პასუხი მიღებულია 2 საათის შემდეგ",
-  "com_nav_log_out_confirm_message": "დარწმუნებული ხართ, რომ გსურთ გამოსვლა?"
+  "com_nav_log_out_confirm_message": "დარწმუნებული ხართ, რომ გსურთ გამოსვლა?",
+  "com_nav_notifications_mark_all_read": "მონიშნეთ ყველა წაკითხულად",
+  "com_nav_notifications_new_count": "{{0}} ახალი",
+  "com_nav_notifications_type_info": "ინფო",
+  "com_nav_notifications_type_alert": "გაფრთხილება",
+  "com_nav_notifications_empty_title": "ყველაფერი განახლებულია",
+  "com_nav_notifications_empty_subtitle": "ახალი რჩევები, გაფრთხილებები და განახლებები აქ გამოჩნდება.",
+  "com_nav_notifications_time_just_now": "ახლახან",
+  "com_nav_notifications_time_minutes_ago": "{{0}} წუთის წინ",
+  "com_nav_notifications_time_hours_ago": "{{0}} საათის წინ",
+  "com_nav_notifications_time_yesterday": "გუშინ",
+  "com_nav_notifications_time_days_ago": "{{0}} დღის წინ"
 }

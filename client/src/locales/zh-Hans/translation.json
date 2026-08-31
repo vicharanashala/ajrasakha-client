@@ -1460,5 +1460,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha 仍在开发中——重要决策请与当地 KVK 核实。",
   "com_ui_feedback_tag_response_within_2_hours": "2小时内收到回复",
   "com_ui_feedback_tag_response_after_2_hours": "2小时后收到回复",
-  "com_nav_log_out_confirm_message": "确定要退出登录吗？"
+  "com_nav_log_out_confirm_message": "确定要退出登录吗？",
+  "com_nav_notifications_mark_all_read": "全部标记为已读",
+  "com_nav_notifications_new_count": "{{0}} 条新消息",
+  "com_nav_notifications_type_info": "信息",
+  "com_nav_notifications_type_alert": "警报",
+  "com_nav_notifications_empty_title": "您已查看全部内容",
+  "com_nav_notifications_empty_subtitle": "新的建议、警报和更新将显示在这里。",
+  "com_nav_notifications_time_just_now": "刚刚",
+  "com_nav_notifications_time_minutes_ago": "{{0}} 分钟前",
+  "com_nav_notifications_time_hours_ago": "{{0}} 小时前",
+  "com_nav_notifications_time_yesterday": "昨天",
+  "com_nav_notifications_time_days_ago": "{{0}} 天前"
 }

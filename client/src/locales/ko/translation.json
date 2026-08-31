@@ -1227,5 +1227,16 @@
   "com_ui_ajrasakha_tip_in_development": "AjraSakha는 개발 중입니다 — 중요한 결정은 현지 KVK에서 반드시 확인하세요.",
   "com_ui_feedback_tag_response_within_2_hours": "2시간 이내 응답",
   "com_ui_feedback_tag_response_after_2_hours": "2시간 이후 응답",
-  "com_nav_log_out_confirm_message": "정말 로그아웃 하시겠습니까?"
+  "com_nav_log_out_confirm_message": "정말 로그아웃 하시겠습니까?",
+  "com_nav_notifications_mark_all_read": "모두 읽음으로 표시",
+  "com_nav_notifications_new_count": "신규 {{0}}개",
+  "com_nav_notifications_type_info": "정보",
+  "com_nav_notifications_type_alert": "경고",
+  "com_nav_notifications_empty_title": "모두 확인했습니다",
+  "com_nav_notifications_empty_subtitle": "새로운 조언, 경고 및 업데이트가 여기에 표시됩니다.",
+  "com_nav_notifications_time_just_now": "방금",
+  "com_nav_notifications_time_minutes_ago": "{{0}}분 전",
+  "com_nav_notifications_time_hours_ago": "{{0}}시간 전",
+  "com_nav_notifications_time_yesterday": "어제",
+  "com_nav_notifications_time_days_ago": "{{0}}일 전"
 }
