@@ -110,8 +110,8 @@ html {
      cast rather than as elevation when it carries that tint. */
   --surface-overlay: var(--white);
   --surface-dialog: var(--surface-overlay);
-  --surface-submit: var(--accent-green-light);
-  --surface-submit-hover: var(--accent-green-dark);
+  --surface-submit: var(--accent-green-dark);
+  --surface-submit-hover: var(--accent-green-light);
   --surface-destructive: var(--red-700);
   --surface-destructive-hover: var(--red-800);
   --surface-chat: var(--lg-50);
