@@ -24,7 +24,50 @@ type FarmerLocationForm = Partial<IFarmerProfile> & {
   age?: string;
   yearsOfExperience?: string;
   numberOfSmartphones?: string;
+  customState?: string;
   customDistrict?: string;
+  customBlock?: string;
+  customVillage?: string;
+  customKVK?: string;
+};
+
+/** Every cascading location select (state/district/block/village/KVK) offers an "Other" choice
+ *  whose free-text fallback lives in one of these paired fields — mirrors the full farmer
+ *  profile registration form so a location missing from the fetched list can still be entered. */
+const CUSTOM_FIELD_MAP: Record<
+  string,
+  { customField: string; labelKey: string; placeholderKey: string; validationKey: string }
+> = {
+  state: {
+    customField: 'customState',
+    labelKey: 'com_farmer_label_custom_state',
+    placeholderKey: 'com_farmer_placeholder_custom_state',
+    validationKey: 'com_farmer_validation_custom_state_required',
+  },
+  district: {
+    customField: 'customDistrict',
+    labelKey: 'com_farmer_label_custom_district',
+    placeholderKey: 'com_farmer_placeholder_custom_district',
+    validationKey: 'com_farmer_validation_custom_district_required',
+  },
+  blockName: {
+    customField: 'customBlock',
+    labelKey: 'com_farmer_label_custom_block',
+    placeholderKey: 'com_farmer_placeholder_custom_block',
+    validationKey: 'com_farmer_validation_custom_block_required',
+  },
+  villageName: {
+    customField: 'customVillage',
+    labelKey: 'com_farmer_label_custom_village',
+    placeholderKey: 'com_farmer_placeholder_custom_village',
+    validationKey: 'com_farmer_validation_custom_village_required',
+  },
+  nearestKVK: {
+    customField: 'customKVK',
+    labelKey: 'com_farmer_label_custom_kvk',
+    placeholderKey: 'com_farmer_placeholder_custom_kvk',
+    validationKey: 'com_farmer_validation_custom_kvk_required',
+  },
 };
 
 const FarmerLocationModal = ({
@@ -41,6 +84,7 @@ const FarmerLocationModal = ({
   initialData?: Partial<IFarmerProfile>;
 }) => {
   const localize = useLocalize();
+  const otherOption = localize('com_farmer_option_other');
   const [submitError, setSubmitError] = useState('');
   // Only fetch states/districts/kvks when the user opens the dropdown, not on mount.
   const [statesQueryTriggered, setStatesQueryTriggered] = useState(false);
@@ -84,8 +128,12 @@ const FarmerLocationModal = ({
       'landhold',
       'awarenessOfKCC',
       'usesAgriApps',
+      'customState',
       'customDistrict',
+      'customBlock',
+      'customVillage',
       'nearestKVK',
+      'customKVK',
     ];
 
     const fieldsToUnregister = allFields.filter((f) => !effectiveMissingFields.includes(f as string));
@@ -100,6 +148,8 @@ const FarmerLocationModal = ({
   const selectedState = watchedState;
   const watchedDistrict = watch('district') || initialData?.district;
   const selectedDistrict = watchedDistrict;
+  const watchedBlock = watch('blockName') || initialData?.blockName;
+  const selectedBlock = watchedBlock;
   const selectedCropsRaw = watch('cropsCultivated');
   const selectedCropsList = selectedCropsRaw
     ? String(selectedCropsRaw)
@@ -150,9 +200,14 @@ const FarmerLocationModal = ({
     }
   }, [statesQueryTriggered, refetchStates]);
 
-  const stateOptions = statesQueryTriggered && statesList.length > 0
-    ? [...statesList.map((s) => s.name), localize('com_farmer_option_other')]
-    : [];
+  // "Other" always stays selectable once the dropdown has been opened, even if the states
+  // API call fails or comes back empty — otherwise a location-data outage locks the whole
+  // form (state gates district, which gates block/village/KVK).
+  const stateOptions = !statesQueryTriggered
+    ? []
+    : statesList.length > 0
+      ? [...statesList.map((s) => s.name), otherOption]
+      : [otherOption];
 
   const stateObj = statesList.find((s) => s.name === selectedState);
   const { data: districtsList = [] } = useQuery<{ code: number | string; name: string }[]>({
@@ -174,10 +229,61 @@ const FarmerLocationModal = ({
   });
 
   const districtOptions = districtsList.length > 0
-    ? [...districtsList.map((d) => d.name), localize('com_farmer_option_other')]
-    : [localize('com_farmer_option_other')];
+    ? [...districtsList.map((d) => d.name), otherOption]
+    : [otherOption];
 
   const distObj = districtsList.find((d) => d.name === selectedDistrict);
+
+  const { data: blocksList = [] } = useQuery<{ code: number | string; name: string }[]>({
+    queryKey: ['subdistricts', distObj?.code, selectedDistrict],
+    queryFn: async () => {
+      if (distObj?.code === undefined) {
+        return [];
+      }
+      try {
+        const data = await dataService.getLocationBlocks(baseUrl, distObj.code);
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        console.error('Failed to fetch subdistricts', error);
+        return [];
+      }
+    },
+    enabled: !!selectedDistrict && selectedDistrict !== otherOption,
+    staleTime: Infinity,
+  });
+
+  const blockOptions = !selectedDistrict
+    ? []
+    : selectedDistrict === otherOption
+      ? [otherOption]
+      : [...blocksList.map((b) => b.name), otherOption];
+
+  const blockObj = blocksList.find((b) => b.name === selectedBlock);
+
+  const { data: villagesList = [] } = useQuery<{ code: number | string; name: string }[]>({
+    queryKey: ['villages', blockObj?.code, selectedBlock],
+    queryFn: async () => {
+      if (blockObj?.code === undefined) {
+        return [];
+      }
+      try {
+        const data = await dataService.getLocationVillages(baseUrl, blockObj.code);
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        console.error('Failed to fetch villages', error);
+        return [];
+      }
+    },
+    enabled: !!selectedBlock && selectedBlock !== otherOption,
+    staleTime: Infinity,
+  });
+
+  const villageOptions = !selectedBlock
+    ? []
+    : selectedBlock === otherOption
+      ? [otherOption]
+      : [...villagesList.map((v) => v.name), otherOption];
+
   const { data: kvksList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['kvks', distObj?.code, selectedDistrict],
     queryFn: async () => {
@@ -200,22 +306,61 @@ const FarmerLocationModal = ({
     if (!selectedDistrict) {
       return [];
     }
-    return kvksList.map((k) => k.name);
-  }, [selectedDistrict, kvksList]);
+    if (selectedDistrict === otherOption) {
+      return [otherOption];
+    }
+    return [...kvksList.map((k) => k.name), otherOption];
+  }, [selectedDistrict, kvksList, otherOption]);
 
   const handleStateChange = (val: string) => {
     setValue('state', val, { shouldValidate: true });
+    if (val !== otherOption) {
+      setValue('customState' as any, '', { shouldValidate: false });
+    }
     setValue('district', '', { shouldValidate: false });
     setValue('customDistrict', '', { shouldValidate: false });
+    setValue('blockName' as any, '', { shouldValidate: false });
+    setValue('customBlock' as any, '', { shouldValidate: false });
+    setValue('villageName' as any, '', { shouldValidate: false });
+    setValue('customVillage' as any, '', { shouldValidate: false });
     setValue('nearestKVK' as any, '', { shouldValidate: false });
+    setValue('customKVK' as any, '', { shouldValidate: false });
   };
 
   const handleDistrictChange = (val: string) => {
     setValue('district', val, { shouldValidate: true });
-    if (val !== localize('com_farmer_option_other')) {
+    if (val !== otherOption) {
       setValue('customDistrict', '', { shouldValidate: false });
     }
+    setValue('blockName' as any, '', { shouldValidate: false });
+    setValue('customBlock' as any, '', { shouldValidate: false });
+    setValue('villageName' as any, '', { shouldValidate: false });
+    setValue('customVillage' as any, '', { shouldValidate: false });
     setValue('nearestKVK' as any, '', { shouldValidate: false });
+    setValue('customKVK' as any, '', { shouldValidate: false });
+  };
+
+  const handleBlockChange = (val: string) => {
+    setValue('blockName' as any, val, { shouldValidate: true });
+    if (val !== otherOption) {
+      setValue('customBlock' as any, '', { shouldValidate: false });
+    }
+    setValue('villageName' as any, '', { shouldValidate: false });
+    setValue('customVillage' as any, '', { shouldValidate: false });
+  };
+
+  const handleVillageChange = (val: string) => {
+    setValue('villageName' as any, val, { shouldValidate: true });
+    if (val !== otherOption) {
+      setValue('customVillage' as any, '', { shouldValidate: false });
+    }
+  };
+
+  const handleKVKChange = (val: string) => {
+    setValue('nearestKVK' as any, val, { shouldValidate: true });
+    if (val !== otherOption) {
+      setValue('customKVK' as any, '', { shouldValidate: false });
+    }
   };
 
   const { isLocating, locationError, getLocation } = useGeolocation({
@@ -261,11 +406,14 @@ const FarmerLocationModal = ({
             field as keyof FarmerLocationForm
           ] === 'yes') as any;
         }
-      } else if (field === 'district') {
-        profilePayload.district =
-          data.district === localize('com_farmer_option_other')
-            ? data.customDistrict
-            : data.district;
+      } else if (CUSTOM_FIELD_MAP[field]) {
+        // state / district / blockName / villageName / nearestKVK: resolve to the typed
+        // fallback when "Other" was chosen, otherwise use the selected option as-is.
+        const rawValue = data[field as keyof FarmerLocationForm];
+        const customValue = data[CUSTOM_FIELD_MAP[field].customField as keyof FarmerLocationForm];
+        profilePayload[field as keyof IFarmerProfile] = (
+          rawValue === otherOption ? customValue : rawValue
+        ) as any;
       } else {
         if (data[field as keyof FarmerLocationForm]) {
           profilePayload[field as keyof IFarmerProfile] = data[
@@ -340,13 +488,19 @@ const FarmerLocationModal = ({
     },
     villageName: {
       label: localize('com_farmer_label_village_name'),
-      type: 'text',
-      placeholder: localize('com_farmer_placeholder_village_example'),
+      type: 'searchable-select',
+      options: villageOptions,
+      selectPlaceholder: selectedBlock
+        ? localize('com_farmer_placeholder_select_village')
+        : localize('com_farmer_placeholder_select_block_first'),
     },
     blockName: {
       label: localize('com_farmer_label_block_name'),
-      type: 'text',
-      placeholder: localize('com_farmer_placeholder_block_example'),
+      type: 'searchable-select',
+      options: blockOptions,
+      selectPlaceholder: selectedDistrict
+        ? localize('com_farmer_placeholder_select_block')
+        : localize('com_farmer_placeholder_select_district_first'),
     },
     phoneNo: {
       label: localize('com_farmer_label_phone_number'),
@@ -502,15 +656,15 @@ const FarmerLocationModal = ({
       return hasLocation ? [] : [getFieldLabel(field)];
     }
 
-    if (
-      field === 'district' &&
-      String(watch('district' as any) ?? '') === localize('com_farmer_option_other')
-    ) {
-      const districtMissing = !watch('district' as any);
-      const customDistrictMissing = !String(watch('customDistrict' as any) ?? '').trim();
-      const districtInvalid = !!errors.district || !!errors.customDistrict;
-      return districtMissing || customDistrictMissing || districtInvalid
-        ? [getFieldLabel('district'), localize('com_farmer_label_custom_district')]
+    const customConfig = CUSTOM_FIELD_MAP[field];
+    if (customConfig && String(watch(field as any) ?? '') === otherOption) {
+      const parentMissing = !watch(field as any);
+      const customMissing = !String(watch(customConfig.customField as any) ?? '').trim();
+      const isInvalid =
+        !!errors[field as keyof FarmerLocationForm] ||
+        !!errors[customConfig.customField as keyof FarmerLocationForm];
+      return parentMissing || customMissing || isInvalid
+        ? [getFieldLabel(field), localize(customConfig.labelKey as any)]
         : [];
     }
 
@@ -585,12 +739,23 @@ const FarmerLocationModal = ({
                             ? handleStateChange
                             : field === 'district'
                               ? handleDistrictChange
-                              : controllerField.onChange
+                              : field === 'blockName'
+                                ? handleBlockChange
+                                : field === 'villageName'
+                                  ? handleVillageChange
+                                  : field === 'nearestKVK'
+                                    ? handleKVKChange
+                                    : controllerField.onChange
                         }
                         placeholder={
                           config.selectPlaceholder ?? `${localize('com_ui_select')} ${config.label}`
                         }
-                        disabled={field === 'district' && !selectedState}
+                        disabled={
+                          (field === 'district' && !selectedState) ||
+                          (field === 'blockName' && !selectedDistrict) ||
+                          (field === 'villageName' && !selectedBlock) ||
+                          (field === 'nearestKVK' && !selectedDistrict)
+                        }
                         onOpen={field === 'state' ? triggerStatesQuery : undefined}
                       />
                     )}
@@ -600,28 +765,32 @@ const FarmerLocationModal = ({
                       {(errors[field as keyof FarmerLocationForm] as any)?.message}
                     </p>
                   )}
-                  {/* Custom District Input */}
-                  {field === 'district' &&
-                    selectedDistrict === localize('com_farmer_option_other') && (
-                      <div className="mt-4">
-                        <Label htmlFor="customDistrict">
-                          {localize('com_farmer_label_custom_district')}
-                        </Label>
-                        <Input
-                          id="customDistrict"
-                          placeholder={localize('com_farmer_placeholder_custom_district')}
-                          className={inputClass}
-                          {...register('customDistrict', {
-                            required: localize('com_farmer_validation_custom_district_required'),
-                          })}
-                        />
-                        {errors.customDistrict && (
-                          <p className="mt-1 text-xs text-red-500">
-                            {errors.customDistrict.message}
-                          </p>
-                        )}
-                      </div>
-                    )}
+                  {/* "Other" fallback — a free-text field for state/district/block/village/KVK
+                      when the chosen location isn't in the fetched list. */}
+                  {CUSTOM_FIELD_MAP[field] && watch(field as any) === otherOption && (
+                    <div className="mt-4">
+                      <Label htmlFor={CUSTOM_FIELD_MAP[field].customField}>
+                        {localize(CUSTOM_FIELD_MAP[field].labelKey as any)}
+                      </Label>
+                      <Input
+                        id={CUSTOM_FIELD_MAP[field].customField}
+                        placeholder={localize(CUSTOM_FIELD_MAP[field].placeholderKey as any)}
+                        className={inputClass}
+                        {...register(CUSTOM_FIELD_MAP[field].customField as any, {
+                          required: localize(CUSTOM_FIELD_MAP[field].validationKey as any),
+                        })}
+                      />
+                      {errors[CUSTOM_FIELD_MAP[field].customField as keyof FarmerLocationForm] && (
+                        <p className="mt-1 text-xs text-red-500">
+                          {
+                            (errors[
+                              CUSTOM_FIELD_MAP[field].customField as keyof FarmerLocationForm
+                            ] as any)?.message
+                          }
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             }
