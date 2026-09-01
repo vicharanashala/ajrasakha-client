@@ -1476,5 +1476,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}}分前",
   "com_nav_notifications_time_hours_ago": "{{0}}時間前",
   "com_nav_notifications_time_yesterday": "昨日",
-  "com_nav_notifications_time_days_ago": "{{0}}日前"
+  "com_nav_notifications_time_days_ago": "{{0}}日前",
+  "com_ui_example_question_state_note": "プロフィールから州情報を取得しました"
 }

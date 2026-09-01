@@ -1035,5 +1035,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} min fa",
   "com_nav_notifications_time_hours_ago": "{{0}} h fa",
   "com_nav_notifications_time_yesterday": "Ieri",
-  "com_nav_notifications_time_days_ago": "{{0}} g fa"
+  "com_nav_notifications_time_days_ago": "{{0}} g fa",
+  "com_ui_example_question_state_note": "Stato recuperato dal tuo profilo"
 }

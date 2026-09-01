@@ -526,5 +526,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} phút trước",
   "com_nav_notifications_time_hours_ago": "{{0}} giờ trước",
   "com_nav_notifications_time_yesterday": "Hôm qua",
-  "com_nav_notifications_time_days_ago": "{{0}} ngày trước"
+  "com_nav_notifications_time_days_ago": "{{0}} ngày trước",
+  "com_ui_example_question_state_note": "Tiểu bang được lấy từ hồ sơ của bạn"
 }

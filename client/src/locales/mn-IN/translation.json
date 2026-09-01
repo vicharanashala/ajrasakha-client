@@ -2108,5 +2108,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} мин өмнө",
   "com_nav_notifications_time_hours_ago": "{{0}} цаг өмнө",
   "com_nav_notifications_time_yesterday": "Өчигдөр",
-  "com_nav_notifications_time_days_ago": "{{0}} өдрийн өмнө"
+  "com_nav_notifications_time_days_ago": "{{0}} өдрийн өмнө",
+  "com_ui_example_question_state_note": "নাংগী প্রফাইলদগী স্টেইট লৌখ্রে"
 }

@@ -2108,5 +2108,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} মিনিট আগত",
   "com_nav_notifications_time_hours_ago": "{{0}} ঘণ্টা আগত",
   "com_nav_notifications_time_yesterday": "যোৱাকালি",
-  "com_nav_notifications_time_days_ago": "{{0}} দিন আগত"
+  "com_nav_notifications_time_days_ago": "{{0}} দিন আগত",
+  "com_ui_example_question_state_note": "আপোনাৰ প্ৰ'ফাইলৰ পৰা ৰাজ্য অনা হৈছে"
 }

@@ -1156,5 +1156,6 @@
   "com_nav_notifications_time_minutes_ago": "há {{0}} min",
   "com_nav_notifications_time_hours_ago": "há {{0}} h",
   "com_nav_notifications_time_yesterday": "Ontem",
-  "com_nav_notifications_time_days_ago": "há {{0}} d"
+  "com_nav_notifications_time_days_ago": "há {{0}} d",
+  "com_ui_example_question_state_note": "Estado obtido do seu perfil"
 }

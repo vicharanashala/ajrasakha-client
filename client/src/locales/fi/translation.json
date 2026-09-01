@@ -735,5 +735,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} min sitten",
   "com_nav_notifications_time_hours_ago": "{{0}} t sitten",
   "com_nav_notifications_time_yesterday": "Eilen",
-  "com_nav_notifications_time_days_ago": "{{0}} pv sitten"
+  "com_nav_notifications_time_days_ago": "{{0}} pv sitten",
+  "com_ui_example_question_state_note": "Osavaltio haettu profiilistasi"
 }

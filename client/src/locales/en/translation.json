@@ -989,6 +989,7 @@
   "com_ui_error_unexpected": "Oops! Something Unexpected Occurred",
   "com_ui_error_updating_preferences": "Error updating preferences",
   "com_ui_everyone_permission_level": "Everyone's permission level",
+  "com_ui_example_question_state_note": "State fetched from your profile",
   "com_ui_examples": "Examples",
   "com_ui_expand": "Expand",
   "com_ui_expand_chat": "Expand Chat",

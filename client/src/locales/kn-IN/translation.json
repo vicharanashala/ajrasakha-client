@@ -2109,5 +2109,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} ನಿಮಿಷಗಳ ಹಿಂದೆ",
   "com_nav_notifications_time_hours_ago": "{{0}} ಗಂಟೆಗಳ ಹಿಂದೆ",
   "com_nav_notifications_time_yesterday": "ನಿನ್ನೆ",
-  "com_nav_notifications_time_days_ago": "{{0}} ದಿನಗಳ ಹಿಂದೆ"
+  "com_nav_notifications_time_days_ago": "{{0}} ದಿನಗಳ ಹಿಂದೆ",
+  "com_ui_example_question_state_note": "ನಿಮ್ಮ ಪ್ರೊಫೈಲ್‌ನಿಂದ ರಾಜ್ಯವನ್ನು ಪಡೆಯಲಾಗಿದೆ"
 }

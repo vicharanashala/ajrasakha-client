@@ -2109,5 +2109,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} ମି ପୂର୍ବେ",
   "com_nav_notifications_time_hours_ago": "{{0}} ଘ ପୂର୍ବେ",
   "com_nav_notifications_time_yesterday": "ଗତକାଲି",
-  "com_nav_notifications_time_days_ago": "{{0}} ଦିନ ପୂର୍ବେ"
+  "com_nav_notifications_time_days_ago": "{{0}} ଦିନ ପୂର୍ବେ",
+  "com_ui_example_question_state_note": "ଆପଣଙ୍କ ପ୍ରୋଫାଇଲରୁ ରାଜ୍ୟ ଆଣାଗଲା"
 }

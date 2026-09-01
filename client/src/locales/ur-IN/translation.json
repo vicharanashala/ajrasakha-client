@@ -2109,5 +2109,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} منٹ پہلے",
   "com_nav_notifications_time_hours_ago": "{{0}} گھنٹے پہلے",
   "com_nav_notifications_time_yesterday": "کل",
-  "com_nav_notifications_time_days_ago": "{{0}} دن پہلے"
+  "com_nav_notifications_time_days_ago": "{{0}} دن پہلے",
+  "com_ui_example_question_state_note": "آپ کی پروفائل سے ریاست حاصل کی گئی"
 }

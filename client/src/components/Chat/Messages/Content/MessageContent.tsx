@@ -95,6 +95,7 @@ export const ErrorMessage = ({
 const DisplayMessage = ({ text, isCreatedByUser, message, showCursor }: TDisplayProps) => {
   const { isSubmitting = false, isLatestMessage = false } = useMessageContext();
   const enableUserMsgMarkdown = useRecoilValue(store.enableUserMsgMarkdown);
+  const localize = useLocalize();
 
   const showCursorState = useMemo(
     () => showCursor === true && isSubmitting,
@@ -114,7 +115,7 @@ const DisplayMessage = ({ text, isCreatedByUser, message, showCursor }: TDisplay
   // Frontend-only display flag set at send time (see useSubmitMessage.ts / useChatFunctions.ts)
   // — never part of `TMessage` in librechat-data-provider and never sent to or stored by the
   // backend, so this note only shows for the message just sent this session; it does not
-  // survive a reload of the conversation from the server. Plain string for now, not localized.
+  // survive a reload of the conversation from the server.
   const isExampleQuestion = isCreatedByUser && !!(message as { isExampleQuestion?: boolean })?.isExampleQuestion;
 
   return (
@@ -133,7 +134,7 @@ const DisplayMessage = ({ text, isCreatedByUser, message, showCursor }: TDisplay
       {isExampleQuestion && (
         <p className="mt-1.5 flex items-center gap-1 text-xs text-text-tertiary opacity-80">
           <Info className="size-3 shrink-0" aria-hidden="true" />
-          State fetched from your profile
+          {localize('com_ui_example_question_state_note')}
         </p>
       )}
     </Container>

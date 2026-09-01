@@ -1471,5 +1471,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} 分钟前",
   "com_nav_notifications_time_hours_ago": "{{0}} 小时前",
   "com_nav_notifications_time_yesterday": "昨天",
-  "com_nav_notifications_time_days_ago": "{{0}} 天前"
+  "com_nav_notifications_time_days_ago": "{{0}} 天前",
+  "com_ui_example_question_state_note": "已从您的资料中获取所在州"
 }

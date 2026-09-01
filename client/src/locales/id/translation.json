@@ -430,5 +430,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} mnt lalu",
   "com_nav_notifications_time_hours_ago": "{{0}} jam lalu",
   "com_nav_notifications_time_yesterday": "Kemarin",
-  "com_nav_notifications_time_days_ago": "{{0}} hr lalu"
+  "com_nav_notifications_time_days_ago": "{{0}} hr lalu",
+  "com_ui_example_question_state_note": "Provinsi diambil dari profil Anda"
 }

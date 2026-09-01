@@ -2109,5 +2109,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} ਮਿੰਟ ਪਹਿਲਾਂ",
   "com_nav_notifications_time_hours_ago": "{{0}} ਘੰਟੇ ਪਹਿਲਾਂ",
   "com_nav_notifications_time_yesterday": "ਕੱਲ੍ਹ",
-  "com_nav_notifications_time_days_ago": "{{0}} ਦਿਨ ਪਹਿਲਾਂ"
+  "com_nav_notifications_time_days_ago": "{{0}} ਦਿਨ ਪਹਿਲਾਂ",
+  "com_ui_example_question_state_note": "ਤੁਹਾਡੀ ਪ੍ਰੋਫਾਈਲ ਤੋਂ ਰਾਜ ਪ੍ਰਾਪਤ ਕੀਤਾ ਗਿਆ"
 }

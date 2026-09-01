@@ -854,5 +854,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} dk önce",
   "com_nav_notifications_time_hours_ago": "{{0}} sa önce",
   "com_nav_notifications_time_yesterday": "Dün",
-  "com_nav_notifications_time_days_ago": "{{0}} gün önce"
+  "com_nav_notifications_time_days_ago": "{{0}} gün önce",
+  "com_ui_example_question_state_note": "Eyalet profilinizden alındı"
 }

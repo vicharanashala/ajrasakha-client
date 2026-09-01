@@ -1451,5 +1451,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} мин назад",
   "com_nav_notifications_time_hours_ago": "{{0}} ч назад",
   "com_nav_notifications_time_yesterday": "Вчера",
-  "com_nav_notifications_time_days_ago": "{{0}} дн назад"
+  "com_nav_notifications_time_days_ago": "{{0}} дн назад",
+  "com_ui_example_question_state_note": "Штат получен из вашего профиля"
 }

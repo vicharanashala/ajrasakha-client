@@ -1055,5 +1055,6 @@
   "com_nav_notifications_time_minutes_ago": "for {{0}} min. siden",
   "com_nav_notifications_time_hours_ago": "for {{0}} t siden",
   "com_nav_notifications_time_yesterday": "I går",
-  "com_nav_notifications_time_days_ago": "for {{0}} d. siden"
+  "com_nav_notifications_time_days_ago": "for {{0}} d. siden",
+  "com_ui_example_question_state_note": "Delstat hentet fra din profil"
 }

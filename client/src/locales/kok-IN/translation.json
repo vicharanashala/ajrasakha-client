@@ -2108,5 +2108,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} मिनटां आदीं",
   "com_nav_notifications_time_hours_ago": "{{0}} वरां आदीं",
   "com_nav_notifications_time_yesterday": "काल",
-  "com_nav_notifications_time_days_ago": "{{0}} दीस आदीं"
+  "com_nav_notifications_time_days_ago": "{{0}} दीस आदीं",
+  "com_ui_example_question_state_note": "तुमच्या प्रोफायलावेल्यान राज्य मेळयलां"
 }

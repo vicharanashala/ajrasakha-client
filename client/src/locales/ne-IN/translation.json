@@ -2108,5 +2108,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} मि. अघि",
   "com_nav_notifications_time_hours_ago": "{{0}} घ. अघि",
   "com_nav_notifications_time_yesterday": "हिजो",
-  "com_nav_notifications_time_days_ago": "{{0}} दिन अघि"
+  "com_nav_notifications_time_days_ago": "{{0}} दिन अघि",
+  "com_ui_example_question_state_note": "तपाईंको प्रोफाइलबाट राज्य प्राप्त गरियो"
 }

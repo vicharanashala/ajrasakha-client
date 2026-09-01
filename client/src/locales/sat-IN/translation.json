@@ -2108,5 +2108,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} ᱢᱤᱱᱤᱴ ᱞᱟᱦᱟ",
   "com_nav_notifications_time_hours_ago": "{{0}} ᱴᱟᱶᱤ ᱞᱟᱦᱟ",
   "com_nav_notifications_time_yesterday": "ᱦᱚᱞᱟ",
-  "com_nav_notifications_time_days_ago": "{{0}} ᱫᱤᱱ ᱞᱟᱦᱟ"
+  "com_nav_notifications_time_days_ago": "{{0}} ᱫᱤᱱ ᱞᱟᱦᱟ",
+  "com_ui_example_question_state_note": "ᱟᱢᱟᱜ ᱯᱨᱚᱯᱷᱟᱭᱤᱞ ᱠᱷᱚᱱ ᱨᱟᱡᱭᱚ ᱮᱢ ᱟᱠᱟᱱᱟ"
 }

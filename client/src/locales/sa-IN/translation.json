@@ -2108,5 +2108,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} मि. पूर्वम्",
   "com_nav_notifications_time_hours_ago": "{{0}} घं. पूर्वम्",
   "com_nav_notifications_time_yesterday": "ह्यः",
-  "com_nav_notifications_time_days_ago": "{{0}} दि. पूर्वम्"
+  "com_nav_notifications_time_days_ago": "{{0}} दि. पूर्वम्",
+  "com_ui_example_question_state_note": "भवत: परिचयपत्रात् राज्यं प्राप्तम्"
 }

@@ -348,5 +348,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} րոպե առաջ",
   "com_nav_notifications_time_hours_ago": "{{0}} ժամ առաջ",
   "com_nav_notifications_time_yesterday": "Երեկ",
-  "com_nav_notifications_time_days_ago": "{{0}} օր առաջ"
+  "com_nav_notifications_time_days_ago": "{{0}} օր առաջ",
+  "com_ui_example_question_state_note": "Նահանգը վերցվել է ձեր անձնական էջից"
 }

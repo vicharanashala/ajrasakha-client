@@ -960,5 +960,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} perce",
   "com_nav_notifications_time_hours_ago": "{{0}} órája",
   "com_nav_notifications_time_yesterday": "Tegnap",
-  "com_nav_notifications_time_days_ago": "{{0}} napja"
+  "com_nav_notifications_time_days_ago": "{{0}} napja",
+  "com_ui_example_question_state_note": "Az állam a profiljából lett lekérve"
 }

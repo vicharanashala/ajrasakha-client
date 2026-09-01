@@ -1411,5 +1411,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} хв тому",
   "com_nav_notifications_time_hours_ago": "{{0}} год тому",
   "com_nav_notifications_time_yesterday": "Вчора",
-  "com_nav_notifications_time_days_ago": "{{0}} дн тому"
+  "com_nav_notifications_time_days_ago": "{{0}} дн тому",
+  "com_ui_example_question_state_note": "Область отримано з вашого профілю"
 }

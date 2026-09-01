@@ -2109,5 +2109,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} મિનિટ પહેલાં",
   "com_nav_notifications_time_hours_ago": "{{0}} કલાક પહેલાં",
   "com_nav_notifications_time_yesterday": "ગઈકાલે",
-  "com_nav_notifications_time_days_ago": "{{0}} દિવસ પહેલાં"
+  "com_nav_notifications_time_days_ago": "{{0}} દિવસ પહેલાં",
+  "com_ui_example_question_state_note": "તમારી પ્રોફાઇલમાંથી રાજ્ય મેળવવામાં આવ્યું"
 }

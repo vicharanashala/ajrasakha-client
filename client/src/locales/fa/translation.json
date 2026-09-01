@@ -960,5 +960,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} دقیقه پیش",
   "com_nav_notifications_time_hours_ago": "{{0}} ساعت پیش",
   "com_nav_notifications_time_yesterday": "دیروز",
-  "com_nav_notifications_time_days_ago": "{{0}} روز پیش"
+  "com_nav_notifications_time_days_ago": "{{0}} روز پیش",
+  "com_ui_example_question_state_note": "استان از پروفایل شما دریافت شد"
 }

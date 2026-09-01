@@ -861,5 +861,6 @@
   "com_nav_notifications_time_minutes_ago": "{{0}} min geleden",
   "com_nav_notifications_time_hours_ago": "{{0}} u geleden",
   "com_nav_notifications_time_yesterday": "Gisteren",
-  "com_nav_notifications_time_days_ago": "{{0}} d geleden"
+  "com_nav_notifications_time_days_ago": "{{0}} d geleden",
+  "com_ui_example_question_state_note": "Staat opgehaald uit je profiel"
 }
