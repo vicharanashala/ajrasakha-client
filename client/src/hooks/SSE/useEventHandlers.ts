@@ -52,6 +52,24 @@ type TSyncData = {
   conversationId: string;
 };
 
+/**
+ * Re-attaches the frontend-only `isExampleQuestion` display flag (see useSubmitMessage.ts /
+ * useChatFunctions.ts) to a user message pulled off `submission.userMessage` before it's written
+ * back into the local messages array. `submission.userMessage` itself is deliberately kept clean
+ * of this flag (it's spread directly into the outgoing request payload in createPayload.ts), so
+ * every handler here that rebuilds the messages array from it needs to re-apply the flag from
+ * `submission.isExampleQuestion` instead — otherwise the in-bubble disclaimer in
+ * MessageContent.tsx flashes briefly (from ask()'s initial optimistic render) and then vanishes
+ * as soon as the first SSE event overwrites the array with the clean message.
+ */
+const withExampleQuestionFlag = (
+  userMessage: TMessage,
+  submission: { isExampleQuestion?: boolean },
+): TMessage =>
+  submission.isExampleQuestion
+    ? ({ ...userMessage, isExampleQuestion: true } as TMessage)
+    : userMessage;
+
 export type EventHandlerParams = {
   isAddedRequest?: boolean;
   setCompleted: React.Dispatch<React.SetStateAction<Set<unknown>>>;
@@ -220,7 +238,7 @@ export default function useEventHandlers({
       } else {
         setMessages([
           ...messages,
-          userMessage,
+          withExampleQuestionFlag(userMessage, submission),
           {
             ...initialResponse,
             text,
@@ -354,7 +372,7 @@ export default function useEventHandlers({
       if (isRegenerate) {
         setMessages([...messages, initialResponse]);
       } else {
-        setMessages([...messages, userMessage, initialResponse]);
+        setMessages([...messages, withExampleQuestionFlag(userMessage, submission), initialResponse]);
       }
 
       const { conversationId, parentMessageId } = userMessage;
@@ -609,7 +627,11 @@ export default function useEventHandlers({
         userMessage.conversationId ?? submission.conversation?.conversationId ?? '';
 
       const setErrorMessages = (convoId: string, errorMessage: TMessage) => {
-        const finalMessages: TMessage[] = [...messages, userMessage, errorMessage];
+        const finalMessages: TMessage[] = [
+          ...messages,
+          withExampleQuestionFlag(userMessage, submission),
+          errorMessage,
+        ];
         setMessages(finalMessages);
         queryClient.setQueryData<TMessage[]>([QueryKeys.messages, convoId], finalMessages);
       };
@@ -800,7 +822,11 @@ export default function useEventHandlers({
           submission,
           error,
         });
-        setMessages([...submission.messages, submission.userMessage, errorResponse]);
+        setMessages([
+          ...submission.messages,
+          withExampleQuestionFlag(submission.userMessage, submission),
+          errorResponse,
+        ]);
         if (newConversation) {
           newConversation({
             template: { conversationId: conversationId || errorResponse.conversationId || v4() },

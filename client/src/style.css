@@ -153,7 +153,11 @@ html {
   --text-primary: var(--gray-100);
   --text-secondary: var(--gray-300);
   --text-secondary-alt: var(--gray-400);
-  --text-tertiary: var(--gray-500);
+  /* Every other text-* token above is re-tuned for the dark background (e.g. text-secondary
+     goes gray-600 -> gray-300); this one was left at the light-mode value (gray-500, #595959),
+     which reads as near-invisible against the near-black dark surfaces. `.gizmo.dark` already
+     gets this right for its own theme (--gizmo-gray-500, #999) — mirroring that here. */
+  --text-tertiary: var(--gizmo-gray-500);
   --text-warning: var(--amber-500);
   --header-primary: var(--gray-700);
   --header-hover: var(--gray-600);

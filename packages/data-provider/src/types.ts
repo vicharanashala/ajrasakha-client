@@ -143,6 +143,13 @@ export type TSubmission = {
   editedContent?: TEditedContent | null;
   /** Added conversation for multi-convo feature */
   addedConvo?: TConversation;
+  /** Frontend-only display flag: this submission's user message had the farmer's profile state
+   *  appended to it (see useSubmitMessage.ts). Deliberately NOT spread into the outgoing request
+   *  payload in createPayload.ts (only named fields are spread from this type), so it never
+   *  reaches or is stored by the backend — it exists purely so SSE event handlers can keep
+   *  showing the in-bubble disclaimer on the user message as the messages array is rebuilt
+   *  throughout the streaming lifecycle. */
+  isExampleQuestion?: boolean;
 };
 
 export type EventSubmission = Omit<TSubmission, 'initialResponse'> & { initialResponse: TMessage };

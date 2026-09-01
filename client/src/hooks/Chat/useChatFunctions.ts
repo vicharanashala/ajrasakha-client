@@ -83,6 +83,7 @@ export default function useChatFunctions({
       conversationId = null,
       messageId = null,
       position,
+      isExampleQuestion,
     },
     {
       editedContent = null,
@@ -333,12 +334,23 @@ export default function useChatFunctions({
       ephemeralAgent,
       editedContent,
       addedConvo,
+      // Frontend-only display flag, kept on `submission` itself rather than on `currentMsg`/
+      // `submission.userMessage` — `createPayload.ts` only spreads specific named fields off
+      // `submission` (not the whole object), so this never reaches the outgoing request payload.
+      // SSE event handlers (useEventHandlers.ts) read it back off `submission` to keep the
+      // in-bubble disclaimer visible as they rebuild the messages array during streaming.
+      isExampleQuestion: !!isExampleQuestion,
     };
 
     if (isRegenerate) {
       setMessages([...submission.messages, initialResponse]);
     } else {
-      setMessages([...submission.messages, currentMsg, initialResponse]);
+      // `isExampleQuestion` rides only on the message object used for local rendering, not
+      // on `currentMsg` itself — `submission.userMessage` above is spread directly into the
+      // outgoing request payload (see createPayload.ts), so keeping it off `currentMsg`
+      // ensures it's never sent to or stored by the backend.
+      const displayMsg = isExampleQuestion ? { ...currentMsg, isExampleQuestion: true } : currentMsg;
+      setMessages([...submission.messages, displayMsg, initialResponse]);
     }
     if (index === 0 && setLatestMessage) {
       setLatestMessage(initialResponse);

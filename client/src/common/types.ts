@@ -343,6 +343,12 @@ export type TAskProps = {
   messageId?: string | null;
   clientTimestamp?: string;
   position?: { latitude: number; longitude: number };
+  /** Frontend-only display flag: this message came from an example-question tap and had the
+   *  farmer's profile state appended to its text (see useSubmitMessage.ts). Rendered as a
+   *  small in-bubble note (see MessageContent.tsx) — deliberately kept off `TMessage` in
+   *  `librechat-data-provider` and never included in the outgoing request payload
+   *  (see useChatFunctions.ts), so it is never sent to or stored by the backend. */
+  isExampleQuestion?: boolean;
 };
 
 export type TOptions = {

@@ -1,5 +1,6 @@
 import { memo, Suspense, useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
+import { Info } from 'lucide-react';
 import { DelayedRender } from '@librechat/client';
 import type { TMessage } from 'librechat-data-provider';
 import type { TMessageContentProps, TDisplayProps } from '~/common';
@@ -49,7 +50,7 @@ const ErrorBox = ({
     role="alert"
     aria-live="assertive"
     className={cn(
-      'rounded-xl border border-red-500/20 bg-red-500/5 px-3 py-2 text-sm text-gray-600 dark:text-gray-200',
+      'w-full break-words rounded-xl border border-red-500/20 bg-red-500/5 px-3 py-2 text-sm text-gray-600 dark:text-gray-200',
       className,
     )}
   >
@@ -64,7 +65,7 @@ const ConnectionError = ({ message }: { message?: TMessage }) => {
     <Suspense fallback={<LoadingFallback />}>
       <DelayedRender delay={DELAYED_ERROR_TIMEOUT}>
         <Container message={message}>
-          <div className="mt-2 rounded-xl border border-red-500/20 bg-red-50/50 px-4 py-3 text-sm text-red-700 shadow-sm transition-all dark:bg-red-950/30 dark:text-red-100">
+          <div className="mt-2 w-full break-words rounded-xl border border-red-500/20 bg-red-50/50 px-4 py-3 text-sm text-red-700 shadow-sm transition-all dark:bg-red-950/30 dark:text-red-100">
             {localize('com_ui_error_connection')}
           </div>
         </Container>
@@ -110,6 +111,12 @@ const DisplayMessage = ({ text, isCreatedByUser, message, showCursor }: TDisplay
     return <>{text}</>;
   }, [isCreatedByUser, enableUserMsgMarkdown, text, isLatestMessage]);
 
+  // Frontend-only display flag set at send time (see useSubmitMessage.ts / useChatFunctions.ts)
+  // — never part of `TMessage` in librechat-data-provider and never sent to or stored by the
+  // backend, so this note only shows for the message just sent this session; it does not
+  // survive a reload of the conversation from the server. Plain string for now, not localized.
+  const isExampleQuestion = isCreatedByUser && !!(message as { isExampleQuestion?: boolean })?.isExampleQuestion;
+
   return (
     <Container message={message}>
       <div
@@ -123,6 +130,12 @@ const DisplayMessage = ({ text, isCreatedByUser, message, showCursor }: TDisplay
       >
         {content}
       </div>
+      {isExampleQuestion && (
+        <p className="mt-1.5 flex items-center gap-1 text-xs text-text-tertiary opacity-80">
+          <Info className="size-3 shrink-0" aria-hidden="true" />
+          State fetched from your profile
+        </p>
+      )}
     </Container>
   );
 };

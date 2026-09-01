@@ -70,15 +70,17 @@ export default function useSubmitMessage() {
       // below, which is silently dropped when promptPrefix is empty). Manually typed messages
       // and slash-command prompts never set `isExampleQuestion`, so they're unaffected.
       const farmerState = termsData?.farmerProfile?.state;
-      const finalText =
-        data.isExampleQuestion && farmerState
-          ? `${data.text}\n\nState: ${farmerState}`
-          : data.text;
+      const shouldAppendState = !!(data.isExampleQuestion && farmerState);
+      const finalText = shouldAppendState ? `${data.text}\n\nState: ${farmerState}` : data.text;
 
       ask(
         {
           text: finalText,
           position,
+          // Frontend-only display flag — never included in the outgoing request payload (see
+          // useChatFunctions.ts), so it's shown in the bubble (MessageContent.tsx) but never
+          // sent to or stored by the backend.
+          isExampleQuestion: shouldAppendState,
         },
         {
           addedConvo: addedConvo ?? undefined,
