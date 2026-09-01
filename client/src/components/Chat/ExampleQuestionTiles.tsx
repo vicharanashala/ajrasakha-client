@@ -86,7 +86,7 @@ export default function ExampleQuestionTiles() {
 
   const handleSelect = useCallback(
     (text: string) => {
-      submitMessage({ text });
+      submitMessage({ text, isExampleQuestion: true });
     },
     [submitMessage],
   );

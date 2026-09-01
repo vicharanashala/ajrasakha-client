@@ -3,7 +3,11 @@ import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import { replaceSpecialVars } from 'librechat-data-provider';
 import { useChatContext, useChatFormContext, useAddedChatContext } from '~/Providers';
 import { useAuthContext } from '~/hooks/AuthContext';
-import { useUpdateFarmerPlatformMutation, useUpdateFarmerLastActiveAt } from '~/data-provider';
+import {
+  useUpdateFarmerPlatformMutation,
+  useUpdateFarmerLastActiveAt,
+  useUserTermsQuery,
+} from '~/data-provider';
 import store from '~/store';
 
 export default function useSubmitMessage() {
@@ -13,6 +17,11 @@ export default function useSubmitMessage() {
   const { conversation: addedConvo } = useAddedChatContext();
   const { ask, index, getMessages, setMessages, latestMessage } = useChatContext();
   const updateLastActiveAt = useUpdateFarmerLastActiveAt();
+  // Independent of Root's terms-modal-gated call to the same query (same query key, so this
+  // dedupes against that cache when it's warm) — kept unconditional here (only gated on being
+  // logged in) so an example-question tap can always read the farmer's state regardless of
+  // whether the ToS-modal feature flag is on.
+  const { data: termsData } = useUserTermsQuery({ enabled: !!user });
   const autoSendPrompts = useRecoilValue(store.autoSendPrompts);
   const [activePrompt, setActivePrompt] = useRecoilState(store.activePromptByIndex(index));
   const [showFeedbackReminder, setShowFeedbackReminder] = useRecoilState(store.showFeedbackReminder);
@@ -21,7 +30,10 @@ export default function useSubmitMessage() {
   const setFeedbackSkipCount = useSetRecoilState(store.feedbackSkipCount);
 
   const submitMessage = useCallback(
-    async (data?: { text: string }, position?: { latitude: number; longitude: number }) => {
+    async (
+      data?: { text: string; isExampleQuestion?: boolean },
+      position?: { latitude: number; longitude: number },
+    ) => {
       if (!data) {
         return console.warn('No data provided to submitMessage');
       }
@@ -51,9 +63,21 @@ export default function useSubmitMessage() {
       else if (/linux/i.test(ua)) platform = 'Linux';
       updateFarmerPlatform.mutate(platform);
       updateLastActiveAt.mutate();
+
+      // Example-question taps get the farmer's saved state appended to the question itself
+      // (visible in the chat bubble, so it always reaches the model regardless of whether the
+      // active endpoint/preset has a promptPrefix set — unlike the geolocation `position`
+      // below, which is silently dropped when promptPrefix is empty). Manually typed messages
+      // and slash-command prompts never set `isExampleQuestion`, so they're unaffected.
+      const farmerState = termsData?.farmerProfile?.state;
+      const finalText =
+        data.isExampleQuestion && farmerState
+          ? `${data.text}\n\nState: ${farmerState}`
+          : data.text;
+
       ask(
         {
-          text: data.text,
+          text: finalText,
           position,
         },
         {
@@ -74,6 +98,7 @@ export default function useSubmitMessage() {
       setShowFeedbackReminder,
       setPendingNewConversation,
       isRequiredFeedback,
+      termsData,
     ],
   );
 
