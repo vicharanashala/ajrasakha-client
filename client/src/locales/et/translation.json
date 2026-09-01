@@ -1096,5 +1096,6 @@
   "com_nav_notifications_time_hours_ago": "{{0}} t tagasi",
   "com_nav_notifications_time_yesterday": "Eile",
   "com_nav_notifications_time_days_ago": "{{0}} p tagasi",
-  "com_ui_example_question_state_note": "Osariik toodi teie profiililt"
+  "com_ui_example_question_state_note": "Osariik toodi teie profiililt",
+  "com_ui_state_prefix": "Osariik:"
 }

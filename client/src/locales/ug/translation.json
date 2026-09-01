@@ -57,5 +57,6 @@
   "com_nav_notifications_time_hours_ago": "{{0}} سائەت ئىلگىرى",
   "com_nav_notifications_time_yesterday": "تۈنۈگۈن",
   "com_nav_notifications_time_days_ago": "{{0}} كۈن ئىلگىرى",
-  "com_ui_example_question_state_note": "شىتات ئارخىپىڭىزدىن ئېلىندى"
+  "com_ui_example_question_state_note": "شىتات ئارخىپىڭىزدىن ئېلىندى",
+  "com_ui_state_prefix": "شىتات:"
 }

@@ -1591,5 +1591,6 @@
   "com_nav_notifications_time_hours_ago": "vor {{0}} Std.",
   "com_nav_notifications_time_yesterday": "Gestern",
   "com_nav_notifications_time_days_ago": "vor {{0}} Tg.",
-  "com_ui_example_question_state_note": "Bundesland aus deinem Profil abgerufen"
+  "com_ui_example_question_state_note": "Bundesland aus deinem Profil abgerufen",
+  "com_ui_state_prefix": "Bundesland:"
 }

@@ -2110,5 +2110,6 @@
   "com_nav_notifications_time_hours_ago": "{{0}} గం. క్రితం",
   "com_nav_notifications_time_yesterday": "నిన్న",
   "com_nav_notifications_time_days_ago": "{{0}} రో. క్రితం",
-  "com_ui_example_question_state_note": "మీ ప్రొఫైల్ నుండి రాష్ట్రం పొందబడింది"
+  "com_ui_example_question_state_note": "మీ ప్రొఫైల్ నుండి రాష్ట్రం పొందబడింది",
+  "com_ui_state_prefix": "రాష్ట్రం:"
 }

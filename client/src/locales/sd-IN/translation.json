@@ -2109,5 +2109,6 @@
   "com_nav_notifications_time_hours_ago": "{{0}} ڪلاڪ اڳ",
   "com_nav_notifications_time_yesterday": "ڪالهه",
   "com_nav_notifications_time_days_ago": "{{0}} ڏينهن اڳ",
-  "com_ui_example_question_state_note": "توهان جي پروفائيل مان رياست حاصل ڪئي وئي"
+  "com_ui_example_question_state_note": "توهان جي پروفائيل مان رياست حاصل ڪئي وئي",
+  "com_ui_state_prefix": "رياست:"
 }

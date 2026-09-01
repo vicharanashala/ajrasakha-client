@@ -1002,5 +1002,6 @@
   "com_nav_notifications_time_hours_ago": "{{0}} ชม. ที่แล้ว",
   "com_nav_notifications_time_yesterday": "เมื่อวาน",
   "com_nav_notifications_time_days_ago": "{{0}} วันที่แล้ว",
-  "com_ui_example_question_state_note": "ดึงข้อมูลรัฐจากโปรไฟล์ของคุณ"
+  "com_ui_example_question_state_note": "ดึงข้อมูลรัฐจากโปรไฟล์ของคุณ",
+  "com_ui_state_prefix": "รัฐ:"
 }

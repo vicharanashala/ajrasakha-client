@@ -1393,6 +1393,7 @@
   "com_ui_sr_actions_menu": "Open actions menu for \"{{0}}\"",
   "com_ui_sr_global_prompt": "Global prompt group",
   "com_ui_stack_trace": "Stack Trace",
+  "com_ui_state_prefix": "State:",
   "com_ui_status_prefix": "Status:",
   "com_ui_stop": "Stop",
   "com_ui_storage": "Storage",

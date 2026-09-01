@@ -1429,5 +1429,6 @@
   "com_nav_notifications_time_hours_ago": "לפני {{0}} שע'",
   "com_nav_notifications_time_yesterday": "אתמול",
   "com_nav_notifications_time_days_ago": "לפני {{0}} ימים",
-  "com_ui_example_question_state_note": "המדינה נשלפה מהפרופיל שלך"
+  "com_ui_example_question_state_note": "המדינה נשלפה מהפרופיל שלך",
+  "com_ui_state_prefix": "מדינה:"
 }

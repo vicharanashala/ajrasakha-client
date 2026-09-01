@@ -1017,5 +1017,6 @@
   "com_nav_notifications_time_hours_ago": "fa {{0}} h",
   "com_nav_notifications_time_yesterday": "Ahir",
   "com_nav_notifications_time_days_ago": "fa {{0}} d",
-  "com_ui_example_question_state_note": "Estat obtingut del teu perfil"
+  "com_ui_example_question_state_note": "Estat obtingut del teu perfil",
+  "com_ui_state_prefix": "Estat:"
 }

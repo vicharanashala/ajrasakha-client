@@ -1438,5 +1438,6 @@
   "com_nav_notifications_time_hours_ago": "il y a {{0}} h",
   "com_nav_notifications_time_yesterday": "Hier",
   "com_nav_notifications_time_days_ago": "il y a {{0}} j",
-  "com_ui_example_question_state_note": "État récupéré depuis votre profil"
+  "com_ui_example_question_state_note": "État récupéré depuis votre profil",
+  "com_ui_state_prefix": "État :"
 }

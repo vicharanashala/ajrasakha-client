@@ -57,5 +57,6 @@
   "com_nav_notifications_time_hours_ago": "ཆུ་ཚོད་ {{0}} སྔོན།",
   "com_nav_notifications_time_yesterday": "ཁ་སང་།",
   "com_nav_notifications_time_days_ago": "ཉིན་ {{0}} སྔོན།",
-  "com_ui_example_question_state_note": "ཁྱེད་ཀྱི་ངོ་སྤྲོད་ཐོག་ནས་ལུང་པའི་གནས་ཚུལ་བླངས་ཟིན།"
+  "com_ui_example_question_state_note": "ཁྱེད་ཀྱི་ངོ་སྤྲོད་ཐོག་ནས་ལུང་པའི་གནས་ཚུལ་བླངས་ཟིན།",
+  "com_ui_state_prefix": "ཡུལ་སྡེ:"
 }

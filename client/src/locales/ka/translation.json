@@ -221,5 +221,6 @@
   "com_nav_notifications_time_hours_ago": "{{0}} საათის წინ",
   "com_nav_notifications_time_yesterday": "გუშინ",
   "com_nav_notifications_time_days_ago": "{{0}} დღის წინ",
-  "com_ui_example_question_state_note": "შტატი მოძიებულია თქვენი პროფილიდან"
+  "com_ui_example_question_state_note": "შტატი მოძიებულია თქვენი პროფილიდან",
+  "com_ui_state_prefix": "შტატი:"
 }

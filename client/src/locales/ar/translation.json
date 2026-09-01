@@ -867,5 +867,6 @@
   "com_nav_notifications_time_hours_ago": "منذ {{0}} س",
   "com_nav_notifications_time_yesterday": "أمس",
   "com_nav_notifications_time_days_ago": "منذ {{0}} يوم",
-  "com_ui_example_question_state_note": "تم جلب الحالة من ملفك الشخصي"
+  "com_ui_example_question_state_note": "تم جلب الحالة من ملفك الشخصي",
+  "com_ui_state_prefix": "الولاية:"
 }

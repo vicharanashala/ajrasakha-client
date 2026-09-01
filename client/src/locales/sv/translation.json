@@ -684,5 +684,6 @@
   "com_nav_notifications_time_hours_ago": "{{0}} tim sedan",
   "com_nav_notifications_time_yesterday": "Igår",
   "com_nav_notifications_time_days_ago": "{{0}} d sedan",
-  "com_ui_example_question_state_note": "Delstat hämtad från din profil"
+  "com_ui_example_question_state_note": "Delstat hämtad från din profil",
+  "com_ui_state_prefix": "Delstat:"
 }

@@ -2110,5 +2110,6 @@
   "com_nav_notifications_time_hours_ago": "{{0}} மணி முன்பு",
   "com_nav_notifications_time_yesterday": "நேற்று",
   "com_nav_notifications_time_days_ago": "{{0}} நாள் முன்பு",
-  "com_ui_example_question_state_note": "உங்கள் சுயவிவரத்திலிருந்து மாநிலம் பெறப்பட்டது"
+  "com_ui_example_question_state_note": "உங்கள் சுயவிவரத்திலிருந்து மாநிலம் பெறப்பட்டது",
+  "com_ui_state_prefix": "மாநிலம்:"
 }

@@ -2110,5 +2110,6 @@
   "com_nav_notifications_time_hours_ago": "{{0}} घंटे पहले",
   "com_nav_notifications_time_yesterday": "कल",
   "com_nav_notifications_time_days_ago": "{{0}} दिन पहले",
-  "com_ui_example_question_state_note": "आपकी प्रोफ़ाइल से राज्य प्राप्त किया गया"
+  "com_ui_example_question_state_note": "आपकी प्रोफ़ाइल से राज्य प्राप्त किया गया",
+  "com_ui_state_prefix": "राज्य:"
 }

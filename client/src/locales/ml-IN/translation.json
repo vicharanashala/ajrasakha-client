@@ -2110,5 +2110,6 @@
   "com_nav_notifications_time_hours_ago": "{{0}} മണി മുമ്പ്",
   "com_nav_notifications_time_yesterday": "ഇന്നലെ",
   "com_nav_notifications_time_days_ago": "{{0}} ദി മുമ്പ്",
-  "com_ui_example_question_state_note": "നിങ്ങളുടെ പ്രൊഫൈലിൽ നിന്ന് സംസ്ഥാനം ലഭിച്ചു"
+  "com_ui_example_question_state_note": "നിങ്ങളുടെ പ്രൊഫൈലിൽ നിന്ന് സംസ്ഥാനം ലഭിച്ചു",
+  "com_ui_state_prefix": "സംസ്ഥാനം:"
 }

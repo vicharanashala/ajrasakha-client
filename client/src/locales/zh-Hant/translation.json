@@ -1053,5 +1053,6 @@
   "com_nav_notifications_time_hours_ago": "{{0}} 小時前",
   "com_nav_notifications_time_yesterday": "昨天",
   "com_nav_notifications_time_days_ago": "{{0}} 天前",
-  "com_ui_example_question_state_note": "已從您的資料中取得所在州"
+  "com_ui_example_question_state_note": "已從您的資料中取得所在州",
+  "com_ui_state_prefix": "州:"
 }

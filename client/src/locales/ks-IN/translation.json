@@ -2109,5 +2109,6 @@
   "com_nav_notifications_time_hours_ago": "{{0}} گٲنٹہٕ بر۫انہٕ",
   "com_nav_notifications_time_yesterday": "رٲث",
   "com_nav_notifications_time_days_ago": "{{0}} دۄہ بر۫انہٕ",
-  "com_ui_example_question_state_note": "توہند پروفائل منز راجہ حٲصِل کرنہٕ آمت"
+  "com_ui_example_question_state_note": "توہند پروفائل منز راجہ حٲصِل کرنہٕ آمت",
+  "com_ui_state_prefix": "راجہٕ:"
 }

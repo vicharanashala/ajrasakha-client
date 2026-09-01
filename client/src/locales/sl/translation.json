@@ -193,5 +193,6 @@
   "com_nav_notifications_time_hours_ago": "pred {{0}} h",
   "com_nav_notifications_time_yesterday": "Včeraj",
   "com_nav_notifications_time_days_ago": "pred {{0}} d",
-  "com_ui_example_question_state_note": "Zvezna država pridobljena iz vašega profila"
+  "com_ui_example_question_state_note": "Zvezna država pridobljena iz vašega profila",
+  "com_ui_state_prefix": "Zvezna država:"
 }

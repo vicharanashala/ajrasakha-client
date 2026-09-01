@@ -2109,5 +2109,6 @@
   "com_nav_notifications_time_hours_ago": "{{0}} घंटा पहिने",
   "com_nav_notifications_time_yesterday": "काल्हि",
   "com_nav_notifications_time_days_ago": "{{0}} दिन पहिने",
-  "com_ui_example_question_state_note": "अहाँक प्रोफाइल स राज्य प्राप्त कएल गेल"
+  "com_ui_example_question_state_note": "अहाँक प्रोफाइल स राज्य प्राप्त कएल गेल",
+  "com_ui_state_prefix": "राज्य:"
 }

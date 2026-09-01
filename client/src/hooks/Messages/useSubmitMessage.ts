@@ -8,10 +8,12 @@ import {
   useUpdateFarmerLastActiveAt,
   useUserTermsQuery,
 } from '~/data-provider';
+import { useLocalize } from '~/hooks';
 import store from '~/store';
 
 export default function useSubmitMessage() {
   const { user } = useAuthContext();
+  const localize = useLocalize();
   const methods = useChatFormContext();
   const updateFarmerPlatform = useUpdateFarmerPlatformMutation();
   const { conversation: addedConvo } = useAddedChatContext();
@@ -71,7 +73,9 @@ export default function useSubmitMessage() {
       // and slash-command prompts never set `isExampleQuestion`, so they're unaffected.
       const farmerState = termsData?.farmerProfile?.state;
       const shouldAppendState = !!(data.isExampleQuestion && farmerState);
-      const finalText = shouldAppendState ? `${data.text}\n\nState: ${farmerState}` : data.text;
+      const finalText = shouldAppendState
+        ? `${data.text}\n\n${localize('com_ui_state_prefix')} ${farmerState}`
+        : data.text;
 
       ask(
         {
@@ -101,6 +105,7 @@ export default function useSubmitMessage() {
       setPendingNewConversation,
       isRequiredFeedback,
       termsData,
+      localize,
     ],
   );
 

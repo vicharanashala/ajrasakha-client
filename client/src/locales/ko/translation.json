@@ -1239,5 +1239,6 @@
   "com_nav_notifications_time_hours_ago": "{{0}}시간 전",
   "com_nav_notifications_time_yesterday": "어제",
   "com_nav_notifications_time_days_ago": "{{0}}일 전",
-  "com_ui_example_question_state_note": "프로필에서 주(州) 정보를 가져왔습니다"
+  "com_ui_example_question_state_note": "프로필에서 주(州) 정보를 가져왔습니다",
+  "com_ui_state_prefix": "주:"
 }

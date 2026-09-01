@@ -845,5 +845,6 @@
   "com_nav_notifications_time_hours_ago": "{{0}} godz. temu",
   "com_nav_notifications_time_yesterday": "Wczoraj",
   "com_nav_notifications_time_days_ago": "{{0}} dni temu",
-  "com_ui_example_question_state_note": "Stan pobrany z Twojego profilu"
+  "com_ui_example_question_state_note": "Stan pobrany z Twojego profilu",
+  "com_ui_state_prefix": "Stan:"
 }
