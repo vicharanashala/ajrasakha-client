@@ -897,6 +897,7 @@
   "com_banner_message": "En desarrollo - solo para pruebas y validación",
   "com_ui_landing_question_mandi_price_paddy": "¿Cuál es el precio de mercado actual del arroz en mi región?",
   "com_ui_landing_question_pmfby_info": "Proporcione información sobre el programa Pradhan Mantri Fasal Bima Yojana (PMFBY).",
+  "com_ui_landing_question_pmkusum_info": "Proporcione información sobre el programa PM-KUSUM Yojana.",
   "com_ui_landing_question_weather_forecast": "¿Cuál es el pronóstico del tiempo para mi región?",
   "com_ui_landing_question_wheat_yellow_rust": "¿Cómo controlar la roya amarilla en el cultivo de trigo?",
   "com_nav_notifications": "Notificaciones",

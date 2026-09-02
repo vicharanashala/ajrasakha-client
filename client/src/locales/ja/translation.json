@@ -1431,6 +1431,7 @@
   "com_banner_message": "開発中 - テストおよび検証のみを目的としています",
   "com_ui_landing_question_mandi_price_paddy": "私の地域の稲(パディー)の現在の市場価格はいくらですか?",
   "com_ui_landing_question_pmfby_info": "Pradhan Mantri Fasal Bima Yojana (PMFBY) について教えてください。",
+  "com_ui_landing_question_pmkusum_info": "PM-KUSUM Yojana について教えてください。",
   "com_ui_landing_question_weather_forecast": "私の地域の天気予報を教えてください。",
   "com_ui_landing_question_wheat_yellow_rust": "小麦の黄さび病はどのように防除すればよいですか?",
   "com_nav_notifications": "通知",

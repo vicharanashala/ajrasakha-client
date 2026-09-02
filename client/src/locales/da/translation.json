@@ -1010,6 +1010,7 @@
   "com_banner_message": "Under udvikling - kun til test og validering",
   "com_ui_landing_question_mandi_price_paddy": "Hvad er den aktuelle markedspris på ris i mit område?",
   "com_ui_landing_question_pmfby_info": "Giv information om Pradhan Mantri Fasal Bima Yojana (PMFBY).",
+  "com_ui_landing_question_pmkusum_info": "Giv information om PM-KUSUM Yojana.",
   "com_ui_landing_question_weather_forecast": "Hvad er vejrudsigten for mit område?",
   "com_ui_landing_question_wheat_yellow_rust": "Hvordan bekæmpes gul rust i hvedeafgrøden?",
   "com_nav_notifications": "Notifikationer",

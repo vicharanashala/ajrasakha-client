@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   BadgeCheck,
   ChevronRight,
@@ -9,10 +9,13 @@ import {
   Mic,
   ShieldCheck,
   Sprout,
+  Sun,
 } from 'lucide-react';
 import { useLocalize, useSubmitMessage } from '~/hooks';
+import { useAuthContext } from '~/hooks/AuthContext';
+import { useUserTermsQuery } from '~/data-provider';
 import { cn } from '~/utils';
-import { EXAMPLE_QUESTIONS } from './exampleQuestions.config';
+import { EXAMPLE_QUESTIONS, STATE_EXAMPLE_QUESTION_OVERRIDES } from './exampleQuestions.config';
 
 
 /** One capability pill under the tagline. Icon plus a short label, nothing tappable — these
@@ -39,6 +42,7 @@ const ICONS_BY_ID: Record<string, React.ComponentType<{ className?: string }>> =
   'weather-forecast': CloudSun,
   'mandi-price-paddy': IndianRupee,
   'pmfby-info': ShieldCheck,
+  'pmkusum-info': Sun,
 };
 
 /**
@@ -65,6 +69,10 @@ const ICON_ACCENT_BY_ID: Record<string, { tile: string; hover: string }> = {
     tile: 'bg-purple-500/15 text-purple-600 dark:text-purple-400',
     hover: 'hover:border-purple-500/40 dark:hover:border-purple-400/40',
   },
+  'pmkusum-info': {
+    tile: 'bg-yellow-500/15 text-yellow-600 dark:text-yellow-400',
+    hover: 'hover:border-yellow-500/40 dark:hover:border-yellow-400/40',
+  },
 };
 const DEFAULT_ICON_ACCENT = {
   tile: 'bg-surface-tertiary text-text-secondary',
@@ -83,6 +91,22 @@ const CARD_ENTRANCE_STEP_MS = 70;
 export default function ExampleQuestionTiles() {
   const { submitMessage } = useSubmitMessage();
   const localize = useLocalize();
+  const { user } = useAuthContext();
+  // Same query useSubmitMessage.ts reads the farmer's state from — same query key, so it
+  // dedupes against that cache once either has fetched. Only used here to pick which example
+  // question to show; it plays no part in what gets sent when a card is tapped.
+  const { data: termsData } = useUserTermsQuery({ enabled: !!user });
+  const farmerState = termsData?.farmerProfile?.state;
+
+  const questions = useMemo(() => {
+    const overrides = farmerState
+      ? STATE_EXAMPLE_QUESTION_OVERRIDES[farmerState.trim().toLowerCase()]
+      : undefined;
+    if (!overrides) {
+      return EXAMPLE_QUESTIONS;
+    }
+    return EXAMPLE_QUESTIONS.map((question) => overrides[question.id] ?? question);
+  }, [farmerState]);
 
   const handleSelect = useCallback(
     (text: string) => {
@@ -91,7 +115,7 @@ export default function ExampleQuestionTiles() {
     [submitMessage],
   );
 
-  if (!EXAMPLE_QUESTIONS.length) {
+  if (!questions.length) {
     return null;
   }
 
@@ -130,7 +154,7 @@ export default function ExampleQuestionTiles() {
           stacked on a desktop viewport is taller than the landing area can hold. The card
           itself keeps the same row layout at both widths. */}
       <div className="grid w-full grid-cols-1 gap-2 sm:gap-3 md:grid-cols-2">
-      {EXAMPLE_QUESTIONS.map((question, index) => {
+      {questions.map((question, index) => {
         const Icon = ICONS_BY_ID[question.id] ?? HelpCircle;
         const accent = ICON_ACCENT_BY_ID[question.id] ?? DEFAULT_ICON_ACCENT;
         const questionText = localize(question.textKey);
@@ -151,10 +175,17 @@ export default function ExampleQuestionTiles() {
               // keeps the screen whole.
               index >= 3 && '[@media(max-height:700px)]:hidden',
               'gap-2.5 rounded-xl p-2 pr-2.5 sm:gap-3.5 sm:rounded-2xl sm:p-3 sm:pr-4',
-              // `border-light` is nearly invisible against the dark surfaces, so dark mode
-              // gets a translucent white hairline instead.
-              'border border-border-light bg-surface-chat dark:border-white/10',
-              'shadow-[0_1px_2px_0_rgba(0,0,0,0.04),0_4px_12px_0_rgba(0,0,0,0.03)] dark:shadow-[0_1px_2px_0_rgba(255,255,255,0.04),0_4px_12px_0_rgba(255,255,255,0.06)]',
+              // No resting border — the card reads from its shadow alone. Kept as a
+              // transparent 1px border (rather than dropping border entirely) so the hover
+              // accent colour below still has a border to reveal instead of shifting layout.
+              'border border-transparent bg-surface-chat',
+              // `surface-chat` (#0d0d0d) is barely distinguishable from the page background
+              // (#0a0a0a) in dark mode, so a shadow alone can't read as elevation there — it
+              // just looks like a stray glow. `surface-secondary` (#171717) gives the card an
+              // actual lift, and the shadow underneath it can stay a normal neutral dark
+              // shadow instead of a white-tinted one.
+              'dark:bg-surface-secondary',
+              'shadow-[0_2px_6px_0_rgba(0,0,0,0.09)] dark:shadow-[0_2px_8px_0_rgba(0,0,0,0.45)]',
               'transition-[background-color,border-color,box-shadow,transform] duration-200 ease-out',
               'hover:bg-surface-tertiary hover:shadow-md active:scale-[0.99]',
               // The border picks up the card's own accent on hover, so each one lights up in

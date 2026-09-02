@@ -35,3 +35,12 @@ export const EXAMPLE_QUESTIONS: ExampleQuestion[] = [
     textKey: 'com_ui_landing_question_pmfby_info',
   },
 ];
+
+export const STATE_EXAMPLE_QUESTION_OVERRIDES: Record<string, Record<string, ExampleQuestion>> = {
+  punjab: {
+    'pmfby-info': {
+      id: 'pmkusum-info',
+      textKey: 'com_ui_landing_question_pmkusum_info',
+    },
+  },
+};
