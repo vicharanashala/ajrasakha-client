@@ -58,37 +58,19 @@ const ICONS_BY_ID: Record<string, React.ComponentType<{ className?: string }>> =
 };
 
 /**
- * Per-topic accent for the icon tile: a soft tint behind a saturated glyph, so the column
- * reads as a set rather than four identical rows (crop health green, sky blue for weather,
- * money amber, trust purple for the insurance scheme). Written as opacity tints of the solid
- * colour rather than the 100/200 steps of each ramp, because this theme collapses its green
- * ramp onto two brand shades — a `bg-green-100` here would come out fully saturated.
+ * One shared accent for every icon tile — a soft tint behind a saturated glyph, using the
+ * app's own brand green rather than a different hue per topic. A rainbow of unrelated colors
+ * (crop-health green, weather blue, money amber, scheme purple/yellow) reads as decorative
+ * noise once there are five topics instead of four (see the Punjab pmkusum-info override in
+ * exampleQuestions.config.ts) — a single consistent accent keeps new topics from ever
+ * clashing, and the glyph shape still tells the cards apart. Written as an opacity tint of
+ * the solid colour rather than the 100/200 steps of the ramp, because this theme collapses
+ * its green ramp onto two brand shades — a `bg-green-100` here would come out fully
+ * saturated instead of a soft tint.
  */
-const ICON_ACCENT_BY_ID: Record<string, { tile: string; hover: string }> = {
-  'wheat-yellow-rust': {
-    tile: 'bg-green-500/15 text-green-600 dark:text-green-400',
-    hover: 'hover:border-green-500/40 dark:hover:border-green-400/40',
-  },
-  'weather-forecast': {
-    tile: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
-    hover: 'hover:border-blue-500/40 dark:hover:border-blue-400/40',
-  },
-  'mandi-price-paddy': {
-    tile: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
-    hover: 'hover:border-amber-500/40 dark:hover:border-amber-400/40',
-  },
-  'pmfby-info': {
-    tile: 'bg-purple-500/15 text-purple-600 dark:text-purple-400',
-    hover: 'hover:border-purple-500/40 dark:hover:border-purple-400/40',
-  },
-  'pmkusum-info': {
-    tile: 'bg-yellow-500/15 text-yellow-600 dark:text-yellow-400',
-    hover: 'hover:border-yellow-500/40 dark:hover:border-yellow-400/40',
-  },
-};
-const DEFAULT_ICON_ACCENT = {
-  tile: 'bg-surface-tertiary text-text-secondary',
-  hover: 'hover:border-border-heavy',
+const ICON_ACCENT = {
+  tile: 'bg-green-500/15 text-green-600 dark:text-green-400',
+  hover: 'hover:border-green-500/40 dark:hover:border-green-400/40',
 };
 
 /** Entrance timing for the landing block. The greeting animates per character above this
@@ -183,7 +165,6 @@ export default function ExampleQuestionTiles() {
       <div className="grid w-full grid-cols-1 gap-2 sm:gap-3 md:grid-cols-2">
       {questions.map((question, index) => {
         const Icon = ICONS_BY_ID[question.id] ?? HelpCircle;
-        const accent = ICON_ACCENT_BY_ID[question.id] ?? DEFAULT_ICON_ACCENT;
         const questionText = localize(question.textKey);
         return (
           <button
@@ -202,6 +183,12 @@ export default function ExampleQuestionTiles() {
               // keeps the screen whole.
               index >= 3 && '[@media(max-height:700px)]:hidden',
               'gap-2.5 rounded-xl p-2 pr-2.5 sm:gap-3.5 sm:rounded-2xl sm:p-3 sm:pr-4',
+              // Fixed to the height of the longest a card can get (the 3-line clamp below,
+              // plus this padding) so every card is the same size regardless of how short its
+              // own question text is — otherwise a one-line question sits in a visibly
+              // smaller card than a neighbour that wraps to three, and that gap shifts by
+              // locale (some of the 59 translations run much longer than others).
+              'min-h-[72px] sm:min-h-[88px]',
               // No resting border — the card reads from its shadow alone. Kept as a
               // transparent 1px border (rather than dropping border entirely) so the hover
               // accent colour below still has a border to reveal instead of shifting layout.
@@ -215,9 +202,8 @@ export default function ExampleQuestionTiles() {
               'shadow-[0_2px_6px_0_rgba(0,0,0,0.09)] dark:shadow-[0_2px_8px_0_rgba(0,0,0,0.45)]',
               'transition-[background-color,border-color,box-shadow,transform] duration-200 ease-out',
               'hover:bg-surface-tertiary hover:shadow-md active:scale-[0.99]',
-              // The border picks up the card's own accent on hover, so each one lights up in
-              // its own colour rather than all four going the same grey.
-              accent.hover,
+              // The border picks up the shared accent colour on hover instead of a plain grey.
+              ICON_ACCENT.hover,
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-medium',
               'motion-reduce:transition-none',
             )}
@@ -227,7 +213,7 @@ export default function ExampleQuestionTiles() {
                 'flex size-9 shrink-0 items-center justify-center rounded-xl sm:size-11 sm:rounded-2xl',
                 'transition-transform duration-200 ease-out group-hover:scale-105',
                 'motion-reduce:transition-none motion-reduce:group-hover:scale-100',
-                accent.tile,
+                ICON_ACCENT.tile,
               )}
             >
               <Icon className="size-4 shrink-0 sm:size-5" aria-hidden="true" />
