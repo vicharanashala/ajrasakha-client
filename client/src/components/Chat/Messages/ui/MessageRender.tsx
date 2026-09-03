@@ -131,7 +131,14 @@ const MessageRender = memo(
         <div className="flex min-w-0 flex-col gap-1">
           <div
             className={cn(
-              'flex min-w-0 max-w-full flex-grow flex-col gap-0 overflow-hidden break-all',
+              // `break-words` (overflow-wrap: break-word) rather than `break-all`: break-all
+              // splits mid-word the moment a line is full, even when the whole word would
+              // have fit cleanly on the next line (e.g. "region?" splitting into "re" / "gion?"
+              // in a narrow bubble). break-words only breaks a word when it's too long to fit
+              // on its own line — normal words wrap at the space before them, and an
+              // unbroken long token (a URL, a long id) still gets broken instead of overflowing
+              // the bubble.
+              'flex min-w-0 max-w-full flex-grow flex-col gap-0 overflow-hidden break-words',
               // AI bubble uses bg-surface-tertiary: in dark mode
               // surface-secondary is the exact same color as the page
               // background (presentation), so it was invisible there.
