@@ -121,8 +121,10 @@ export default function ExampleQuestionTiles() {
         // cards (below), then cards to the composer. The bottom margin doubles as what lifts
         // the whole block clear of the composer, since the landing column is bottom-aligned
         // from sm up. Landing drops its own bottom padding and margin when these render (its
-        // `hasContentBelow` prop), so `mt` here is the entire gap under the greeting.
-        'mb-6 mt-4 sm:mb-0 sm:mt-7',
+        // `hasContentBelow` prop), so `mt` here is the entire gap under the greeting — kept
+        // tight so the tagline/chips read as part of the same welcome block, not a separate
+        // section further down the page.
+        'mb-6 mt-2 sm:mb-0 sm:mt-3',
       )}
     >
       {/* Tagline and capability pills live here rather than in Landing: Landing collapses to
