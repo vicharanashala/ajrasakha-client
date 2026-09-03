@@ -347,7 +347,11 @@ const Nav = memo(
           <div
             data-testid="nav"
             className={cn(
-              'nav fixed left-0 top-0 z-[70] h-full bg-gray-50 dark:bg-gray-900',
+              // Hairline edge so the sidebar reads as its own surface rather than blending
+              // into the chat area behind it — bg-gray-50/900 alone is only a few shades off
+              // the page background (bg-presentation) in both themes, easy to miss at a
+              // glance. Same border token the collapsed desktop rail already uses below.
+              'nav fixed left-0 top-0 z-[70] h-full border-r border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-900',
               navVisible && 'active',
             )}
             style={{
@@ -383,9 +387,12 @@ const Nav = memo(
           // (bg-presentation) in both light and dark mode, instead of
           // keeping the sidebar's usual surface-primary-alt shade — so a
           // thin border is the only thing separating it from the chat area.
+          // Kept on the expanded state too: bg-gray-50/900 is only a few
+          // shades off bg-presentation in both themes, so the border is
+          // what actually guarantees a visible seam, not just the tint.
           className={cn(
-            'nav active h-full',
-            navVisible ? 'bg-gray-50 dark:bg-gray-900' : 'border-r border-gray-200 dark:border-gray-800 bg-presentation',
+            'nav active h-full border-r border-gray-200 dark:border-gray-800',
+            navVisible ? 'bg-gray-50 dark:bg-gray-900' : 'bg-presentation',
           )}
           style={{ width: desktopWidth, transition: 'width 0.2s ease-out' }}
         >
