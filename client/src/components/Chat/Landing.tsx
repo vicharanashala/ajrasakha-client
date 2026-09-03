@@ -17,7 +17,7 @@ function getTextSizeClass(text: string | undefined | null) {
   }
 
   if (text.length < 40) {
-    return 'text-2xl sm:text-4xl';
+    return 'text-3xl sm:text-5xl';
   }
 
   if (text.length < 70) {
