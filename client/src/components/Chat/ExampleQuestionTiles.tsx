@@ -18,18 +18,30 @@ import { cn } from '~/utils';
 import { EXAMPLE_QUESTIONS, STATE_EXAMPLE_QUESTION_OVERRIDES } from './exampleQuestions.config';
 
 
-/** One capability pill under the tagline. Icon plus a short label, nothing tappable — these
- *  describe what AjraSakha offers rather than acting as controls. */
+/** One capability label under the tagline. A small tinted icon dot plus a short caption,
+ *  nothing tappable — these describe what AjraSakha offers rather than acting as controls.
+ *  The colour lives only on the icon's dot (same soft-tint style as the question cards'
+ *  icon tiles below, just circular and smaller); the label text itself stays plain/muted,
+ *  with no pill fill or border around it, so the row doesn't read as a set of buttons. */
 function CapabilityChip({
   icon: Icon,
   label,
+  accentClass,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
+  accentClass: string;
 }) {
   return (
-    <li className="flex items-center gap-1.5 rounded-full border border-green-600/30 bg-green-500/10 px-3.5 py-1.5 text-xs font-medium text-green-700 dark:border-green-400/30 dark:bg-green-400/10 dark:text-green-400 sm:gap-2 sm:px-4 sm:py-2 sm:text-sm">
-      <Icon className="size-4 shrink-0" aria-hidden="true" />
+    <li className="flex min-w-0 items-center gap-1.5 whitespace-nowrap text-xs font-normal text-text-secondary sm:gap-2 sm:text-sm">
+      <span
+        className={cn(
+          'flex size-5 shrink-0 items-center justify-center rounded-full sm:size-6',
+          accentClass,
+        )}
+      >
+        <Icon className="size-3 shrink-0 sm:size-3.5" aria-hidden="true" />
+      </span>
       {label}
     </li>
   );
@@ -141,13 +153,28 @@ export default function ExampleQuestionTiles() {
         <p className="text-balance text-center text-[15px] font-normal leading-snug text-text-secondary sm:max-w-sm sm:text-base">
           {localize('com_ui_landing_tagline')}
         </p>
-        <ul className="flex max-w-[360px] flex-wrap items-center justify-center gap-2.5 sm:gap-3">
-          <CapabilityChip icon={Languages} label={localize('com_ui_landing_chip_multilingual')} />
+        {/* Generously spaced rather than clustered tight — reads as one aligned row instead of
+            a floating cluster of tags. `justify-center` (not `justify-between`) plus
+            `flex-wrap`: labels are translated into 59 locales and some run much longer than the
+            English originals (e.g. Malayalam), so on a narrow screen the third item drops to
+            its own centred line instead of overflowing off the edge — `justify-between` would
+            leave that lone wrapped item stranded at the left edge instead of centred. */}
+        <ul className="flex w-full max-w-sm flex-wrap items-center justify-center gap-x-5 gap-y-1.5 sm:max-w-md sm:gap-x-6">
+          <CapabilityChip
+            icon={Languages}
+            label={localize('com_ui_landing_chip_multilingual')}
+            accentClass="bg-green-500/15 text-green-600 dark:text-green-400"
+          />
           <CapabilityChip
             icon={BadgeCheck}
             label={localize('com_ui_landing_chip_expert_verified')}
+            accentClass="bg-blue-500/15 text-blue-600 dark:text-blue-400"
           />
-          <CapabilityChip icon={Mic} label={localize('com_ui_landing_chip_voice')} />
+          <CapabilityChip
+            icon={Mic}
+            label={localize('com_ui_landing_chip_voice')}
+            accentClass="bg-amber-500/15 text-amber-600 dark:text-amber-400"
+          />
         </ul>
       </div>
       {/* One column while the chat column is narrow, two from md up — four full-width rows
