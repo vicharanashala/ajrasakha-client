@@ -186,9 +186,12 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
    *  user has stopped recording. Kept separate from isVoiceListening so the UI can show a
    *  distinct "converting speech to text" state instead of an empty Type tab. */
   const [isTranscribing, setIsTranscribing] = useState(false);
-  /** Set when the user taps stop; the actual switch to Type mode waits for isTranscribing to
-   *  clear, so we never land on an empty textarea before the transcript is ready. */
+  /** Set once listening stops, for any reason — a manual tap on the mic, or the recognizer
+   *  ending on its own (single-shot/non-continuous recognition, or a silence timeout). The
+   *  actual switch to Type mode below still waits for isTranscribing to clear, so we never
+   *  land on an empty textarea before the transcript is ready. */
   const [pendingVoiceStop, setPendingVoiceStop] = useState(false);
+  const wasVoiceListeningRef = useRef(false);
   /** Elapsed seconds since listening started, shown as a running timer next to the equalizer. */
   const [listeningDuration, setListeningDuration] = useState(0);
 
@@ -203,6 +206,20 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
       setListeningDuration(Math.floor((Date.now() - startedAt) / 1000));
     }, 1000);
     return () => clearInterval(interval);
+  }, [isVoiceListening]);
+
+  // Flags pendingVoiceStop the moment listening stops — previously this only happened via
+  // AudioRecorder's onStopRecording callback, which is wired to the mic button's click handler
+  // alone. That missed the case where the recognizer ends itself without the user tapping
+  // anything (non-continuous/single-shot recognition, or a browser's own silence timeout): the
+  // transcript would still land in the textarea once isTranscribing cleared, but the UI stayed
+  // parked on the Voice tab looking idle instead of switching to show what was captured.
+  // Deriving it from the listening transition itself covers both cases uniformly.
+  useEffect(() => {
+    if (wasVoiceListeningRef.current && !isVoiceListening) {
+      setPendingVoiceStop(true);
+    }
+    wasVoiceListeningRef.current = isVoiceListening;
   }, [isVoiceListening]);
 
   // The "+" menu is anchored to a button that only exists in Text mode; close it on the way
@@ -829,9 +846,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                         // No min-width: the items are icon-only here (Badge only reveals its
                         // label inside a 600px-wide @container), so the menu hugs them.
                         'z-30 flex w-max max-w-[calc(100vw-2rem)] flex-col items-stretch gap-0.5',
-                        // Portaled to document.body, so it inherits nothing from the
-                        // composer — the icons inside take their colour from here.
-                        'rounded-2xl border border-border-light bg-surface-chat p-1.5 text-text-primary shadow-lg outline-none',
+                        'rounded-2xl border border-border-light bg-surface-chat p-1.5 shadow-lg outline-none',
                         'origin-bottom translate-y-1 scale-95 opacity-0 transition-[opacity,transform] duration-200 ease-out',
                         'data-[enter]:translate-y-0 data-[enter]:scale-100 data-[enter]:opacity-100',
                         'motion-reduce:transition-none',
@@ -980,27 +995,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     <>
                       <style>{`
                         @keyframes voice-orb-ring-outer { to { transform: rotate(-360deg); } }
-                        @keyframes voice-orb-ripple {
-                          0% { transform: scale(0.82); opacity: 0.45; }
-                          100% { transform: scale(1.8); opacity: 0; }
-                        }
-                        @media (prefers-reduced-motion: reduce) {
-                          .voice-orb-ripple { animation: none !important; opacity: 0.2; transform: scale(1.2); }
-                        }
                       `}</style>
-                      {/* Rings spreading outward from the mic, like rings on water — the
-                          calmest way to show the app is picking up sound, and slow enough
-                          not to compete with the equalizer bars on the button itself. */}
-                      {[0, 1].map((ripple) => (
-                        <span
-                          key={ripple}
-                          aria-hidden="true"
-                          className="voice-orb-ripple pointer-events-none absolute size-20 rounded-full border border-[#75D7B2]"
-                          style={{
-                            animation: `voice-orb-ripple 2.6s ease-out ${ripple * 1.3}s infinite`,
-                          }}
-                        />
-                      ))}
                       <span
                         className="absolute inline-block size-20 rounded-full opacity-40"
                         style={{
@@ -1032,12 +1027,13 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                       disabled={disableInputs || isNotAppendable}
                       isSubmitting={isSubmitting}
                       enabled={!isFeedbackDialogOpen}
-                      // Don't jump to the Type tab the instant stop is tapped — the
-                      // transcript (especially from an external STT round-trip) can take a
-                      // second or two to arrive. Mark the switch as pending instead; the
-                      // effect above fires it once isTranscribing actually clears, so the
-                      // user never lands on an empty textarea before the text is ready.
-                      onStopRecording={() => setPendingVoiceStop(true)}
+                      // The pendingVoiceStop effect above now derives itself from
+                      // onListeningChange going false (covers a manual tap AND the recognizer
+                      // auto-stopping on its own), so onStopRecording isn't needed here for
+                      // that anymore — don't jump to the Type tab the instant listening stops
+                      // either way; the transcript (especially from an external STT
+                      // round-trip) can take a second or two to arrive, and that effect waits
+                      // for isTranscribing to actually clear first.
                       onListeningChange={setIsVoiceListening}
                       onLoadingChange={setIsTranscribing}
                     />
@@ -1075,13 +1071,10 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
               createPortal(
                 <ModelSelector
                   startupConfig={startupConfig}
-                  // Fills the nav bar's free space instead of shrink-wrapping to the model
-                  // name, so long names keep their size rather than being auto-shrunk.
-                  containerClassName="w-full"
                   // Sits on the bare nav bar rather than inside the input, so it needs its own
                   // surface to read as a control. Borrows the composer pill's treatment —
                   // same radius, border token and chat surface — so the two read as one family.
-                  triggerClassName="w-full justify-start gap-2 rounded-full border border-border-light bg-surface-chat px-3 shadow-sm transition-colors hover:border-border-medium hover:bg-surface-hover"
+                  triggerClassName="justify-start gap-2 rounded-full border border-border-light bg-surface-chat px-3 shadow-sm transition-colors hover:border-border-medium hover:bg-surface-hover"
                 />,
                 mobileNavPortal,
               )}
