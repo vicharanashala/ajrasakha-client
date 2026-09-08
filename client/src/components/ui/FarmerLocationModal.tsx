@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useForm, Controller } from 'react-hook-form';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   OGDialog,
   OGDialogContent,
@@ -9,11 +10,12 @@ import {
   Label,
   Input,
 } from '@librechat/client';
+import { dataService } from 'librechat-data-provider';
 import type { IFarmerProfile } from 'librechat-data-provider';
 import { useSaveFarmerProfileMutation } from '~/data-provider';
 import useGeolocation from '~/hooks/useGeolocation';
 import { useLocalize } from '~/hooks';
-import { STATES, DISTRICTS, INDIAN_LANGUAGES, CROPS, KVKS } from '~/utils/metaData';
+import { INDIAN_LANGUAGES, CROPS } from '~/utils/metaData';
 import SearchableSelect from './SearchableSelect';
 import SearchableMultiSelect from './SearchableMultiSelect';
 
@@ -40,6 +42,8 @@ const FarmerLocationModal = ({
 }) => {
   const localize = useLocalize();
   const [submitError, setSubmitError] = useState('');
+  // Only fetch states/districts/kvks when the user opens the dropdown, not on mount.
+  const [statesQueryTriggered, setStatesQueryTriggered] = useState(false);
   const effectiveMissingFields = useMemo(
     () => missingFields.filter((field) => field !== 'cropsCultivated'),
     [missingFields],
@@ -122,44 +126,82 @@ const FarmerLocationModal = ({
     updateCropsCultivated(selectedCropsList.filter((crop) => crop !== cropToRemove));
   };
 
-  const matchedStateKey = selectedState
-    ? Object.keys(DISTRICTS).find((k) => k.toLowerCase() === selectedState.toLowerCase())
-    : undefined;
+  const baseUrl = import.meta.env.VITE_AJRASAKHA_SERVER_URL ?? '';
 
-  const districtOptions = matchedStateKey
-    ? [...(DISTRICTS[matchedStateKey] ?? []), localize('com_farmer_option_other')]
+  const { data: statesList = [], refetch: refetchStates } = useQuery<{ code: number | string; name: string }[]>({
+    queryKey: ['states'],
+    queryFn: async () => {
+      try {
+        const data = await dataService.getLocationStates(baseUrl);
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        console.error('Failed to fetch states', error);
+        return [];
+      }
+    },
+    enabled: false,
+    staleTime: Infinity,
+  });
+
+  const triggerStatesQuery = useCallback(() => {
+    if (!statesQueryTriggered) {
+      setStatesQueryTriggered(true);
+      refetchStates();
+    }
+  }, [statesQueryTriggered, refetchStates]);
+
+  const stateOptions = statesQueryTriggered && statesList.length > 0
+    ? [...statesList.map((s) => s.name), localize('com_farmer_option_other')]
+    : [];
+
+  const stateObj = statesList.find((s) => s.name === selectedState);
+  const { data: districtsList = [] } = useQuery<{ code: number | string; name: string }[]>({
+    queryKey: ['districts', stateObj?.code, selectedState],
+    queryFn: async () => {
+      if (stateObj?.code === undefined) {
+        return [];
+      }
+      try {
+        const data = await dataService.getLocationDistricts(baseUrl, stateObj.code);
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        console.error('Failed to fetch districts', error);
+        return [];
+      }
+    },
+    enabled: !!selectedState && selectedState !== localize('com_farmer_option_other'),
+    staleTime: Infinity,
+  });
+
+  const districtOptions = districtsList.length > 0
+    ? [...districtsList.map((d) => d.name), localize('com_farmer_option_other')]
     : [localize('com_farmer_option_other')];
+
+  const distObj = districtsList.find((d) => d.name === selectedDistrict);
+  const { data: kvksList = [] } = useQuery<{ code: number | string; name: string }[]>({
+    queryKey: ['kvks', distObj?.code, selectedDistrict],
+    queryFn: async () => {
+      if (distObj?.code === undefined) {
+        return [];
+      }
+      try {
+        const data = await dataService.getLocationKvks(baseUrl, distObj.code);
+        return Array.isArray(data) ? data.map((k) => ({ code: k.kvkId, name: k.kvkAddress ? `${k.kvkName}, ${k.kvkAddress}` : k.kvkName })) : [];
+      } catch (error) {
+        console.error('Failed to fetch KVKs', error);
+        return [];
+      }
+    },
+    enabled: !!selectedDistrict && distObj?.code !== undefined,
+    staleTime: Infinity,
+  });
 
   const kvkOptions = useMemo(() => {
     if (!selectedDistrict) {
       return [];
     }
-
-    // 1. Direct match
-    if (KVKS[selectedDistrict]) {
-      return KVKS[selectedDistrict];
-    }
-
-    // 2. Case-insensitive and normalized match
-    const normalizedSearch = selectedDistrict.toLowerCase().replace(/\s*\(.*\)/, '').trim();
-    const kvkKeys = Object.keys(KVKS);
-
-    // Try finding a key that contains the normalized district name or vice-versa
-    const matchedKey = kvkKeys.find((key) => {
-      const normalizedKey = key.toLowerCase().replace(/\s*\(.*\)/, '').trim();
-      return (
-        normalizedKey === normalizedSearch ||
-        normalizedKey.includes(normalizedSearch) ||
-        normalizedSearch.includes(normalizedKey)
-      );
-    });
-
-    if (matchedKey) {
-      return KVKS[matchedKey];
-    }
-
-    return (KVKS as any).Other || [];
-  }, [selectedDistrict]);
+    return kvksList.map((k) => k.name);
+  }, [selectedDistrict, kvksList]);
 
   const handleStateChange = (val: string) => {
     setValue('state', val, { shouldValidate: true });
@@ -285,7 +327,7 @@ const FarmerLocationModal = ({
     state: {
       label: localize('com_farmer_label_state'),
       type: 'searchable-select',
-      options: STATES,
+      options: stateOptions,
       selectPlaceholder: localize('com_farmer_placeholder_select_state'),
     },
     district: {
@@ -545,6 +587,7 @@ const FarmerLocationModal = ({
                           config.selectPlaceholder ?? `${localize('com_ui_select')} ${config.label}`
                         }
                         disabled={field === 'district' && !selectedState}
+                        onOpen={field === 'state' ? triggerStatesQuery : undefined}
                       />
                     )}
                   />

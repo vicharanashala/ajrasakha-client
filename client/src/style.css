@@ -2855,6 +2855,61 @@ html {
   animation: fadeIn 0.5s ease-out forwards;
 }
 
+@keyframes ajrasakha-progress-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.ajrasakha-progress-enter {
+  animation: ajrasakha-progress-enter 0.45s ease-out both;
+}
+
+@keyframes ajrasakha-progress-shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -150% 0;
+  }
+}
+
+.ajrasakha-progress-shimmer {
+  position: relative;
+}
+
+.ajrasakha-progress-shimmer::after {
+  position: absolute;
+  inset: 0;
+  content: attr(data-progress-message);
+  color: transparent;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 32%,
+    rgb(255 255 255 / 0.35) 42%,
+    rgb(255 255 255 / 0.95) 50%,
+    rgb(255 255 255 / 0.35) 58%,
+    transparent 68%
+  );
+  background-size: 260% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: ajrasakha-progress-shimmer 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ajrasakha-progress-enter,
+  .ajrasakha-progress-shimmer::after {
+    animation: none;
+  }
+}
+
 /* Chat Badges Animation */
 
 @keyframes ios-wiggle {

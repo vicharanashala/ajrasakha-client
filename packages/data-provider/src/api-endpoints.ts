@@ -403,3 +403,22 @@ export const getAllEffectivePermissions = (resourceType: ResourceType) =>
 // SharePoint Graph API Token
 export const graphToken = (scopes: string) =>
   `${BASE_URL}/api/auth/graph-token?scopes=${encodeURIComponent(scopes)}`;
+
+// External Verification Service
+export const verificationRequest = (baseUrl: string) =>
+  `${baseUrl}/api/users/verification-request`;
+
+// External Verification Service — Location lookups (states/districts/blocks/villages)
+export const locationStates = (baseUrl: string) => `${baseUrl}/api/location/states`;
+
+export const locationDistricts = (baseUrl: string, stateCode: number | string) =>
+  `${baseUrl}/api/location/districts?stateCode=${encodeURIComponent(stateCode)}`;
+
+export const locationBlocks = (baseUrl: string, districtCode: number | string) =>
+  `${baseUrl}/api/location/blocks?districtCode=${encodeURIComponent(districtCode)}`;
+
+export const locationVillages = (baseUrl: string, blockCode: number | string) =>
+  `${baseUrl}/api/location/villages?blockCode=${encodeURIComponent(blockCode)}`;
+
+export const locationKvks = (baseUrl: string, districtCode: number | string) =>
+  `${baseUrl}/api/location/kvks?districtCode=${encodeURIComponent(districtCode)}`;

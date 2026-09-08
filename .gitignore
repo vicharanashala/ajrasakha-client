@@ -1,5 +1,8 @@
 ### node etc ###
 
+# Scripts
+run.sh
+
 # Logs
 data-node
 meili_data*
@@ -169,3 +172,5 @@ coordination/orchestration/*
 claude-flow
 # Removed Windows wrapper files per user request
 hive-mind-prompt-*.txt
+
+.clinerules/

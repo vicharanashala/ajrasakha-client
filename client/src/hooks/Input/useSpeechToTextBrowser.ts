@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef, useMemo, useState, useCallback } from 'react';
 import { useRecoilState } from 'recoil';
 import { useToastContext } from '@librechat/client';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
@@ -10,6 +10,7 @@ import store from '~/store';
 const useSpeechToTextBrowser = (
   setText: (text: string) => void,
   onTranscriptionComplete: (text: string) => void,
+  enabled = false,
 ) => {
   const localize = useLocalize();
   const { showToast } = useToastContext();
@@ -18,6 +19,7 @@ const useSpeechToTextBrowser = (
   const { data: speechConfig } = useGetCustomConfigSpeechQuery({ enabled: true });
   const sttExternal = Boolean(speechConfig?.sttExternal);
 
+  const [speechError, setSpeechError] = useState<string | undefined>(undefined);
   const lastTranscript = useRef<string | null>(null);
   const lastInterim = useRef<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>();
@@ -36,6 +38,17 @@ const useSpeechToTextBrowser = (
   const isListening = useMemo(() => listening, [listening]);
 
   useEffect(() => {
+    if (!enabled) {
+      lastTranscript.current = finalTranscript;
+      return;
+    }
+
+    if (!interimTranscript) return;
+
+    if (lastTranscript.current === finalTranscript) {
+      return;
+    }
+
     if (interimTranscript == null || interimTranscript === '') {
       return;
     }
@@ -46,9 +59,13 @@ const useSpeechToTextBrowser = (
 
     setText(interimTranscript);
     lastInterim.current = interimTranscript;
-  }, [setText, interimTranscript]);
+  }, [enabled, setText, interimTranscript, finalTranscript]);
 
   useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+
     if (finalTranscript == null || finalTranscript === '') {
       return;
     }
@@ -71,24 +88,29 @@ const useSpeechToTextBrowser = (
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [setText, onTranscriptionComplete, resetTranscript, finalTranscript, autoSendText]);
+  }, [enabled, setText, onTranscriptionComplete, resetTranscript, finalTranscript, autoSendText]);
 
-  const toggleListening = () => {
+  const toggleListening = useCallback(() => {
+    setSpeechError(undefined);
     if (!browserSupportsSpeechRecognition) {
+      const msg = sttExternal
+        ? localize('com_ui_speech_not_supported_use_external')
+        : localize('com_ui_speech_not_supported');
       showToast({
-        message: sttExternal
-          ? localize('com_ui_speech_not_supported_use_external')
-          : localize('com_ui_speech_not_supported'),
+        message: msg,
         status: 'error',
       });
+      setSpeechError(msg);
       return;
     }
 
     if (!isMicrophoneAvailable) {
+      const msg = localize('com_ui_microphone_unavailable');
       showToast({
-        message: localize('com_ui_microphone_unavailable'),
+        message: msg,
         status: 'error',
       });
+      setSpeechError(msg);
       return;
     }
 
@@ -100,7 +122,16 @@ const useSpeechToTextBrowser = (
         continuous: autoTranscribeAudio,
       });
     }
-  };
+  }, [
+    browserSupportsSpeechRecognition,
+    sttExternal,
+    isMicrophoneAvailable,
+    isListening,
+    languageSTT,
+    autoTranscribeAudio,
+    localize,
+    showToast,
+  ]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -111,13 +142,49 @@ const useSpeechToTextBrowser = (
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [isBrowserSTTEnabled, toggleListening]);
+
+  useEffect(() => {
+    if (!enabled) {
+      setSpeechError(undefined);
+    }
+  }, [enabled]);
+
+  useEffect(() => {
+    if (!isBrowserSTTEnabled) {
+      return;
+    }
+    const recognition = SpeechRecognition.getRecognition();
+    if (recognition) {
+      const handleError = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        if (event.error === 'not-allowed') {
+          setSpeechError(localize('com_ui_microphone_unavailable'));
+        } else if (event.error === 'no-speech') {
+          // No-speech is transient and not necessarily a blocking error
+        } else {
+          setSpeechError(`Speech recognition error: ${event.error}`);
+        }
+      };
+      recognition.addEventListener('error', handleError);
+      return () => {
+        recognition.removeEventListener('error', handleError);
+      };
+    }
+  }, [isBrowserSTTEnabled, localize]);
 
   return {
     isListening,
     isLoading: false,
     startRecording: toggleListening,
-    stopRecording: toggleListening,
+    stopRecording: () => {
+      SpeechRecognition.stopListening();
+      resetTranscript();
+      lastTranscript.current = null;
+      lastInterim.current = null;
+      setSpeechError(undefined);
+    },
+    error: speechError,
   };
 };
 

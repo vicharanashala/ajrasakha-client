@@ -1,6 +1,5 @@
 const axios = require('axios');
 const { logger } = require('@librechat/data-schemas');
-const { HttpsProxyAgent } = require('https-proxy-agent');
 const { genAzureEndpoint, logAxiosError } = require('@librechat/api');
 const { extractEnvVariable, TTSProviders } = require('librechat-data-provider');
 const { getRandomVoiceId, createChunkProcessor, splitTextIntoChunks } = require('./streamAudio');
@@ -267,8 +266,28 @@ class TTSService {
 
     const options = { headers, responseType: stream ? 'stream' : 'arraybuffer' };
 
-    if (process.env.PROXY) {
-      options.httpsAgent = new HttpsProxyAgent(process.env.PROXY);
+    /** Resolve proxy for TTS endpoint - mirrors custom endpoint behavior in initializeCustom.ts */
+    const endpointProxy = ttsSchema?.proxy;
+    let resolvedProxy = null;
+    if (endpointProxy === undefined || endpointProxy === true) {
+      resolvedProxy = process.env.PROXY || null;
+    } else if (endpointProxy === false) {
+      resolvedProxy = null;
+    } else {
+      resolvedProxy = endpointProxy;
+    }
+    if (resolvedProxy) {
+      /** Use axios's native `proxy` option (works for both HTTP and HTTPS targets). axios ignores httpsAgent for HTTP URLs, so we must use the proxy option. */
+      try {
+        const proxyUrl = new URL(resolvedProxy);
+        options.proxy = {
+          protocol: proxyUrl.protocol.replace(':', ''),
+          host: proxyUrl.hostname,
+          port: Number(proxyUrl.port),
+        };
+      } catch (err) {
+        logger.warn(`[TTS] Invalid proxy URL "${resolvedProxy}":`, err.message);
+      }
     }
 
     try {

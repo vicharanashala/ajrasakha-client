@@ -21,6 +21,7 @@ import type {
   TModelsConfig,
   TConversation,
   TEndpointsConfig,
+  TMessage,
 } from 'librechat-data-provider';
 import type { AssistantListItem } from '~/common';
 import {
@@ -39,6 +40,9 @@ import { useApplyModelSpecEffects } from './Agents';
 import { usePauseGlobalAudio } from './Audio';
 import { useHasAccess } from '~/hooks';
 import store from '~/store';
+import { useQueryClient } from '@tanstack/react-query';
+import { QueryKeys } from 'librechat-data-provider';
+import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
 
 const useNewConvo = (index = 0) => {
   const navigate = useNavigate();
@@ -47,7 +51,7 @@ const useNewConvo = (index = 0) => {
   const applyModelSpecEffects = useApplyModelSpecEffects();
   const clearAllConversations = store.useClearConvoState();
   const defaultPreset = useRecoilValue(store.defaultPreset);
-  const { setConversation } = store.useCreateConversationAtom(index);
+  const { conversation: oldConversation, setConversation } = store.useCreateConversationAtom(index);
   const [files, setFiles] = useRecoilState(store.filesByIndex(index));
   const saveBadgesState = useRecoilValue<boolean>(store.saveBadgesState);
   const clearAllLatestMessages = store.useClearLatestMessages(`useNewConvo ${index}`);
@@ -64,7 +68,9 @@ const useNewConvo = (index = 0) => {
   const { pauseGlobalAudio } = usePauseGlobalAudio(index);
   const saveDrafts = useRecoilValue<boolean>(store.saveDrafts);
   const resetBadges = useResetChatBadges();
-
+  const setShowFeedbackReminder = useSetRecoilState(store.showFeedbackReminder);
+  const setPendingNewConversation = useSetRecoilState(store.pendingNewConversation);
+  const queryClient = useQueryClient();
   const { mutateAsync } = useDeleteFilesMutation({
     onSuccess: () => {
       console.log('Files deleted');
@@ -74,7 +80,7 @@ const useNewConvo = (index = 0) => {
     },
   });
 
-  const switchToConversation = useRecoilCallback(
+      const switchToConversation = useRecoilCallback(
     () =>
       async (
         conversation: TConversation,
@@ -230,6 +236,37 @@ const useNewConvo = (index = 0) => {
           return;
         }
 
+        // Check feedback requirement when switching to an existing conversation
+        if (conversation.conversationId && conversation.conversationId !== Constants.NEW_CONVO) {
+          const messages = queryClient.getQueryData<TMessage[]>([
+            QueryKeys.messages,
+            conversation.conversationId,
+          ]);
+
+          // Check if messages are actually loaded in cache
+          const messagesLoaded = messages && messages.length > 0;
+
+          const latestAssistantMessage = messagesLoaded
+            ? messages
+                ?.slice()
+                .reverse()
+                .find((message) => !message.isCreatedByUser)
+            : null;
+
+          const toolCalled = await requiresFeedbackFromConversation(
+            conversation.conversationId ?? '',
+          );
+
+          // Only show modal if messages are loaded AND tool called AND no feedback given
+          const shouldRequestFeedback = messagesLoaded && toolCalled && !latestAssistantMessage?.feedback;
+
+          if (shouldRequestFeedback) {
+          setPendingNewConversation(false); // Not creating new, just switching
+            setShowFeedbackReminder(true);
+            return;
+          }
+        }
+
         const searchParamsString = searchParams?.toString();
         const getParams = () => (searchParamsString ? `?${searchParamsString}` : '');
 
@@ -249,11 +286,11 @@ const useNewConvo = (index = 0) => {
           state: disableFocus ? {} : { focusChat: true },
         });
       },
-    [endpointsConfig, defaultPreset, assistantsListMap, modelsQuery.data],
+    [endpointsConfig, defaultPreset, assistantsListMap, modelsQuery.data, queryClient],
   );
 
   const newConversation = useCallback(
-    function createNewConvo({
+    async function createNewConvo({
       template: _template = {},
       preset: _preset,
       modelsData,
@@ -262,6 +299,7 @@ const useNewConvo = (index = 0) => {
       keepLatestMessage = false,
       keepAddedConvos = false,
       disableParams,
+      skipFeedbackCheck = false,
     }: {
       template?: Partial<TConversation>;
       preset?: Partial<TPreset>;
@@ -271,7 +309,42 @@ const useNewConvo = (index = 0) => {
       keepLatestMessage?: boolean;
       keepAddedConvos?: boolean;
       disableParams?: boolean;
+      skipFeedbackCheck?: boolean;
     } = {}) {
+      if (!skipFeedbackCheck) {
+        const currentConversationId = oldConversation?.conversationId;
+
+        const messages = queryClient.getQueryData<TMessage[]>([
+          QueryKeys.messages,
+          currentConversationId,
+        ]);
+
+        // Check if messages are actually loaded in cache
+        const messagesLoaded = messages && messages.length > 0;
+
+        const latestAssistantMessage = messagesLoaded
+          ? messages
+              ?.slice()
+              .reverse()
+              .find((message) => !message.isCreatedByUser)
+          : null;
+
+        const toolCalled = await requiresFeedbackFromConversation(currentConversationId ?? '');
+
+        // Only show modal if messages are loaded AND tool called AND no feedback given
+        const shouldRequestFeedback =
+          messagesLoaded &&
+          toolCalled &&
+          currentConversationId &&
+          currentConversationId !== Constants.NEW_CONVO &&
+          !latestAssistantMessage?.feedback;
+
+        if (shouldRequestFeedback) {
+          setPendingNewConversation(true);
+          setShowFeedbackReminder(true);
+          return;
+        }
+      }
       pauseGlobalAudio();
       if (!saveBadgesState) {
         resetBadges();
@@ -352,6 +425,8 @@ const useNewConvo = (index = 0) => {
       );
     },
     [
+      oldConversation?.conversationId,
+      queryClient,
       files,
       setFiles,
       saveDrafts,
@@ -362,6 +437,8 @@ const useNewConvo = (index = 0) => {
       pauseGlobalAudio,
       switchToConversation,
       applyModelSpecEffects,
+      setPendingNewConversation,
+      setShowFeedbackReminder,
     ],
   );
 

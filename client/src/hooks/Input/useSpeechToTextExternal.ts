@@ -1,15 +1,19 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRecoilState } from 'recoil';
 import { useToastContext } from '@librechat/client';
 import { useSpeechToTextMutation } from '~/data-provider';
 import useGetAudioSettings from './useGetAudioSettings';
+import { useLocalize } from '~/hooks';
 import store from '~/store';
 
 const useSpeechToTextExternal = (
   setText: (text: string) => void,
   onTranscriptionComplete: (text: string) => void,
+  enabled = false,
 ) => {
+  const localize = useLocalize();
   const { showToast } = useToastContext();
+  const [speechError, setSpeechError] = useState<string | undefined>(undefined);
   const { speechToTextEndpoint } = useGetAudioSettings();
   const isExternalSTTEnabled = speechToTextEndpoint === 'external';
   const audioStream = useRef<MediaStream | null>(null);
@@ -42,10 +46,12 @@ const useSpeechToTextExternal = (
       }
     },
     onError: () => {
+      const msg = 'An error occurred while processing the audio, maybe the audio was too short';
       showToast({
-        message: 'An error occurred while processing the audio, maybe the audio was too short',
+        message: msg,
         status: 'error',
       });
+      setSpeechError(msg);
       setIsRequestBeingMade(false);
     },
   });
@@ -163,6 +169,7 @@ const useSpeechToTextExternal = (
   };
 
   const startRecording = async () => {
+    setSpeechError(undefined);
     if (isRequestBeingMade) {
       showToast({ message: 'A request is already being made. Please wait.', status: 'warning' });
       return;
@@ -191,14 +198,18 @@ const useSpeechToTextExternal = (
         }
         setIsListening(true);
       } catch (error) {
-        showToast({ message: `Error starting recording: ${error}`, status: 'error' });
+        const msg = `Error starting recording: ${error}`;
+        showToast({ message: msg, status: 'error' });
+        setSpeechError(msg);
       }
     } else {
-      showToast({ message: 'Microphone permission not granted', status: 'error' });
+      const msg = localize('com_ui_microphone_unavailable');
+      showToast({ message: msg, status: 'error' });
+      setSpeechError(msg);
     }
   };
 
-  const stopRecording = () => {
+  const stopRecording = useCallback(() => {
     if (!mediaRecorderRef.current) {
       return;
     }
@@ -218,9 +229,12 @@ const useSpeechToTextExternal = (
     } else {
       showToast({ message: 'MediaRecorder is not recording', status: 'error' });
     }
-  };
+  }, [showToast]);
 
   const externalStartRecording = () => {
+    if (!enabled) {
+      return;
+    }
     if (isListening) {
       showToast({ message: 'Already listening. Please stop recording first.', status: 'warning' });
       return;
@@ -230,6 +244,9 @@ const useSpeechToTextExternal = (
   };
 
   const externalStopRecording = () => {
+    if (!enabled) {
+      return;
+    }
     if (!isListening) {
       showToast({
         message: 'Not currently recording. Please start recording first.',
@@ -241,7 +258,19 @@ const useSpeechToTextExternal = (
     stopRecording();
   };
 
+  useEffect(() => {
+    if (!enabled) {
+      setSpeechError(undefined);
+      if (isListening) {
+        stopRecording();
+      }
+    }
+  }, [enabled, isListening, stopRecording]);
+
   const handleKeyDown = async (e: KeyboardEvent) => {
+    if (!enabled) {
+      return;
+    }
     if (e.shiftKey && e.altKey && e.code === 'KeyL' && isExternalSTTEnabled) {
       if (!window.MediaRecorder) {
         showToast({ message: 'MediaRecorder is not supported in this browser', status: 'error' });
@@ -276,6 +305,7 @@ const useSpeechToTextExternal = (
     externalStopRecording,
     externalStartRecording,
     isLoading: isProcessing,
+    error: speechError,
   };
 };
 

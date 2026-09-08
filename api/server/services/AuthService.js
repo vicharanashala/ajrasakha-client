@@ -3,10 +3,11 @@ const jwt = require('jsonwebtoken');
 const { webcrypto } = require('node:crypto');
 const {
   logger,
+  ACTIVE_SESSION_EXISTS_CODE,
   DEFAULT_SESSION_EXPIRY,
   DEFAULT_REFRESH_TOKEN_EXPIRY,
 } = require('@librechat/data-schemas');
-const { ErrorTypes, SystemRoles, errorsToString } = require('librechat-data-provider');
+const { ErrorTypes, SystemRoles, UserRoles, errorsToString } = require('librechat-data-provider');
 const { isEnabled, checkEmailConfig, isEmailDomainAllowed, math } = require('@librechat/api');
 const {
   findUser,
@@ -35,6 +36,8 @@ const domains = {
 
 const isProduction = process.env.NODE_ENV === 'production';
 const genericVerificationMessage = 'Please check your email to verify your email address.';
+const activeSessionMessage =
+  'You are already logged in on one device. Logout to access in this device.';
 
 /**
  * Logout user
@@ -201,9 +204,7 @@ const registerUser = async (user, additionalData = {}) => {
         { name: 'Existing user:', value: existingUser },
       );
 
-      // Sleep for 1 second
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      return { status: 200, message: genericVerificationMessage };
+      return { status: 400, message: 'Email already in use' };
     }
 
     //determine if this is the first registered user (not counting anonymous_user)
@@ -216,7 +217,8 @@ const registerUser = async (user, additionalData = {}) => {
       username,
       name,
       avatar: null,
-      role: isFirstRegisteredUser ? SystemRoles.ADMIN : SystemRoles.FARMER,
+      role: isFirstRegisteredUser ? SystemRoles.ADMIN : SystemRoles.USER,
+      userRole: UserRoles.FARMER,
       password: bcrypt.hashSync(password, salt),
       ...additionalData,
     };
@@ -550,4 +552,6 @@ module.exports = {
   setOpenIDAuthTokens,
   requestPasswordReset,
   resendVerificationEmail,
+  activeSessionMessage,
+  ACTIVE_SESSION_EXISTS_CODE,
 };

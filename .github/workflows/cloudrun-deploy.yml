@@ -1,0 +1,320 @@
+name: Build & Deploy to Cloud Run (Staging & Production)
+
+on:
+  workflow_dispatch:
+    inputs:
+      should_build:
+        description: "Build and Push Image?"
+        required: true
+        default: "true"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+      deploy_staging:
+        description: "Deploy to Staging?"
+        required: true
+        default: "true"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+      deploy_production:
+        description: "Deploy to Production?"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+env:
+  NODE_VERSION: '20'
+  DOCKER_IMAGE: ajrasakha-client
+  GCP_REGION: asia-south1
+  GCP_STAGING_SERVICE: ajrasakha-client-staging
+  GCP_PRODUCTION_SERVICE: ajrasakha-client-production
+
+jobs:
+  build_staging:
+    if: github.event.inputs.should_build == 'true' && github.event.inputs.deploy_staging == 'true'
+    name: Build and Push Image (Staging)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Image (Staging)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          no-cache: false
+          platforms: linux/amd64
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:staging-${{ github.sha }}
+          build-args: |
+            NODE_ENV=production
+            VITE_AJRASAKHA_SERVER_URL=${{ secrets.VITE_AJRASAKHA_SERVER_URL_STAGING }}
+
+  build_production:
+    if: github.event.inputs.should_build == 'true' && github.event.inputs.deploy_production == 'true'
+    name: Build and Push Image (Production)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Image (Production)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          no-cache: false
+          platforms: linux/amd64
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:production-${{ github.sha }}
+          build-args: |
+            NODE_ENV=production
+            VITE_AJRASAKHA_SERVER_URL=${{ secrets.VITE_AJRASAKHA_SERVER_URL_STAGING }}
+
+  deploy_staging:
+    name: Deploy to Cloud Run (Staging)
+    if: |
+      always() &&
+      github.event.inputs.deploy_staging == 'true' &&
+      github.event.inputs.should_build == 'true' &&
+      (needs.build_staging.result == 'success' || needs.build_staging.result == 'skipped' || needs.build_staging.result == null)
+    needs: [build_staging]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_GH_SA_KEY }}'
+
+      - name: Deploy to Cloud Run (Staging)
+        uses: google-github-actions/deploy-cloudrun@v2
+        timeout-minutes: 10
+        with:
+          service: ${{ env.GCP_STAGING_SERVICE }}
+          region: ${{ env.GCP_REGION }}
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:staging-${{ github.sha }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          env_vars: |
+            NODE_ENV=production
+            ALLOW_EMAIL_LOGIN=${{ secrets.ALLOW_EMAIL_LOGIN }}
+            ALLOW_PASSWORD_RESET=${{ secrets.ALLOW_PASSWORD_RESET }}
+            ALLOW_REGISTRATION=${{ secrets.ALLOW_REGISTRATION }}
+            ALLOW_SHARED_LINKS=${{ secrets.ALLOW_SHARED_LINKS }}
+            ALLOW_SHARED_LINKS_PUBLIC=${{ secrets.ALLOW_SHARED_LINKS_PUBLIC }}
+            ALLOW_SOCIAL_LOGIN=${{ secrets.ALLOW_SOCIAL_LOGIN }}
+            ALLOW_SOCIAL_REGISTRATION=${{ secrets.ALLOW_SOCIAL_REGISTRATION }}
+            ALLOW_UNVERIFIED_EMAIL_LOGIN=${{ secrets.ALLOW_UNVERIFIED_EMAIL_LOGIN }}
+            ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
+            ANTHROPIC_MODELS=${{ secrets.ANTHROPIC_MODELS }}
+            APP_TITLE=${{ secrets.APP_TITLE }}
+            BAN_DURATION=${{ secrets.BAN_DURATION }}
+            BAN_INTERVAL=${{ secrets.BAN_INTERVAL }}
+            BAN_VIOLATIONS=${{ secrets.BAN_VIOLATIONS }}
+            CONCURRENT_MESSAGE_MAX=${{ secrets.CONCURRENT_MESSAGE_MAX }}
+            CONCURRENT_VIOLATION_SCORE=${{ secrets.CONCURRENT_VIOLATION_SCORE }}
+            CONFIG_PATH=https://raw.githubusercontent.com/vicharanashala/ajrasakha-client/${{ github.ref_name }}/librechat.config.yaml
+            CONSOLE_JSON=${{ secrets.CONSOLE_JSON }}
+            CREDS_IV=${{ secrets.CREDS_IV }}
+            CREDS_KEY=${{ secrets.CREDS_KEY }}
+            CUSTOM_FOOTER=${{ secrets.CUSTOM_FOOTER }}
+            DEBUG_CONSOLE=${{ secrets.DEBUG_CONSOLE }}
+            DEBUG_LOGGING=${{ secrets.DEBUG_LOGGING }}
+            DOMAIN_CLIENT=${{ secrets.DOMAIN_CLIENT }}
+            DOMAIN_SERVER=${{ secrets.DOMAIN_SERVER }}
+            ENDPOINTS=${{ secrets.ENDPOINTS }}
+            FEEDBACK_ENFORCEMENT_ENABLED=${{ secrets.FEEDBACK_ENFORCEMENT_ENABLED }}
+            AGENT_HOST_IP=${{ secrets.AGENT_HOST_IP_STAGING }}
+            TS_PING_TARGET=${{ secrets.TS_PING_TARGET_STAGING }}
+            FILE_UPLOAD_VIOLATION_SCORE=${{ secrets.FILE_UPLOAD_VIOLATION_SCORE }}
+            FORK_VIOLATION_SCORE=${{ secrets.FORK_VIOLATION_SCORE }}
+            GOOGLE_CALLBACK_URL=${{ secrets.GOOGLE_CALLBACK_URL }}
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            GOOGLE_KEY=${{ secrets.GOOGLE_KEY }}
+            HELP_AND_FAQ_URL=${{ secrets.HELP_AND_FAQ_URL }}
+            HOST=${{ secrets.HOST }}
+            ILLEGAL_MODEL_REQ_SCORE=${{ secrets.ILLEGAL_MODEL_REQ_SCORE }}
+            IMPORT_VIOLATION_SCORE=${{ secrets.IMPORT_VIOLATION_SCORE }}
+            JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            LANGGRAPH_API_PORT=${{ secrets.LANGGRAPH_API_PORT }}
+            LANGGRAPH_API_HOST=${{ secrets.LANGGRAPH_API_HOST }}
+            LGD_API_KEY=${{ secrets.LGD_API_KEY }}
+            TAILSCALE_AUTHKEY=${{ secrets.TAILSCALE_AUTHKEY }}
+            TS_HOSTNAME=ajrasakha-client-staging
+            LGD_DISTRICTS_API_URL=${{ secrets.LGD_DISTRICTS_API_URL }}
+            LGD_STATES_API_URL=${{ secrets.LGD_STATES_API_URL }}
+            LGD_SUBDISTRICTS_API_URL=${{ secrets.LGD_SUBDISTRICTS_API_URL }}
+            LGD_VILLAGES_API_URL=${{ secrets.LGD_VILLAGES_API_URL }}
+            LIMIT_CONCURRENT_MESSAGES=${{ secrets.LIMIT_CONCURRENT_MESSAGES }}
+            LIMIT_MESSAGE_IP=${{ secrets.LIMIT_MESSAGE_IP }}
+            LIMIT_MESSAGE_USER=${{ secrets.LIMIT_MESSAGE_USER }}
+            LOGIN_MAX=${{ secrets.LOGIN_MAX }}
+            LOGIN_VIOLATION_SCORE=${{ secrets.LOGIN_VIOLATION_SCORE }}
+            LOGIN_WINDOW=${{ secrets.LOGIN_WINDOW }}
+            MESSAGE_IP_MAX=${{ secrets.MESSAGE_IP_MAX }}
+            MESSAGE_IP_WINDOW=${{ secrets.MESSAGE_IP_WINDOW }}
+            MESSAGE_USER_MAX=${{ secrets.MESSAGE_USER_MAX }}
+            MESSAGE_USER_WINDOW=${{ secrets.MESSAGE_USER_WINDOW }}
+            MESSAGE_VIOLATION_SCORE=${{ secrets.MESSAGE_VIOLATION_SCORE }}
+            MONGO_URI=${{ secrets.MONGO_URI }}
+            NON_BROWSER_VIOLATION_SCORE=${{ secrets.NON_BROWSER_VIOLATION_SCORE }}
+            NO_INDEX=${{ secrets.NO_INDEX }}
+            PROXY=${{ secrets.PROXY }}
+            REFRESH_TOKEN_EXPIRY=${{ secrets.REFRESH_TOKEN_EXPIRY }}
+            REGISTER_MAX=${{ secrets.REGISTER_MAX }}
+            REGISTER_WINDOW=${{ secrets.REGISTER_WINDOW }}
+            REGISTRATION_VIOLATION_SCORE=${{ secrets.REGISTRATION_VIOLATION_SCORE }}
+            SESSION_EXPIRY=${{ secrets.SESSION_EXPIRY }}
+            STT_VIOLATION_SCORE=${{ secrets.STT_VIOLATION_SCORE }}
+            TRUST_PROXY=${{ secrets.TRUST_PROXY }}
+            TTS_VIOLATION_SCORE=${{ secrets.TTS_VIOLATION_SCORE }}
+            VAPID_EMAIL=${{ secrets.VAPID_EMAIL }}
+            VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}
+            VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}
+            VITE_AJRASAKHA_SERVER_URL=${{ secrets.VITE_AJRASAKHA_SERVER_URL_STAGING }}
+            WEB_WEBHOOK_API_KEY=${{ secrets.WEB_WEBHOOK_API_KEY }}
+          flags: --allow-unauthenticated --port=3080 --memory=2Gi --min-instances=0 --timeout=300
+
+  deploy_production:
+    name: Deploy to Cloud Run (Production)
+    if: |
+      always() &&
+      github.event.inputs.deploy_production == 'true' &&
+      github.event.inputs.should_build == 'true' &&
+      (needs.build_production.result == 'success' || needs.build_production.result == 'skipped' || needs.build_production.result == null)
+    needs: [build_production]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_GH_SA_KEY }}'
+
+      - name: Deploy to Cloud Run (Production)
+        uses: google-github-actions/deploy-cloudrun@v2
+        timeout-minutes: 10
+        with:
+          service: ${{ env.GCP_PRODUCTION_SERVICE }}
+          region: ${{ env.GCP_REGION }}
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:production-${{ github.sha }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          env_vars: |
+            NODE_ENV=production
+            ALLOW_EMAIL_LOGIN=${{ secrets.ALLOW_EMAIL_LOGIN }}
+            ALLOW_PASSWORD_RESET=${{ secrets.ALLOW_PASSWORD_RESET }}
+            ALLOW_REGISTRATION=${{ secrets.ALLOW_REGISTRATION }}
+            ALLOW_SHARED_LINKS=${{ secrets.ALLOW_SHARED_LINKS }}
+            ALLOW_SHARED_LINKS_PUBLIC=${{ secrets.ALLOW_SHARED_LINKS_PUBLIC }}
+            ALLOW_SOCIAL_LOGIN=${{ secrets.ALLOW_SOCIAL_LOGIN }}
+            ALLOW_SOCIAL_REGISTRATION=${{ secrets.ALLOW_SOCIAL_REGISTRATION }}
+            ALLOW_UNVERIFIED_EMAIL_LOGIN=${{ secrets.ALLOW_UNVERIFIED_EMAIL_LOGIN }}
+            ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
+            ANTHROPIC_MODELS=${{ secrets.ANTHROPIC_MODELS }}
+            APP_TITLE=${{ secrets.APP_TITLE }}
+            BAN_DURATION=${{ secrets.BAN_DURATION }}
+            BAN_INTERVAL=${{ secrets.BAN_INTERVAL }}
+            BAN_VIOLATIONS=${{ secrets.BAN_VIOLATIONS }}
+            CONCURRENT_MESSAGE_MAX=${{ secrets.CONCURRENT_MESSAGE_MAX }}
+            CONCURRENT_VIOLATION_SCORE=${{ secrets.CONCURRENT_VIOLATION_SCORE }}
+            CONFIG_PATH=https://raw.githubusercontent.com/vicharanashala/ajrasakha-client/${{ github.ref_name }}/librechat.config.yaml
+            CONSOLE_JSON=${{ secrets.CONSOLE_JSON }}
+            CREDS_IV=${{ secrets.CREDS_IV }}
+            CREDS_KEY=${{ secrets.CREDS_KEY }}
+            CUSTOM_FOOTER=${{ secrets.CUSTOM_FOOTER }}
+            DEBUG_CONSOLE=${{ secrets.DEBUG_CONSOLE }}
+            DEBUG_LOGGING=${{ secrets.DEBUG_LOGGING }}
+            DOMAIN_CLIENT=${{ secrets.DOMAIN_CLIENT }}
+            DOMAIN_SERVER=${{ secrets.DOMAIN_SERVER }}
+            ENDPOINTS=${{ secrets.ENDPOINTS }}
+            FILE_UPLOAD_VIOLATION_SCORE=${{ secrets.FILE_UPLOAD_VIOLATION_SCORE }}
+            FORK_VIOLATION_SCORE=${{ secrets.FORK_VIOLATION_SCORE }}
+            GOOGLE_CALLBACK_URL=${{ secrets.GOOGLE_CALLBACK_URL }}
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            GOOGLE_KEY=${{ secrets.GOOGLE_KEY }}
+            HELP_AND_FAQ_URL=${{ secrets.HELP_AND_FAQ_URL }}
+            HOST=${{ secrets.HOST }}
+            ILLEGAL_MODEL_REQ_SCORE=${{ secrets.ILLEGAL_MODEL_REQ_SCORE }}
+            IMPORT_VIOLATION_SCORE=${{ secrets.IMPORT_VIOLATION_SCORE }}
+            JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            LGD_API_KEY=${{ secrets.LGD_API_KEY }}
+            TAILSCALE_AUTHKEY=${{ secrets.TAILSCALE_AUTHKEY }}
+            TS_HOSTNAME=ajrasakha-client-production
+            LGD_DISTRICTS_API_URL=${{ secrets.LGD_DISTRICTS_API_URL }}
+            LGD_STATES_API_URL=${{ secrets.LGD_STATES_API_URL }}
+            LGD_SUBDISTRICTS_API_URL=${{ secrets.LGD_SUBDISTRICTS_API_URL }}
+            LGD_VILLAGES_API_URL=${{ secrets.LGD_VILLAGES_API_URL }}
+            LIMIT_CONCURRENT_MESSAGES=${{ secrets.LIMIT_CONCURRENT_MESSAGES }}
+            LIMIT_MESSAGE_IP=${{ secrets.LIMIT_MESSAGE_IP }}
+            LIMIT_MESSAGE_USER=${{ secrets.LIMIT_MESSAGE_USER }}
+            LOGIN_MAX=${{ secrets.LOGIN_MAX }}
+            LOGIN_VIOLATION_SCORE=${{ secrets.LOGIN_VIOLATION_SCORE }}
+            LOGIN_WINDOW=${{ secrets.LOGIN_WINDOW }}
+            MESSAGE_IP_MAX=${{ secrets.MESSAGE_IP_MAX }}
+            MESSAGE_IP_WINDOW=${{ secrets.MESSAGE_IP_WINDOW }}
+            MESSAGE_USER_MAX=${{ secrets.MESSAGE_USER_MAX }}
+            MESSAGE_USER_WINDOW=${{ secrets.MESSAGE_USER_WINDOW }}
+            MESSAGE_VIOLATION_SCORE=${{ secrets.MESSAGE_VIOLATION_SCORE }}
+            MONGO_URI=${{ secrets.MONGO_URI }}
+            NON_BROWSER_VIOLATION_SCORE=${{ secrets.NON_BROWSER_VIOLATION_SCORE }}
+            NO_INDEX=${{ secrets.NO_INDEX }}
+            PROXY=${{ secrets.PROXY }}
+            REFRESH_TOKEN_EXPIRY=${{ secrets.REFRESH_TOKEN_EXPIRY }}
+            REGISTER_MAX=${{ secrets.REGISTER_MAX }}
+            REGISTER_WINDOW=${{ secrets.REGISTER_WINDOW }}
+            REGISTRATION_VIOLATION_SCORE=${{ secrets.REGISTRATION_VIOLATION_SCORE }}
+            SESSION_EXPIRY=${{ secrets.SESSION_EXPIRY }}
+            STT_VIOLATION_SCORE=${{ secrets.STT_VIOLATION_SCORE }}
+            TRUST_PROXY=${{ secrets.TRUST_PROXY }}
+            TTS_VIOLATION_SCORE=${{ secrets.TTS_VIOLATION_SCORE }}
+            VAPID_EMAIL=${{ secrets.VAPID_EMAIL }}
+            VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}
+            VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}
+            VITE_AJRASAKHA_SERVER_URL=${{ secrets.VITE_AJRASAKHA_SERVER_URL }}
+            WEB_WEBHOOK_API_KEY=${{ secrets.WEB_WEBHOOK_API_KEY }}
+            FEEDBACK_ENFORCEMENT_ENABLED=${{ secrets.FEEDBACK_ENFORCEMENT_ENABLED }}
+            AGENT_HOST_IP=${{ secrets.AGENT_HOST_IP }}
+            TS_PING_TARGET=${{ secrets.TS_PING_TARGET }}
+          flags: --allow-unauthenticated --port=3080 --memory=2Gi --min-instances=0 --timeout=300

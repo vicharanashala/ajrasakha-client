@@ -19,6 +19,11 @@ export default defineConfig(({ command }) => ({
     port: process.env.PORT && Number(process.env.PORT) || 3090,
     strictPort: false,
     proxy: {
+      '/api/location': {
+        target: process.env.VITE_AJRASAKHA_SERVER_URL,
+        changeOrigin: true,
+        secure: true,
+      },
       '/api': {
         target: backendURL,
         changeOrigin: true,

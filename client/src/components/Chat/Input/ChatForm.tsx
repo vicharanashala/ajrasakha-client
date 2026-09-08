@@ -35,6 +35,7 @@ import EditBadges from './EditBadges';
 import BadgeRow from './BadgeRow';
 import Mention from './Mention';
 import store from '~/store';
+import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
 
 const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
@@ -251,11 +252,60 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     }
   }, [locationAllowed]);
 
+  const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useRecoilState(
+    store.isFeedbackDialogOpen,
+  );
+  const [showFeedbackReminder, setShowFeedbackReminder] = useRecoilState(
+    store.showFeedbackReminder,
+  );
+  const { getMessages } = useChatContext();
+
+  // Track if input was previously focused (to detect refocus after blur)
+  const wasPreviouslyFocusedRef = useRef(false);
+
+  // Check for feedback requirement
+  const checkFeedbackRequirement = useCallback(async () => {
+    const messages = getMessages();
+
+    // Check if messages are actually loaded
+    const messagesLoaded = messages && messages.length > 0;
+
+    const latestAssistantMessage = messagesLoaded
+      ? messages
+          ?.slice()
+          .reverse()
+          .find((message) => !message.isCreatedByUser)
+      : null;
+
+    const toolCalled = await requiresFeedbackFromConversation(conversationId);
+
+    // Only show modal if messages are loaded AND tool called AND no feedback given
+    if (messagesLoaded && toolCalled && !latestAssistantMessage?.feedback) {
+      setShowFeedbackReminder(true);
+    }
+  }, [conversationId, getMessages, setShowFeedbackReminder]);
+
+  // Reset focus tracking when conversation changes
+  useEffect(() => {
+    wasPreviouslyFocusedRef.current = false;
+  }, [conversationId]);
+
+  // Handle input focus - check feedback on refocus (after blur)
+  const handleInputFocus = useCallback(() => {
+    // Only check if this is a refocus (user previously had input focused and now focused again)
+    if (wasPreviouslyFocusedRef.current) {
+      checkFeedbackRequirement();
+    }
+    wasPreviouslyFocusedRef.current = true;
+  }, [checkFeedbackRequirement]);
+
+  const handleMessageSubmit = methods.handleSubmit(async (data) => {
+    submitMessage(data, position ?? undefined);
+  });
+
   return (
     <form
-      onSubmit={methods.handleSubmit((data) =>
-        submitMessage(data, position ? position : undefined),
-      )}
+      onSubmit={handleMessageSubmit}
       className={cn(
         'mx-auto flex w-full flex-row gap-3 transition-[max-width] duration-300 sm:px-2',
         maximizeChatSpace ? 'max-w-full' : 'md:max-w-3xl xl:max-w-4xl',
@@ -330,6 +380,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     rows={1}
                     onFocus={() => {
                       handleFocusOrClick();
+                      handleInputFocus();
                       setIsTextAreaFocused(true);
                     }}
                     onBlur={setIsTextAreaFocused.bind(null, false)}
@@ -388,6 +439,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                   textAreaRef={textAreaRef}
                   disabled={disableInputs || isNotAppendable}
                   isSubmitting={isSubmitting}
+                  enabled={!isFeedbackDialogOpen}
                 />
               )}
               <div className={`${isRTL ? 'ml-2' : 'mr-2'}`}>

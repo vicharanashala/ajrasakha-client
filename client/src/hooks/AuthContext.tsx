@@ -23,6 +23,8 @@ import {
 import { TAuthConfig, TUserContext, TAuthContext, TResError } from '~/common';
 import useTimeout from './useTimeout';
 import store from '~/store';
+import { useToastContext } from '@librechat/client';
+import useLocalize from './useLocalize';
 
 const AuthContext = createContext<TAuthContext | undefined>(undefined);
 
@@ -33,19 +35,15 @@ const AuthContextProvider = ({
   authConfig?: TAuthConfig;
   children: ReactNode;
 }) => {
+  const { showToast } = useToastContext();
+  const localize = useLocalize();
   const [user, setUser] = useRecoilState(store.user);
   const [token, setToken] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | undefined>(undefined);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const logoutRedirectRef = useRef<string | undefined>(undefined);
 
-  const { data: farmerRole = null } = useGetRole(SystemRoles.FARMER, {
-    enabled: !!(isAuthenticated && (user?.role ?? '')),
-  });
-  const { data: internalRole = null } = useGetRole(SystemRoles.INTERNAL, {
-    enabled: !!(isAuthenticated && (user?.role ?? '')),
-  });
-  const { data: coordinatorRole = null } = useGetRole(SystemRoles.COORDINATOR, {
+  const { data: userRole = null } = useGetRole(SystemRoles.USER, {
     enabled: !!(isAuthenticated && (user?.role ?? '')),
   });
   const { data: adminRole = null } = useGetRole(SystemRoles.ADMIN, {
@@ -96,7 +94,20 @@ const AuthContextProvider = ({
     },
     onError: (error: TResError | unknown) => {
       const resError = error as TResError;
-      doSetError(resError.message);
+      const errorData = resError?.response?.data;
+      let errorCode: string | undefined = undefined;
+      // Check if the backend sent an array
+      if (Array.isArray(errorData) && errorData.length > 0) {
+        errorCode = errorData[0]?.errorCode;
+      }// check if it as a standard object
+      else if (errorData && typeof errorData === 'object') {
+        errorCode = errorData?.errorCode;
+      }
+      let errorMsg = errorCode === 'ERR_ADMIN_VERIFICATION_PENDING' ? errorCode : resError.message
+      if(errorCode === 'ERR_ADMIN_VERIFICATION_PENDING'){
+        showToast({ message:localize('com_auth_error_login_admin_verfication') , status: 'error' });
+      }
+      doSetError(errorMsg);
       navigate('/login', { replace: true });
     },
   });
@@ -221,15 +232,13 @@ const AuthContextProvider = ({
       logout,
       setError,
       roles: {
-        [SystemRoles.FARMER]: farmerRole,
-        [SystemRoles.INTERNAL]: internalRole,
-        [SystemRoles.COORDINATOR]: coordinatorRole,
+        [SystemRoles.USER]: userRole,
         [SystemRoles.ADMIN]: adminRole,
       },
       isAuthenticated,
     }),
 
-    [user, error, isAuthenticated, token, farmerRole, internalRole, coordinatorRole, adminRole],
+    [user, error, isAuthenticated, token, userRole, adminRole],
   );
 
   return <AuthContext.Provider value={memoedValue}>{children}</AuthContext.Provider>;

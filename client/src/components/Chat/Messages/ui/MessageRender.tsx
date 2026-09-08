@@ -48,6 +48,7 @@ const MessageRender = memo(
       handleContinue,
       copyToClipboard,
       regenerateMessage,
+      feedback,
     } = useMessageActions({
       message: msg,
       currentEditId,
@@ -189,6 +190,7 @@ const MessageRender = memo(
                   latestMessage={latestMessage}
                   handleFeedback={handleFeedback}
                   isLast={isLast}
+                  feedback={feedback}
                 />
               </SubRow>
             )}

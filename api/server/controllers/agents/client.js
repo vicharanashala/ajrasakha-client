@@ -754,15 +754,35 @@ class AgentClient extends BaseClient {
 
   /** @type {sendCompletion} */
   async sendCompletion(payload, opts = {}) {
-    await this.chatCompletion({
-      payload,
-      onProgress: opts.onProgress,
-      userMCPAuthMap: opts.userMCPAuthMap,
-      abortController: opts.abortController,
-    });
+    const sendStart = Date.now();
+    const sendEndpoint = this.options?.agent?.endpoint || '<unknown>';
+    console.log('[REQ] -> sendCompletion endpoint=' + sendEndpoint +
+      ' model=' + (payload?.model || '<unset>') +
+      ' opts.hasProgress=' + Boolean(opts?.onProgress));
+    try {
+      await this.chatCompletion({
+        payload,
+        onProgress: opts.onProgress,
+        userMCPAuthMap: opts.userMCPAuthMap,
+        abortController: opts.abortController,
+      });
 
-    const completion = filterMalformedContentParts(this.contentParts);
-    return { completion };
+      const completion = filterMalformedContentParts(this.contentParts);
+      const sendMs = Date.now() - sendStart;
+      console.log('[REQ] <- sendCompletion OK endpoint=' + sendEndpoint +
+        ' model=' + (payload?.model || '<unset>') +
+        ' (' + sendMs + 'ms)' +
+        ' contentParts=' + (completion?.length ?? 0));
+      return { completion };
+    } catch (sendErr) {
+      const sendMs = Date.now() - sendStart;
+      console.error('[REQ] <- sendCompletion FAILED endpoint=' + sendEndpoint +
+        ' model=' + (payload?.model || '<unset>') +
+        ' (' + sendMs + 'ms)' +
+        ' err=' + (sendErr?.message || '<none>') +
+        ' code=' + (sendErr?.code || '<none>'));
+      throw sendErr;
+    }
   }
 
   /**
@@ -1120,7 +1140,19 @@ class AgentClient extends BaseClient {
     const { handleLLMEnd, collected: collectedMetadata } = createMetadataAggregator();
     const { req, agent } = this.options;
     const appConfig = req.config;
+    const titleStart = Date.now();
     let endpoint = agent.endpoint;
+    // Boot diagnostic for titleConvo: log which endpoint / titleEndpoint / titleModel
+    // we *intend* to use. If `AjraSakha-Agent` references a `titleEndpoint: "vLLM-Gemma"`
+    // but no such endpoint is configured (e.g. it's commented out in librechat.config.yaml),
+    // we'll see the fallback path light up in the logs.
+    console.log('[REQ] -> titleConvo endpoint=' + endpoint +
+      ' titleEndpoint=' + ((appConfig?.endpoints?.[endpoint]?.titleEndpoint) || '<unset>') +
+      ' titleModel=' + ((appConfig?.endpoints?.[endpoint]?.titleModel) || '<unset>') +
+      ' agentModel=' + (agent?.model || '<unset>') +
+      ' textLen=' + (text?.length ?? 0));
+    // Track whether we fell back from a configured titleEndpoint to the default endpoint.
+    let titleFallbackUsed = false;
 
     /** @type {import('@librechat/agents').ClientOptions} */
     let clientOptions = {
@@ -1299,8 +1331,17 @@ class AgentClient extends BaseClient {
         );
       });
 
+      const titleMs = Date.now() - titleStart;
+      console.log('[REQ] <- titleConvo OK endpoint=' + endpoint +
+        ' (' + titleMs + 'ms)' +
+        ' title="' + (titleResult.title || '<empty>').slice(0, 80) + '"');
       return sanitizeTitle(titleResult.title);
     } catch (err) {
+      const titleMs = Date.now() - titleStart;
+      console.error('[REQ] <- titleConvo FAILED endpoint=' + endpoint +
+        ' (' + titleMs + 'ms)' +
+        ' err=' + (err?.message || '<none>') +
+        ' code=' + (err?.code || '<none>'));
       logger.error('[api/server/controllers/agents/client.js #titleConvo] Error', err);
       return;
     }

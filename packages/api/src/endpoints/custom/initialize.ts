@@ -153,9 +153,27 @@ export async function initializeCustom({
 
   const customOptions = buildCustomOptions(endpointConfig, appConfig, endpointTokenConfig);
 
+  /**
+   * Resolve the proxy for this endpoint.
+   * Per-endpoint `proxy` in librechat.yaml takes precedence over process.env.PROXY:
+   *   - undefined (or true): fall back to PROXY env (default LibreChat behaviour)
+   *   - false: skip proxy entirely (e.g. for external endpoints that
+   *     must not be pushed through Tailscale's HTTP proxy)
+   *   - string: use this URL as the proxy instead of PROXY env
+   */
+  const endpointProxy = endpointConfig.proxy;
+  let resolvedProxy: string | null;
+  if (endpointProxy === undefined || endpointProxy === true) {
+    resolvedProxy = PROXY ?? null;
+  } else if (endpointProxy === false) {
+    resolvedProxy = null;
+  } else {
+    resolvedProxy = endpointProxy;
+  }
+
   const clientOptions: Record<string, unknown> = {
     reverseProxyUrl: baseURL ?? null,
-    proxy: PROXY ?? null,
+    proxy: resolvedProxy,
     ...customOptions,
   };
 

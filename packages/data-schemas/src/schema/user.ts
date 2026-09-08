@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import { SystemRoles } from 'librechat-data-provider';
+import { SystemRoles, UserRoles } from 'librechat-data-provider';
 import { IUser } from '~/types';
 
 // Session sub-schema
@@ -68,7 +68,6 @@ const PushSubscriptionSchema = new Schema(
   { _id: false },
 );
 
-
 const userSchema = new Schema<IUser>(
   {
     name: {
@@ -110,7 +109,12 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      default: SystemRoles.FARMER,
+      default: SystemRoles.USER,
+    },
+    userRole: {
+      type: String,
+      enum: Object.values(UserRoles),
+      default: UserRoles.FARMER,
     },
     googleId: {
       type: String,
@@ -216,8 +220,12 @@ const userSchema = new Schema<IUser>(
       type: [PushSubscriptionSchema],
       default: [],
     },
-    lastActiveAt:{
-      type: Date
+    lastActiveAt: {
+      type: Date,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true },

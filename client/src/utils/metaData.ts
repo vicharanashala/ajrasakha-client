@@ -86633,8 +86633,8 @@ export const VILLAGES = {
     "Hathugattu Forest I",
     "Gonikoppal (CT)"
   ],
-  "Mysore": [
-    "Mysore",
+  "Mysuru": [
+    "Mysuru",
     "Piriyapatna",
     "K. Basavanahalli",
     "Gobbalikaval",
@@ -589961,8 +589961,8 @@ export const VILLAGES = {
 //     "Hathugattu Forest I",
 //     "Gonikoppal (CT)"
 //   ],
-//   "Mysore": [
-//     "Mysore",
+//   "Mysuru": [
+//     "Mysuru",
 //     "Piriyapatna",
 //     "K. Basavanahalli",
 //     "Gobbalikaval",

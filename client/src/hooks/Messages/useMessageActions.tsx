@@ -17,6 +17,8 @@ import { useAuthContext } from '~/hooks/AuthContext';
 import { useGetAddedConvo } from '~/hooks/Chat';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
+import { useSetRecoilState } from 'recoil';
+import type { TMessage } from 'librechat-data-provider';
 
 export type TMessageActions = Pick<
   TMessageProps,
@@ -31,8 +33,17 @@ export default function useMessageActions(props: TMessageActions) {
   const UsernameDisplay = useRecoilValue<boolean>(store.UsernameDisplay);
   const { message, currentEditId, setCurrentEditId, searchResults } = props;
 
-  const { ask, index, regenerate, isSubmitting, conversation, latestMessage, handleContinue } =
-    useChatContext();
+  const {
+    ask,
+    index,
+    regenerate,
+    isSubmitting,
+    conversation,
+    latestMessage,
+    handleContinue,
+    getMessages,
+    setMessages,
+  } = useChatContext();
 
   const getAddedConvo = useGetAddedConvo();
 
@@ -117,10 +128,19 @@ export default function useMessageActions(props: TMessageActions) {
     message?.messageId || '',
   );
 
+  const setShowFeedbackReminder = useSetRecoilState(store.showFeedbackReminder);
+
   const handleFeedback = useCallback(
     ({ feedback: newFeedback }: { feedback: TFeedback | undefined }) => {
+      const normalizedFeedback = newFeedback
+        ? {
+            ...newFeedback,
+            tag:
+              typeof newFeedback.tag === 'string' ? getTagByKey(newFeedback.tag) : newFeedback.tag,
+          }
+        : undefined;
       const payload: TUpdateFeedbackRequest = {
-        feedback: newFeedback ? toMinimalFeedback(newFeedback) : undefined,
+        feedback: newFeedback ? toMinimalFeedback(normalizedFeedback) : undefined,
       };
 
       feedbackMutation.mutate(payload, {
@@ -129,11 +149,28 @@ export default function useMessageActions(props: TMessageActions) {
             setFeedback(undefined);
           } else {
             const tag = getTagByKey(data.feedback?.tag ?? undefined);
-            setFeedback({
+            const updatedFeedback: TFeedback = {
               rating: data.feedback.rating,
               tag,
               text: data.feedback.text,
-            });
+            };
+            setFeedback(updatedFeedback);
+            const messages = getMessages();
+            if (messages) {
+              setMessages(
+                messages.map((item): TMessage => {
+                  if (item.messageId !== messageId) {
+                    return item;
+                  }
+
+                  return {
+                    ...item,
+                    feedback: updatedFeedback,
+                  } as TMessage;
+                }),
+              );
+            }
+            setShowFeedbackReminder(false);
           }
         },
         onError: (error) => {
@@ -141,7 +178,7 @@ export default function useMessageActions(props: TMessageActions) {
         },
       });
     },
-    [feedbackMutation],
+    [feedbackMutation, getMessages, setMessages, messageId, setShowFeedbackReminder],
   );
 
   return {
