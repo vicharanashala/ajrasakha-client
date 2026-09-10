@@ -10,6 +10,7 @@ import { useGetStartupConfig, useGetUserBalance } from '~/data-provider';
 import { useAuthContext } from '~/hooks/AuthContext';
 import { useLocalize } from '~/hooks';
 import Settings from './Settings';
+import HelpAndFaqModal from '../ui/HelpAndFaqModal';
 
 const USER_ROLE_LABELS: Record<string, string> = {
   FARMER: 'Farmer',
@@ -46,6 +47,7 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const [helpAndFaq, setHelpAndFaq] = useState(false);
   const accountSettingsButtonRef = useRef<HTMLButtonElement>(null);
 
   const selectTrigger = (
@@ -134,7 +136,7 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
         {startupConfig?.helpAndFaqURL !== '/' && (
           <Select.SelectItem
             value=""
-            onClick={() => window.open(startupConfig?.helpAndFaqURL, '_blank')}
+            onClick={() => setHelpAndFaq(true)}
             className="select-item text-sm"
           >
             <LinkIcon aria-hidden="true" />
@@ -201,6 +203,7 @@ function AccountSettings({ collapsed = false }: { collapsed?: boolean }) {
           readOnly
         />
       )}
+      {helpAndFaq && <HelpAndFaqModal open={helpAndFaq} onOpenChange={setHelpAndFaq} readOnly />}
       <LogoutConfirmModal
         open={showLogoutConfirm}
         onOpenChange={setShowLogoutConfirm}
