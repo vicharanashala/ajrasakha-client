@@ -37,11 +37,9 @@ router.get('/', async function (req, res) {
     return today.getMonth() === 1 && today.getDate() === 11;
   };
 
-  const instanceProject = await getProjectByName(Constants.GLOBAL_PROJECT_NAME, '_id');
-
-  const ldap = getLdapConfig();
-
   try {
+    const instanceProject = await getProjectByName(Constants.GLOBAL_PROJECT_NAME, '_id');
+    const ldap = getLdapConfig();
     const appConfig = await getAppConfig({ role: req.user?.role });
 
     const isOpenIdEnabled =
@@ -101,7 +99,7 @@ router.get('/', async function (req, res) {
       sharedLinksEnabled,
       publicSharedLinksEnabled,
       analyticsGtmId: process.env.ANALYTICS_GTM_ID,
-      instanceProjectId: instanceProject._id.toString(),
+      instanceProjectId: instanceProject?._id ? instanceProject._id.toString() : '',
       bundlerURL: process.env.SANDPACK_BUNDLER_URL,
       staticBundlerURL: process.env.SANDPACK_STATIC_BUNDLER_URL,
       sharePointFilePickerEnabled,

@@ -129,6 +129,7 @@ export default function useMessageActions(props: TMessageActions) {
   );
 
   const setShowFeedbackReminder = useSetRecoilState(store.showFeedbackReminder);
+  const setIsRequiredFeedback = useSetRecoilState(store.isRequiredFeedback);
 
   const handleFeedback = useCallback(
     ({ feedback: newFeedback }: { feedback: TFeedback | undefined }) => {
@@ -171,6 +172,7 @@ export default function useMessageActions(props: TMessageActions) {
               );
             }
             setShowFeedbackReminder(false);
+            setIsRequiredFeedback(false);
           }
         },
         onError: (error) => {

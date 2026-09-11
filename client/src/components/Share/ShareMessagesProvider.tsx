@@ -33,6 +33,8 @@ export function ShareMessagesProvider({ messages, children }: ShareMessagesProvi
       setLatestMessage: () => {},
       getMessages: () => messages,
       setMessages: () => {},
+      showFeedbackReminder: false,
+      submitFeedback: undefined,
     }),
     [messages],
   );

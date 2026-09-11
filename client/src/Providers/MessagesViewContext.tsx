@@ -1,5 +1,24 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useMemo,
+  useEffect,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
+import { useUpdateFeedbackMutation } from 'librechat-data-provider/react-query';
+import {
+  Constants,
+  TFeedback,
+  getTagByKey,
+  toMinimalFeedback,
+  TUpdateFeedbackRequest,
+} from 'librechat-data-provider';
 import { useChatContext } from './ChatContext';
+import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
+import store from '~/store';
+import { useRecoilState } from 'recoil';
 
 interface MessagesViewContextValue {
   /** Core conversation data */
@@ -22,6 +41,10 @@ interface MessagesViewContextValue {
   setLatestMessage: ReturnType<typeof useChatContext>['setLatestMessage'];
   getMessages: ReturnType<typeof useChatContext>['getMessages'];
   setMessages: ReturnType<typeof useChatContext>['setMessages'];
+
+  /** Feedback submission */
+  submitFeedback?: (opts: { feedback?: TFeedback }) => void;
+  showFeedbackReminder: boolean;
 }
 
 const MessagesViewContext = createContext<MessagesViewContextValue | undefined>(undefined);
@@ -48,6 +71,140 @@ export function MessagesViewProvider({ children }: { children: React.ReactNode }
     setMessages,
   } = chatContext;
 
+  // --- Feedback Tracker ---
+  // Watches isSubmitting transitions: true→false means an LLM response just completed.
+  // After a 2-second wait, we call the required-feedback API and store the result.
+  // Initialise from localStorage on first mount so conversation switches restore the state.
+  const [isRequiredFeedback, setIsRequiredFeedback] = useRecoilState(store.isRequiredFeedback);
+  const [showFeedbackReminder] = useRecoilState(store.showFeedbackReminder);
+  const [initialized, setInitialized] = useState(false);
+  useEffect(() => {
+    if (initialized) {
+      return;
+    }
+    try {
+      const stored = localStorage.getItem('isRequiredFeedback');
+      if (stored !== null) {
+        setIsRequiredFeedback(stored === 'true');
+      }
+    } catch {
+      // ignore localStorage errors
+    }
+    setInitialized(true);
+  }, [initialized, setIsRequiredFeedback]);
+  const [wasSubmitting, setWasSubmitting] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const conversationIdRef = useRef<string | null | undefined>(undefined);
+
+  // Keep conversationId ref in sync; cancel pending timer on conversation change
+  useEffect(() => {
+    conversationIdRef.current = conversation?.conversationId;
+    if (timerRef.current !== null) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  }, [conversation?.conversationId]);
+
+  // Detect isSubmitting transition: true → false (LLM response completed)
+  useEffect(() => {
+    console.log(`[Feedback] useEffect fired — isSubmitting=${isSubmitting}, wasSubmitting=${wasSubmitting}, convoId=${conversation?.conversationId}`);
+    if (wasSubmitting && !isSubmitting) {
+      const convoId = conversationIdRef.current;
+      console.log(`[Feedback] Detected true→false transition, convoId=${convoId}`);
+      if (!convoId || convoId === Constants.NEW_CONVO) {
+        console.log(`[Feedback] Skipping — invalid convoId: ${convoId}`);
+        setWasSubmitting(false);
+        return;
+      }
+      // Cancel any previous pending timer
+      if (timerRef.current !== null) {
+        clearTimeout(timerRef.current);
+      }
+      timerRef.current = setTimeout(async () => {
+        timerRef.current = null;
+        console.log(`[Feedback] Timer fired — calling required-feedback API for conversation: ${convoId}`);
+        const result = await requiresFeedbackFromConversation(convoId);
+        console.log(`[Feedback] API returned: ${result} for conversation: ${convoId}`);
+        localStorage.setItem('isRequiredFeedback', JSON.stringify(result));
+        console.log(`[Feedback] Wrote to localStorage: isRequiredFeedback = ${result}`);
+      }, 0);
+    }
+    setWasSubmitting(isSubmitting);
+  }, [isSubmitting, wasSubmitting, setIsRequiredFeedback, conversation?.conversationId]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current !== null) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, []);
+  // --- End Feedback Tracker ---
+
+  // --- Feedback Submission (Modal 1 / FeedbackReminderPanel) ---
+  // PUT /api/messages/:conversationId/:messageId/feedback, keyed to the
+  // conversation's last message — this reminder isn't tied to any one
+  // message on screen, so it always records feedback against the most
+  // recent message in the conversation (mirrors per-message feedback in
+  // useMessageActions, which keys off the specific message being rated).
+  const feedbackMutation = useUpdateFeedbackMutation(
+    conversation?.conversationId ?? '',
+    latestMessage?.messageId ?? '',
+  );
+
+  const submitFeedback = useCallback(
+    ({ feedback }: { feedback?: TFeedback }) => {
+      // Captured up front: feedbackMutation is scoped to whatever messageId
+      // it was created with, but by the time onSuccess runs, latestMessage
+      // (and therefore this component's next render) may already have moved
+      // on — so pin down which message we're actually updating.
+      const targetMessageId = latestMessage?.messageId;
+      const normalizedFeedback = feedback
+        ? {
+            ...feedback,
+            tag: typeof feedback.tag === 'string' ? getTagByKey(feedback.tag) : feedback.tag,
+          }
+        : undefined;
+      const payload: TUpdateFeedbackRequest = {
+        feedback: feedback ? toMinimalFeedback(normalizedFeedback) : undefined,
+      };
+
+      feedbackMutation.mutate(payload, {
+        // Mirror useMessageActions' handleFeedback: write the confirmed
+        // feedback into the local messages list so the per-message hover
+        // thumbs icon (Feedback.tsx, driven by message.feedback) updates
+        // immediately instead of only after a refetch/refresh.
+        onSuccess: (data) => {
+          if (!targetMessageId) {
+            return;
+          }
+          const updatedFeedback = data.feedback
+            ? {
+                rating: data.feedback.rating,
+                tag: getTagByKey(data.feedback.tag ?? undefined),
+                text: data.feedback.text,
+              }
+            : undefined;
+          const messages = getMessages();
+          if (messages) {
+            setMessages(
+              messages.map((item) =>
+                item.messageId === targetMessageId ? { ...item, feedback: updatedFeedback } : item,
+              ),
+            );
+          }
+        },
+        onError: (error) => {
+          console.error('Failed to submit feedback:', error);
+        },
+      });
+    },
+    [feedbackMutation, latestMessage?.messageId, getMessages, setMessages],
+  );
+  // --- End Feedback Submission ---
+
   /** Memoize conversation-related values */
   const conversationValues = useMemo(
     () => ({
@@ -63,8 +220,9 @@ export function MessagesViewProvider({ children }: { children: React.ReactNode }
       abortScroll,
       isSubmitting,
       setAbortScroll,
+      showFeedbackReminder,
     }),
-    [isSubmitting, abortScroll, setAbortScroll],
+    [isSubmitting, abortScroll, setAbortScroll, showFeedbackReminder],
   );
 
   /** Memoize message operations (these are typically stable references) */
@@ -89,6 +247,14 @@ export function MessagesViewProvider({ children }: { children: React.ReactNode }
     [index, latestMessage, setLatestMessage],
   );
 
+  /** Memoize feedback operations */
+  const feedbackOperations = useMemo(
+    () => ({
+      submitFeedback,
+    }),
+    [submitFeedback],
+  );
+
   /** Combine all values into final context value */
   const contextValue = useMemo<MessagesViewContextValue>(
     () => ({
@@ -96,8 +262,9 @@ export function MessagesViewProvider({ children }: { children: React.ReactNode }
       ...submissionStates,
       ...messageOperations,
       ...messageState,
+      ...feedbackOperations,
     }),
-    [conversationValues, submissionStates, messageOperations, messageState],
+    [conversationValues, submissionStates, messageOperations, messageState, feedbackOperations],
   );
 
   return (

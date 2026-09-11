@@ -21,6 +21,7 @@ import FileSearch from './FileSearch';
 import Artifacts from './Artifacts';
 import MCPSelect from './MCPSelect';
 import WebSearch from './WebSearch';
+import { cn } from '~/utils';
 import store from '~/store';
 
 interface BadgeRowProps {
@@ -30,6 +31,9 @@ interface BadgeRowProps {
   conversationId?: string | null;
   isSubmitting?: boolean;
   isInChat: boolean;
+  /** Stack the badges one per line instead of wrapping them in a row. Used by the composer's
+   *  "+" menu, which opens as a narrow column above the button. */
+  vertical?: boolean;
 }
 
 interface BadgeWrapperProps {
@@ -146,6 +150,7 @@ function BadgeRow({
   onChange,
   onToggle,
   isInChat,
+  vertical = false,
 }: BadgeRowProps) {
   const [orderedBadges, setOrderedBadges] = useState<BadgeItem[]>([]);
   const [dragState, dispatch] = useReducer(dragReducer, {
@@ -321,7 +326,13 @@ function BadgeRow({
 
   return (
     <BadgeRowProvider conversationId={conversationId} isSubmitting={isSubmitting}>
-      <div ref={containerRef} className="relative flex flex-wrap items-center gap-2">
+      <div
+        ref={containerRef}
+        className={cn(
+          'relative flex gap-2',
+          vertical ? 'flex-col items-stretch gap-1' : 'flex-wrap items-center',
+        )}
+      >
         {showEphemeralBadges === true && <ToolsDropdown />}
         {tempBadges.map((badge, index) => (
           <React.Fragment key={badge.id}>

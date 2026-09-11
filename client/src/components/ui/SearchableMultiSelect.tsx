@@ -6,6 +6,7 @@ interface SearchableMultiSelectProps {
   onChange: (selected: string[]) => void;
   placeholder?: string;
   disabled?: boolean;
+  openUpward?: boolean;
 }
 
 const SearchableMultiSelect = ({
@@ -14,6 +15,7 @@ const SearchableMultiSelect = ({
   onChange,
   placeholder = 'Select...',
   disabled = false,
+  openUpward = false,
 }: SearchableMultiSelectProps) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -70,7 +72,7 @@ const SearchableMultiSelect = ({
         type="button"
         onClick={handleToggle}
         disabled={disabled}
-        className={`flex w-full items-center justify-between rounded-md border border-border-heavy bg-surface-secondary px-3 py-2 text-left text-sm focus:outline-none focus:ring-1 focus:ring-green-500 disabled:cursor-not-allowed disabled:opacity-50 ${
+        className={`flex min-h-12 w-full items-center justify-between rounded-xl border border-border-medium bg-transparent px-3.5 py-2.5 text-left text-base focus:outline-none focus:ring-1 focus:ring-green-600 disabled:cursor-not-allowed disabled:opacity-50 ${
           selectedDisplay ? 'text-text-primary' : 'text-text-secondary'
         }`}
       >
@@ -87,7 +89,11 @@ const SearchableMultiSelect = ({
       </button>
 
       {open && (
-        <div className="absolute z-[300] mt-1 w-full rounded-md border border-border-heavy bg-surface-primary shadow-lg">
+        <div
+          className={`absolute z-[300] w-full rounded-md border border-border-heavy bg-surface-dialog shadow-lg ${
+            openUpward ? 'bottom-full mb-1' : 'mt-1'
+          }`}
+        >
           <div className="border-b border-border-heavy p-2">
             <input
               ref={inputRef}

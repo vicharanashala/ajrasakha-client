@@ -27,6 +27,7 @@ const user = require('./user');
 const mcp = require('./mcp');
 const langgraph = require('./langgraph');
 const webhooks = require('./webhooks');
+const feedbacks = require('./feedbacks');
 const push = require('./push');
 const notifications = require('./notifications');
 const diagnostics = require('./diagnostics');
@@ -61,6 +62,7 @@ module.exports = {
   staticRoute,
   accessPermissions,
   webhooks,
+  feedbacks,
   push,
   notifications,
   diagnostics,

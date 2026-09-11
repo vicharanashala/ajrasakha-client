@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import * as Ariakit from '@ariakit/react';
+import { useRecoilState } from 'recoil';
 import { Globe, Settings, Settings2, TerminalSquareIcon } from 'lucide-react';
 import { TooltipAnchor, DropdownPopup, PinIcon, VectorIcon } from '@librechat/client';
 import type { MenuItemProps } from '~/common';
@@ -16,6 +17,9 @@ import MCPSubMenu from '~/components/Chat/Input/MCPSubMenu';
 import { useGetStartupConfig } from '~/data-provider';
 import { useBadgeRowContext } from '~/Providers';
 import { cn } from '~/utils';
+import store from '~/store';
+
+const COMPOSER_MENU_ID = 'tools';
 
 interface ToolsDropdownProps {
   disabled?: boolean;
@@ -24,7 +28,16 @@ interface ToolsDropdownProps {
 const ToolsDropdown = ({ disabled }: ToolsDropdownProps) => {
   const localize = useLocalize();
   const isDisabled = disabled ?? false;
-  const [isPopoverActive, setIsPopoverActive] = useState(false);
+  // Shared with the other "+" menu entries so only one dropdown is open at a time.
+  const [activeComposerMenu, setActiveComposerMenu] = useRecoilState(store.activeComposerMenu);
+  const isPopoverActive = activeComposerMenu === COMPOSER_MENU_ID;
+  const setIsPopoverActive = useCallback(
+    (open: boolean) =>
+      setActiveComposerMenu((prev) =>
+        open ? COMPOSER_MENU_ID : prev === COMPOSER_MENU_ID ? null : prev,
+      ),
+    [setActiveComposerMenu],
+  );
   const {
     webSearch,
     artifacts,

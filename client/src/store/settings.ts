@@ -21,6 +21,24 @@ const staticAtoms = {
     key: 'pendingNewConversation',
     default: false,
   }),
+  feedbackShake: atom<number>({
+    key: 'feedbackShake',
+    default: 0,
+  }),
+  /** Which of the composer's "+" menu items has its own dropdown open, by id, or null.
+   *  Those dropdowns are nested inside the "+" popover, so Ariakit treats each other's
+   *  triggers as part of an ancestor dialog and won't dismiss them; this keeps one open
+   *  at a time. */
+  activeComposerMenu: atom<string | null>({
+    key: 'activeComposerMenu',
+    default: null,
+  }),
+  /** Whether the scroll-to-bottom arrow is currently on screen. Set by MessagesView and read
+   *  by the composer, which hides the Voice/Text switch while the arrow occupies that spot. */
+  isScrollToBottomVisible: atom<boolean>({
+    key: 'isScrollToBottomVisible',
+    default: false,
+  }),
 };
 
 const localStorageAtoms = {
@@ -32,6 +50,10 @@ const localStorageAtoms = {
     true,
   ),
   keepScreenAwake: atomWithLocalStorage('keepScreenAwake', true),
+
+  // Feedback
+  isRequiredFeedback: atomWithLocalStorage('isRequiredFeedback', false),
+  feedbackSkipCount: atomWithLocalStorage('feedbackSkipCount', 0),
 
   // Chat settings
   enterToSend: atomWithLocalStorage('enterToSend', true),

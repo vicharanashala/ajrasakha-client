@@ -18,17 +18,37 @@
   --gray-800: #212121;
   --gray-850: #171717;
   --gray-900: #0d0d0d;
-  --green-50: #ecfdf5;
-  --green-100: #d1fae5;
-  --green-200: #a7f3d0;
-  --green-300: #6ee7b7;
-  --green-400: #34d399;
-  --green-500: #10b981;
-  --green-600: #059669;
-  --green-700: #047857;
-  --green-800: #065f46;
-  --green-900: #064e3b;
-  --green-950: #022c22;
+  /* Brand green — exactly two approved shades. Every numbered stop below collapses to
+     one of the two (Light for lighter/light-mode roles, Dark for darker/dark-mode roles)
+     so nothing further down this file can introduce a third green by referencing the ramp. */
+  --accent-green-light: #75d7b2;
+  --accent-green-dark: #198754;
+  --green-50: var(--accent-green-light);
+  --green-100: var(--accent-green-light);
+  --green-200: var(--accent-green-light);
+  --green-300: var(--accent-green-light);
+  --green-400: var(--accent-green-light);
+  --green-500: var(--accent-green-dark);
+  --green-600: var(--accent-green-dark);
+  --green-700: var(--accent-green-dark);
+  --green-800: var(--accent-green-dark);
+  --green-900: var(--accent-green-dark);
+  --green-950: var(--accent-green-dark);
+  --dg-950: #060706;
+  --dg-900: #08100a;
+  --dg-850: #0b140d;
+  --dg-800: #0f1a10;
+  --dg-700: #162316;
+  --dg-600: #1f301f;
+  --dg-500: #2a3f2a;
+  --dg-400: #375339;
+  /* Light-mode counterpart to the `dg-*` ramp: same green hue at a fraction of the
+     saturation, so light mode carries the brand tint without reading as coloured. */
+  --lg-50: #f8fbf9;
+  --lg-100: #f2f7f3;
+  --lg-200: #e9f0eb;
+  --lg-300: #dde6e0;
+  --lg-400: #ccd8d0;
   --red-50: #fef2f2;
   --red-100: #fee2e2;
   --red-200: #fecaca;
@@ -74,23 +94,27 @@ html {
   --header-primary: var(--white);
   --header-hover: var(--gray-50);
   --header-button-hover: var(--gray-50);
-  --surface-active: var(--gray-100);
-  --surface-active-alt: var(--gray-200);
-  --surface-hover: var(--gray-200);
-  --surface-hover-alt: var(--gray-300);
+  --surface-active: var(--lg-200);
+  --surface-active-alt: var(--lg-300);
+  --surface-hover: var(--lg-300);
+  --surface-hover-alt: var(--lg-400);
   --surface-primary: var(--white);
-  --surface-primary-alt: var(--gray-50);
-  --surface-primary-contrast: var(--gray-100);
-  --surface-secondary: var(--gray-50);
-  --surface-secondary-alt: var(--gray-200);
-  --surface-tertiary: var(--gray-100);
-  --surface-tertiary-alt: var(--white);
-  --surface-dialog: var(--white);
-  --surface-submit: var(--green-700);
-  --surface-submit-hover: var(--green-800);
+  --surface-primary-alt: var(--lg-100);
+  --surface-primary-contrast: var(--lg-200);
+  --surface-secondary: var(--lg-100);
+  --surface-secondary-alt: var(--lg-300);
+  --surface-tertiary: var(--lg-200);
+  --surface-tertiary-alt: var(--lg-50);
+  /* Surfaces that float above the page — dialogs and popovers. Kept off the `dg-*` ramp,
+     which is deliberately green-tinted; a panel sitting on top of the page reads as a colour
+     cast rather than as elevation when it carries that tint. */
+  --surface-overlay: var(--white);
+  --surface-dialog: var(--surface-overlay);
+  --surface-submit: var(--accent-green-dark);
+  --surface-submit-hover: var(--accent-green-light);
   --surface-destructive: var(--red-700);
   --surface-destructive-hover: var(--red-800);
-  --surface-chat: var(--white);
+  --surface-chat: var(--lg-50);
   --border-light: var(--gray-200);
   --border-medium-alt: var(--gray-300);
   --border-medium: var(--gray-300);
@@ -102,8 +126,8 @@ html {
   --foreground: 0 0% 3.9%;
   --card: 0 0% 100%;
   --card-foreground: 0 0% 3.9%;
-  --primary: 0 0% 9%;
-  --primary-foreground: 0 0% 98%;
+  --primary: 0 0% 45%;
+  --primary-foreground: 0 0% 9%;
   --secondary: 0 0% 96.1%;
   --secondary-foreground: 0 0% 9%;
   --muted: 0 0% 96.1%;
@@ -114,7 +138,7 @@ html {
   --destructive-foreground: 0 0% 98%;
   --border: 0 0% 89.8%;
   --input: 0 0% 89.8%;
-  --ring: 0 0% 3.9%;
+  --ring: 0 0% 45%;
   --radius: 0.5rem;
   --chart-1: 12 76% 61%;
   --chart-2: 173 58% 39%;
@@ -125,56 +149,65 @@ html {
 }
 .dark {
   --brand-purple: #ab68ff;
-  --presentation: var(--gray-800);
+  --presentation: #0a0a0a;
   --text-primary: var(--gray-100);
   --text-secondary: var(--gray-300);
   --text-secondary-alt: var(--gray-400);
-  --text-tertiary: var(--gray-500);
+  /* Every other text-* token above is re-tuned for the dark background (e.g. text-secondary
+     goes gray-600 -> gray-300); this one was left at the light-mode value (gray-500, #595959),
+     which reads as near-invisible against the near-black dark surfaces. `.gizmo.dark` already
+     gets this right for its own theme (--gizmo-gray-500, #999) — mirroring that here. */
+  --text-tertiary: var(--gizmo-gray-500);
   --text-warning: var(--amber-500);
   --header-primary: var(--gray-700);
   --header-hover: var(--gray-600);
   --header-button-hover: var(--gray-700);
-  --surface-active: var(--gray-500);
+  --surface-active: var(--gray-600);
   --surface-active-alt: var(--gray-700);
-  --surface-hover: var(--gray-600);
-  --surface-hover-alt: var(--gray-600);
-  --surface-primary: var(--gray-900);
-  --surface-primary-alt: var(--gray-850);
-  --surface-primary-contrast: var(--gray-850);
-  --surface-secondary: var(--gray-800);
-  --surface-secondary-alt: var(--gray-800);
-  --surface-tertiary: var(--gray-700);
-  --surface-tertiary-alt: var(--gray-700);
-  --surface-dialog: var(--gray-850);
-  --surface-submit: var(--green-700);
-  --surface-submit-hover: var(--green-800);
+  --surface-hover: #262626;
+  --surface-hover-alt: #262626;
+  --surface-primary: #0a0a0a;
+  --surface-primary-alt: var(--gray-900);
+  --surface-primary-contrast: var(--gray-900);
+  --surface-secondary: var(--gray-850);
+  --surface-secondary-alt: var(--gray-850);
+  --surface-tertiary: var(--gray-800);
+  --surface-tertiary-alt: var(--gray-800);
+  --surface-overlay: #171717;
+  --surface-dialog: var(--surface-overlay);
+  --surface-submit: var(--accent-green-dark);
+  --surface-submit-hover: var(--accent-green-light);
   --surface-destructive: var(--red-800);
   --surface-destructive-hover: var(--red-900);
-  --surface-chat: var(--gray-700);
-  --border-light: var(--gray-700);
+  --surface-chat: var(--gray-900);
+  --border-light: #262626;
   --border-medium-alt: var(--gray-600);
   --border-medium: var(--gray-600);
   --border-heavy: var(--gray-500);
   --border-xheavy: var(--gray-400);
   /* These are test styles */
 
-  --background: 0 0% 7%;
+  /* Neutral, not the 130deg green hue this used to carry. `bg-background` is the fill for
+     dialogs built on OGDialogContent — terms, privacy notice, farmer profile and location —
+     and those float above the page, where the brand tint reads as a colour cast. Matches
+     --surface-overlay (#171717). */
+  --background: 0 0% 9%;
   --foreground: 0 0% 98%;
-  --card: 0 0% 3.9%;
+  --card: 0 0% 5%;
   --card-foreground: 0 0% 98%;
-  --primary: 0 0% 98%;
-  --primary-foreground: 0 0% 9%;
-  --secondary: 0 0% 14.9%;
+  --primary: 0 0% 50%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 10%;
   --secondary-foreground: 0 0% 98%;
-  --muted: 0 0% 14.9%;
-  --muted-foreground: 0 0% 63.9%;
-  --accent: 0 0% 14.9%;
+  --muted: 0 0% 9%;
+  --muted-foreground: 0 0% 62%;
+  --accent: 0 0% 11%;
   --accent-foreground: 0 0% 98%;
   --destructive: 0 62.8% 40.6%;
   --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 14.9%;
-  --input: 0 0% 14.9%;
-  --ring: 0 0% 83.1%;
+  --border: 0 0% 15%;
+  --input: 0 0% 15%;
+  --ring: 0 0% 50%;
   --chart-1: 220 70% 50%;
   --chart-2: 160 60% 45%;
   --chart-3: 30 80% 55%;
@@ -198,9 +231,9 @@ html {
   --text-primary: var(--gray-100);
   --text-secondary: var(--gray-300);
   --text-tertiary: var(--gizmo-gray-500);
-  --surface-primary: var(--gray-900);
-  --surface-secondary: var(--gray-800);
-  --surface-tertiary: var(--gray-700);
+  --surface-primary: var(--dg-950);
+  --surface-secondary: var(--dg-900);
+  --surface-tertiary: var(--dg-800);
   --border-light: rgba(217, 217, 227, 0.1);
   --border-medium: rgba(217, 217, 227, 0.15);
   --border-heavy: rgba(217, 217, 227, 0.2);
@@ -303,6 +336,116 @@ html {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+/* Anek (Indian Type Foundry) — the app's UI face, one design drawn across Latin and nine
+   Indian scripts, so a Hindi or Tamil interface is set deliberately instead of falling back
+   to whatever font the device happens to ship.
+
+   Every face below is the same `Anek` family, separated only by `unicode-range`. The browser
+   downloads a file solely when a character in its range is actually rendered, so a Tamil user
+   fetches Latin + Tamil (~96 KB) and never touches Devanagari or Telugu. No JS, and it works
+   for mixed text (an English label beside Tamil) without any language wiring.
+
+   Not covered here: Ol Chiki, Tibetan, Meetei Mayek, Arabic-script and CJK locales, which
+   keep falling back to Inter below and then to the system font, exactly as they do today. */
+@font-face {
+  font-display: swap;
+  font-family: Anek;
+  font-style: normal;
+  font-weight: 100 800;
+  src: url('$fonts/Anek-Latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Anek;
+  font-style: normal;
+  font-weight: 100 800;
+  src: url('$fonts/Anek-LatinExt.woff2') format('woff2');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Anek;
+  font-style: normal;
+  font-weight: 100 800;
+  src: url('$fonts/Anek-Devanagari.woff2') format('woff2');
+  unicode-range: U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF,U+11B00-11B09;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Anek;
+  font-style: normal;
+  font-weight: 100 800;
+  src: url('$fonts/Anek-Bengali.woff2') format('woff2');
+  unicode-range: U+0951-0952,U+0964-0965,U+0980-09FE,U+1CD0,U+1CD2,U+1CD5-1CD6,U+1CD8,U+1CE1,U+1CEA,U+1CED,U+1CF2,U+1CF5-1CF7,U+200C-200D,U+20B9,U+25CC,U+A8F1;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Anek;
+  font-style: normal;
+  font-weight: 100 800;
+  src: url('$fonts/Anek-Gujarati.woff2') format('woff2');
+  unicode-range: U+0951-0952,U+0964-0965,U+0A80-0AFF,U+200C-200D,U+20B9,U+25CC,U+A830-A839;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Anek;
+  font-style: normal;
+  font-weight: 100 800;
+  src: url('$fonts/Anek-Gurmukhi.woff2') format('woff2');
+  unicode-range: U+0951-0952,U+0964-0965,U+0A01-0A76,U+200C-200D,U+20B9,U+25CC,U+262C,U+A830-A839;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Anek;
+  font-style: normal;
+  font-weight: 100 800;
+  src: url('$fonts/Anek-Oriya.woff2') format('woff2');
+  unicode-range: U+0951-0952,U+0964-0965,U+0B01-0B77,U+1CDA,U+1CF2,U+200C-200D,U+20B9,U+25CC;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Anek;
+  font-style: normal;
+  font-weight: 100 800;
+  src: url('$fonts/Anek-Tamil.woff2') format('woff2');
+  unicode-range: U+0964-0965,U+0B82-0BFA,U+200C-200D,U+20B9,U+25CC;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Anek;
+  font-style: normal;
+  font-weight: 100 800;
+  src: url('$fonts/Anek-Telugu.woff2') format('woff2');
+  unicode-range: U+0951-0952,U+0964-0965,U+0C00-0C7F,U+1CDA,U+1CF2,U+200C-200D,U+25CC;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Anek;
+  font-style: normal;
+  font-weight: 100 800;
+  src: url('$fonts/Anek-Kannada.woff2') format('woff2');
+  unicode-range: U+0951-0952,U+0964-0965,U+0C80-0CF3,U+1CD0,U+1CD2-1CD3,U+1CDA,U+1CF2,U+1CF4,U+200C-200D,U+20B9,U+25CC,U+A830-A835;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: Anek;
+  font-style: normal;
+  font-weight: 100 800;
+  src: url('$fonts/Anek-Malayalam.woff2') format('woff2');
+  unicode-range: U+0307,U+0323,U+0951-0952,U+0964-0965,U+0D00-0D7F,U+1CDA,U+1CF2,U+200C-200D,U+20B9,U+25CC,U+A830-A832;
 }
 
 @font-face {
@@ -1358,12 +1501,12 @@ button {
 .btn-primary {
   --tw-bg-opacity: 1;
   --tw-text-opacity: 1;
-  background-color: rgba(16, 163, 127, var(--tw-bg-opacity));
+  background-color: rgba(25, 135, 84, var(--tw-bg-opacity));
   color: rgba(255, 255, 255, var(--tw-text-opacity));
 }
 .btn-primary:hover {
   --tw-bg-opacity: 1;
-  background-color: rgba(26, 127, 100, var(--tw-bg-opacity));
+  background-color: rgba(117, 215, 178, var(--tw-bg-opacity));
 }
 .btn-primary:focus {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width)
@@ -1380,22 +1523,22 @@ button {
 }
 .btn-primary.focus-visible {
   --tw-ring-opacity: 1;
-  --tw-ring-color: rgba(25, 195, 125, var(--tw-ring-opacity));
+  --tw-ring-color: rgba(25, 135, 84, var(--tw-ring-opacity));
 }
 .btn-primary:focus-visible {
   --tw-ring-opacity: 1;
-  --tw-ring-color: rgba(25, 195, 125, var(--tw-ring-opacity));
+  --tw-ring-color: rgba(25, 135, 84, var(--tw-ring-opacity));
 }
 .btn-primary:disabled:hover {
   --tw-bg-opacity: 1;
-  background-color: rgba(16, 163, 127, var(--tw-bg-opacity));
+  background-color: rgba(25, 135, 84, var(--tw-bg-opacity));
 }
 .btn-secondary {
   --tw-border-opacity: 1;
   --tw-bg-opacity: 1;
   --tw-text-opacity: 1;
   background-color: transparent;
-  background-color: rgba(16, 163, 156, var(--tw-bg-opacity));
+  background-color: rgba(25, 135, 84, var(--tw-bg-opacity));
   color: rgba(255, 255, 255, var(--tw-text-opacity));
 }
 .btn-secondary:hover {
@@ -1406,9 +1549,9 @@ button {
 }
 .dark .btn-secondary:hover {
   --tw-bg-opacity: 1;
-  border-color: rgba(8, 82, 78, var(--tw-border-opacity));
+  border-color: rgba(117, 215, 178, var(--tw-border-opacity));
   color: rgba(255, 255, 240, var(--tw-text-opacity));
-  background-color: rgba(8, 82, 78, var(--tw-bg-opacity));
+  background-color: rgba(117, 215, 178, var(--tw-bg-opacity));
 }
 .btn-neutral {
   --tw-bg-opacity: 1;
@@ -1514,8 +1657,8 @@ html {
 
 .dark body,
 .dark html {
-  --tw-bg-opacity: 1;
-  background-color: rgba(23, 23, 23, var(--tw-bg-opacity));
+  background: linear-gradient(160deg, #000000 0%, #030a04 45%, #061c0a 75%, #0a2a0f 100%) fixed;
+  background-color: var(--dg-950);
 }
 
 #__next,
@@ -1779,8 +1922,8 @@ html {
 }
 .dark body,
 .dark html {
-  --tw-bg-opacity: 1;
-  background-color: rgba(33, 33, 33, var(--tw-bg-opacity));
+  background: linear-gradient(160deg, #000000 0%, #030a04 45%, #061c0a 75%, #0a2a0f 100%) fixed;
+  background-color: var(--dg-950);
 }
 #__next,
 #root {
@@ -1823,16 +1966,15 @@ html {
   border-color: var(--gray-600);
 }
 .markdown blockquote.important-notice {
-  background-color: rgba(220, 38, 38, 0.06);
-  border: 2px solid #dc2626;
+  /* Tied to the app's own destructive token (the same red used for the decline button and
+     heading in the full notice dialog) rather than a hardcoded hex, so this banner tracks
+     the theme's actual warning color in both light and dark mode automatically. */
+  background-color: color-mix(in oklch, var(--surface-destructive) 8%, transparent);
+  border: 2px solid var(--surface-destructive);
   border-radius: 8px;
   line-height: inherit;
   margin: 1rem 0;
   padding: 0.75rem 1rem;
-}
-.dark .markdown blockquote.important-notice {
-  background-color: rgba(248, 113, 113, 0.1);
-  border-color: #f87171;
 }
 .markdown blockquote.important-notice p {
   margin-bottom: 0.5rem;
@@ -2018,27 +2160,60 @@ html {
     transform: scale3d(1.25, 1.25, 1);
   }
 }
+/* Pre-first-token indicator: a sprout that grows and settles from its base, in brand green.
+   Drawn as a mask so the glyph takes its colour from `background-color` and can flip per
+   theme without a second asset. */
+@keyframes sproutGrow {
+  0%,
+  100% {
+    transform: scale(0.78);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 .submitting .result-thinking:empty:last-child:after {
   -webkit-font-smoothing: subpixel-antialiased;
-  -webkit-animation: pulseSize 1.25s ease-in-out infinite;
-  animation: pulseSize 1.25s ease-in-out infinite;
+  -webkit-animation: sproutGrow 1.6s ease-in-out infinite;
+  animation: sproutGrow 1.6s ease-in-out infinite;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  background-color: #0d0d0d;
-  background-color: var(--text-primary);
-  border-radius: 50%;
+  background-color: var(--accent-green-dark);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M11 22V11.5h2V22z'/%3E%3Cpath fill='%23000' d='M11.4 14.2C11.4 8.9 7.6 5.4 2 5.4c0 5.3 3.8 8.8 9.4 8.8z'/%3E%3Cpath fill='%23000' d='M13 12.6c0-4.7 3.2-7.8 8-7.8 0 4.7-3.2 7.8-8 7.8z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M11 22V11.5h2V22z'/%3E%3Cpath fill='%23000' d='M11.4 14.2C11.4 8.9 7.6 5.4 2 5.4c0 5.3 3.8 8.8 9.4 8.8z'/%3E%3Cpath fill='%23000' d='M13 12.6c0-4.7 3.2-7.8 8-7.8 0 4.7-3.2 7.8-8 7.8z'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
   box-sizing: border-box;
   content: ' ';
   display: block;
-  height: 12px;
+  height: 16px;
   position: absolute;
-  top: -11px;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-transform-origin: center;
-  transform-origin: center;
-  width: 12px;
+  top: -14px;
+  /* Grows from the base like a plant rather than from its middle. */
+  -webkit-transform-origin: 50% 100%;
+  transform-origin: 50% 100%;
+  width: 16px;
   will-change: transform;
+}
+
+.dark .submitting .result-thinking:empty:last-child:after {
+  background-color: var(--accent-green-light);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .submitting .result-thinking:empty:last-child:after {
+    -webkit-animation: none;
+    animation: none;
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .shadow-stroke {
@@ -2549,6 +2724,22 @@ html {
   line-height: 1.4;
 }
 
+/* Chat bubble width cap for user/assistant messages. Written as plain CSS
+   (rather than a Tailwind arbitrary-value class like max-w-[75%]) so the
+   constraint is guaranteed to be compiled and applied regardless of the
+   Tailwind JIT content scan/cache. */
+.chat-bubble-col {
+  width: fit-content;
+  min-width: 0;
+  max-width: 85%;
+}
+
+@media (min-width: 640px) {
+  .chat-bubble-col {
+    max-width: 75%;
+  }
+}
+
 .message-content pre code {
   font-size: calc(0.85 * var(--markdown-font-size, var(--font-size-base)));
 }
@@ -2663,7 +2854,8 @@ html {
 }
 
 .popover-ui:where(.dark, .dark *) {
-  background-color: var(--surface-secondary);
+  /* Neutral, not `surface-secondary` (dg-850, a green-tinted near-black). */
+  background-color: var(--surface-overlay);
   color: var(--text-secondary);
   box-shadow:
     0 10px 15px -3px rgb(0 0 0 / 0.25),
@@ -2685,9 +2877,14 @@ html {
   opacity: 0.5;
 }
 
+/* Neutral grey highlight for hover and keyboard selection on menu items. */
 .select-item[data-active-item] {
-  background-color: var(--surface-hover);
+  background-color: rgba(128, 128, 128, 0.12);
   color: var(--text-primary);
+}
+
+.dark .select-item[data-active-item] {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .popover-ui[data-enter] {
@@ -2855,6 +3052,59 @@ html {
   animation: fadeIn 0.5s ease-out forwards;
 }
 
+/* Send button: the icon lifts away along its own diagonal and a fresh one settles back in,
+   so a submit reads as the message leaving rather than the button flashing in place. */
+@keyframes sendLaunch {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  45% {
+    transform: translate(10px, -10px) scale(0.9);
+    opacity: 0;
+  }
+  46% {
+    transform: translate(-8px, 8px) scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-sendLaunch {
+  animation: sendLaunch 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Landing entrance: elements rise into place one after another, continuing the per-character
+   greeting animation rather than dropping the whole block in at once. The delay is set
+   per element with an inline `animation-delay`. */
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* `backwards`, not `both`: the element holds the start state through its delay, but once the
+   animation finishes nothing is retained, so the cards' own hover and active transforms still
+   apply afterwards. */
+.animate-riseIn {
+  animation: riseIn 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-sendLaunch,
+  .animate-riseIn {
+    animation: none;
+  }
+}
+
 @keyframes ajrasakha-progress-enter {
   from {
     opacity: 0;
@@ -2868,6 +3118,56 @@ html {
 
 .ajrasakha-progress-enter {
   animation: ajrasakha-progress-enter 0.45s ease-out both;
+}
+
+@keyframes ajrasakha-progress-dot {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.75);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.ajrasakha-progress-dot {
+  animation: ajrasakha-progress-dot 1.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ajrasakha-progress-dot {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+/* Waiting marker: a sprout that grows and settles from its base, so the pause reads as
+   something taking root rather than a generic spinner. Anchored at the bottom so it rises
+   from the stem instead of swelling from its middle. */
+@keyframes ajrasakha-progress-sprout {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(0.82) rotate(-4deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(3deg);
+  }
+}
+
+.ajrasakha-progress-sprout {
+  animation: ajrasakha-progress-sprout 1.8s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ajrasakha-progress-sprout {
+    animation: none;
+    opacity: 0.8;
+  }
 }
 
 @keyframes ajrasakha-progress-shimmer {
@@ -2906,6 +3206,153 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .ajrasakha-progress-enter,
   .ajrasakha-progress-shimmer::after {
+    animation: none;
+  }
+}
+
+/* Message entrance, applied to the newest bubble only so loading a conversation doesn't set
+   every message animating at once.
+
+   The two differ on purpose. The user's own message rises further and faster — it was just
+   sent, so the motion reads as it travelling up out of the composer. The reply settles in
+   with a softer, slower fade and a barely-there scale, a calmer arrival for something the
+   user didn't trigger directly.
+
+   `backwards` rather than `both`: a lingering transform would leave a stacking context on the
+   bubble, and the loading ring's glow (`.ajrasakha-orbit-bubble::after`, z-index -1) would be
+   painted behind the bubble's own background and vanish. */
+@keyframes ajrasakha-msg-in-user {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ajrasakha-msg-in-ai {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ajrasakha-msg-in-user {
+  animation: ajrasakha-msg-in-user 320ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.ajrasakha-msg-in-ai {
+  animation: ajrasakha-msg-in-ai 420ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ajrasakha-msg-in-user,
+  .ajrasakha-msg-in-ai {
+    animation: none;
+  }
+}
+
+/* Animated light that runs clockwise around the actual message bubble's own
+   border — applied directly to the same element that already has the bubble's
+   rounded-2xl/rounded-tl-sm shape and bg-surface-tertiary fill (see ContentRender.tsx
+   / MessageParts.tsx), instead of drawing a second nested pill inside it.
+
+   The motion comes from animating the *angle* of a conic-gradient (registered
+   below via @property so the browser can interpolate it smoothly) rather than
+   moving or rotating any element — the gradient's own math sweeps clockwise
+   around a perfectly still box, so a short bright arc travels around the ring
+   with the rest of the border dark, and the effect can never drift, resize, or
+   swing outside the bubble's actual footprint.
+
+   Two background layers on the real element (still no absolute-positioned
+   pseudo-elements for the ring itself): an inner solid fill clipped to the
+   padding-box, and the rotating conic-gradient clipped to the border-box so
+   it only shows through the border stroke. No border-radius is set here — the
+   element's own rounded-2xl/rounded-tl-sm classes decide the shape. */
+@property --orbit-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.ajrasakha-orbit-bubble {
+  /* Arc colour is a variable so each theme can pick the brand shade that reads best against
+     its own bubble: the light mint on the near-white light bubble, where the dark green went
+     muddy, and the dark green on the near-black dark one. */
+  --orbit-arc: var(--accent-green-light);
+  position: relative;
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(#f9fafb, #f9fafb) padding-box,
+    conic-gradient(
+        from var(--orbit-angle),
+        transparent 0deg,
+        var(--orbit-arc) 25deg,
+        var(--orbit-arc) 50deg,
+        transparent 80deg,
+        transparent 360deg
+      )
+      border-box;
+  animation: ajrasakha-orbit-spin 1.5s ease-in-out infinite alternate;
+}
+
+/* Dark mode: match the chat area background */
+.dark .ajrasakha-orbit-bubble {
+  --orbit-arc: oklch(0.4365 0.1044 156.7556);
+  background:
+    linear-gradient(#08100a, #08100a) padding-box,
+    conic-gradient(
+        from var(--orbit-angle),
+        transparent 0deg,
+        var(--orbit-arc) 25deg,
+        var(--orbit-arc) 50deg,
+        transparent 80deg,
+        transparent 360deg
+      )
+      border-box;
+}
+
+@keyframes ajrasakha-orbit-spin {
+  to {
+    --orbit-angle: 360deg;
+  }
+}
+
+/* A soft, blurred glow around the bubble border using the same solid green. */
+.ajrasakha-orbit-bubble::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 3px;
+  background: conic-gradient(
+    from var(--orbit-angle),
+    transparent 0deg,
+    color-mix(in oklch, var(--orbit-arc) 55%, transparent) 25deg,
+    color-mix(in oklch, var(--orbit-arc) 55%, transparent) 50deg,
+    transparent 80deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  filter: blur(5px);
+  animation: ajrasakha-orbit-spin 1.5s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ajrasakha-orbit-bubble,
+  .ajrasakha-orbit-bubble::after {
     animation: none;
   }
 }
@@ -2992,6 +3439,153 @@ html {
   scrollbar-width: none; /* Firefox */
 }
 
+/* Compact "premium" trigger button for the model selector, now positioned in
+   the chat input toolbar (left of the microphone button). Written as plain
+   CSS (rather than Tailwind arbitrary-value classes) so the sizing is
+   guaranteed to compile regardless of the Tailwind JIT content scan/cache. */
+.model-selector-trigger {
+  height: 2.25rem;
+  width: fit-content;
+  /* Three quarters of whatever the nav gives it, so the name is largely readable without the
+     control running the full width of the bar. The name auto-shrinks to fit (see
+     MODEL_NAME_MIN_FONT_SIZE) and only falls back to an ellipsis past that. */
+  max-width: 75%;
+}
+
+@media (min-width: 640px) {
+  .model-selector-trigger {
+    height: 2.25rem;
+    max-width: 190px;
+  }
+}
+
+/* Popover height cap + scroll for the model/endpoint selector dropdown
+   (CustomMenu). This is written as plain CSS instead of Tailwind
+   arbitrary-value classes like max-h-[min(450px,var(--popover-available-height))]
+   because those calc()/min()-based arbitrary utilities have proven unreliable
+   to compile in this codebase (same root cause as the chat-bubble-col fix) —
+   without a real max-height, the list can't overflow, so it never scrolls and
+   longer model lists get cut off instead of being reachable. */
+.custom-menu-popover {
+  max-height: min(450px, var(--popover-available-height, 450px));
+  overflow-y: auto;
+}
+
+@media (min-width: 640px) {
+  .custom-menu-popover {
+    max-height: 65vh;
+  }
+}
+
+/* Account settings popover: width scales down on narrow phones instead of
+   staying a fixed 305px (which could overflow very small viewports), and
+   height is capped with scroll so it never runs off the bottom of the
+   screen. Plain CSS instead of Tailwind arbitrary-value classes, for the
+   same JIT-compile-reliability reason as the rules above. */
+.account-settings-popover {
+  width: min(305px, calc(100vw - 24px));
+  max-height: min(70vh, var(--popover-available-height, 70vh));
+  overflow-y: auto;
+  border-color: rgba(128, 128, 128, 0.25);
+}
+
+.dark .account-settings-popover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.account-settings-popover [data-slot="dropdown-menu-separator"] {
+  background-color: rgba(128, 128, 128, 0.25);
+}
+
+.dark .account-settings-popover [data-slot="dropdown-menu-separator"] {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+@media (min-width: 768px) {
+  .account-settings-popover {
+    width: 244px;
+  }
+}
+
 .sharepoint-picker-bg {
   background-color: #f5f5f5;
+}
+
+/* Farmer profile / location modal shell: caps dialog height so the sticky
+   header/footer stay in view and the middle section scrolls on small
+   screens. Written as plain CSS instead of the Tailwind arbitrary-value
+   class max-h-[90vh], for the same JIT-compile-reliability reason as the
+   rules above (the bracket utility can compile into the DOM class list
+   without ever producing a working CSS rule). */
+.farmer-modal-shell {
+  max-height: 90vh;
+}
+
+/* Terms & Conditions modal shell: same treatment as .farmer-modal-shell
+   above (caps dialog height at 90vh so the header/footer stay pinned and
+   only the middle content region scrolls). Rebuilt on the app's modern
+   OGDialogContent primitive (same one FarmerProfileModal/FarmerLocationModal
+   use) instead of the legacy gray-hardcoded DialogTemplate, for visual
+   consistency with the rest of the app's "premium" dialogs. */
+.terms-modal-shell {
+  max-height: 90vh;
+}
+
+/* Important Notice modal shell: same 90vh height cap as the shells above,
+   rebuilt on OGDialogContent for the same reason (legacy DialogTemplate's
+   hardcoded gray styling looked dated). */
+.notice-modal-shell {
+  max-height: 90vh;
+}
+
+/* Terms & Conditions markdown body: explicit type scale so the hierarchy
+   reads clearly at every size — h1 (the "Terms and Conditions for
+   AjraSakha / chat.annam.ai" title) largest, h2 section headings (Beta
+   Development Notice, etc.) noticeably smaller than h1 but still bigger
+   than body copy, and paragraph/list text smallest of the three. Plain CSS
+   instead of prose-h1:text-*/prose-h2:text-* utilities, for the same
+   JIT-compile-reliability reason as the rules above. */
+
+.terms-content-prose h1 {
+  font-size: 17px;
+  line-height: 1.4;
+  margin-top: 0;
+}
+
+.terms-content-prose h2 {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.terms-content-prose p,
+.terms-content-prose li {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@media (min-width: 640px) {
+  .terms-content-prose h1 {
+    font-size: 26px;
+  }
+
+  .terms-content-prose h2 {
+    font-size: 20px;
+  }
+
+  .terms-content-prose p,
+  .terms-content-prose li {
+    font-size: 16px;
+  }}
+  
+/* Feedback reminder zoom pulse — triggers when user tries to send while feedback is required */
+@keyframes zoomPulse {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(0.93); }
+  50%  { transform: scale(1.03); }
+  75%  { transform: scale(0.99); }
+  100% { transform: scale(1); }
+}
+
+.shake {
+  animation: zoomPulse 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }

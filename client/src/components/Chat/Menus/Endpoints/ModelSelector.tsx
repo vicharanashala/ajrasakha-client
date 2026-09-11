@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import { TooltipAnchor } from '@librechat/client';
 import { getConfigDefaults } from 'librechat-data-provider';
 import type { ModelSelectorProps } from '~/common';
@@ -14,8 +15,18 @@ import { getSelectedIcon, getDisplayValue } from './utils';
 import { CustomMenu as Menu } from './CustomMenu';
 import DialogManager from './DialogManager';
 import { useLocalize } from '~/hooks';
+import { cn } from '~/utils';
 
-function ModelSelectorContent() {
+/** Never shrink the model name below this, so it stays legible on very narrow screens. */
+const MODEL_NAME_MIN_FONT_SIZE = 11;
+
+function ModelSelectorContent({
+  triggerClassName,
+  containerClassName,
+}: {
+  triggerClassName?: string;
+  containerClassName?: string;
+}) {
   const localize = useLocalize();
 
   const {
@@ -59,32 +70,82 @@ function ModelSelectorContent() {
     [localize, agentsMap, modelSpecs, selectedValues, mappedEndpoints],
   );
 
+  /**
+   * Auto-shrinks the model-name text so the FULL name always fits on one line
+   * within whatever space is actually available, instead of being truncated
+   * or overflowing. Only shrinks (never grows past the CSS-defined size), and
+   * only as much as needed for this particular name/viewport combination.
+   */
+  const modelNameRef = useRef<HTMLSpanElement>(null);
+  const [modelNameOverflowing, setModelNameOverflowing] = useState(false);
+
+  const fitModelName = useCallback(() => {
+    const el = modelNameRef.current;
+    if (!el) {
+      return;
+    }
+    el.style.fontSize = '';
+    const baseFontSize = parseFloat(window.getComputedStyle(el).fontSize) || 12;
+    const { scrollWidth, clientWidth } = el;
+    if (clientWidth > 0 && scrollWidth > clientWidth) {
+      const ratio = (clientWidth / scrollWidth) * 0.97;
+      const nextSize = Math.max(baseFontSize * ratio, MODEL_NAME_MIN_FONT_SIZE);
+      el.style.fontSize = `${nextSize}px`;
+      // Even at the minimum size it may still not fit; only then fall back to an ellipsis.
+      setModelNameOverflowing(el.scrollWidth > el.clientWidth);
+    } else {
+      setModelNameOverflowing(false);
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    fitModelName();
+  }, [selectedDisplayValue, fitModelName]);
+
+  useLayoutEffect(() => {
+    const el = modelNameRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') {
+      return;
+    }
+    const observer = new ResizeObserver(() => fitModelName());
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [fitModelName]);
+
   const trigger = (
     <TooltipAnchor
       aria-label={localize('com_ui_select_model')}
       description={localize('com_ui_select_model')}
       render={
         <button
-          className="my-1 flex h-10 w-full max-w-[70vw] items-center justify-center gap-2 rounded-xl border border-border-light bg-presentation px-3 py-2 text-sm text-text-primary hover:bg-surface-active-alt"
+          className="model-selector-trigger group flex h-9 min-w-0 max-w-full items-center gap-1.5 rounded-full border border-transparent bg-transparent px-3 text-[13px] font-medium text-text-primary transition-colors duration-200 hover:bg-surface-secondary md:text-sm"
           aria-label={localize('com_ui_select_model')}
         >
           {selectedIcon && React.isValidElement(selectedIcon) && (
-            <div className="flex flex-shrink-0 items-center justify-center overflow-hidden">
+            <div className="flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden">
               {selectedIcon}
             </div>
           )}
-          <span className="flex-grow truncate text-left">
-            {selectedDisplayValue?.length > 18
-              ? `${selectedDisplayValue?.substring(0, 10)}...`
-              : selectedDisplayValue}
+          <span
+            ref={modelNameRef}
+            className={cn(
+              'min-w-0 flex-grow whitespace-nowrap text-left',
+              modelNameOverflowing && 'overflow-hidden text-ellipsis',
+            )}
+          >
+            {selectedDisplayValue}
           </span>
+          <ChevronDown
+            className="h-3.5 w-3.5 flex-shrink-0 text-text-secondary transition-colors duration-200 group-hover:text-text-primary"
+            aria-hidden="true"
+          />
         </button>
       }
     />
   );
 
   return (
-    <div className="relative flex w-full max-w-md flex-col items-center gap-2">
+    <div className={cn('relative flex w-fit flex-col items-center', containerClassName)}>
       <Menu
         values={selectedValues}
         onValuesChange={(values: Record<string, any>) => {
@@ -97,6 +158,7 @@ function ModelSelectorContent() {
         onSearch={(value) => setSearchValue(value)}
         combobox={<input id="model-search" placeholder=" " />}
         comboboxLabel={localize('com_endpoint_search_models')}
+        className={triggerClassName}
         trigger={trigger}
       >
         {searchResults ? (
@@ -125,7 +187,11 @@ function ModelSelectorContent() {
   );
 }
 
-export default function ModelSelector({ startupConfig }: ModelSelectorProps) {
+export default function ModelSelector({
+  startupConfig,
+  triggerClassName,
+  containerClassName,
+}: ModelSelectorProps & { triggerClassName?: string; containerClassName?: string }) {
   const interfaceConfig = startupConfig?.interface ?? getConfigDefaults().interface;
   const modelSpecs = startupConfig?.modelSpecs?.list ?? [];
 
@@ -137,7 +203,10 @@ export default function ModelSelector({ startupConfig }: ModelSelectorProps) {
   return (
     <ModelSelectorChatProvider>
       <ModelSelectorProvider startupConfig={startupConfig}>
-        <ModelSelectorContent />
+        <ModelSelectorContent
+          triggerClassName={triggerClassName}
+          containerClassName={containerClassName}
+        />
       </ModelSelectorProvider>
     </ModelSelectorChatProvider>
   );

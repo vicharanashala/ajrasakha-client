@@ -106,8 +106,12 @@ function Artifacts() {
 
           <Ariakit.Menu
             gutter={4}
+            flip={true}
+            slide={true}
+            fitViewport={true}
+            overflowPadding={8}
             className={cn(
-              'animate-popover-top-left z-40 flex min-w-[250px] flex-col rounded-xl',
+              'animate-popover-top-left z-40 flex min-w-[240px] max-w-[calc(100vw-1rem)] flex-col rounded-xl sm:max-w-[280px]',
               'border border-border-light bg-surface-secondary shadow-lg',
             )}
             portal={true}

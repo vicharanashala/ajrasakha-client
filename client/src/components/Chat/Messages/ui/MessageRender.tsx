@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo, memo } from 'react';
-import { useAtomValue } from 'jotai';
 import { useRecoilValue } from 'recoil';
 import { type TMessage } from 'librechat-data-provider';
 import type { TMessageProps, TMessageIcon } from '~/common';
@@ -11,7 +10,6 @@ import MessageIcon from '~/components/Chat/Messages/MessageIcon';
 import { useLocalize, useMessageActions, useContentMetadata } from '~/hooks';
 import SubRow from '~/components/Chat/Messages/SubRow';
 import { cn, getMessageAriaLabel } from '~/utils';
-import { fontSizeAtom } from '~/store/fontSize';
 import { MessageContext } from '~/Providers';
 import store from '~/store';
 
@@ -54,7 +52,6 @@ const MessageRender = memo(
       currentEditId,
       setCurrentEditId,
     });
-    const fontSize = useAtomValue(fontSizeAtom);
     const maximizeChatSpace = useRecoilValue(store.maximizeChatSpace);
 
     const handleRegenerateMessage = useCallback(() => regenerateMessage(), [regenerateMessage]);
@@ -111,6 +108,107 @@ const MessageRender = memo(
       focus: 'focus:outline-none focus:ring-2 focus:ring-border-xheavy',
     };
 
+    const isUser = msg.isCreatedByUser;
+
+    // Avatars are hidden on mobile to save horizontal space in the chat
+    // bubbles; they still show from the sm breakpoint up.
+    const avatarBlock = !hasParallelContent && (
+      <div className="relative hidden flex-shrink-0 flex-col items-center sm:flex">
+        <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full">
+          <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
+        </div>
+      </div>
+    );
+
+    const contentColumn = (
+      <div
+        className={cn(
+          'relative flex min-w-0 flex-col',
+          hasParallelContent ? 'w-full' : 'chat-bubble-col',
+          isUser ? 'user-turn items-end' : 'agent-turn items-start',
+        )}
+      >
+        <div className="flex min-w-0 flex-col gap-1">
+          <div
+            className={cn(
+              // `break-words` (overflow-wrap: break-word) rather than `break-all`: break-all
+              // splits mid-word the moment a line is full, even when the whole word would
+              // have fit cleanly on the next line (e.g. "region?" splitting into "re" / "gion?"
+              // in a narrow bubble). break-words only breaks a word when it's too long to fit
+              // on its own line — normal words wrap at the space before them, and an
+              // unbroken long token (a URL, a long id) still gets broken instead of overflowing
+              // the bubble.
+              'flex min-w-0 max-w-full flex-grow flex-col gap-0 overflow-hidden break-words',
+              // AI bubble uses bg-surface-tertiary: in dark mode
+              // surface-secondary is the exact same color as the page
+              // background (presentation), so it was invisible there.
+              // User bubble gets a slight green tint (the app's existing
+              // brand-green scale, already used for badges elsewhere) so
+              // it stays visually distinct from the AI bubble. green-600
+              // at low opacity reads as a clear muted teal-green on the
+              // dark background, unlike green-900 which was too close to
+              // black to register as green.
+              !hasParallelContent &&
+                (isUser
+                  ? 'rounded-2xl rounded-tr-sm px-4 py-2.5 bg-[oklch(0.8348_0.1302_160.908)] dark:bg-[oklch(0.4365_0.1044_156.7556)]'
+                  : 'rounded-2xl rounded-tl-sm bg-gray-50 px-4 py-2.5 dark:bg-gray-900'),
+            )}
+          >
+            <MessageContext.Provider
+              value={{
+                messageId: msg.messageId,
+                conversationId: conversation?.conversationId,
+                isExpanded: false,
+                isSubmitting: effectiveIsSubmitting,
+                isLatestMessage,
+              }}
+            >
+              <MessageContent
+                ask={ask}
+                edit={edit}
+                isLast={isLast}
+                text={msg.text || ''}
+                message={msg}
+                enterEdit={enterEdit}
+                error={!!(msg.error ?? false)}
+                isSubmitting={effectiveIsSubmitting}
+                unfinished={msg.unfinished ?? false}
+                isCreatedByUser={msg.isCreatedByUser ?? true}
+                siblingIdx={siblingIdx ?? 0}
+                setSiblingIdx={setSiblingIdx ?? (() => ({}))}
+              />
+            </MessageContext.Provider>
+          </div>
+          {hasNoChildren && effectiveIsSubmitting ? (
+            <PlaceholderRow />
+          ) : (
+            <SubRow classes={cn('text-xs', isUser && 'justify-end')}>
+              <SiblingSwitch
+                siblingIdx={siblingIdx}
+                siblingCount={siblingCount}
+                setSiblingIdx={setSiblingIdx}
+              />
+              <HoverButtons
+                index={index}
+                isEditing={edit}
+                message={msg}
+                enterEdit={enterEdit}
+                isSubmitting={isSubmitting}
+                conversation={conversation ?? null}
+                regenerate={handleRegenerateMessage}
+                copyToClipboard={copyToClipboard}
+                handleContinue={handleContinue}
+                latestMessage={latestMessage}
+                handleFeedback={handleFeedback}
+                isLast={isLast}
+                feedback={feedback}
+              />
+            </SubRow>
+          )}
+        </div>
+      </div>
+    );
+
     return (
       <div
         id={msg.messageId}
@@ -120,82 +218,20 @@ const MessageRender = memo(
           baseClasses.chat,
           conditionalClasses.focus,
           'message-render',
+          !hasParallelContent && (isUser ? 'justify-end' : 'justify-start'),
         )}
       >
-        {!hasParallelContent && (
-          <div className="relative flex flex-shrink-0 flex-col items-center">
-            <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
-              <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
-            </div>
-          </div>
+        {isUser ? (
+          <>
+            {contentColumn}
+            {avatarBlock}
+          </>
+        ) : (
+          <>
+            {avatarBlock}
+            {contentColumn}
+          </>
         )}
-
-        <div
-          className={cn(
-            'relative flex flex-col',
-            hasParallelContent ? 'w-full' : 'w-11/12',
-            msg.isCreatedByUser ? 'user-turn' : 'agent-turn',
-          )}
-        >
-          {!hasParallelContent && (
-            <h2 className={cn('select-none font-semibold', fontSize)}>{messageLabel}</h2>
-          )}
-
-          <div className="flex flex-col gap-1">
-            <div className="flex max-w-full flex-grow flex-col gap-0">
-              <MessageContext.Provider
-                value={{
-                  messageId: msg.messageId,
-                  conversationId: conversation?.conversationId,
-                  isExpanded: false,
-                  isSubmitting: effectiveIsSubmitting,
-                  isLatestMessage,
-                }}
-              >
-                <MessageContent
-                  ask={ask}
-                  edit={edit}
-                  isLast={isLast}
-                  text={msg.text || ''}
-                  message={msg}
-                  enterEdit={enterEdit}
-                  error={!!(msg.error ?? false)}
-                  isSubmitting={effectiveIsSubmitting}
-                  unfinished={msg.unfinished ?? false}
-                  isCreatedByUser={msg.isCreatedByUser ?? true}
-                  siblingIdx={siblingIdx ?? 0}
-                  setSiblingIdx={setSiblingIdx ?? (() => ({}))}
-                />
-              </MessageContext.Provider>
-            </div>
-            {hasNoChildren && effectiveIsSubmitting ? (
-              <PlaceholderRow />
-            ) : (
-              <SubRow classes="text-xs">
-                <SiblingSwitch
-                  siblingIdx={siblingIdx}
-                  siblingCount={siblingCount}
-                  setSiblingIdx={setSiblingIdx}
-                />
-                <HoverButtons
-                  index={index}
-                  isEditing={edit}
-                  message={msg}
-                  enterEdit={enterEdit}
-                  isSubmitting={isSubmitting}
-                  conversation={conversation ?? null}
-                  regenerate={handleRegenerateMessage}
-                  copyToClipboard={copyToClipboard}
-                  handleContinue={handleContinue}
-                  latestMessage={latestMessage}
-                  handleFeedback={handleFeedback}
-                  isLast={isLast}
-                  feedback={feedback}
-                />
-              </SubRow>
-            )}
-          </div>
-        </div>
       </div>
     );
   },

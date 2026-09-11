@@ -1,10 +1,7 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
-import { QueryKeys } from 'librechat-data-provider';
-import { useQueryClient } from '@tanstack/react-query';
 import type { Dispatch, SetStateAction } from 'react';
-import { useLocalize, useNewConvo } from '~/hooks';
-import { clearMessagesCache } from '~/utils';
+import { useLocalize } from '~/hooks';
 import store from '~/store';
 
 export default function MobileNav({
@@ -15,13 +12,11 @@ export default function MobileNav({
   setNavVisible: Dispatch<SetStateAction<boolean>>;
 }) {
   const localize = useLocalize();
-  const queryClient = useQueryClient();
-  const { newConversation } = useNewConvo();
   const conversation = useRecoilValue(store.conversationByIndex(0));
   const { title = 'New Chat' } = conversation || {};
 
   return (
-    <div className="bg-token-main-surface-primary sticky top-0 z-10 flex min-h-[40px] items-center justify-center bg-presentation pl-1 dark:text-white md:hidden">
+    <div className="sticky top-0 z-10 flex min-h-[40px] items-center justify-center bg-transparent pl-1 dark:text-white md:hidden">
       <button
         type="button"
         data-testid="mobile-header-new-chat-button"
@@ -29,7 +24,7 @@ export default function MobileNav({
           navVisible ? localize('com_nav_close_sidebar') : localize('com_nav_open_sidebar')
         }
         aria-live="polite"
-        className="m-1 inline-flex size-10 items-center justify-center rounded-full hover:bg-surface-active-alt"
+        className="m-1 inline-flex size-10 items-center justify-center rounded-full hover:bg-gray-300 dark:hover:bg-gray-800"
         onClick={() =>
           setNavVisible((prev) => {
             localStorage.setItem('navVisible', JSON.stringify(!prev));
@@ -56,13 +51,25 @@ export default function MobileNav({
           />
         </svg>
       </button>
+      {/*
+        Conversation title in the mobile top bar — intentionally hidden, no
+        need to show it on mobile.
       <h1 className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-center text-sm font-normal">
         {title ?? localize('com_ui_new_chat')}
       </h1>
+      */}
+      <div id="mobile-nav-model-selector-portal" className="flex-1 flex items-center justify-start min-w-0 px-2" />
+      {/*
+        Mobile "New Chat" button (outside the sidebar) intentionally disabled —
+        keeping only the sidebar's own New Chat button. A same-sized empty
+        spacer is kept below so the title stays centered between the sidebar
+        toggle on the left and this space on the right.
+      */}
+      {/*
       <button
         type="button"
         aria-label={localize('com_ui_new_chat')}
-        className="m-1 inline-flex size-10 items-center justify-center rounded-full hover:bg-surface-active-alt"
+        className="m-1 inline-flex size-10 items-center justify-center rounded-full hover:bg-gray-300 dark:hover:bg-gray-800"
         onClick={() => {
           clearMessagesCache(queryClient, conversation?.conversationId);
           queryClient.invalidateQueries([QueryKeys.messages]);
@@ -85,6 +92,8 @@ export default function MobileNav({
           />
         </svg>
       </button>
+      */}
+      <div className="m-1 size-10" aria-hidden="true" />
     </div>
   );
 }

@@ -13,6 +13,7 @@ export const FEEDBACK_REASON_KEYS = [
   'not_satisfied',
   'will_not_recommend',
   'inappropriate_response',
+  'response_after_2_hours',
   // 'other_thumbsup',
 
   // Up
@@ -25,6 +26,7 @@ export const FEEDBACK_REASON_KEYS = [
   'very_satisfied',
   'recommend_to_others',
   'user_friendly_language',
+  'response_within_2_hours',
   // 'other_thumbsdown',
   'other',
 ] as const;
@@ -89,6 +91,12 @@ export const FEEDBACK_TAGS: TFeedbackTag[] = [
     direction: 'thumbsDown',
     icon: 'Ban',
   },
+  {
+    key: 'response_after_2_hours',
+    label: 'com_ui_feedback_tag_response_after_2_hours',
+    direction: 'thumbsDown',
+    icon: 'Hourglass',
+  },
   // {
   //   key: 'other_thumbsdown',
   //   label: 'com_ui_feedback_tag_other',
@@ -152,6 +160,12 @@ export const FEEDBACK_TAGS: TFeedbackTag[] = [
     icon: 'MessageCircle',
   },
   {
+    key: 'response_within_2_hours',
+    label: 'com_ui_feedback_tag_response_within_2_hours',
+    direction: 'thumbsUp',
+    icon: 'Timer',
+  },
+  {
     key: 'other',
     label: 'com_ui_feedback_tag_other',
     direction: 'other',
@@ -170,6 +184,10 @@ export const feedbackSchema = z.object({
   rating: feedbackRatingSchema,
   tag: feedbackTagKeySchema,
   text: z.string().max(1024).optional(),
+  status: z.enum(['open', 'accepted', 'rejected']).optional(),
+  reviewNote: z.string().optional(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
 });
 
 export type TMinimalFeedback = z.infer<typeof feedbackSchema>;
@@ -178,6 +196,10 @@ export type TFeedback = {
   rating: TFeedbackRating;
   tag: TFeedbackTag | undefined;
   text?: string;
+  status?: 'open' | 'accepted' | 'rejected';
+  reviewNote?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
 export function toMinimalFeedback(feedback: TFeedback | undefined): TMinimalFeedback | undefined {
@@ -189,6 +211,10 @@ export function toMinimalFeedback(feedback: TFeedback | undefined): TMinimalFeed
     rating: feedback.rating,
     tag: feedback.tag.key,
     text: feedback.text,
+    status: feedback.status,
+    reviewNote: feedback.reviewNote,
+    createdAt: feedback.createdAt,
+    updatedAt: feedback.updatedAt,
   };
 }
 

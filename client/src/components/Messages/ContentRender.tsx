@@ -1,5 +1,4 @@
 import { useCallback, useMemo, memo } from 'react';
-import { useAtomValue } from 'jotai';
 import { useRecoilValue } from 'recoil';
 import type { TMessage, TMessageContentParts } from 'librechat-data-provider';
 import type { TMessageProps, TMessageIcon } from '~/common';
@@ -11,7 +10,6 @@ import HoverButtons from '~/components/Chat/Messages/HoverButtons';
 import MessageIcon from '~/components/Chat/Messages/MessageIcon';
 import SubRow from '~/components/Chat/Messages/SubRow';
 import { cn, getMessageAriaLabel } from '~/utils';
-import { fontSizeAtom } from '~/store/fontSize';
 import store from '~/store';
 
 type ContentRenderProps = {
@@ -56,7 +54,6 @@ const ContentRender = memo(
       currentEditId,
       setCurrentEditId,
     });
-    const fontSize = useAtomValue(fontSizeAtom);
     const maximizeChatSpace = useRecoilValue(store.maximizeChatSpace);
 
     const handleRegenerateMessage = useCallback(() => regenerateMessage(), [regenerateMessage]);
@@ -106,13 +103,110 @@ const ContentRender = memo(
     };
 
     const baseClasses = {
-      common: 'group mx-auto flex flex-1 gap-3 transition-all duration-300 transform-gpu ',
+      common: 'group mx-auto flex flex-1 gap-2 sm:gap-3 transition-all duration-300 transform-gpu ',
       chat: getChatWidthClass(),
     };
 
     const conditionalClasses = {
       focus: 'focus:outline-none focus:ring-2 focus:ring-border-xheavy',
     };
+
+    const isUser = msg.isCreatedByUser;
+
+    // True while the bubble is showing the "still working on it..." status
+    // (no content parts have streamed in yet) — same condition ContentParts
+    // uses internally to decide whether to render the loading text. Drives
+    // the animated gradient-border treatment on the bubble itself, below.
+    const contentLength = (msg.content as Array<TMessageContentParts | undefined> | undefined)
+      ?.length ?? 0;
+    const isEmptyLoading = !isUser && contentLength === 0 && effectiveIsSubmitting;
+
+    // Avatars are hidden on mobile to save horizontal space in the chat
+    // bubbles; they still show from the sm breakpoint up.
+    const avatarBlock = !hasParallelContent && (
+      <div className="relative hidden flex-shrink-0 flex-col items-center sm:flex">
+        <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full">
+          <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
+        </div>
+      </div>
+    );
+
+    const contentColumn = (
+      <div
+        className={cn(
+          'relative flex min-w-0 flex-col',
+          hasParallelContent ? 'w-full' : 'w-fit max-w-[85%] sm:max-w-[75%]',
+          isUser ? 'user-turn items-end' : 'agent-turn items-start',
+        )}
+      >
+        <div className="flex min-w-0 flex-col gap-1">
+          <div
+            className={cn(
+              'flex min-w-0 max-w-full flex-grow flex-col gap-0',
+              // AI bubble uses bg-surface-tertiary: in dark mode
+              // surface-secondary is the exact same color as the page
+              // background (presentation), so it was invisible there.
+              // User bubble gets a slight green tint (the app's existing
+              // brand-green scale, already used for badges elsewhere) so
+              // it stays visually distinct from the AI bubble.
+              !hasParallelContent &&
+                (isUser
+                  ? 'rounded-2xl rounded-tr-sm px-4 py-2.5 bg-[oklch(0.8348_0.1302_160.908)] dark:bg-[oklch(0.4365_0.1044_156.7556)]'
+                  : 'rounded-2xl rounded-tl-sm bg-gray-50 px-4 py-2.5 dark:bg-gray-900'),
+              isEmptyLoading && 'ajrasakha-orbit-bubble',
+              // Not while it is the pending placeholder: that message is created with a
+              // temporary id and re-keyed when the server's real one arrives, so the bubble
+              // remounts and would play its entrance twice. The reply animates once, when the
+              // real content lands.
+              isLast &&
+                !isEmptyLoading &&
+                (isUser ? 'ajrasakha-msg-in-user' : 'ajrasakha-msg-in-ai'),
+            )}
+          >
+            <ContentParts
+              edit={edit}
+              isLast={isLast}
+              enterEdit={enterEdit}
+              siblingIdx={siblingIdx}
+              messageId={msg.messageId}
+              attachments={attachments}
+              searchResults={searchResults}
+              setSiblingIdx={setSiblingIdx}
+              isLatestMessage={isLatestMessage}
+              isSubmitting={effectiveIsSubmitting}
+              isCreatedByUser={msg.isCreatedByUser}
+              conversationId={conversation?.conversationId}
+              content={msg.content as Array<TMessageContentParts | undefined>}
+            />
+          </div>
+          {hasNoChildren && effectiveIsSubmitting ? (
+            <PlaceholderRow />
+          ) : (
+            <SubRow classes={cn('text-xs', isUser && 'justify-end')}>
+              <SiblingSwitch
+                siblingIdx={siblingIdx}
+                siblingCount={siblingCount}
+                setSiblingIdx={setSiblingIdx}
+              />
+              <HoverButtons
+                index={index}
+                message={msg}
+                isEditing={edit}
+                enterEdit={enterEdit}
+                isSubmitting={isSubmitting}
+                conversation={conversation ?? null}
+                regenerate={handleRegenerateMessage}
+                copyToClipboard={copyToClipboard}
+                handleContinue={handleContinue}
+                latestMessage={latestMessage}
+                handleFeedback={handleFeedback}
+                isLast={isLast}
+              />
+            </SubRow>
+          )}
+        </div>
+      </div>
+    );
 
     return (
       <div
@@ -123,72 +217,20 @@ const ContentRender = memo(
           baseClasses.chat,
           conditionalClasses.focus,
           'message-render',
+          !hasParallelContent && (isUser ? 'justify-end' : 'justify-start'),
         )}
       >
-        {!hasParallelContent && (
-          <div className="relative flex flex-shrink-0 flex-col items-center">
-            <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full">
-              <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
-            </div>
-          </div>
+        {isUser ? (
+          <>
+            {contentColumn}
+            {avatarBlock}
+          </>
+        ) : (
+          <>
+            {avatarBlock}
+            {contentColumn}
+          </>
         )}
-
-        <div
-          className={cn(
-            'relative flex flex-col',
-            hasParallelContent ? 'w-full' : 'w-11/12',
-            msg.isCreatedByUser ? 'user-turn' : 'agent-turn',
-          )}
-        >
-          {!hasParallelContent && (
-            <h2 className={cn('select-none font-semibold', fontSize)}>{messageLabel}</h2>
-          )}
-
-          <div className="flex flex-col gap-1">
-            <div className="flex max-w-full flex-grow flex-col gap-0">
-              <ContentParts
-                edit={edit}
-                isLast={isLast}
-                enterEdit={enterEdit}
-                siblingIdx={siblingIdx}
-                messageId={msg.messageId}
-                attachments={attachments}
-                searchResults={searchResults}
-                setSiblingIdx={setSiblingIdx}
-                isLatestMessage={isLatestMessage}
-                isSubmitting={effectiveIsSubmitting}
-                isCreatedByUser={msg.isCreatedByUser}
-                conversationId={conversation?.conversationId}
-                content={msg.content as Array<TMessageContentParts | undefined>}
-              />
-            </div>
-            {hasNoChildren && effectiveIsSubmitting ? (
-              <PlaceholderRow />
-            ) : (
-              <SubRow classes="text-xs">
-                <SiblingSwitch
-                  siblingIdx={siblingIdx}
-                  siblingCount={siblingCount}
-                  setSiblingIdx={setSiblingIdx}
-                />
-                <HoverButtons
-                  index={index}
-                  message={msg}
-                  isEditing={edit}
-                  enterEdit={enterEdit}
-                  isSubmitting={isSubmitting}
-                  conversation={conversation ?? null}
-                  regenerate={handleRegenerateMessage}
-                  copyToClipboard={copyToClipboard}
-                  handleContinue={handleContinue}
-                  latestMessage={latestMessage}
-                  handleFeedback={handleFeedback}
-                  isLast={isLast}
-                />
-              </SubRow>
-            )}
-          </div>
-        </div>
       </div>
     );
   },

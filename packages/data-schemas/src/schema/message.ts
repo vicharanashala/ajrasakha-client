@@ -90,6 +90,23 @@ const messageSchema: Schema<IMessage> = new Schema(
           type: String,
           required: false,
         },
+        status: {
+          type: String,
+          enum: ['open', 'accepted', 'rejected'],
+          required: false,
+        },
+        reviewNote: {
+          type: String,
+          required: false,
+        },
+        createdAt: {
+          type: Date,
+          required: false,
+        },
+        updatedAt: {
+          type: Date,
+          required: false,
+        },
       },
       default: undefined,
       required: false,

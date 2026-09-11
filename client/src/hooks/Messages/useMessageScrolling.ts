@@ -101,6 +101,36 @@ export default function useMessageScrolling(messagesTree?: TMessage[] | null) {
     }
   }, [autoScroll, conversationId, scrollToBottom]);
 
+  /**
+   * Land on the newest message the first time a conversation renders — after a refresh, or
+   * when opening one from the list. The effect above only does this when the `autoScroll`
+   * preference is on (it defaults to off), which left a reload sitting at the top of a long
+   * thread. Guarded per conversation id so it fires once on load and never yanks a user who
+   * has since scrolled up; it waits for the tree because the scroll target has no position
+   * until the messages have rendered.
+   */
+  const initialScrollConvoRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!messagesTree || messagesTree.length === 0) {
+      return;
+    }
+
+    if (!messagesEndRef.current || !scrollableRef.current || !scrollToBottom) {
+      return;
+    }
+
+    if (conversationId == null || conversationId === Constants.NEW_CONVO) {
+      return;
+    }
+
+    if (initialScrollConvoRef.current === conversationId) {
+      return;
+    }
+
+    initialScrollConvoRef.current = conversationId;
+    scrollToBottom();
+  }, [conversationId, messagesTree, scrollToBottom]);
+
   return {
     conversation,
     scrollableRef,

@@ -40,7 +40,7 @@ export default function MessageContent(props: TMessageProps) {
   return (
     <>
       <MessageContainer handleScroll={handleScroll}>
-        <div className="m-auto justify-center p-4 py-2 md:gap-6">
+        <div className="m-auto justify-center px-3 py-2 sm:px-4 md:gap-6">
           <ContentRender {...props} isSubmitting={isSubmitting} />
         </div>
       </MessageContainer>

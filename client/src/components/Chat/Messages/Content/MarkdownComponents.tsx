@@ -169,7 +169,7 @@ type TParagraphProps = {
 };
 
 export const p: React.ElementType = memo(({ children }: TParagraphProps) => {
-  return <p className="mb-2 whitespace-pre-wrap">{children}</p>;
+  return <p className="mb-2 min-w-0 whitespace-pre-wrap break-words">{children}</p>;
 });
 
 const getNodeText = (children: React.ReactNode): string => {

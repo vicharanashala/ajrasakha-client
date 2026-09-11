@@ -3,8 +3,10 @@ import Cookies from 'js-cookie';
 import { useRecoilState } from 'recoil';
 import { useQuery } from '@tanstack/react-query';
 import { useForm, Controller } from 'react-hook-form';
+import type { FieldPath } from 'react-hook-form';
 import useGeolocation from '~/hooks/useGeolocation';
 import { SearchableSelect, SearchableMultiSelect } from '~/components/ui';
+import LogoutConfirmModal from '~/components/ui/LogoutConfirmModal';
 import { LangSelector } from '~/components/Nav/SettingsTabs/General/General';
 import {
   OGDialog,
@@ -14,12 +16,25 @@ import {
   Input,
   Label,
 } from '@librechat/client';
-import { LogOut } from 'lucide-react';
+import {
+  LogOut,
+  User,
+  Leaf,
+  Smartphone,
+  Landmark,
+  MapPin,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Minus,
+  Plus,
+} from 'lucide-react';
 import { dataService } from 'librechat-data-provider';
 import type { IFarmerProfile } from 'librechat-data-provider';
 import { useSaveFarmerProfileMutation } from '~/data-provider';
 import { useAuthContext } from '~/hooks/AuthContext';
 import { useLocalize } from '~/hooks';
+import { cn } from '~/utils';
 import store from '~/store';
 
 // ── Form Types ───────────────────────────────────────────────────────────────
@@ -54,6 +69,142 @@ type FarmerProfileForm = {
   landhold: string;
 };
 
+// ── Shared controls ──────────────────────────────────────────────────────────
+
+type ChoiceOption = { label: string; value: string };
+
+/** Tappable option cards in place of a dropdown or a radio row. A real radio input sits
+ *  inside each card, visually hidden, so arrow-key navigation, form semantics and screen
+ *  reader announcements all behave natively while the card carries the styling. */
+function ChoiceCards({
+  name,
+  options,
+  value,
+  onChange,
+  gridClassName = 'grid-cols-2 sm:grid-cols-3',
+}: {
+  name: string;
+  options: ChoiceOption[];
+  value?: string;
+  onChange: (value: string) => void;
+  /** Column layout for this field; long labels want fewer columns. */
+  gridClassName?: string;
+}) {
+  return (
+    <div className={cn('mt-1.5 grid gap-2', gridClassName)}>
+      {options.map((option) => {
+        const isSelected = value === option.value;
+        return (
+          <label
+            key={option.value}
+            className={cn(
+              'flex min-h-[46px] cursor-pointer items-center justify-center rounded-xl border px-3 py-2.5',
+              'text-center text-sm transition-colors',
+              'focus-within:ring-2 focus-within:ring-green-600/40',
+              isSelected
+                ? 'border-green-600 bg-green-500/10 font-semibold text-green-700 dark:border-green-400 dark:bg-green-400/10 dark:text-green-400'
+                : 'border-border-medium bg-transparent text-text-primary hover:bg-surface-hover',
+            )}
+          >
+            <input
+              type="radio"
+              name={name}
+              value={option.value}
+              checked={isSelected}
+              onChange={() => onChange(option.value)}
+              className="sr-only"
+            />
+            {option.label}
+          </label>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Minus/plus stepper for small whole-number counts. The number input stays in the middle
+ *  rather than being replaced by a read-only display, so it remains the accessible control
+ *  and anyone who prefers typing still can; the buttons just save opening a keyboard. */
+function CountStepper({
+  id,
+  value,
+  onChange,
+  min = 0,
+  max = 20,
+}: {
+  id: string;
+  value?: number;
+  /** Undefined when the field is cleared, so the `required` rule reports it as missing
+   *  rather than a stray NaN falling through to the whole-number rule. */
+  onChange: (value: number | undefined) => void;
+  min?: number;
+  max?: number;
+}) {
+  const current = Number.isFinite(value) ? (value as number) : min;
+  const stepButtonClass =
+    'flex size-12 shrink-0 items-center justify-center rounded-xl border border-border-medium bg-transparent text-text-primary transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600/40 disabled:cursor-not-allowed disabled:opacity-40';
+
+  return (
+    <div className="mt-1.5 flex items-center gap-2">
+      <button
+        type="button"
+        aria-hidden="true"
+        tabIndex={-1}
+        disabled={current <= min}
+        onClick={() => onChange(Math.max(min, current - 1))}
+        className={stepButtonClass}
+      >
+        <Minus className="size-4" />
+      </button>
+      <input
+        id={id}
+        type="number"
+        inputMode="numeric"
+        min={min}
+        max={max}
+        step={1}
+        value={Number.isFinite(value) ? value : ''}
+        onChange={(event) =>
+          onChange(Number.isNaN(event.target.valueAsNumber) ? undefined : event.target.valueAsNumber)
+        }
+        className="h-12 w-full min-w-0 rounded-xl border border-border-medium bg-transparent text-center text-base font-semibold text-text-primary transition-colors focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600"
+      />
+      <button
+        type="button"
+        aria-hidden="true"
+        tabIndex={-1}
+        disabled={current >= max}
+        onClick={() => onChange(Math.min(max, current + 1))}
+        className={stepButtonClass}
+      >
+        <Plus className="size-4" />
+      </button>
+    </div>
+  );
+}
+
+/** Footer actions. Brand green in both themes: the `surface-submit` token resolves to the
+ *  pale mint in light mode, where white label text on it falls under the contrast minimum. */
+const PRIMARY_ACTION_CLASS = cn(
+  'inline-flex h-12 w-full items-center justify-center rounded-full px-6 text-sm font-semibold',
+  'bg-green-600 text-white',
+  'shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_2px_8px_-2px_rgba(25,135,84,0.5)]',
+  'dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_2px_10px_-2px_rgba(117,215,178,0.3)]',
+  'transition-[background-color,box-shadow,transform,opacity] duration-200 hover:opacity-90',
+  'active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100',
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600/50',
+  'sm:w-auto sm:min-w-[9rem]',
+);
+
+const SECONDARY_ACTION_CLASS = cn(
+  'inline-flex h-12 w-full items-center justify-center rounded-full px-6 text-sm font-medium',
+  'border border-border-medium bg-transparent text-text-primary',
+  'transition-colors duration-200 hover:bg-surface-hover',
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-heavy',
+  'disabled:cursor-not-allowed disabled:opacity-50',
+  'sm:w-auto sm:min-w-[7rem]',
+);
+
 // ── Component ────────────────────────────────────────────────────────────────
 
 const FarmerProfileModal = ({
@@ -70,6 +221,8 @@ const FarmerProfileModal = ({
   const localize = useLocalize();
   const { logout } = useAuthContext();
   const [langcode, setLangcode] = useRecoilState(store.lang);
+  const [currentSection, setCurrentSection] = useState(0);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const {
     register,
     handleSubmit,
@@ -77,6 +230,7 @@ const FarmerProfileModal = ({
     reset,
     watch,
     setValue,
+    trigger,
     formState: { errors },
   } = useForm<FarmerProfileForm>({ mode: 'onChange' });
 
@@ -353,12 +507,19 @@ const FarmerProfileModal = ({
   };
 
   const inputClass =
-    'mt-1 block w-full rounded-md border border-border-heavy bg-surface-secondary px-3 py-2 text-sm text-text-primary placeholder-text-secondary focus:outline-none focus:ring-1 focus:ring-green-500';
+    'mt-1.5 block h-12 w-full rounded-xl border border-border-medium bg-transparent px-3.5 text-base text-text-primary placeholder-text-secondary transition-colors focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600';
   const errorClass = 'mt-1 text-xs text-red-500';
-  const sectionClass = 'mb-6';
-  const sectionTitleClass =
-    'mb-3 text-base font-semibold text-text-primary border-b border-border-heavy pb-1';
+  const sectionTitleClass = 'mb-4 flex items-center gap-3';
+  const sectionBadgeClass =
+    'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-light bg-surface-tertiary text-text-primary';
+  const sectionStepClass = 'text-xs font-medium text-text-tertiary';
   const fieldClass = 'mb-4';
+  const requiredMark = (
+    <span className="text-red-500" aria-hidden="true">
+      {' '}
+      *
+    </span>
+  );
   const decimalRegex = /^\d+(\.\d+)?$/;
   const genderOptions = [
     localize('com_farmer_option_male'),
@@ -817,80 +978,244 @@ const FarmerProfileModal = ({
     { label: noLabel, value: 'no' },
   ];
 
+  const SECTIONS: {
+    icon: typeof User;
+    title: string;
+    fields: FieldPath<FarmerProfileForm>[];
+  }[] = [
+    {
+      icon: User,
+      title: localize('com_farmer_profile_demographic_details'),
+      fields: [
+        'languagePreference',
+        'location.latitude',
+        'location.longitude',
+        'farmerName',
+        'age',
+        'gender',
+        'state',
+        'customState',
+        'district',
+        'customDistrict',
+        'blockName',
+        'customBlock',
+        'villageName',
+        'customVillage',
+        'nearestKVK',
+        'customKVK',
+        'phoneNo',
+      ],
+    },
+    {
+      icon: Leaf,
+      title: localize('com_farmer_profile_agricultural_background'),
+      fields: ['yearsOfExperience', 'landhold', 'primaryCrop', 'secondaryCrop'],
+    },
+    {
+      icon: Smartphone,
+      title: localize('com_farmer_profile_awareness_section'),
+      fields: ['awarenessOfKCC', 'usesAgriApps'],
+    },
+    {
+      icon: Landmark,
+      title: localize('com_farmer_profile_socio_economic'),
+      fields: ['highestEducatedPerson', 'numberOfSmartphones'],
+    },
+  ];
+
+  const isLastSection = currentSection === SECTIONS.length - 1;
+
+  const handleNextSection = async () => {
+    const isValid = await trigger(SECTIONS[currentSection].fields);
+    if (isValid) {
+      setCurrentSection((section) => Math.min(section + 1, SECTIONS.length - 1));
+    }
+  };
+
+  const handlePreviousSection = () => {
+    setCurrentSection((section) => Math.max(section - 1, 0));
+  };
+
   return (
+    <>
     <OGDialog open={open} onOpenChange={handleOpenChange}>
       <OGDialogContent
         showCloseButton={false}
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
-        className="flex max-h-[90vh] w-11/12 max-w-2xl flex-col overflow-y-hidden sm:w-3/4 md:w-2/3 lg:w-1/2"
+        className="farmer-modal-shell flex w-11/12 max-w-2xl flex-col overflow-y-hidden p-4 sm:w-3/4 sm:p-6 md:w-2/3 lg:w-1/2"
       >
         <OGDialogHeader>
-          <div className="flex flex-row items-center justify-between w-full">
-            <OGDialogTitle className="text-lg font-bold text-text-primary">
+          <div className="flex w-full flex-row flex-wrap items-center justify-between gap-2">
+            <OGDialogTitle className="text-base font-bold text-text-primary sm:text-lg">
               {localize('com_farmer_profile_registration')}
             </OGDialogTitle>
             <button
               type="button"
-              onClick={() => logout()}
-              className="inline-flex items-center gap-2 rounded-lg border border-border-heavy bg-surface-secondary px-3 py-1.5 text-xs font-semibold text-text-primary hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-200 shrink-0"
+              onClick={() => setShowLogoutConfirm(true)}
+              aria-label={localize('com_nav_log_out')}
+              className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border-heavy bg-surface-secondary p-2 text-xs font-semibold text-text-primary transition-all duration-200 hover:border-surface-destructive hover:bg-surface-destructive hover:text-white sm:px-3 sm:py-1.5"
             >
               <LogOut className="h-3.5 w-3.5" />
-              {localize('com_nav_log_out')}
+              <span className="hidden sm:inline">{localize('com_nav_log_out')}</span>
             </button>
           </div>
         </OGDialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex min-h-0 flex-1 flex-col">
-          <input type="hidden" {...register('location.latitude')} />
-          <input type="hidden" {...register('location.longitude')} />
+          {/* Required: without coordinates the saved profile stays incomplete server-side,
+              and the user is asked for their location again on every load. */}
+          <input
+            type="hidden"
+            {...register('location.latitude', {
+              required: localize('com_farmer_validation_field_required'),
+            })}
+          />
+          <input
+            type="hidden"
+            {...register('location.longitude', {
+              required: localize('com_farmer_validation_field_required'),
+            })}
+          />
 
           {/* ── Notice — pinned above the scrollable area ── */}
-          <p className="shrink-0 px-1 pb-3 text-sm font-medium text-red-500">
+          {/* <p className="shrink-0 px-1 pb-3 text-xs font-medium text-red-500 sm:text-sm">
             {localize('com_farmer_profile_fill_all_required')}
-          </p>
+          </p> */}
 
-          <div className="flex-1 overflow-y-auto px-1 py-2">
-            <div className={fieldClass}>
-              <Controller
-                name="languagePreference"
-                control={control}
-                rules={{ required: localize('com_farmer_validation_language_required') }}
-                render={({ field }) => (
-                  <LangSelector
-                    langcode={(field.value as string) ?? langcode}
-                    onChange={(value) => {
-                      const resolvedLang = changeLang(value);
-                      field.onChange(resolvedLang);
-                    }}
-                    portal={false}
-                  />
-                )}
-              />
-              {errors.languagePreference && (
-                <p className={errorClass}>{errors.languagePreference.message}</p>
-              )}
+          <div className="flex min-h-0 flex-1 flex-col px-1 py-2">
+            {/* ── Progress — compact bar on mobile — pinned, does not scroll with the form ── */}
+            <div className="mb-4 shrink-0 sm:hidden">
+              {/* The stepper below is too wide for a phone, so the same information is carried
+                  by the section's own icon, its position in the run, and a progress bar. */}
+              <div className="mb-3 flex items-center gap-2.5">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-green-500/10 text-green-600 dark:bg-green-400/10 dark:text-green-400">
+                  {(() => {
+                    const SectionIcon = SECTIONS[currentSection].icon;
+                    return <SectionIcon className="size-4" aria-hidden="true" />;
+                  })()}
+                </span>
+                <div className="min-w-0">
+                  <p className="text-[11px] font-medium text-text-tertiary">
+                    Section {currentSection + 1} of {SECTIONS.length}
+                  </p>
+                  <p className="truncate text-sm font-semibold text-text-primary">
+                    {SECTIONS[currentSection].title}
+                  </p>
+                </div>
+              </div>
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-tertiary">
+                <div
+                  className="h-full rounded-full bg-green-600 transition-all duration-300"
+                  style={{ width: `${((currentSection + 1) / SECTIONS.length) * 100}%` }}
+                />
+              </div>
             </div>
+
+            {/* ── Progress — detailed stepper on larger screens — pinned, does not scroll with the form ── */}
+            <div className="mb-6 hidden shrink-0 items-start sm:flex">
+              {SECTIONS.map((section, index) => {
+                const StepIcon = section.icon;
+                const isCompleted = index < currentSection;
+                const isActive = index === currentSection;
+                return (
+                  <div key={section.title} className="flex flex-1 items-center last:flex-none">
+                    <div className="flex flex-col items-center gap-1.5">
+                      <div
+                        className={cn(
+                          'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
+                          isCompleted
+                            ? 'border-green-600 bg-green-600 text-white'
+                            : isActive
+                              ? 'border-green-600 bg-transparent text-green-600'
+                              : 'border-border-light bg-surface-secondary text-text-tertiary',
+                        )}
+                      >
+                        {isCompleted ? (
+                          <Check className="h-4 w-4" />
+                        ) : (
+                          <StepIcon className="h-4 w-4" />
+                        )}
+                      </div>
+                      <span
+                        className={cn(
+                          'max-w-[6.5rem] text-center text-xs font-medium',
+                          isActive ? 'text-text-primary' : 'text-text-tertiary',
+                        )}
+                      >
+                        {section.title}
+                      </span>
+                    </div>
+                    {index < SECTIONS.length - 1 && (
+                      <div
+                        className={cn(
+                          'mx-2 mb-5 h-0.5 flex-1 rounded-full transition-colors',
+                          isCompleted ? 'bg-green-600' : 'bg-border-light',
+                        )}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="flex-1 overflow-y-auto">
+              <div className={fieldClass}>
+                <Controller
+                  name="languagePreference"
+                  control={control}
+                  rules={{ required: localize('com_farmer_validation_language_required') }}
+                  render={({ field }) => (
+                    <LangSelector
+                      langcode={(field.value as string) ?? langcode}
+                      onChange={(value) => {
+                        const resolvedLang = changeLang(value);
+                        field.onChange(resolvedLang);
+                      }}
+                      portal={false}
+                      compactOnMobile
+                    />
+                  )}
+                />
+                {errors.languagePreference && (
+                  <p className={errorClass}>{errors.languagePreference.message}</p>
+                )}
+              </div>
+
             {/* ── Section 1: Demographic Details ── */}
-            <div className={sectionClass}>
-              <h3 className={sectionTitleClass}>{localize('com_farmer_profile_demographic_details')}</h3>
+            {currentSection === 0 && (
+            <>
+              {/* <div className={sectionTitleClass}>
+                <span className={sectionBadgeClass}>
+                  <User className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className={sectionStepClass}>Section 1 of 4</p>
+                  <h3 className={sectionHeadingTextClass}>
+                    {localize('com_farmer_profile_demographic_details')}
+                  </h3>
+                </div>
+              </div> */}
 
               <div className={fieldClass}>
-                <Label htmlFor="farmerName">{localize('com_farmer_label_farmer_name')}</Label>
+                <Label htmlFor="farmerName">{localize('com_farmer_label_farmer_name')}{requiredMark}</Label>
                 <Input
                   id="farmerName"
                   placeholder={localize('com_farmer_placeholder_full_name')}
                   className={inputClass}
                   {...register('farmerName', {
                     required: localize('com_farmer_validation_farmer_name_required'),
+                    validate: (value) =>
+                      String(value ?? '').trim().length > 0 ||
+                      localize('com_farmer_validation_farmer_name_required'),
                   })}
                 />
                 {errors.farmerName && <p className={errorClass}>{errors.farmerName.message}</p>}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className={fieldClass}>
-                  <Label htmlFor="age">{localize('com_farmer_label_age')}</Label>
+                  <Label htmlFor="age">{localize('com_farmer_label_age')}{requiredMark}</Label>
                   <Input
                     id="age"
                     type="number"
@@ -917,17 +1242,18 @@ const FarmerProfileModal = ({
                 </div>
 
                 <div className={fieldClass}>
-                  <Label>{localize('com_farmer_label_gender')}</Label>
+                  <Label>{localize('com_farmer_label_gender')}{requiredMark}</Label>
                   <Controller
                     name="gender"
                     control={control}
                     rules={{ required: localize('com_farmer_validation_gender_required') }}
                     render={({ field }) => (
-                      <SearchableSelect
-                        options={genderOptions}
+                      <ChoiceCards
+                        name="gender"
+                        options={genderOptions.map((option) => ({ label: option, value: option }))}
                         value={field.value ?? ''}
                         onChange={field.onChange}
-                        placeholder={localize('com_farmer_placeholder_select_gender')}
+                        gridClassName="grid-cols-3"
                       />
                     )}
                   />
@@ -960,13 +1286,14 @@ const FarmerProfileModal = ({
                     </div>
                   </div>
                 </div>
-                <div className="mt-2 flex items-center gap-3">
+                <div className="mt-2 flex flex-wrap items-center gap-3">
                   <button
                     type="button"
                     onClick={getLocation}
                     disabled={isLocating}
-                    className="inline-flex items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface-active disabled:cursor-not-allowed disabled:opacity-50"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border-heavy bg-surface-secondary px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                   >
+                    <MapPin className="h-4 w-4" />
                     {isLocating
                       ? localize('com_farmer_button_locating')
                       : localize('com_farmer_button_get_location')}
@@ -978,11 +1305,14 @@ const FarmerProfileModal = ({
                   )}
                   {locationError && <span className="text-sm text-red-500">{locationError}</span>}
                 </div>
+                {errors.location?.latitude && (
+                  <p className={errorClass}>{errors.location.latitude.message}</p>
+                )}
               </div>
 
               {/* ── State → District → Block → Village ── */}
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_state')}</Label>
+                <Label>{localize('com_farmer_label_state')}{requiredMark}</Label>
                 <Controller
                   name="state"
                   control={control}
@@ -1002,13 +1332,16 @@ const FarmerProfileModal = ({
               {/* Custom state input – shown only when "Other" is selected */}
               {selectedState === otherOption && (
                 <div className={fieldClass}>
-                  <Label htmlFor="customState">{localize('com_farmer_label_custom_state')}</Label>
+                  <Label htmlFor="customState">{localize('com_farmer_label_custom_state')}{requiredMark}</Label>
                   <Input
                     id="customState"
                     placeholder={localize('com_farmer_placeholder_custom_state')}
                     className={inputClass}
                     {...register('customState', {
                       required: localize('com_farmer_validation_custom_state_required'),
+                      // Drops the field from the form when the user switches away from
+                      // "Other", so its rule cannot block submission while hidden.
+                      shouldUnregister: true,
                     })}
                   />
                   {errors.customState && (
@@ -1018,7 +1351,7 @@ const FarmerProfileModal = ({
               )}
 
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_district')}</Label>
+                <Label>{localize('com_farmer_label_district')}{requiredMark}</Label>
                 <Controller
                   name="district"
                   control={control}
@@ -1043,13 +1376,16 @@ const FarmerProfileModal = ({
               {/* Custom district input – shown only when "Other" is selected */}
               {selectedDistrict === otherOption && (
                 <div className={fieldClass}>
-                  <Label htmlFor="customDistrict">{localize('com_farmer_label_custom_district')}</Label>
+                  <Label htmlFor="customDistrict">{localize('com_farmer_label_custom_district')}{requiredMark}</Label>
                   <Input
                     id="customDistrict"
                     placeholder={localize('com_farmer_placeholder_custom_district')}
                     className={inputClass}
                     {...register('customDistrict', {
                       required: localize('com_farmer_validation_custom_district_required'),
+                      // Drops the field from the form when the user switches away from
+                      // "Other", so its rule cannot block submission while hidden.
+                      shouldUnregister: true,
                     })}
                   />
                   {errors.customDistrict && (
@@ -1059,7 +1395,7 @@ const FarmerProfileModal = ({
               )}
 
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_block_name')}</Label>
+                <Label>{localize('com_farmer_label_block_name')}{requiredMark}</Label>
                 <Controller
                   name="blockName"
                   control={control}
@@ -1083,13 +1419,16 @@ const FarmerProfileModal = ({
 
               {selectedBlock === otherOption && (
                 <div className={fieldClass}>
-                  <Label htmlFor="customBlock">{localize('com_farmer_label_custom_block')}</Label>
+                  <Label htmlFor="customBlock">{localize('com_farmer_label_custom_block')}{requiredMark}</Label>
                   <Input
                     id="customBlock"
                     placeholder={localize('com_farmer_placeholder_custom_block')}
                     className={inputClass}
                     {...register('customBlock', {
                       required: localize('com_farmer_validation_custom_block_required'),
+                      // Drops the field from the form when the user switches away from
+                      // "Other", so its rule cannot block submission while hidden.
+                      shouldUnregister: true,
                     })}
                   />
                   {errors.customBlock && <p className={errorClass}>{errors.customBlock.message}</p>}
@@ -1097,7 +1436,7 @@ const FarmerProfileModal = ({
               )}
 
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_village_name')}</Label>
+                <Label>{localize('com_farmer_label_village_name')}{requiredMark}</Label>
                 <Controller
                   name="villageName"
                   control={control}
@@ -1121,13 +1460,16 @@ const FarmerProfileModal = ({
 
               {selectedBlock === otherOption || selectedVillage === otherOption ? (
                 <div className={fieldClass}>
-                  <Label htmlFor="customVillage">{localize('com_farmer_label_custom_village')}</Label>
+                  <Label htmlFor="customVillage">{localize('com_farmer_label_custom_village')}{requiredMark}</Label>
                   <Input
                     id="customVillage"
                     placeholder={localize('com_farmer_placeholder_custom_village')}
                     className={inputClass}
                     {...register('customVillage', {
                       required: localize('com_farmer_validation_custom_village_required'),
+                      // Drops the field from the form when the user switches away from
+                      // "Other", so its rule cannot block submission while hidden.
+                      shouldUnregister: true,
                     })}
                   />
                   {errors.customVillage && (
@@ -1137,7 +1479,7 @@ const FarmerProfileModal = ({
               ) : null}
 
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_nearest_kvk')}</Label>
+                <Label>{localize('com_farmer_label_nearest_kvk')}{requiredMark}</Label>
 
                 <Controller
                   name="nearestKVK"
@@ -1172,13 +1514,16 @@ const FarmerProfileModal = ({
 
               {selectedKVK === otherOption && (
                 <div className={fieldClass}>
-                  <Label htmlFor="customKVK">{localize('com_farmer_label_custom_kvk')}</Label>
+                  <Label htmlFor="customKVK">{localize('com_farmer_label_custom_kvk')}{requiredMark}</Label>
                   <Input
                     id="customKVK"
                     placeholder={localize('com_farmer_placeholder_custom_kvk')}
                     className={inputClass}
                     {...register('customKVK', {
                       required: localize('com_farmer_validation_custom_kvk_required'),
+                      // Drops the field from the form when the user switches away from
+                      // "Other", so its rule cannot block submission while hidden.
+                      shouldUnregister: true,
                     })}
                   />
                   {errors.customKVK && (
@@ -1188,7 +1533,7 @@ const FarmerProfileModal = ({
               )}
 
               <div className={fieldClass}>
-                <Label htmlFor="phoneNo">{localize('com_farmer_label_phone_number')}</Label>
+                <Label htmlFor="phoneNo">{localize('com_farmer_label_phone_number')}{requiredMark}</Label>
                 <Input
                   id="phoneNo"
                   type="tel"
@@ -1199,21 +1544,35 @@ const FarmerProfileModal = ({
                   {...register('phoneNo', {
                     required: localize('com_farmer_validation_phone_required'),
                     pattern: {
-                      value: /^\d{10}$/,
-                      message: localize('com_farmer_validation_phone_exact_10'),
+                      // 10 digits total, and the first digit must be 6, 7, 8, or 9
+                      // (standard Indian mobile number format).
+                      value: /^[6-9]\d{9}$/,
+                      message: localize('com_farmer_validation_phone_invalid'),
                     },
                   })}
                 />
                 {errors.phoneNo && <p className={errorClass}>{errors.phoneNo.message}</p>}
               </div>
-            </div>
+            </>
+            )}
 
             {/* ── Section 2: Agricultural Background ── */}
-            <div className={sectionClass}>
-              <h3 className={sectionTitleClass}>{localize('com_farmer_profile_agricultural_background')}</h3>
+            {currentSection === 1 && (
+            <>
+              {/* <div className={sectionTitleClass}>
+                <span className={sectionBadgeClass}>
+                  <Leaf className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className={sectionStepClass}>Section 2 of 4</p>
+                  <h3 className={sectionHeadingTextClass}>
+                    {localize('com_farmer_profile_agricultural_background')}
+                  </h3>
+                </div>
+              </div> */}
 
               <div className={fieldClass}>
-                <Label htmlFor="yearsOfExperience">{localize('com_farmer_label_years_experience')}</Label>
+                <Label htmlFor="yearsOfExperience">{localize('com_farmer_label_years_experience')}{requiredMark}</Label>
                 <Input
                   id="yearsOfExperience"
                   type="number"
@@ -1242,7 +1601,7 @@ const FarmerProfileModal = ({
               </div>
 
               <div className={fieldClass}>
-                <Label htmlFor="landhold">{localize('com_farmer_label_landholding')}</Label>
+                <Label htmlFor="landhold">{localize('com_farmer_label_landholding')}{requiredMark}</Label>
                 <Input
                   id="landhold"
                   type="text"
@@ -1263,9 +1622,9 @@ const FarmerProfileModal = ({
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className={fieldClass}>
-                  <Label htmlFor="primaryCrop">{localize('com_farmer_label_primary_crop')}</Label>
+                  <Label htmlFor="primaryCrop">{localize('com_farmer_label_primary_crop')}{requiredMark}</Label>
                   <SearchableMultiSelect
                     options={cropsOptions}
                     value={selectedPrimaryCropList}
@@ -1273,6 +1632,7 @@ const FarmerProfileModal = ({
                       setValue('primaryCrop', selected.join(', '), { shouldValidate: true })
                     }
                     placeholder={localize('com_ui_select_options')}
+                    openUpward
                   />
                   {selectedPrimaryCropList.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-2">
@@ -1304,7 +1664,7 @@ const FarmerProfileModal = ({
                 </div>
 
                 <div className={fieldClass}>
-                  <Label htmlFor="secondaryCrop">{localize('com_farmer_label_secondary_crop')}</Label>
+                  <Label htmlFor="secondaryCrop">{localize('com_farmer_label_secondary_crop')}{requiredMark}</Label>
                   <SearchableMultiSelect
                     options={cropsOptions}
                     value={selectedSecondaryCropList}
@@ -1312,6 +1672,7 @@ const FarmerProfileModal = ({
                       setValue('secondaryCrop', selected.join(', '), { shouldValidate: true })
                     }
                     placeholder={localize('com_ui_select_options')}
+                    openUpward
                   />
                   {selectedSecondaryCropList.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-2">
@@ -1344,77 +1705,97 @@ const FarmerProfileModal = ({
                   )}
                 </div>
               </div>
-            </div>
+            </>
+            )}
 
             {/* ── Section 3: Awareness & Digital Adoption ── */}
-            <div className={sectionClass}>
-              <h3 className={sectionTitleClass}>{localize('com_farmer_profile_awareness_section')}</h3>
+            {currentSection === 2 && (
+            <>
+              {/* <div className={sectionTitleClass}>
+                <span className={sectionBadgeClass}>
+                  <Smartphone className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className={sectionStepClass}>Section 3 of 4</p>
+                  <h3 className={sectionHeadingTextClass}>
+                    {localize('com_farmer_profile_awareness_section')}
+                  </h3>
+                </div>
+              </div> */}
 
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_awareness_kcc')}</Label>
-                <div className="mt-2 flex gap-6">
-                  {yesNoOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className="flex cursor-pointer items-center gap-2 text-sm text-text-primary"
-                    >
-                      <input
-                        type="radio"
-                        value={option.value}
-                        className="accent-green-600"
-                        {...register('awarenessOfKCC', {
-                          required: localize('com_farmer_validation_field_required'),
-                        })}
-                      />
-                      {option.label}
-                    </label>
-                  ))}
-                </div>
+                <Label>{localize('com_farmer_label_awareness_kcc')}{requiredMark}</Label>
+                <Controller
+                  name="awarenessOfKCC"
+                  control={control}
+                  rules={{ required: localize('com_farmer_validation_field_required') }}
+                  render={({ field }) => (
+                    <ChoiceCards
+                      name="awarenessOfKCC"
+                      options={yesNoOptions}
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      gridClassName="grid-cols-2"
+                    />
+                  )}
+                />
                 {errors.awarenessOfKCC && (
                   <p className={errorClass}>{errors.awarenessOfKCC.message}</p>
                 )}
               </div>
 
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_usage_agri_apps')}</Label>
-                <div className="mt-2 flex gap-6">
-                  {yesNoOptions.map((option) => (
-                    <label
-                      key={option.value}
-                      className="flex cursor-pointer items-center gap-2 text-sm text-text-primary"
-                    >
-                      <input
-                        type="radio"
-                        value={option.value}
-                        className="accent-green-600"
-                        {...register('usesAgriApps', {
-                          required: localize('com_farmer_validation_field_required'),
-                        })}
-                      />
-                      {option.label}
-                    </label>
-                  ))}
-                </div>
+                <Label>{localize('com_farmer_label_usage_agri_apps')}{requiredMark}</Label>
+                <Controller
+                  name="usesAgriApps"
+                  control={control}
+                  rules={{ required: localize('com_farmer_validation_field_required') }}
+                  render={({ field }) => (
+                    <ChoiceCards
+                      name="usesAgriApps"
+                      options={yesNoOptions}
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      gridClassName="grid-cols-2"
+                    />
+                  )}
+                />
                 {errors.usesAgriApps && <p className={errorClass}>{errors.usesAgriApps.message}</p>}
               </div>
-            </div>
+            </>
+            )}
 
             {/* ── Section 4: Socio-Economic Indicator ── */}
-            <div className={sectionClass}>
-              <h3 className={sectionTitleClass}>{localize('com_farmer_profile_socio_economic')}</h3>
+            {currentSection === 3 && (
+            <>
+              {/* <div className={sectionTitleClass}>
+                <span className={sectionBadgeClass}>
+                  <Landmark className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className={sectionStepClass}>Section 4 of 4</p>
+                  <h3 className={sectionHeadingTextClass}>
+                    {localize('com_farmer_profile_socio_economic')}
+                  </h3>
+                </div>
+              </div> */}
 
               <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_highest_educated')}</Label>
+                <Label>{localize('com_farmer_label_highest_educated')}{requiredMark}</Label>
                 <Controller
                   name="highestEducatedPerson"
                   control={control}
                   rules={{ required: localize('com_farmer_validation_field_required') }}
                   render={({ field }) => (
-                    <SearchableSelect
-                      options={educationOptions}
+                    <ChoiceCards
+                      name="highestEducatedPerson"
+                      options={educationOptions.map((option) => ({
+                        label: option,
+                        value: option,
+                      }))}
                       value={field.value ?? ''}
                       onChange={field.onChange}
-                      placeholder={localize('com_farmer_placeholder_select_education_level')}
+                      gridClassName="grid-cols-1 sm:grid-cols-3"
                     />
                   )}
                 />
@@ -1424,19 +1805,12 @@ const FarmerProfileModal = ({
               </div>
 
               <div className={fieldClass}>
-                <Label htmlFor="numberOfSmartphones">{localize('com_farmer_label_smartphone_count')}</Label>
-                <Input
-                  id="numberOfSmartphones"
-                  type="number"
-                  placeholder={localize('com_farmer_placeholder_smartphone_count')}
-                  defaultValue={0}
-                  min={0}
-                  max={20}
-                  step={1}
-                  className={inputClass}
-                  {...register('numberOfSmartphones', {
+                <Label htmlFor="numberOfSmartphones">{localize('com_farmer_label_smartphone_count')}{requiredMark}</Label>
+                <Controller
+                  name="numberOfSmartphones"
+                  control={control}
+                  rules={{
                     required: localize('com_farmer_validation_smartphones_required'),
-                    valueAsNumber: true,
                     validate: {
                       isInteger: (value) =>
                         Number.isInteger(value) ||
@@ -1445,36 +1819,78 @@ const FarmerProfileModal = ({
                         (value >= 0 && value <= 20) ||
                         localize('com_farmer_validation_smartphones_range'),
                     },
-                  })}
+                  }}
+                  render={({ field }) => (
+                    <CountStepper
+                      id="numberOfSmartphones"
+                      value={field.value}
+                      onChange={field.onChange}
+                      min={0}
+                      max={20}
+                    />
+                  )}
                 />
                 {errors.numberOfSmartphones && (
                   <p className={errorClass}>{errors.numberOfSmartphones.message}</p>
                 )}
               </div>
+            </>
+            )}
             </div>
           </div>
 
           {/* ── Footer ── */}
-          <div className="mt-2 flex shrink-0 justify-end gap-2 border-t border-border-heavy px-1 pt-4">
-            <button
-              type="button"
-              onClick={() => reset()}
-              disabled={saveMutation.isLoading}
-              className="inline-flex items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-6 py-2 text-sm font-medium text-text-primary hover:bg-surface-active disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {localize('com_ui_reset')}
-            </button>
-            <button
-              type="submit"
-              disabled={saveMutation.isLoading}
-              className="inline-flex items-center justify-center rounded-lg bg-green-600 px-6 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-green-700 dark:hover:bg-green-800"
-            >
-              {saveMutation.isLoading ? `${localize('com_ui_submit')}...` : localize('com_ui_submit')}
-            </button>
+          <div className="mt-2 flex shrink-0 flex-col-reverse gap-2 border-t border-border-light px-1 pt-4 sm:flex-row sm:justify-between sm:gap-3">
+            {currentSection === 0 ? (
+              // Reset button temporarily disabled — commented out per request.
+              // <button
+              //   type="button"
+              //   onClick={() => reset()}
+              //   disabled={saveMutation.isLoading}
+              //   className="inline-flex w-full items-center justify-center rounded-lg border border-border-heavy bg-surface-secondary px-6 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+              // >
+              //   {localize('com_ui_reset')}
+              // </button>
+              null
+            ) : (
+              <button
+                type="button"
+                onClick={handlePreviousSection}
+                disabled={saveMutation.isLoading}
+                className={cn(SECONDARY_ACTION_CLASS, 'gap-1.5')}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                {localize('com_ui_back')}
+              </button>
+            )}
+            {isLastSection ? (
+              <button
+                type="submit"
+                disabled={saveMutation.isLoading}
+                className={cn(PRIMARY_ACTION_CLASS, 'disabled:cursor-not-allowed disabled:opacity-50')}
+              >
+                {saveMutation.isLoading ? `${localize('com_ui_submit')}...` : localize('com_ui_submit')}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleNextSection}
+                className={cn(PRIMARY_ACTION_CLASS, 'gap-1.5')}
+              >
+                {localize('com_ui_next')}
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            )}
           </div>
         </form>
       </OGDialogContent>
     </OGDialog>
+    <LogoutConfirmModal
+      open={showLogoutConfirm}
+      onOpenChange={setShowLogoutConfirm}
+      onConfirm={() => logout()}
+    />
+    </>
   );
 };
 

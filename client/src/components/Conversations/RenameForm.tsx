@@ -41,7 +41,7 @@ const RenameForm: React.FC<RenameFormProps> = ({
 
   return (
     <div
-      className="absolute inset-0 z-20 flex w-full items-center rounded-lg bg-surface-active-alt p-1.5"
+      className="absolute inset-0 z-20 flex w-full items-center rounded-lg bg-gray-300 dark:bg-gray-800 p-1.5"
       role="form"
       aria-label={localize('com_ui_rename_conversation')}
     >

@@ -10,8 +10,8 @@ import {
   startTransition,
 } from 'react';
 import { useRecoilValue } from 'recoil';
-import { motion } from 'framer-motion';
-import { Skeleton, useMediaQuery } from '@librechat/client';
+import { Sun, Moon } from 'lucide-react';
+import { Skeleton, useMediaQuery, TooltipAnchor, useTheme, isDark } from '@librechat/client';
 import { PermissionTypes, Permissions } from 'librechat-data-provider';
 import type { InfiniteQueryObserverResult } from '@tanstack/react-query';
 import type { ConversationListResponse } from 'librechat-data-provider';
@@ -37,6 +37,9 @@ const NotificationBell = lazy(() => import('./NotificationBell'));
 export const NAV_WIDTH = {
   MOBILE: 320,
   DESKTOP: 260,
+  // Slim icon rail shown on desktop when the sidebar is collapsed, instead of
+  // hiding it completely.
+  COLLAPSED: 64,
 } as const;
 
 const SearchBarSkeleton = memo(() => (
@@ -66,6 +69,40 @@ const NavMask = memo(
 );
 
 const MemoNewChat = memo(NewChat);
+
+// Compact light/dark toggle sized to match the sidebar's other small icon
+// buttons (~28px). The shared `ThemeSelector` component (from
+// packages/client, also used on the login screen) auto-sizes itself from
+// icon size + padding to roughly 40px, which read as noticeably bigger than
+// everything else down here — so this reimplements just the toggle
+// behavior locally instead, using the same `useTheme`/`isDark` primitives.
+const ThemeToggleButton = memo(({ side = 'top' }: { side?: 'top' | 'right' }) => {
+  const localize = useLocalize();
+  const { theme, setTheme } = useTheme();
+  const dark = isDark(theme);
+
+  return (
+    <TooltipAnchor
+      description={localize('com_ui_toggle_theme')}
+      side={side}
+      render={
+        <button
+          type="button"
+          aria-label={localize('com_ui_toggle_theme')}
+          onClick={() => setTheme(dark ? 'light' : 'dark')}
+          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border-none bg-transparent text-text-primary duration-0 hover:bg-gray-300 dark:hover:bg-gray-800"
+        >
+          {dark ? (
+            <Moon className="h-5 w-5" aria-hidden="true" />
+          ) : (
+            <Sun className="h-5 w-5" aria-hidden="true" />
+          )}
+        </button>
+      }
+    />
+  );
+});
+ThemeToggleButton.displayName = 'ThemeToggleButton';
 
 const Nav = memo(
   ({
@@ -233,6 +270,11 @@ const Nav = memo(
               toggleNav={toggleNavVisible}
               headerButtons={headerButtons}
               isSmallScreen={isSmallScreen}
+              notificationBell={
+                <Suspense fallback={null}>
+                  <NotificationBell />
+                </Suspense>
+              }
             />
             <div className="flex min-h-0 flex-grow flex-col overflow-hidden">
               <Conversations
@@ -254,8 +296,43 @@ const Nav = memo(
                 <AccountSettings />
               </Suspense>
             </div>
-            <Suspense fallback={null}>
-              <NotificationBell />
+            {/* Theme toggle, pinned to the opposite side of the row from the
+                profile avatar — mirrors the logo/collapse-button pairing at
+                the top of the expanded sidebar. */}
+            <ThemeToggleButton />
+          </div>
+        </nav>
+      </div>
+    );
+
+    // Collapsed rail (desktop only): a slim strip with the sidebar toggle,
+    // New Chat, and notifications stacked at the top, and the theme toggle +
+    // profile avatar pinned to the bottom — instead of hiding the sidebar
+    // completely.
+    const collapsedContent = (
+      <div className="flex h-full flex-col">
+        <nav
+          id="chat-history-nav-collapsed"
+          aria-label={localize('com_ui_chat_history')}
+          className="flex h-full flex-col items-center px-1.5 pb-3.5"
+          aria-hidden={navVisible}
+        >
+          <div className="flex flex-1 flex-col items-center overflow-hidden">
+            <MemoNewChat
+              toggleNav={toggleNavVisible}
+              isSmallScreen={isSmallScreen}
+              collapsed
+              notificationBell={
+                <Suspense fallback={null}>
+                  <NotificationBell collapsed />
+                </Suspense>
+              }
+            />
+          </div>
+          <div className="flex flex-col items-center gap-1">
+            <ThemeToggleButton side="right" />
+            <Suspense fallback={<Skeleton className="mt-1 h-10 w-10 rounded-xl" />}>
+              <AccountSettings collapsed />
             </Suspense>
           </div>
         </nav>
@@ -270,7 +347,11 @@ const Nav = memo(
           <div
             data-testid="nav"
             className={cn(
-              'nav fixed left-0 top-0 z-[70] h-full bg-surface-primary-alt',
+              // Hairline edge so the sidebar reads as its own surface rather than blending
+              // into the chat area behind it — bg-gray-50/900 alone is only a few shades off
+              // the page background (bg-presentation) in both themes, easy to miss at a
+              // glance. Same border token the collapsed desktop rail already uses below.
+              'nav fixed left-0 top-0 z-[70] h-full border-r border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-900',
               navVisible && 'active',
             )}
             style={{
@@ -286,24 +367,37 @@ const Nav = memo(
       );
     }
 
-    // Desktop: Inline sidebar with width transition
+    // Desktop: Inline sidebar with width transition. When collapsed, a slim
+    // icon rail stays visible instead of shrinking to nothing.
+    const desktopWidth = navVisible ? sidebarWidth : NAV_WIDTH.COLLAPSED;
     return (
       <div
         className="flex-shrink-0 overflow-hidden"
-        style={{ width: navVisible ? sidebarWidth : 0, transition: 'width 0.2s ease-out' }}
+        style={{ width: desktopWidth, transition: 'width 0.2s ease-out' }}
       >
-        <motion.div
+        <div
           data-testid="nav"
-          className={cn('nav h-full bg-surface-primary-alt', navVisible && 'active')}
-          style={{ width: sidebarWidth }}
-          initial={false}
-          animate={{
-            x: navVisible ? 0 : -sidebarWidth,
-          }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
+          // Always keep the shared `.nav.active` styles on desktop (position:
+          // relative, opacity: 1) — the base `.nav` rule in mobile.css sets
+          // opacity: 0 and position: fixed, which is meant for the mobile
+          // slide-in/out animation. On desktop, visibility is driven purely
+          // by the width transition above, so the rail must stay "active"
+          // even while collapsed or it renders invisible.
+          // The collapsed rail blends into the chat area's background
+          // (bg-presentation) in both light and dark mode, instead of
+          // keeping the sidebar's usual surface-primary-alt shade — so a
+          // thin border is the only thing separating it from the chat area.
+          // Kept on the expanded state too: bg-gray-50/900 is only a few
+          // shades off bg-presentation in both themes, so the border is
+          // what actually guarantees a visible seam, not just the tint.
+          className={cn(
+            'nav active h-full border-r border-gray-200 dark:border-gray-800',
+            navVisible ? 'bg-gray-50 dark:bg-gray-900' : 'bg-presentation',
+          )}
+          style={{ width: desktopWidth, transition: 'width 0.2s ease-out' }}
         >
-          {sidebarContent}
-        </motion.div>
+          {navVisible ? sidebarContent : collapsedContent}
+        </div>
       </div>
     );
   },

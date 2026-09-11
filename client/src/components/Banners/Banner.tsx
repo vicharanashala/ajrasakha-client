@@ -1,13 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { XIcon } from 'lucide-react';
 import { useRecoilState } from 'recoil';
-import { Button, cn } from '@librechat/client';
+import { Button } from '@librechat/client';
 import { useGetBannerQuery } from '~/data-provider';
 import store from '~/store';
-import { useLocalize } from '~/hooks';
 
+/** Thin top strip that only hosts the header's left-side portal. The in-development notice
+ *  it used to show now sits below the chat composer, in Footer. */
 export const Banner = ({ onHeightChange }: { onHeightChange?: (height: number) => void }) => {
-  const localize = useLocalize();
   // const { data: banner } = useGetBannerQuery();
   const [hideBannerHint, setHideBannerHint] = useRecoilState<string[]>(store.hideBannerHint);
   const bannerRef = useRef<HTMLDivElement>(null);
@@ -33,19 +33,14 @@ export const Banner = ({ onHeightChange }: { onHeightChange?: (height: number) =
   //     onHeightChange(0);
   //   }
   // };
-  const formattedMessage = localize('com_banner_message').replace(/\n/g, '<br />');
+  // The header only portals content in here on md+, so the strip collapses to nothing on
+  // small screens instead of leaving dead space where the notice used to be.
   return (
     <div
       ref={bannerRef}
-      className="sticky top-0 z-20 flex w-full items-center justify-between bg-presentation px-3 py-2 text-black dark:text-white md:relative"
+      className="sticky top-0 z-20 flex w-full items-center justify-between bg-transparent px-3 py-0 md:relative md:py-2"
     >
       <div id="banner-left-portal" className="z-30 flex min-w-[max-content] items-center"></div>
-      <div
-        className={cn(
-          'flex-1 whitespace-pre-line px-4 text-center text-sm text-black dark:text-white md:text-base lg:text-lg',
-        )}
-        dangerouslySetInnerHTML={{ __html: formattedMessage }}
-      ></div>
       {/* {!banner.persistable && (
         <Button
           size="icon"

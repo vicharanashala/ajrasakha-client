@@ -1,55 +1,51 @@
 import { useCallback } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import { replaceSpecialVars } from 'librechat-data-provider';
 import { useChatContext, useChatFormContext, useAddedChatContext } from '~/Providers';
 import { useAuthContext } from '~/hooks/AuthContext';
-import { useUpdateFarmerPlatformMutation, useUpdateFarmerLastActiveAt } from '~/data-provider';
+import {
+  useUpdateFarmerPlatformMutation,
+  useUpdateFarmerLastActiveAt,
+  useUserTermsQuery,
+} from '~/data-provider';
+import { useLocalize } from '~/hooks';
 import store from '~/store';
-import { requiresFeedbackFromConversation } from '~/utils/requiresFeedback';
 
 export default function useSubmitMessage() {
   const { user } = useAuthContext();
+  const localize = useLocalize();
   const methods = useChatFormContext();
   const updateFarmerPlatform = useUpdateFarmerPlatformMutation();
   const { conversation: addedConvo } = useAddedChatContext();
-  const { ask, index, getMessages, setMessages, latestMessage, conversation } = useChatContext();
+  const { ask, index, getMessages, setMessages, latestMessage } = useChatContext();
   const updateLastActiveAt = useUpdateFarmerLastActiveAt();
+  // Independent of Root's terms-modal-gated call to the same query (same query key, so this
+  // dedupes against that cache when it's warm) — kept unconditional here (only gated on being
+  // logged in) so an example-question tap can always read the farmer's state regardless of
+  // whether the ToS-modal feature flag is on.
+  const { data: termsData } = useUserTermsQuery({ enabled: !!user });
   const autoSendPrompts = useRecoilValue(store.autoSendPrompts);
-  const setActivePrompt = useSetRecoilState(store.activePromptByIndex(index));
-  const setShowFeedbackReminder = useSetRecoilState(store.showFeedbackReminder);
-  const setPendingNewConversation = useSetRecoilState(store.pendingNewConversation);
+  const [activePrompt, setActivePrompt] = useRecoilState(store.activePromptByIndex(index));
+  const [showFeedbackReminder, setShowFeedbackReminder] = useRecoilState(store.showFeedbackReminder);
+  const setPendingNewConversation = useRecoilState(store.pendingNewConversation)[1];
+  const [isRequiredFeedback] = useRecoilState(store.isRequiredFeedback);
+  const setFeedbackSkipCount = useSetRecoilState(store.feedbackSkipCount);
 
   const submitMessage = useCallback(
-    async (data?: { text: string }, position?: { latitude: number; longitude: number }) => {
+    async (
+      data?: { text: string; isExampleQuestion?: boolean },
+      position?: { latitude: number; longitude: number },
+    ) => {
       if (!data) {
         return console.warn('No data provided to submitMessage');
       }
 
-      // Check feedback requirement before submitting
-      const convoId = conversation?.conversationId;
-      if (convoId && convoId !== 'new') {
-        const messages = getMessages();
-        
-        // Check if messages are actually loaded
-        const messagesLoaded = messages && messages.length > 0;
-        
-        const latestAssistantMessage = messagesLoaded
-          ? messages
-              ?.slice()
-              .reverse()
-              .find((message) => !message.isCreatedByUser)
-          : null;
-
-        const toolCalled = await requiresFeedbackFromConversation(convoId);
-
-        // Only show modal if messages are loaded AND tool called AND no feedback given
-        const shouldRequestFeedback = messagesLoaded && toolCalled && !latestAssistantMessage?.feedback;
-
-        if (shouldRequestFeedback) {
-          setPendingNewConversation(false);
-          setShowFeedbackReminder(true);
-          return;
-        }
+      // Block submission if feedback is required — Recoil state is synced from the API via MessagesViewContext
+      if (isRequiredFeedback) {
+        setPendingNewConversation(false);
+        setShowFeedbackReminder(true);
+        setFeedbackSkipCount((n) => n + 1);
+        return;
       }
 
       const rootMessages = getMessages();
@@ -69,10 +65,26 @@ export default function useSubmitMessage() {
       else if (/linux/i.test(ua)) platform = 'Linux';
       updateFarmerPlatform.mutate(platform);
       updateLastActiveAt.mutate();
+
+      // Example-question taps get the farmer's saved state appended to the question itself
+      // (visible in the chat bubble, so it always reaches the model regardless of whether the
+      // active endpoint/preset has a promptPrefix set — unlike the geolocation `position`
+      // below, which is silently dropped when promptPrefix is empty). Manually typed messages
+      // and slash-command prompts never set `isExampleQuestion`, so they're unaffected.
+      const farmerState = termsData?.farmerProfile?.state;
+      const shouldAppendState = !!(data.isExampleQuestion && farmerState);
+      const finalText = shouldAppendState
+        ? `${data.text}\n\n${localize('com_ui_state_prefix')} ${farmerState}`
+        : data.text;
+
       ask(
         {
-          text: data.text,
+          text: finalText,
           position,
+          // Frontend-only display flag — never included in the outgoing request payload (see
+          // useChatFunctions.ts), so it's shown in the bubble (MessageContent.tsx) but never
+          // sent to or stored by the backend.
+          isExampleQuestion: shouldAppendState,
         },
         {
           addedConvo: addedConvo ?? undefined,
@@ -89,9 +101,11 @@ export default function useSubmitMessage() {
       latestMessage,
       updateFarmerPlatform,
       updateLastActiveAt,
-      conversation,
       setShowFeedbackReminder,
       setPendingNewConversation,
+      isRequiredFeedback,
+      termsData,
+      localize,
     ],
   );
 

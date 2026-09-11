@@ -381,6 +381,7 @@
   "com_files_downloading": "Downloading Files",
   "com_files_filter": "Filter files...",
   "com_files_filter_by": "Filter files by...",
+  "com_files_load_more": "Load more",
   "com_files_no_results": "No results.",
   "com_files_number_selected": "{{0}} of {{1}} items(s) selected",
   "com_files_preparing_download": "Preparing download...",
@@ -557,6 +558,7 @@
   "com_nav_language": "Language",
   "com_nav_latex_parsing": "Parsing LaTeX in messages (may affect performance)",
   "com_nav_log_out": "Log out",
+  "com_nav_log_out_confirm_message": "Are you sure you want to log out?",
   "com_nav_long_audio_warning": "Longer texts will take longer to process.",
   "com_nav_maximize_chat_space": "Maximize chat space",
   "com_nav_mcp_configure_server": "Configure {{0}}",
@@ -574,6 +576,18 @@
   "com_nav_mcp_vars_updated": "MCP custom user variables updated successfully.",
   "com_nav_modular_chat": "Enable switching Endpoints mid-conversation",
   "com_nav_my_files": "My Files",
+  "com_nav_notifications": "Notifications",
+  "com_nav_notifications_mark_all_read": "Mark all read",
+  "com_nav_notifications_new_count": "{{0}} new",
+  "com_nav_notifications_type_info": "Info",
+  "com_nav_notifications_type_alert": "Alert",
+  "com_nav_notifications_empty_title": "You're all caught up",
+  "com_nav_notifications_empty_subtitle": "New advisories, alerts and updates will show up here.",
+  "com_nav_notifications_time_just_now": "Just now",
+  "com_nav_notifications_time_minutes_ago": "{{0}}m ago",
+  "com_nav_notifications_time_hours_ago": "{{0}}h ago",
+  "com_nav_notifications_time_yesterday": "Yesterday",
+  "com_nav_notifications_time_days_ago": "{{0}}d ago",
   "com_nav_not_supported": "Not Supported",
   "com_nav_open_sidebar": "Open sidebar",
   "com_nav_playback_rate": "Audio Playback Rate",
@@ -729,6 +743,7 @@
   "com_ui_all_proper": "All",
   "com_ui_analyzing": "Analyzing",
   "com_ui_analyzing_finished": "Finished analyzing",
+  "com_ui_answer_generating": "Answer is generating…",
   "com_ui_api_key": "API Key",
   "com_ui_archive": "Archive",
   "com_ui_archive_delete_error": "Failed to delete archived conversation",
@@ -974,6 +989,7 @@
   "com_ui_error_unexpected": "Oops! Something Unexpected Occurred",
   "com_ui_error_updating_preferences": "Error updating preferences",
   "com_ui_everyone_permission_level": "Everyone's permission level",
+  "com_ui_example_question_state_note": "State fetched from your profile",
   "com_ui_examples": "Examples",
   "com_ui_expand": "Expand",
   "com_ui_expand_chat": "Expand Chat",
@@ -1073,6 +1089,15 @@
   "com_ui_instructions": "Instructions",
   "com_ui_key": "Key",
   "com_ui_key_required": "API key is required",
+  "com_ui_landing_chip_expert_verified": "Expert verified",
+  "com_ui_landing_chip_multilingual": "Multilingual",
+  "com_ui_landing_chip_voice": "Ask by voice",
+  "com_ui_landing_question_mandi_price_paddy": "What is the current mandi price for Paddy crop in my region?",
+  "com_ui_landing_question_pmfby_info": "Give information regarding the Pradhan Mantri Fasal Bima Yojana (PMFBY).",
+  "com_ui_landing_question_pmkusum_info": "Give information regarding the PM-KUSUM yojana?",
+  "com_ui_landing_question_weather_forecast": "What is the weather forecast for my region?",
+  "com_ui_landing_question_wheat_yellow_rust": "How to control yellow rust in Wheat crop?",
+  "com_ui_landing_tagline": "Farm smarter. Grow better.",
   "com_ui_late_night": "Happy late night",
   "com_ui_latest_footer": "Every AI for Everyone.",
   "com_ui_latest_production_version": "Latest production version",
@@ -1360,12 +1385,16 @@
   "com_ui_special_var_iso_datetime": "UTC ISO Datetime",
   "com_ui_special_variables": "Special variables:",
   "com_ui_special_variables_more_info": "You can select special variables from the dropdown: `{{current_date}}` (today's date and day of week), `{{current_datetime}}` (local date and time), `{{utc_iso_datetime}}` (UTC ISO datetime), and `{{current_user}}` (your account name).",
+  "com_ui_speech_converting": "Converting your speech to text…",
+  "com_ui_speech_listening": "Listening… {{duration}}",
   "com_ui_speech_not_supported": "Your browser does not support speech recognition",
   "com_ui_speech_not_supported_use_external": "Your browser does not support speech recognition. Try switching to External STT in Settings > Speech.",
+  "com_ui_speech_tap_to_speak": "Tap to speak",
   "com_ui_speech_while_submitting": "Can't submit speech while a response is being generated",
   "com_ui_sr_actions_menu": "Open actions menu for \"{{0}}\"",
   "com_ui_sr_global_prompt": "Global prompt group",
   "com_ui_stack_trace": "Stack Trace",
+  "com_ui_state_prefix": "State:",
   "com_ui_status_prefix": "Status:",
   "com_ui_stop": "Stop",
   "com_ui_storage": "Storage",
@@ -1378,6 +1407,7 @@
   "com_ui_support_contact_name": "Name",
   "com_ui_support_contact_name_min_length": "Name must be at least {{minLength}} characters",
   "com_ui_support_contact_name_placeholder": "Support contact name",
+  "com_ui_tap_stop_responding": "Tap again to stop responding",
   "com_ui_teach_or_explain": "Learning",
   "com_ui_temporary": "Temporary Chat",
   "com_ui_terms_and_conditions": "Terms and Conditions",
@@ -2040,7 +2070,7 @@
   "com_farmer_validation_smartphones_integer": "Number of smartphones must be an integer",
   "com_farmer_validation_smartphones_range": "Number of smartphones must be between 0 and 20",
   "com_user_message": "You",
-  "com_banner_message": "The application is currently under development and it is provided only for testing and validation purposes",
+  "com_banner_message": "In development - for testing & validation only",
   "com_ui_terms_modal_content_markdown": "# Terms and Conditions for AjraSakha / chat.annam.ai \n\n*Effective Date: December 22, 2025* \n\nWelcome to **chat.annam.ai**, the informational and research platform for the beta development of AjraSakha, available at [https://chat.annam.ai](https://chat.annam.ai). These Terms of Service (\"Terms\") govern your use of our website and the services we offer. By accessing or using the Website, you agree to be bound by these Terms and our Privacy Policy, accessible at [https://chat.annam.ai](https://chat.annam.ai). \n## 1. Beta Development Notice\n\nAjraSakha is currently in a **development beta stage**. As such, the platform, features, and content may be incomplete, experimental, or subject to significant changes. By using the Website, you acknowledge that you understand the platform is in development and may have limitations or bugs. \n## 2. Data Collection and Research Use\n\nWe may collect personal and non-personal data, such as your interactions with the platform, usage patterns, and feedback, to **improve our services and conduct research**. Collected data may be analyzed and used for academic, scientific, or development purposes. By using the Website, you consent to the collection and use of your data for these research purposes.\n\n## 3. User Data\n\nWe may collect personal data, such as your name or email address, as described in our Privacy Policy. This information is used solely to provide, improve, and study the platform, and to communicate with users when necessary.\n\n## 4. Non-Personal Data and Cookies\n\nThe Website may use cookies and similar technologies to enhance user experience, analyze site usage, and facilitate certain functionalities. By using the Website, you consent to the use of cookies in accordance with our Privacy Policy.\n\n## 5. Use of the Website\n\nYou agree to use the Website **only for lawful purposes** and in a manner that does not infringe on the rights of others or disrupt the normal functioning of the platform. Prohibited behaviors include harassing others, transmitting offensive content, or attempting to manipulate or interfere with the platform.\n\n## 6. No Resale or Redistribution\n\nAny code, models, or resources provided for Sakha / vicharanashala.ai are intended for personal or research use only. You may **not resell, redistribute, or otherwise transfer** any such resources without explicit permission from the VicharanaShala-Sakha / vicharanashala.ai team. \n\n## 7. Changes to the Terms\n\nWe reserve the right to modify these Terms at any time. Users will be notified of changes via email or platform updates. Continued use of the Website after changes indicates your consent to the updated Terms.\n\n## 9. Contact Information\n\nIf you have any questions about these Terms or the platform, please contact us at **[ajrasakha.outreach@gmail.com](mailto:ajrasakha.outreach@gmail.com)**. \n\nBy using this Website, you acknowledge that you have read and understood these Terms of Service and that AjraSakha / chat.annam.ai is a release-candidate platform. Features, functionality, and data handling practices may evolve. Data may be collected for evaluation, quality improvement, and research purposes.",
   "com_ui_feedback_what_worked_what_not": "Tell us what worked, or what didn't.",
   "com_ui_feedback_tag_useful_crop_recommendations": "Useful Crop Recommendations",
@@ -2052,6 +2082,7 @@
   "com_ui_feedback_tag_very_satisfied": "Very Satisfied",
   "com_ui_feedback_tag_recommend_to_others": "Will Recommend to Others",
   "com_ui_feedback_tag_user_friendly_language": "User-Friendly Language",
+  "com_ui_feedback_tag_response_within_2_hours": "Response Received Within 2 Hours",
   "com_ui_feedback_tag_slow_response": "Slow Response",
   "com_ui_feedback_tag_missing_outdated_information": "Missing or Outdated Information",
   "com_ui_feedback_tag_dont_trust_advice": "I Don't Trust the Advice",
@@ -2060,9 +2091,171 @@
   "com_ui_feedback_tag_not_satisfied": "Not Satisfied",
   "com_ui_feedback_tag_will_not_recommend": "Will Not Recommend",
   "com_ui_feedback_tag_inappropriate_response": "Inappropriate Response",
+  "com_ui_feedback_tag_response_after_2_hours": "Response Received After 2 Hours",
   "com_ui_feedback_tag_other_positive": "Others",
   "com_ui_feedback_enforce_reminder": "Please provide feedback for the previous response before starting a new conversation.",
   "com_ui_feedback_enforce_title": "Feedback Required",
   "com_ui_feedback_enforce_question": "How was the previous response?",
-  "com_ui_feedback_enforce_later": "Maybe Later"
+  "com_ui_feedback_enforce_later": "Maybe Later",
+  "com_ui_feedback_detail_positive_title": "Great! Tell us more",
+  "com_ui_feedback_detail_positive_desc": "What did you like most about the response?",
+  "com_ui_feedback_detail_negative_title": "Sorry to hear that",
+  "com_ui_feedback_detail_negative_desc": "Help us improve by sharing what could be better.",
+  "com_ui_feedback_enforce_skipped": "Skipping feedback...",
+  "com_ui_feedback_thank_you": "Thank you for your feedback!",
+  "com_ui_ajrasakha_initial_message": "Preparing your response. It'll appear here automatically.",
+  "com_ui_ajrasakha_long_wait_taking_longer": "This is taking longer than usual — still preparing a better answer for you.",
+  "com_ui_ajrasakha_long_wait_pulling_together": "Still working on it, pulling together information from several sources to get this right.",
+  "com_ui_ajrasakha_tip_own_language": "Ask in your own language — Hindi, Punjabi, Malayalam and more all work.",
+  "com_ui_ajrasakha_tip_mandi_price": "Name your district and nearest mandi to get prices for your area.",
+  "com_ui_ajrasakha_tip_crop_stage": "Mention the crop and its growth stage for a more specific answer.",
+  "com_ui_ajrasakha_tip_symptoms": "Describe symptoms in detail — leaf colour, spots, and which leaves are affected.",
+  "com_ui_ajrasakha_tip_soil_test": "Share your soil test values to get fertiliser advice matched to your field.",
+  "com_ui_ajrasakha_tip_quantities": "Ask for quantities per acre or hectare so you can apply them directly.",
+  "com_ui_ajrasakha_tip_weather_window": "Give a time window for weather questions, like the next five days.",
+  "com_ui_ajrasakha_tip_scheme_name": "Name a scheme directly, such as PMFBY, to get its details and eligibility.",
+  "com_ui_ajrasakha_tip_irrigation": "Mention whether your field is irrigated or rain-fed for better sowing advice.",
+  "com_ui_ajrasakha_tip_plot_size": "Say how large your plot is when asking about seed, water, or input quantities.",
+  "com_ui_ajrasakha_tip_voice_mic": "Tap the mic to ask by voice instead of typing.",
+  "com_ui_ajrasakha_tip_voice_text_switch": "Use the Voice and Text switch above the box to change how you ask.",
+  "com_ui_ajrasakha_tip_follow_up": "Ask follow-up questions — the conversation is remembered.",
+  "com_ui_ajrasakha_tip_speaker_icon": "Tap the speaker icon under an answer to have it read aloud.",
+  "com_ui_ajrasakha_tip_copy_icon": "Tap the copy icon under an answer to save it or share it with someone.",
+  "com_ui_ajrasakha_tip_edit_message": "Edit your own message to rephrase a question without starting over.",
+  "com_ui_ajrasakha_tip_new_chat": "Start a new chat when you move to a different topic or crop.",
+  "com_ui_ajrasakha_tip_location_access": "Allow location access so weather and prices match where you farm.",
+  "com_ui_ajrasakha_tip_jump_to_newest": "Use the arrow button to jump back to the newest message in a long answer.",
+  "com_ui_ajrasakha_tip_rate_answers": "Rate answers with the thumbs icons — it helps AjraSakha improve.",
+  "com_ui_ajrasakha_tip_in_development": "AjraSakha is in development — check critical decisions with your local KVK.",
+  "com_auth_panel_expert_verified_description": "Advice checked by agricultural experts before it reaches you.",
+ "com_auth_panel_multilingual_description": "Ask and get answers in the language you speak.",
+"com_auth_panel_voice_description": "Speak your question instead of typing it.",
+"faq": {
+  "about_ajrasakha": {
+    "title": "About AjraSakha",
+    "q1": {
+      "question": "What is AjraSakha?",
+      "answer": "AjraSakha is a web application that helps farmers get answers to their agriculture-related questions."
+    },
+    "q2": {
+      "question": "What is the primary goal of testing AjraSakha?",
+      "answer": "It is designed to test whether AjraSakha works accurately for real farmers, in their own language, and for their actual queries."
+    },
+    "q3": {
+      "question": "What kinds of questions can I ask?",
+      "answer": "You can ask questions about: crops, crop diseases, pests and insects, weeds, fertilizers, seeds, crop management, weather, mandi/market information, government schemes, and local agricultural issues and terminology."
+    },
+    "q4": {
+      "question": "Can I ask questions that are not related to agriculture?",
+      "answer": "AjraSakha is mainly built for questions related to agriculture and farming. Please keep your questions focused on agriculture."
+    }
+  },
+  "asking_questions": {
+    "title": "Asking Questions",
+    "q5": {
+      "question": "Can I ask questions in my own language?",
+      "answer": "Yes. You can ask questions in your own language or local dialect. You do not need to use formal or technical agricultural terminology."
+    },
+    "q6": {
+      "question": "Can I use local names for diseases, pests, or farming issues?",
+      "answer": "Yes. You can use the local names and words that you normally use."
+    },
+    "q7": {
+      "question": "Do I have to type my question?",
+      "answer": "No. You can either type your question or speak using voice input, whichever is easier for you."
+    },
+    "q8": {
+      "question": "What if the application does not understand my voice correctly?",
+      "answer": "Try speaking slowly and clearly again. If the question is still not transcribed accurately, you can type it instead."
+    },
+    "q9": {
+      "question": "In which language will I get the answer?",
+      "answer": "The language of the response will be determined based on the language used to submit the question."
+    },
+    "q10": {
+      "question": "Does the language I ask the question in affect the language of the answer?",
+      "answer": "Yes. The response language is decided based on the language and script used to send the question."
+    }
+  },
+  "asking_about_crops_and_locations": {
+    "title": "Asking About Crops and Locations",
+    "q11": {
+      "question": "Can I ask about multiple agricultural issues related to the same crop?",
+      "answer": "Yes."
+    },
+    "q12": {
+      "question": "Can I ask about multiple crops in a single chat?",
+      "answer": "You can ask multiple questions, but it is better to start a new chat for a different crop."
+    },
+    "q13": {
+      "question": "Same crop + same topic — should I use the same chat or start a new chat?",
+      "answer": "Use the same chat (thread). Mention any new or changed context."
+    },
+    "q14": {
+      "question": "New crop — should I use the same chat or start a new chat?",
+      "answer": "Starting a new chat is preferred."
+    },
+    "q15": {
+      "question": "Same crop + different topic — should I use the same chat or start a new chat?",
+      "answer": "Starting a new chat is preferred."
+    },
+    "q16": {
+      "question": "What should I do if my location changes?",
+      "answer": "Start a new chat and mention the relevant location/context."
+    }
+  },
+  "answers_and_expert_support": {
+    "title": "Answers and Expert Support",
+    "q17": {
+      "question": "What happens if my question is not in the AjraSakha database?",
+      "answer": "The application will display this message: \"Your question has been shared with our agriculture expert on annam.ai. You will receive an answer within 2 hours / 24 hours / 7 days. Thank you.\""
+    },
+    "q18": {
+      "question": "How long will I have to wait for an answer?",
+      "answer": "The application will display the expected response time, such as 2 hours, 24 hours, or 7 days."
+    },
+    "q19": {
+      "question": "How will I know when my expert answer is ready?",
+      "answer": "The application will send a notification when the response is ready. You will need to check the Bell Icon."
+    },
+    "q20": {
+      "question": "What should I do if I don't get an answer within the specified time?",
+      "answer": "If the displayed response time passes and you haven't received an answer, you should report the issue through the application's feedback option."
+    },
+    "q21": {
+      "question": "What if I have a new or unusual farming query?",
+      "answer": "As long as it is related to agriculture, you can still ask about it. Do not hesitate to ask just because it is new or uncommon."
+    },
+    "q22": {
+      "question": "What if AjraSakha doesn't understand a local agricultural word?",
+      "answer": "Explain the word or problem in more detail. Do not worry about using technical terms. If it is still not understood, report it via feedback."
+    }
+  },
+  "feedback": {
+    "title": "Feedback",
+    "q23": {
+      "question": "What should I do if I feel the answer is wrong?",
+      "answer": "You should give negative feedback (👎) and explain what you think is wrong or what answer you were expecting."
+    },
+    "q24": {
+      "question": "Can I explain why the answer is wrong?",
+      "answer": "Yes. You can explain the issue using text or voice feedback. Tell us what was incorrect and what response you expected."
+    },
+    "q25": {
+      "question": "Is it mandatory to give positive feedback if I am satisfied?",
+      "answer": "Yes, although it is not strictly required, it helps us; if you find the answer helpful, you can give positive feedback (👍)."
+    }
+  },
+  "sources_and_privacy": {
+    "title": "Sources and Privacy",
+    "q26": {
+      "question": "What sources are used for AjraSakha's answers?",
+      "answer": "Answers are generated from authentic sources including central and state government agencies, State Agricultural Universities (SAUs), and Krishi Vigyan Kendras (KVKs)."
+    },
+    "q27": {
+      "question": "Is my personal information secure?",
+      "answer": "Your personal information is collected and used solely for the approved purposes of the project and in accordance with the project's privacy and data protection procedures."
+    }
+  }
+}
 }

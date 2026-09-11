@@ -106,7 +106,10 @@ const SidePanelGroup = memo(
         <ResizablePanelGroup
           direction="horizontal"
           onLayout={(sizes) => throttledSaveLayout(sizes)}
-          className="relative h-full w-full flex-1 overflow-auto bg-presentation"
+          // No fill of its own: the app column behind it already paints `bg-presentation`,
+          // and an opaque layer here would cover the decorative glow that sits between the
+          // two (see Root.tsx).
+          className="relative h-full w-full flex-1 overflow-auto"
         >
           <ResizablePanel
             defaultSize={currentLayout[0]}

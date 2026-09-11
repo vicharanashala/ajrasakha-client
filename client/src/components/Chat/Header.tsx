@@ -2,11 +2,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useMediaQuery } from '@librechat/client';
 import { useOutletContext } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
 import { getConfigDefaults, PermissionTypes, Permissions } from 'librechat-data-provider';
 import type { ContextType } from '~/common';
-import { PresetsMenu, HeaderNewChat, OpenSidebar } from './Menus';
-import ModelSelector from './Menus/Endpoints/ModelSelector';
+import { PresetsMenu } from './Menus';
+// HeaderNewChat and the standalone OpenSidebar toggle are intentionally not
+// used below — the sidebar's own controls (New Chat button and, when
+// collapsed, its own toggle icon in the icon rail) are kept instead, so this
+// header doesn't need a duplicate.
+// import { HeaderNewChat, OpenSidebar } from './Menus';
 import { useGetStartupConfig } from '~/data-provider';
 import ExportAndShareMenu from './ExportAndShareMenu';
 import BookmarkMenu from './Menus/BookmarkMenu';
@@ -19,7 +22,7 @@ const defaultInterface = getConfigDefaults().interface;
 
 export default function Header() {
   const { data: startupConfig } = useGetStartupConfig();
-  const { navVisible, setNavVisible } = useOutletContext<ContextType>();
+  const { navVisible } = useOutletContext<ContextType>();
 
   const interfaceConfig = useMemo(
     () => startupConfig?.interface ?? defaultInterface,
@@ -51,39 +54,26 @@ export default function Header() {
     return () => observer.disconnect();
   }, [bannerPortal]);
 
+  // ModelSelector moved into the chat input toolbar (left of the microphone button)
   const modelSelectorNodes = (
-    <div className="flex items-center gap-2">
-      <ModelSelector startupConfig={startupConfig} />
+    <div className="flex items-center gap-1.5 sm:gap-2">
       {interfaceConfig.presets === true && interfaceConfig.modelSelect && <PresetsMenu />}
       {hasAccessToMultiConvo === true && <AddMultiConvo />}
     </div>
   );
 
+  // No fill or rule of its own: the bar floats over the message list and its controls carry
+  // their own backgrounds. It used to paint a downward gradient, which read as a drop shadow.
   return (
-    <div className="via-presentation/70 md:from-presentation/80 md:via-presentation/50 2xl:from-presentation/0 absolute top-0 z-10 flex h-14 w-full items-center justify-between bg-gradient-to-b from-presentation to-transparent p-2 font-semibold text-text-primary 2xl:via-transparent">
-      <div className="hide-scrollbar flex w-full items-center justify-between gap-2 overflow-x-auto">
+    <div className="absolute top-0 z-10 flex h-14 w-full items-center justify-between bg-transparent px-1.5 py-2 font-semibold text-text-primary sm:p-2">
+      <div className="hide-scrollbar flex w-full items-center justify-between gap-1.5 overflow-x-auto sm:gap-2">
         <div className="mx-1 flex w-full flex-1 items-center">
-          <AnimatePresence initial={false}>
-            {!navVisible && (
-              <motion.div
-                className="flex items-center gap-2"
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 'auto', opacity: 1 }}
-                exit={{ width: 0, opacity: 0 }}
-                transition={{ duration: 0.15 }}
-                key="header-buttons"
-              >
-                <OpenSidebar setNavVisible={setNavVisible} className="max-md:hidden" />
-                <HeaderNewChat />
-              </motion.div>
-            )}
-          </AnimatePresence>
           {!isSmallScreen && bannerPortal ? createPortal(modelSelectorNodes, bannerPortal) : null}
 
           {!(navVisible && isSmallScreen) && (
             <div
               className={cn(
-                'flex w-full flex-1 items-center gap-2',
+                'flex w-full flex-1 items-center gap-1.5 sm:gap-2',
                 !isSmallScreen ? 'transition-all duration-200 ease-in-out' : '',
                 !navVisible && !isSmallScreen ? 'pl-2' : '',
               )}
@@ -91,29 +81,23 @@ export default function Header() {
               {/* {!bannerPortal && modelSelectorNodes} */}
               {hasAccessToBookmarks === true && <BookmarkMenu />}
               {isSmallScreen && (
-                <div className="flex w-full flex-1 justify-between">
-                  <ExportAndShareMenu
-                    isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false}
-                  />
+                <div className="flex w-full flex-1 items-center justify-end gap-1.5">
                   {modelSelectorNodes}
-                  <TemporaryChat />
                 </div>
               )}
             </div>
           )}
         </div>
-
-        {!isSmallScreen && (
-          <div className="flex items-center gap-2">
-            <ExportAndShareMenu
-              isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false}
-            />
-            <TemporaryChat />
-          </div>
-        )}
       </div>
-      {/* Empty div for spacing */}
-      <div />
+      {/* Temporary chat + share/export menu, portaled to body so fixed positioning
+         works even when parent panels apply CSS transforms */}
+      {createPortal(
+        <div className="fixed right-3 top-3 z-[100] flex items-center gap-1.5">
+          <TemporaryChat />
+          <ExportAndShareMenu isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false} />
+        </div>,
+        document.body,
+      )}
     </div>
   );
 }

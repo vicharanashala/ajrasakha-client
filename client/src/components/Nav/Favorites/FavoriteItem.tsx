@@ -110,8 +110,8 @@ export default function FavoriteItem({
       tabIndex={0}
       aria-label={ariaLabel}
       className={cn(
-        'group relative flex w-full cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-sm text-text-primary hover:bg-surface-active-alt',
-        isPopoverActive ? 'bg-surface-active-alt' : '',
+        'group relative flex w-full cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-sm text-text-primary hover:bg-gray-300 dark:hover:bg-gray-800',
+        isPopoverActive ? 'bg-gray-300 dark:bg-gray-800' : '',
       )}
       onClick={handleClick}
       onKeyDown={handleKeyDown}

@@ -388,7 +388,14 @@ router.put('/:conversationId/:messageId', validateMessageReq, async (req, res) =
 router.put('/:conversationId/:messageId/feedback', validateMessageReq, async (req, res) => {
   try {
     const { conversationId, messageId } = req.params;
-    const { feedback } = req.body;
+    let { feedback } = req.body;
+
+    if (feedback) {
+      const existingMessage = await Message.findOne({ messageId }).lean();
+      feedback.updatedAt = new Date();
+      feedback.createdAt = existingMessage?.feedback?.createdAt || new Date();
+      feedback.status = existingMessage?.feedback?.status || 'open';
+    }
 
     const updatedMessage = await updateMessage(
       req,
@@ -398,6 +405,28 @@ router.put('/:conversationId/:messageId/feedback', validateMessageReq, async (re
       },
       { context: 'updateFeedback' },
     );
+
+    try {
+      const reviewSystemUrl = process.env.REVIEW_SYSTEM_URL;
+      const internalApiKey = process.env.INTERNAL_API_KEY;
+      if (reviewSystemUrl) {
+        const baseUrl = reviewSystemUrl.replace(/\/$/, '').replace(/\/api$/, '');
+        const fetchUrl = `${baseUrl}/api/feedbacks/question/${messageId}`;
+        
+        await fetch(fetchUrl, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-internal-api-key': internalApiKey || ''
+          },
+          body: JSON.stringify({
+            source: 'WEB_APPLICATION'
+          })
+        });
+      }
+    } catch (syncError) {
+      logger.error('Error syncing feedback to Review System:', syncError);
+    }
 
     res.json({
       messageId,

@@ -1,5 +1,7 @@
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useRef, useState, useMemo, useCallback } from 'react';
 import { useRecoilState } from 'recoil';
+
+const COMPOSER_MENU_ID = 'attach-file';
 import * as Ariakit from '@ariakit/react';
 import {
   FileSearch,
@@ -34,6 +36,7 @@ import useSharePointFileHandling from '~/hooks/Files/useSharePointFileHandling';
 import { SharePointPickerDialog } from '~/components/SharePoint';
 import { useGetStartupConfig } from '~/data-provider';
 import { ephemeralAgentByConvoId } from '~/store';
+import store from '~/store';
 import { MenuItemProps } from '~/common';
 import { cn } from '~/utils';
 
@@ -61,7 +64,16 @@ const AttachFileMenu = ({
   const localize = useLocalize();
   const isUploadDisabled = disabled ?? false;
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isPopoverActive, setIsPopoverActive] = useState(false);
+  // Shared with the other "+" menu entries so only one dropdown is open at a time.
+  const [activeComposerMenu, setActiveComposerMenu] = useRecoilState(store.activeComposerMenu);
+  const isPopoverActive = activeComposerMenu === COMPOSER_MENU_ID;
+  const setIsPopoverActive = useCallback(
+    (open: boolean) =>
+      setActiveComposerMenu((prev) =>
+        open ? COMPOSER_MENU_ID : prev === COMPOSER_MENU_ID ? null : prev,
+      ),
+    [setActiveComposerMenu],
+  );
   const [ephemeralAgent, setEphemeralAgent] = useRecoilState(
     ephemeralAgentByConvoId(conversationId),
   );

@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import * as Tabs from '@radix-ui/react-tabs';
 import { SettingsTabValues } from 'librechat-data-provider';
-import { MessageSquare, Command, DollarSign } from 'lucide-react';
+import { MessageSquare, Command, DollarSign, ChevronRight, ArrowLeft } from 'lucide-react';
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
 import {
   GearIcon,
@@ -27,25 +27,102 @@ import { useLocalize, TranslationKeys } from '~/hooks';
 import { useGetStartupConfig } from '~/data-provider';
 import { cn } from '~/utils';
 
+type SettingsTab = {
+  value: SettingsTabValues;
+  icon: React.JSX.Element;
+  label: TranslationKeys;
+  content: React.ReactNode;
+};
+
 export default function Settings({ open, onOpenChange }: TDialogProps) {
   const isSmallScreen = useMediaQuery('(max-width: 767px)');
   const { data: startupConfig } = useGetStartupConfig();
   const localize = useLocalize();
   const [activeTab, setActiveTab] = useState(SettingsTabValues.GENERAL);
+  /**
+   * On mobile the dialog uses a drill-down (master/detail) pattern: the category
+   * list is shown first, and tapping a category swaps the panel to that section.
+   * On desktop both are visible side by side and this flag is unused.
+   */
+  const [showMobileDetail, setShowMobileDetail] = useState(false);
   const tabRefs = useRef({});
   const { hasAnyPersonalizationFeature, hasMemoryOptOut } = usePersonalizationAccess();
 
+  // Always reopen on the category list rather than the last-viewed section.
+  useEffect(() => {
+    if (!open) {
+      setShowMobileDetail(false);
+    }
+  }, [open]);
+
+  const settingsTabs: SettingsTab[] = [
+    {
+      value: SettingsTabValues.GENERAL,
+      icon: <GearIcon />,
+      label: 'com_nav_setting_general',
+      content: <General />,
+    },
+    {
+      value: SettingsTabValues.CHAT,
+      icon: <MessageSquare className="icon-sm" aria-hidden="true" />,
+      label: 'com_nav_setting_chat',
+      content: <Chat />,
+    },
+    {
+      value: SettingsTabValues.COMMANDS,
+      icon: <Command className="icon-sm" aria-hidden="true" />,
+      label: 'com_nav_commands',
+      content: <Commands />,
+    },
+    {
+      value: SettingsTabValues.SPEECH,
+      icon: <SpeechIcon className="icon-sm" aria-hidden="true" />,
+      label: 'com_nav_setting_speech',
+      content: <Speech />,
+    },
+    ...(hasAnyPersonalizationFeature
+      ? [
+          {
+            value: SettingsTabValues.PERSONALIZATION,
+            icon: <PersonalizationIcon />,
+            label: 'com_nav_setting_personalization' as TranslationKeys,
+            content: (
+              <Personalization
+                hasMemoryOptOut={hasMemoryOptOut}
+                hasAnyPersonalizationFeature={hasAnyPersonalizationFeature}
+              />
+            ),
+          },
+        ]
+      : ([] as SettingsTab[])),
+    {
+      value: SettingsTabValues.DATA,
+      icon: <DataIcon />,
+      label: 'com_nav_setting_data',
+      content: <Data />,
+    },
+    ...(startupConfig?.balance?.enabled
+      ? [
+          {
+            value: SettingsTabValues.BALANCE,
+            icon: <DollarSign size={18} />,
+            label: 'com_nav_setting_balance' as TranslationKeys,
+            content: <Balance />,
+          },
+        ]
+      : ([] as SettingsTab[])),
+    {
+      value: SettingsTabValues.ACCOUNT,
+      icon: <UserIcon />,
+      label: 'com_nav_setting_account',
+      content: <Account />,
+    },
+  ];
+
+  const activeTabMeta = settingsTabs.find((tab) => tab.value === activeTab) ?? settingsTabs[0];
+
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    const tabs: SettingsTabValues[] = [
-      SettingsTabValues.GENERAL,
-      SettingsTabValues.CHAT,
-      SettingsTabValues.COMMANDS,
-      SettingsTabValues.SPEECH,
-      ...(hasAnyPersonalizationFeature ? [SettingsTabValues.PERSONALIZATION] : []),
-      SettingsTabValues.DATA,
-      ...(startupConfig?.balance?.enabled ? [SettingsTabValues.BALANCE] : []),
-      SettingsTabValues.ACCOUNT,
-    ];
+    const tabs = settingsTabs.map((tab) => tab.value);
     const currentIndex = tabs.indexOf(activeTab);
 
     switch (event.key) {
@@ -68,64 +145,11 @@ export default function Settings({ open, onOpenChange }: TDialogProps) {
     }
   };
 
-  const settingsTabs: {
-    value: SettingsTabValues;
-    icon: React.JSX.Element;
-    label: TranslationKeys;
-  }[] = [
-    {
-      value: SettingsTabValues.GENERAL,
-      icon: <GearIcon />,
-      label: 'com_nav_setting_general',
-    },
-    {
-      value: SettingsTabValues.CHAT,
-      icon: <MessageSquare className="icon-sm" aria-hidden="true" />,
-      label: 'com_nav_setting_chat',
-    },
-    {
-      value: SettingsTabValues.COMMANDS,
-      icon: <Command className="icon-sm" aria-hidden="true" />,
-      label: 'com_nav_commands',
-    },
-    {
-      value: SettingsTabValues.SPEECH,
-      icon: <SpeechIcon className="icon-sm" aria-hidden="true" />,
-      label: 'com_nav_setting_speech',
-    },
-    ...(hasAnyPersonalizationFeature
-      ? [
-          {
-            value: SettingsTabValues.PERSONALIZATION,
-            icon: <PersonalizationIcon />,
-            label: 'com_nav_setting_personalization' as TranslationKeys,
-          },
-        ]
-      : []),
-    {
-      value: SettingsTabValues.DATA,
-      icon: <DataIcon />,
-      label: 'com_nav_setting_data',
-    },
-    ...(startupConfig?.balance?.enabled
-      ? [
-          {
-            value: SettingsTabValues.BALANCE,
-            icon: <DollarSign size={18} />,
-            label: 'com_nav_setting_balance' as TranslationKeys,
-          },
-        ]
-      : ([] as { value: SettingsTabValues; icon: React.JSX.Element; label: TranslationKeys }[])),
-    {
-      value: SettingsTabValues.ACCOUNT,
-      icon: <UserIcon />,
-      label: 'com_nav_setting_account',
-    },
-  ];
-
   const handleTabChange = (value: string) => {
     setActiveTab(value as SettingsTabValues);
   };
+
+  const showBack = isSmallScreen && showMobileDetail;
 
   return (
     <Transition appear show={open}>
@@ -149,22 +173,37 @@ export default function Settings({ open, onOpenChange }: TDialogProps) {
           leaveFrom="opacity-100 scale-100"
           leaveTo="opacity-0 scale-95"
         >
-          <div className={cn('fixed inset-0 flex w-screen items-center justify-center p-4')}>
+          <div className={cn('fixed inset-0 flex w-screen items-center justify-center p-2 sm:p-4')}>
             <DialogPanel
               className={cn(
-                'max-h-[90vh] overflow-hidden rounded-xl rounded-b-lg bg-background pb-6 shadow-2xl backdrop-blur-2xl animate-in sm:rounded-2xl md:w-[680px]',
+                'flex w-full flex-col overflow-hidden rounded-2xl border border-border-light bg-surface-dialog shadow-2xl backdrop-blur-2xl animate-in',
+                'h-[85vh] md:h-[600px] md:max-h-[85vh] md:w-[720px]',
               )}
             >
               <DialogTitle
-                className="mb-1 flex items-center justify-between p-6 pb-5 text-left"
+                className={cn(
+                  'flex flex-shrink-0 items-center gap-2 border-b border-border-light py-3 text-left sm:py-4',
+                  showBack ? 'pl-1.5 pr-2 sm:pl-4 sm:pr-6' : 'px-4 sm:px-6',
+                )}
                 as="div"
               >
-                <h2 className="text-lg font-medium leading-6 text-text-primary">
-                  {localize('com_nav_settings')}
+                {showBack && (
+                  <button
+                    type="button"
+                    aria-label={localize('com_ui_back')}
+                    onClick={() => setShowMobileDetail(false)}
+                    className="inline-flex size-9 flex-shrink-0 items-center justify-center rounded-lg text-text-primary transition-colors duration-200 hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-border-xheavy"
+                  >
+                    <ArrowLeft className="h-5 w-5" aria-hidden="true" />
+                  </button>
+                )}
+                <h2 className="truncate text-base font-semibold leading-6 text-text-primary sm:text-lg">
+                  {showBack ? localize(activeTabMeta.label) : localize('com_nav_settings')}
                 </h2>
                 <button
                   type="button"
-                  className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-border-xheavy focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-surface-primary dark:focus:ring-offset-surface-primary"
+                  aria-label={localize('com_ui_close_settings')}
+                  className="ml-auto inline-flex size-8 flex-shrink-0 items-center justify-center rounded-lg text-text-secondary transition-colors duration-200 hover:bg-surface-hover hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-border-xheavy"
                   onClick={() => onOpenChange(false)}
                 >
                   <svg
@@ -177,7 +216,7 @@ export default function Settings({ open, onOpenChange }: TDialogProps) {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="h-5 w-5 text-text-primary"
+                    className="h-5 w-5"
                   >
                     <line x1="18" x2="6" y1="6" y2="18"></line>
                     <line x1="6" x2="18" y1="6" y2="18"></line>
@@ -185,75 +224,81 @@ export default function Settings({ open, onOpenChange }: TDialogProps) {
                   <span className="sr-only">{localize('com_ui_close_settings')}</span>
                 </button>
               </DialogTitle>
-              <div className="max-h-[calc(90vh-120px)] overflow-auto px-6 md:w-[680px]">
+
+              {isSmallScreen ? (
+                showMobileDetail ? (
+                  <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+                    {activeTabMeta.content}
+                  </div>
+                ) : (
+                  <nav
+                    aria-label={localize('com_nav_settings')}
+                    className="min-h-0 flex-1 overflow-y-auto p-2"
+                  >
+                    {settingsTabs.map(({ value, icon, label }) => (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => {
+                          setActiveTab(value);
+                          setShowMobileDetail(true);
+                        }}
+                        className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium text-text-primary transition-colors duration-200 hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-border-xheavy active:bg-surface-tertiary"
+                      >
+                        <span className="flex flex-shrink-0 items-center justify-center text-text-secondary">
+                          {icon}
+                        </span>
+                        <span className="flex-1 truncate">{localize(label)}</span>
+                        <ChevronRight
+                          className="h-4 w-4 flex-shrink-0 text-text-secondary"
+                          aria-hidden="true"
+                        />
+                      </button>
+                    ))}
+                  </nav>
+                )
+              ) : (
                 <Tabs.Root
                   value={activeTab}
                   onValueChange={handleTabChange}
-                  className="flex flex-col gap-10 md:flex-row"
+                  className="flex min-h-0 flex-1 flex-row"
                   orientation="vertical"
                 >
                   <Tabs.List
                     aria-label="Settings"
-                    className={cn(
-                      'min-w-auto max-w-auto relative -ml-[8px] flex flex-shrink-0 flex-col flex-nowrap overflow-auto sm:max-w-none',
-                      isSmallScreen
-                        ? 'flex-row rounded-xl bg-surface-secondary'
-                        : 'sticky top-0 h-full',
-                    )}
+                    className="flex w-56 flex-shrink-0 flex-col gap-0.5 overflow-y-auto border-r border-border-light p-3"
                     onKeyDown={handleKeyDown}
                   >
                     {settingsTabs.map(({ value, icon, label }) => (
                       <Tabs.Trigger
                         key={value}
                         className={cn(
-                          'group relative z-10 m-1 flex items-center justify-start gap-2 rounded-xl px-2 py-1.5 transition-all duration-200 ease-in-out',
-                          isSmallScreen
-                            ? 'flex-1 justify-center text-nowrap p-1 px-3 text-sm text-text-secondary radix-state-active:bg-surface-hover radix-state-active:text-text-primary'
-                            : 'bg-transparent text-text-secondary radix-state-active:bg-surface-tertiary radix-state-active:text-text-primary',
+                          'group relative flex w-full items-center justify-start gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200 ease-in-out',
+                          'text-text-secondary hover:bg-gray-500/10 hover:text-text-primary',
+                          'dark:hover:bg-gray-400/10',
+                          'focus:outline-none focus-visible:ring-2 focus-visible:ring-border-xheavy',
+                          'radix-state-active:bg-gray-500/15 radix-state-active:text-text-primary',
+                          'dark:radix-state-active:bg-gray-400/15 dark:radix-state-active:text-gray-200',
                         )}
                         value={value}
                         ref={(el) => (tabRefs.current[value] = el)}
                       >
-                        {icon}
+                        <span className="flex flex-shrink-0 items-center justify-center">
+                          {icon}
+                        </span>
                         {localize(label)}
                       </Tabs.Trigger>
                     ))}
                   </Tabs.List>
-                  <div className="overflow-auto sm:w-full sm:max-w-none md:pr-0.5 md:pt-0.5">
-                    <Tabs.Content value={SettingsTabValues.GENERAL} tabIndex={-1}>
-                      <General />
-                    </Tabs.Content>
-                    <Tabs.Content value={SettingsTabValues.CHAT} tabIndex={-1}>
-                      <Chat />
-                    </Tabs.Content>
-                    <Tabs.Content value={SettingsTabValues.COMMANDS} tabIndex={-1}>
-                      <Commands />
-                    </Tabs.Content>
-                    <Tabs.Content value={SettingsTabValues.SPEECH} tabIndex={-1}>
-                      <Speech />
-                    </Tabs.Content>
-                    {hasAnyPersonalizationFeature && (
-                      <Tabs.Content value={SettingsTabValues.PERSONALIZATION} tabIndex={-1}>
-                        <Personalization
-                          hasMemoryOptOut={hasMemoryOptOut}
-                          hasAnyPersonalizationFeature={hasAnyPersonalizationFeature}
-                        />
+                  <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+                    {settingsTabs.map(({ value, content }) => (
+                      <Tabs.Content key={value} value={value} tabIndex={-1}>
+                        {content}
                       </Tabs.Content>
-                    )}
-                    <Tabs.Content value={SettingsTabValues.DATA} tabIndex={-1}>
-                      <Data />
-                    </Tabs.Content>
-                    {startupConfig?.balance?.enabled && (
-                      <Tabs.Content value={SettingsTabValues.BALANCE} tabIndex={-1}>
-                        <Balance />
-                      </Tabs.Content>
-                    )}
-                    <Tabs.Content value={SettingsTabValues.ACCOUNT} tabIndex={-1}>
-                      <Account />
-                    </Tabs.Content>
+                    ))}
                   </div>
                 </Tabs.Root>
-              </div>
+              )}
             </DialogPanel>
           </div>
         </TransitionChild>

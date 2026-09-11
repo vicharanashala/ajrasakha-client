@@ -6,10 +6,10 @@ const router = express.Router();
 const LANGGRAPH_API_HOST = process.env.LANGGRAPH_API_HOST ?? '100.100.108.44';
 const LANGGRAPH_API_PORT = Number(process.env.LANGGRAPH_API_PORT ?? 2026);
 
-const FEEDBACK_ENFORCEMENT_ENABLED = process.env.FEEDBACK_ENFORCEMENT_ENABLED === 'true';
+const PROMPT_FEEDBACK_ENABLED = process.env.PROMPT_FEEDBACK_ENABLED === 'true';
 
 const FEEDBACK_TOOLS = ['gdb', 'knowledge_base', 'weather', 'soil', 'mandi', 'chemical_checker'];
-
+ 
 /**
  * Helper to log the current feedback enforcement state.
  * - Logs "Feedback enabled" when the value is true.
@@ -24,8 +24,8 @@ function logFeedbackEnforcementState(value, source) {
   }
 }
 
-// Log the boot-time value of FEEDBACK_ENFORCEMENT_ENABLED
-logFeedbackEnforcementState(FEEDBACK_ENFORCEMENT_ENABLED, 'server-startup');
+// Log the boot-time value of PROMPT_FEEDBACK_ENABLED
+logFeedbackEnforcementState(PROMPT_FEEDBACK_ENABLED, 'server-startup');
 
 /**
  * GET /api/langgraph/requires-feedback/:conversationId
@@ -35,8 +35,8 @@ router.get('/requires-feedback/:conversationId', async (req, res) => {
   const { conversationId } = req.params;
 
   // If feedback enforcement is disabled, skip the check
-  if (!FEEDBACK_ENFORCEMENT_ENABLED) {
-    logFeedbackEnforcementState(FEEDBACK_ENFORCEMENT_ENABLED, `conversation:${conversationId}`);
+  if (!PROMPT_FEEDBACK_ENABLED) {
+    logFeedbackEnforcementState(PROMPT_FEEDBACK_ENABLED, `conversation:${conversationId}`);
     return res.json({ requiresFeedback: false, enabled: false });
   }
 
@@ -75,7 +75,7 @@ router.get('/requires-feedback/:conversationId', async (req, res) => {
     const plan = conversation?.values?.plan ?? {};
 
     if (plan.is_greeting === true) {
-      logFeedbackEnforcementState(FEEDBACK_ENFORCEMENT_ENABLED, `conversation:${conversationId}`);
+      logFeedbackEnforcementState(PROMPT_FEEDBACK_ENABLED, `conversation:${conversationId}`);
       return res.json({ requiresFeedback: false, enabled: true });
     }
 
@@ -122,7 +122,7 @@ router.get('/requires-feedback/:conversationId', async (req, res) => {
       requiresFeedback = false;
     }
 
-    logFeedbackEnforcementState(FEEDBACK_ENFORCEMENT_ENABLED, `conversation:${conversationId}`);
+    logFeedbackEnforcementState(PROMPT_FEEDBACK_ENABLED, `conversation:${conversationId}`);
     return res.json({ requiresFeedback, enabled: true });
   } catch (err) {
     console.error('[langgraph/requires-feedback] Error:', err.message, err.stack);

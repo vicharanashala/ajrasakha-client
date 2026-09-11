@@ -150,8 +150,8 @@ export default function Conversation({
       className={cn(
         'group relative flex h-12 w-full items-center rounded-lg md:h-9',
         isActiveConvo || isPopoverActive
-          ? 'bg-surface-active-alt before:absolute before:bottom-1 before:left-0 before:top-1 before:w-0.5 before:rounded-full before:bg-black dark:before:bg-white'
-          : 'hover:bg-surface-active-alt',
+          ? 'bg-gray-300 dark:bg-gray-800'
+          : 'hover:bg-gray-300 dark:hover:bg-gray-800',
       )}
       role="button"
       tabIndex={renaming ? -1 : 0}

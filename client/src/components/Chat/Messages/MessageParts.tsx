@@ -1,12 +1,10 @@
 import React, { useMemo } from 'react';
-import { useAtomValue } from 'jotai';
 import { useRecoilValue } from 'recoil';
 import type { TMessageContentParts } from 'librechat-data-provider';
 import type { TMessageProps, TMessageIcon } from '~/common';
 import { useMessageHelpers, useLocalize, useAttachments, useContentMetadata } from '~/hooks';
 import MessageIcon from '~/components/Chat/Messages/MessageIcon';
 import ContentParts from './Content/ContentParts';
-import { fontSizeAtom } from '~/store/fontSize';
 import SiblingSwitch from './SiblingSwitch';
 import MultiMessage from './MultiMessage';
 import HoverButtons from './HoverButtons';
@@ -38,7 +36,6 @@ export default function Message(props: TMessageProps) {
     regenerateMessage,
   } = useMessageHelpers(props);
 
-  const fontSize = useAtomValue(fontSizeAtom);
   const maximizeChatSpace = useRecoilValue(store.maximizeChatSpace);
   const { children, messageId = null, isCreatedByUser } = message ?? {};
 
@@ -96,6 +93,16 @@ export default function Message(props: TMessageProps) {
     chat: getChatWidthClass(),
   };
 
+  // True while the bubble is showing the "still working on it..." status (no
+  // content parts have streamed in yet) — same condition ContentParts uses
+  // internally to decide whether to render the loading text. Drives the
+  // animated gradient-border treatment on the bubble itself, below.
+  const isLatestMessage = messageId === latestMessage?.messageId;
+  const effectiveIsSubmitting = isLatestMessage ? isSubmitting : false;
+  const contentLength = (message.content as Array<TMessageContentParts | undefined> | undefined)
+    ?.length ?? 0;
+  const isEmptyLoading = !isCreatedByUser && contentLength === 0 && effectiveIsSubmitting;
+
   return (
     <>
       <div
@@ -107,29 +114,52 @@ export default function Message(props: TMessageProps) {
           <div
             id={messageId ?? ''}
             aria-label={getMessageAriaLabel(message, localize)}
-            className={cn(baseClasses.common, baseClasses.chat, 'message-render')}
+            className={cn(
+              baseClasses.common,
+              baseClasses.chat,
+              'message-render',
+              !hasParallelContent && (isCreatedByUser ? 'justify-end' : 'justify-start'),
+            )}
           >
-            {!hasParallelContent && (
-              <div className="relative flex flex-shrink-0 flex-col items-center">
-                <div className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full pt-0.5">
+            {!hasParallelContent && !isCreatedByUser && (
+              <div className="relative hidden flex-shrink-0 flex-col items-center sm:flex">
+                <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full pt-0.5">
                   <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
                 </div>
               </div>
             )}
             <div
               className={cn(
-                'relative flex flex-col',
-                hasParallelContent ? 'w-full' : 'w-11/12',
-                isCreatedByUser ? 'user-turn' : 'agent-turn',
+                'relative flex min-w-0 flex-col',
+                hasParallelContent ? 'w-full' : 'chat-bubble-col',
+                isCreatedByUser ? 'user-turn items-end' : 'agent-turn items-start',
               )}
             >
-              {!hasParallelContent && (
-                <h2 className={cn('select-none font-semibold text-text-primary', fontSize)}>
-                  {name}
-                </h2>
-              )}
-              <div className="flex flex-col gap-1">
-                <div className="flex max-w-full flex-grow flex-col gap-0">
+              <div className="flex min-w-0 flex-col gap-1">
+                <div
+                  className={cn(
+                    'flex min-w-0 max-w-full flex-grow flex-col gap-0 overflow-hidden break-all',
+                    // AI (answer) bubble: a plain neutral grey — gray-300 in light mode,
+                    // gray-700 (#2f2f2f) in dark mode. Both are standard Tailwind classes
+                    // from the palette already defined in tailwind.config.cjs (not a
+                    // bracket arbitrary-value class), so there's no JIT/compile risk. This
+                    // is kept separate from the shared --surface-tertiary token, since
+                    // that token is also used for hover states and chips elsewhere and
+                    // changing it globally would move those too. User bubble keeps the
+                    // brand-green tint so it stays visually distinct from the AI bubble.
+                    !hasParallelContent &&
+                      (isCreatedByUser
+                        ? 'rounded-2xl rounded-tr-sm px-4 py-2.5 bg-[oklch(0.8348_0.1302_160.908)] dark:bg-[oklch(0.4365_0.1044_156.7556)]'
+                        : 'rounded-2xl rounded-tl-sm bg-gray-50 px-4 py-2.5 dark:bg-gray-900'),
+                    isEmptyLoading && 'ajrasakha-orbit-bubble',
+                    // Not while it is the pending placeholder: that message is created
+                    // with a temporary id and re-keyed when the server's real one arrives, so
+                    // the bubble remounts and would play its entrance twice.
+                    isLast &&
+                      !isEmptyLoading &&
+                      (isCreatedByUser ? 'ajrasakha-msg-in-user' : 'ajrasakha-msg-in-ai'),
+                  )}
+                >
                   <ContentParts
                     edit={edit}
                     isLast={isLast}
@@ -149,7 +179,7 @@ export default function Message(props: TMessageProps) {
                 {isLast && isSubmitting ? (
                   <div className="mt-1 h-[27px] bg-transparent" />
                 ) : (
-                  <SubRow classes="text-xs">
+                  <SubRow classes={cn('text-xs', isCreatedByUser && 'justify-end')}>
                     <SiblingSwitch
                       siblingIdx={siblingIdx}
                       siblingCount={siblingCount}
@@ -172,6 +202,13 @@ export default function Message(props: TMessageProps) {
                 )}
               </div>
             </div>
+            {!hasParallelContent && isCreatedByUser && (
+              <div className="relative hidden flex-shrink-0 flex-col items-center sm:flex">
+                <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full pt-0.5">
+                  <MessageIcon iconData={iconData} assistant={assistant} agent={agent} />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
