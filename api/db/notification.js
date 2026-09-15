@@ -11,6 +11,9 @@ const notificationSchema = new mongoose.Schema(
     originalQuestion: {
       type: String,
     },
+    messageId: {
+      type: String,
+    },
     message: {
       type: String,
     },
