@@ -5,6 +5,7 @@ export interface AppNotification {
   _id: string;
   userId: string;
   originalQuestion?: string;
+  messageId?: string;
   message?: string;
   type?: string;
   isVisited: boolean;

@@ -91,11 +91,13 @@ router.post('/notifications', async (req, res) => {
     type === 'CUSTOM'
       ? {
           userId,
+          messageId,
           message: customMessage,
           type,
         }
       : {
           userId,
+          messageId,
           originalQuestion: displayQuestion,
         };
 

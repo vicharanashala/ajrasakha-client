@@ -145,8 +145,13 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
     setOpen(false);
     clearMessagesCache(queryClient, conversation?.conversationId);
     queryClient.invalidateQueries([QueryKeys.messages]);
-    newConvo();
-    navigate('/c/new', { state: { autoQuestion: notification.originalQuestion } });
+    
+    if (notification.messageId) {
+      navigate(`/answer/${notification.messageId}`);
+    } else {
+      newConvo();
+      navigate('/c/new', { state: { autoQuestion: notification.originalQuestion } });
+    }
   };
 
   const bellIcon = (
