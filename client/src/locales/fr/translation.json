@@ -1440,5 +1440,12 @@
   "com_nav_notifications_time_yesterday": "Hier",
   "com_nav_notifications_time_days_ago": "il y a {{0}} j",
   "com_ui_example_question_state_note": "État récupéré depuis votre profil",
-  "com_ui_state_prefix": "État :"
+  "com_ui_state_prefix": "État :",
+  "com_ui_your_question_is_answered": "Votre question a reçu une réponse",
+  "com_ui_answer_not_found": "Réponse introuvable",
+  "com_ui_failed_to_fetch_answer": "Échec du chargement de la réponse",
+  "com_ui_go_back_home": "Retour à l'accueil",
+  "com_ui_answer_not_found_description": "Cette réponse n'est pas disponible. Elle a peut-être été supprimée ou le lien que vous avez ouvert est incorrect.",
+  "com_ui_failed_to_fetch_answer_description": "Une erreur s'est produite lors du chargement de cette réponse. Vérifiez votre connexion et réessayez.",
+  "com_ui_retry": "Réessayer"
 }

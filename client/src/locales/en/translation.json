@@ -2128,134 +2128,140 @@
   "com_ui_ajrasakha_tip_rate_answers": "Rate answers with the thumbs icons — it helps AjraSakha improve.",
   "com_ui_ajrasakha_tip_in_development": "AjraSakha is in development — check critical decisions with your local KVK.",
   "com_auth_panel_expert_verified_description": "Advice checked by agricultural experts before it reaches you.",
- "com_auth_panel_multilingual_description": "Ask and get answers in the language you speak.",
-"com_auth_panel_voice_description": "Speak your question instead of typing it.",
-"faq": {
-  "about_ajrasakha": {
-    "title": "About AjraSakha",
-    "q1": {
-      "question": "What is AjraSakha?",
-      "answer": "AjraSakha is a web application that helps farmers get answers to their agriculture-related questions."
+  "com_auth_panel_multilingual_description": "Ask and get answers in the language you speak.",
+  "com_auth_panel_voice_description": "Speak your question instead of typing it.",
+  "faq": {
+    "about_ajrasakha": {
+      "title": "About AjraSakha",
+      "q1": {
+        "question": "What is AjraSakha?",
+        "answer": "AjraSakha is a web application that helps farmers get answers to their agriculture-related questions."
+      },
+      "q2": {
+        "question": "What is the primary goal of testing AjraSakha?",
+        "answer": "It is designed to test whether AjraSakha works accurately for real farmers, in their own language, and for their actual queries."
+      },
+      "q3": {
+        "question": "What kinds of questions can I ask?",
+        "answer": "You can ask questions about: crops, crop diseases, pests and insects, weeds, fertilizers, seeds, crop management, weather, mandi/market information, government schemes, and local agricultural issues and terminology."
+      },
+      "q4": {
+        "question": "Can I ask questions that are not related to agriculture?",
+        "answer": "AjraSakha is mainly built for questions related to agriculture and farming. Please keep your questions focused on agriculture."
+      }
     },
-    "q2": {
-      "question": "What is the primary goal of testing AjraSakha?",
-      "answer": "It is designed to test whether AjraSakha works accurately for real farmers, in their own language, and for their actual queries."
+    "asking_questions": {
+      "title": "Asking Questions",
+      "q5": {
+        "question": "Can I ask questions in my own language?",
+        "answer": "Yes. You can ask questions in your own language or local dialect. You do not need to use formal or technical agricultural terminology."
+      },
+      "q6": {
+        "question": "Can I use local names for diseases, pests, or farming issues?",
+        "answer": "Yes. You can use the local names and words that you normally use."
+      },
+      "q7": {
+        "question": "Do I have to type my question?",
+        "answer": "No. You can either type your question or speak using voice input, whichever is easier for you."
+      },
+      "q8": {
+        "question": "What if the application does not understand my voice correctly?",
+        "answer": "Try speaking slowly and clearly again. If the question is still not transcribed accurately, you can type it instead."
+      },
+      "q9": {
+        "question": "In which language will I get the answer?",
+        "answer": "The language of the response will be determined based on the language used to submit the question."
+      },
+      "q10": {
+        "question": "Does the language I ask the question in affect the language of the answer?",
+        "answer": "Yes. The response language is decided based on the language and script used to send the question."
+      }
     },
-    "q3": {
-      "question": "What kinds of questions can I ask?",
-      "answer": "You can ask questions about: crops, crop diseases, pests and insects, weeds, fertilizers, seeds, crop management, weather, mandi/market information, government schemes, and local agricultural issues and terminology."
+    "asking_about_crops_and_locations": {
+      "title": "Asking About Crops and Locations",
+      "q11": {
+        "question": "Can I ask about multiple agricultural issues related to the same crop?",
+        "answer": "Yes."
+      },
+      "q12": {
+        "question": "Can I ask about multiple crops in a single chat?",
+        "answer": "You can ask multiple questions, but it is better to start a new chat for a different crop."
+      },
+      "q13": {
+        "question": "Same crop + same topic — should I use the same chat or start a new chat?",
+        "answer": "Use the same chat (thread). Mention any new or changed context."
+      },
+      "q14": {
+        "question": "New crop — should I use the same chat or start a new chat?",
+        "answer": "Starting a new chat is preferred."
+      },
+      "q15": {
+        "question": "Same crop + different topic — should I use the same chat or start a new chat?",
+        "answer": "Starting a new chat is preferred."
+      },
+      "q16": {
+        "question": "What should I do if my location changes?",
+        "answer": "Start a new chat and mention the relevant location/context."
+      }
     },
-    "q4": {
-      "question": "Can I ask questions that are not related to agriculture?",
-      "answer": "AjraSakha is mainly built for questions related to agriculture and farming. Please keep your questions focused on agriculture."
+    "answers_and_expert_support": {
+      "title": "Answers and Expert Support",
+      "q17": {
+        "question": "What happens if my question is not in the AjraSakha database?",
+        "answer": "The application will display this message: \"Your question has been shared with our agriculture expert on annam.ai. You will receive an answer within 2 hours / 24 hours / 7 days. Thank you.\""
+      },
+      "q18": {
+        "question": "How long will I have to wait for an answer?",
+        "answer": "The application will display the expected response time, such as 2 hours, 24 hours, or 7 days."
+      },
+      "q19": {
+        "question": "How will I know when my expert answer is ready?",
+        "answer": "The application will send a notification when the response is ready. You will need to check the Bell Icon."
+      },
+      "q20": {
+        "question": "What should I do if I don't get an answer within the specified time?",
+        "answer": "If the displayed response time passes and you haven't received an answer, you should report the issue through the application's feedback option."
+      },
+      "q21": {
+        "question": "What if I have a new or unusual farming query?",
+        "answer": "As long as it is related to agriculture, you can still ask about it. Do not hesitate to ask just because it is new or uncommon."
+      },
+      "q22": {
+        "question": "What if AjraSakha doesn't understand a local agricultural word?",
+        "answer": "Explain the word or problem in more detail. Do not worry about using technical terms. If it is still not understood, report it via feedback."
+      }
+    },
+    "feedback": {
+      "title": "Feedback",
+      "q23": {
+        "question": "What should I do if I feel the answer is wrong?",
+        "answer": "You should give negative feedback (👎) and explain what you think is wrong or what answer you were expecting."
+      },
+      "q24": {
+        "question": "Can I explain why the answer is wrong?",
+        "answer": "Yes. You can explain the issue using text or voice feedback. Tell us what was incorrect and what response you expected."
+      },
+      "q25": {
+        "question": "Is it mandatory to give positive feedback if I am satisfied?",
+        "answer": "Yes, although it is not strictly required, it helps us; if you find the answer helpful, you can give positive feedback (👍)."
+      }
+    },
+    "sources_and_privacy": {
+      "title": "Sources and Privacy",
+      "q26": {
+        "question": "What sources are used for AjraSakha's answers?",
+        "answer": "Answers are generated from authentic sources including central and state government agencies, State Agricultural Universities (SAUs), and Krishi Vigyan Kendras (KVKs)."
+      },
+      "q27": {
+        "question": "Is my personal information secure?",
+        "answer": "Your personal information is collected and used solely for the approved purposes of the project and in accordance with the project's privacy and data protection procedures."
+      }
     }
   },
-  "asking_questions": {
-    "title": "Asking Questions",
-    "q5": {
-      "question": "Can I ask questions in my own language?",
-      "answer": "Yes. You can ask questions in your own language or local dialect. You do not need to use formal or technical agricultural terminology."
-    },
-    "q6": {
-      "question": "Can I use local names for diseases, pests, or farming issues?",
-      "answer": "Yes. You can use the local names and words that you normally use."
-    },
-    "q7": {
-      "question": "Do I have to type my question?",
-      "answer": "No. You can either type your question or speak using voice input, whichever is easier for you."
-    },
-    "q8": {
-      "question": "What if the application does not understand my voice correctly?",
-      "answer": "Try speaking slowly and clearly again. If the question is still not transcribed accurately, you can type it instead."
-    },
-    "q9": {
-      "question": "In which language will I get the answer?",
-      "answer": "The language of the response will be determined based on the language used to submit the question."
-    },
-    "q10": {
-      "question": "Does the language I ask the question in affect the language of the answer?",
-      "answer": "Yes. The response language is decided based on the language and script used to send the question."
-    }
-  },
-  "asking_about_crops_and_locations": {
-    "title": "Asking About Crops and Locations",
-    "q11": {
-      "question": "Can I ask about multiple agricultural issues related to the same crop?",
-      "answer": "Yes."
-    },
-    "q12": {
-      "question": "Can I ask about multiple crops in a single chat?",
-      "answer": "You can ask multiple questions, but it is better to start a new chat for a different crop."
-    },
-    "q13": {
-      "question": "Same crop + same topic — should I use the same chat or start a new chat?",
-      "answer": "Use the same chat (thread). Mention any new or changed context."
-    },
-    "q14": {
-      "question": "New crop — should I use the same chat or start a new chat?",
-      "answer": "Starting a new chat is preferred."
-    },
-    "q15": {
-      "question": "Same crop + different topic — should I use the same chat or start a new chat?",
-      "answer": "Starting a new chat is preferred."
-    },
-    "q16": {
-      "question": "What should I do if my location changes?",
-      "answer": "Start a new chat and mention the relevant location/context."
-    }
-  },
-  "answers_and_expert_support": {
-    "title": "Answers and Expert Support",
-    "q17": {
-      "question": "What happens if my question is not in the AjraSakha database?",
-      "answer": "The application will display this message: \"Your question has been shared with our agriculture expert on annam.ai. You will receive an answer within 2 hours / 24 hours / 7 days. Thank you.\""
-    },
-    "q18": {
-      "question": "How long will I have to wait for an answer?",
-      "answer": "The application will display the expected response time, such as 2 hours, 24 hours, or 7 days."
-    },
-    "q19": {
-      "question": "How will I know when my expert answer is ready?",
-      "answer": "The application will send a notification when the response is ready. You will need to check the Bell Icon."
-    },
-    "q20": {
-      "question": "What should I do if I don't get an answer within the specified time?",
-      "answer": "If the displayed response time passes and you haven't received an answer, you should report the issue through the application's feedback option."
-    },
-    "q21": {
-      "question": "What if I have a new or unusual farming query?",
-      "answer": "As long as it is related to agriculture, you can still ask about it. Do not hesitate to ask just because it is new or uncommon."
-    },
-    "q22": {
-      "question": "What if AjraSakha doesn't understand a local agricultural word?",
-      "answer": "Explain the word or problem in more detail. Do not worry about using technical terms. If it is still not understood, report it via feedback."
-    }
-  },
-  "feedback": {
-    "title": "Feedback",
-    "q23": {
-      "question": "What should I do if I feel the answer is wrong?",
-      "answer": "You should give negative feedback (👎) and explain what you think is wrong or what answer you were expecting."
-    },
-    "q24": {
-      "question": "Can I explain why the answer is wrong?",
-      "answer": "Yes. You can explain the issue using text or voice feedback. Tell us what was incorrect and what response you expected."
-    },
-    "q25": {
-      "question": "Is it mandatory to give positive feedback if I am satisfied?",
-      "answer": "Yes, although it is not strictly required, it helps us; if you find the answer helpful, you can give positive feedback (👍)."
-    }
-  },
-  "sources_and_privacy": {
-    "title": "Sources and Privacy",
-    "q26": {
-      "question": "What sources are used for AjraSakha's answers?",
-      "answer": "Answers are generated from authentic sources including central and state government agencies, State Agricultural Universities (SAUs), and Krishi Vigyan Kendras (KVKs)."
-    },
-    "q27": {
-      "question": "Is my personal information secure?",
-      "answer": "Your personal information is collected and used solely for the approved purposes of the project and in accordance with the project's privacy and data protection procedures."
-    }
-  }
-}
+  "com_ui_your_question_is_answered": "Your question is answered",
+  "com_ui_answer_not_found": "Answer not found",
+  "com_ui_answer_not_found_description": "This answer isn't available. It may have been removed, or the link you followed is incorrect.",
+  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
+  "com_ui_failed_to_fetch_answer_description": "Something went wrong while loading this answer. Check your connection and try again.",
+  "com_ui_go_back_home": "Go back home"
 }

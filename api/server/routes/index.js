@@ -31,6 +31,7 @@ const feedbacks = require('./feedbacks');
 const push = require('./push');
 const notifications = require('./notifications');
 const diagnostics = require('./diagnostics');
+const answers = require('./answers');
 
 module.exports = {
   mcp,
@@ -66,4 +67,5 @@ module.exports = {
   push,
   notifications,
   diagnostics,
+  answers,
 };

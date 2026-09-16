@@ -223,5 +223,13 @@
   "com_nav_notifications_time_yesterday": "გუშინ",
   "com_nav_notifications_time_days_ago": "{{0}} დღის წინ",
   "com_ui_example_question_state_note": "შტატი მოძიებულია თქვენი პროფილიდან",
-  "com_ui_state_prefix": "შტატი:"
+  "com_ui_state_prefix": "შტატი:",
+  "com_ui_your_question_is_answered": "თქვენს კითხვას პასუხი გაეცა",
+  "com_ui_answer_not_found": "პასუხი ვერ მოიძებნა",
+  "com_ui_failed_to_fetch_answer": "პასუხის ჩატვირთვა ვერ მოხერხდა",
+  "com_ui_go_back_home": "მთავარ გვერდზე დაბრუნება",
+  "com_ui_answer_not_found_description": "ეს პასუხი მიუწვდომელია. შესაძლოა წაშლილი იყოს ან თქვენ მიერ გახსნილი ბმული არასწორია.",
+  "com_ui_failed_to_fetch_answer_description": "ამ პასუხის ჩატვირთვისას მოხდა შეცდომა. შეამოწმეთ კავშირი და სცადეთ ხელახლა.",
+  "com_ui_retry": "ხელახლა ცდა",
+  "com_ui_back_to_chat": "ჩატში დაბრუნება"
 }
