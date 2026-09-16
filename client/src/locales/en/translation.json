@@ -2260,6 +2260,8 @@
   },
   "com_ui_your_question_is_answered": "Your question is answered",
   "com_ui_answer_not_found": "Answer not found",
+  "com_ui_answer_not_found_description": "This answer isn't available. It may have been removed, or the link you followed is incorrect.",
   "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
+  "com_ui_failed_to_fetch_answer_description": "Something went wrong while loading this answer. Check your connection and try again.",
   "com_ui_go_back_home": "Go back home"
 }

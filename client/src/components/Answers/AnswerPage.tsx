@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '~/hooks/AuthContext';
 import { Calendar, User, BookOpen, ArrowLeft } from 'lucide-react';
 import { useLocalize } from '~/hooks';
+import AnswerNotFound from './AnswerNotFound';
 
 interface AnswerData {
   question: string;
@@ -23,34 +24,44 @@ export default function AnswerPage() {
   
   const [data, setData] = useState<AnswerData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<'idle' | 'not-found' | 'error'>('idle');
+
+  // Loads the answer and distinguishes a missing answer from a failed request.
+  const fetchData = useCallback(async () => {
+    if (!messageId) {
+      setLoading(false);
+      setStatus('not-found');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setStatus('idle');
+      const res = await fetch(`/api/answers/${messageId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        setStatus(res.status === 404 ? 'not-found' : 'error');
+        return;
+      }
+
+      const jsonData = await res.json();
+      if (!jsonData) {
+        setStatus('not-found');
+        return;
+      }
+      setData(jsonData);
+    } catch {
+      setStatus('error');
+    } finally {
+      setLoading(false);
+    }
+  }, [messageId, token]);
 
   useEffect(() => {
-    async function fetchData() {
-      if (!messageId) return;
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/answers/${messageId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        
-        if (!res.ok) {
-          if (res.status === 404) throw new Error(localize('com_ui_answer_not_found') || 'Answer not found');
-          throw new Error(localize('com_ui_failed_to_fetch_answer') || 'Failed to fetch answer');
-        }
-        
-        const jsonData = await res.json();
-        setData(jsonData);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messageId, token]);
+  }, [fetchData]);
 
   if (loading) {
     return (
@@ -60,14 +71,9 @@ export default function AnswerPage() {
     );
   }
 
-  if (error || !data) {
+  if (status !== 'idle' || !data) {
     return (
-      <div className="flex h-full w-full flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 gap-4">
-        <div className="text-red-500">{error || localize('com_ui_answer_not_found') || 'Answer not found'}</div>
-        <button onClick={() => navigate('/')} className="text-blue-500 hover:underline">
-          {localize('com_ui_go_back_home') || 'Go back home'}
-        </button>
-      </div>
+      <AnswerNotFound variant={status === 'error' ? 'error' : 'not-found'} onRetry={fetchData} />
     );
   }
 
