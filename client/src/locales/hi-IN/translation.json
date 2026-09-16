@@ -2242,7 +2242,9 @@
     }
   },
   "com_ui_your_question_is_answered": "आपके प्रश्न का उत्तर दिया गया है",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_answer_not_found": "उत्तर नहीं मिला",
+  "com_ui_failed_to_fetch_answer": "उत्तर प्राप्त नहीं हो सका",
+  "com_ui_go_back_home": "होम पर वापस जाएं",
+  "com_ui_answer_not_found_description": "यह उत्तर उपलब्ध नहीं है। हो सकता है इसे हटा दिया गया हो, या आपने जो लिंक खोला है वह गलत है।",
+  "com_ui_failed_to_fetch_answer_description": "इस उत्तर को लोड करते समय कुछ गलत हो गया। अपना इंटरनेट कनेक्शन जांचें और पुनः प्रयास करें।"
 }

@@ -2238,8 +2238,10 @@
       "answer": "अहाँक व्यक्तिगत जानकारी केवल परियोजना के स्वीकृत उद्देश्य सब लेल आ परियोजना के गोपनीयता आ डेटा सुरक्षा नियम सब के अनुसार ही एकत्र आ प्रयोग कएल जेबाक चाही।"
     }
   },
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "अहाँक प्रश्नक उत्तर देल गेल अछि",
+  "com_ui_answer_not_found": "उत्तर नै भेटल",
+  "com_ui_failed_to_fetch_answer": "उत्तर आनब असफल भेल",
+  "com_ui_go_back_home": "घर घुरि जाउ",
+  "com_ui_answer_not_found_description": "ई उत्तर उपलब्ध नै अछि। संभव अछि जे एकरा हटा देल गेल होअए, वा अहाँ जे लिंक खोललहुँ से गलत अछि।",
+  "com_ui_failed_to_fetch_answer_description": "ई उत्तर लोड करैत काल किछु गड़बड़ भेल। अपन इंटरनेट कनेक्शन जाँचू आ पुनः प्रयास करू।"
 }

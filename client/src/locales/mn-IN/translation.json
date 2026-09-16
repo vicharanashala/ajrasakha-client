@@ -2240,8 +2240,10 @@
       }
     }
   },
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "নহাক্কী ৱাহংগী পাউখুম পীখ্রে",
+  "com_ui_answer_not_found": "পাউখুম ফংদে",
+  "com_ui_failed_to_fetch_answer": "পাউখুম পুথোকপা ঙমদে",
+  "com_ui_go_back_home": "য়ুমদা হল্লকপিয়ু",
+  "com_ui_answer_not_found_description": "পাউখুম অসি ফংবা ঙমদে। মসি লৌথোকখিবা য়াই, নত্ত্রগা নহাক্না হাংদোকখিবা লিঙ্ক অসি অরানবনি।",
+  "com_ui_failed_to_fetch_answer_description": "পাউখুম অসি লোড তৌরিঙৈদা অরানবা অমা থোকখ্রে। নহাক্কী ইন্টারনেট কনেকশন চেক তৌবিয়ু অমসুং অমুক হন্না হোৎনবিয়ু।"
 }

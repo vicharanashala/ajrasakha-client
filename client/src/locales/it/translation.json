@@ -1039,8 +1039,11 @@
   "com_nav_notifications_time_days_ago": "{{0}} g fa",
   "com_ui_example_question_state_note": "Stato recuperato dal tuo profilo",
   "com_ui_state_prefix": "Stato:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "La tua domanda ha ricevuto risposta",
+  "com_ui_answer_not_found": "Risposta non trovata",
+  "com_ui_failed_to_fetch_answer": "Impossibile caricare la risposta",
+  "com_ui_go_back_home": "Torna alla home",
+  "com_ui_answer_not_found_description": "Questa risposta non è disponibile. Potrebbe essere stata rimossa oppure il link che hai aperto non è corretto.",
+  "com_ui_failed_to_fetch_answer_description": "Si è verificato un errore durante il caricamento di questa risposta. Controlla la connessione e riprova.",
+  "com_ui_retry": "Riprova"
 }

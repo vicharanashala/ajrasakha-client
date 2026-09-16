@@ -2240,8 +2240,10 @@
       }
     }
   },
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "नोंथांनि सोंथिनि जबाब होनाय जायो",
+  "com_ui_answer_not_found": "जबाब मोनाखै",
+  "com_ui_failed_to_fetch_answer": "जबाबखौ लाबोनो हायाखै",
+  "com_ui_go_back_home": "नखरआव थांफिन",
+  "com_ui_answer_not_found_description": "बे जबाबा मोननो हाया। बेखौ खोमोरबाय जानो हागौ, एबा नोंथाङा खेवनाय लिंकआ गोरोन्थि।",
+  "com_ui_failed_to_fetch_answer_description": "बे जबाबखौ लोड खालामनाय समाव मा मोनसे गोरोन्थि जाबाय। नोंथांनि इन्टरनेटखौ नाय आरो फिन नाजा।"
 }

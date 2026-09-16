@@ -1020,8 +1020,11 @@
   "com_nav_notifications_time_days_ago": "fa {{0}} d",
   "com_ui_example_question_state_note": "Estat obtingut del teu perfil",
   "com_ui_state_prefix": "Estat:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "La teva pregunta ja té resposta",
+  "com_ui_answer_not_found": "No s'ha trobat la resposta",
+  "com_ui_failed_to_fetch_answer": "No s'ha pogut carregar la resposta",
+  "com_ui_go_back_home": "Torna a l'inici",
+  "com_ui_answer_not_found_description": "Aquesta resposta no està disponible. Pot ser que s'hagi eliminat o que l'enllaç que has obert no sigui correcte.",
+  "com_ui_failed_to_fetch_answer_description": "S'ha produït un error en carregar aquesta resposta. Comprova la connexió i torna-ho a provar.",
+  "com_ui_retry": "Torna-ho a provar"
 }

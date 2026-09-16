@@ -858,8 +858,11 @@
   "com_nav_notifications_time_days_ago": "{{0}} gün önce",
   "com_ui_example_question_state_note": "Eyalet profilinizden alındı",
   "com_ui_state_prefix": "Eyalet:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "Sorunuz yanıtlandı",
+  "com_ui_answer_not_found": "Yanıt bulunamadı",
+  "com_ui_failed_to_fetch_answer": "Yanıt alınamadı",
+  "com_ui_go_back_home": "Ana sayfaya dön",
+  "com_ui_answer_not_found_description": "Bu yanıt kullanılamıyor. Kaldırılmış olabilir veya açtığınız bağlantı hatalı olabilir.",
+  "com_ui_failed_to_fetch_answer_description": "Bu yanıt yüklenirken bir hata oluştu. Bağlantınızı kontrol edip tekrar deneyin.",
+  "com_ui_retry": "Yeniden dene"
 }

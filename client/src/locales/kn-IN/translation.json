@@ -2242,7 +2242,9 @@
     }
   },
   "com_ui_your_question_is_answered": "ನಿಮ್ಮ ಪ್ರಶ್ನೆಗೆ ಉತ್ತರಿಸಲಾಗಿದೆ",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_answer_not_found": "ಉತ್ತರ ಕಂಡುಬಂದಿಲ್ಲ",
+  "com_ui_failed_to_fetch_answer": "ಉತ್ತರವನ್ನು ಪಡೆಯಲು ವಿಫಲವಾಗಿದೆ",
+  "com_ui_go_back_home": "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ",
+  "com_ui_answer_not_found_description": "ಈ ಉತ್ತರ ಲಭ್ಯವಿಲ್ಲ. ಅದನ್ನು ತೆಗೆದುಹಾಕಿರಬಹುದು ಅಥವಾ ನೀವು ತೆರೆದ ಲಿಂಕ್ ತಪ್ಪಾಗಿದೆ.",
+  "com_ui_failed_to_fetch_answer_description": "ಈ ಉತ್ತರವನ್ನು ಲೋಡ್ ಮಾಡುವಾಗ ಏನೋ ತಪ್ಪಾಗಿದೆ. ನಿಮ್ಮ ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
 }

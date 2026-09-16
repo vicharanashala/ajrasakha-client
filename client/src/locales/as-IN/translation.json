@@ -2241,7 +2241,9 @@
     }
   },
   "com_ui_your_question_is_answered": "আপোনাৰ প্ৰশ্নৰ উত্তৰ দিয়া হৈছে",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_answer_not_found": "উত্তৰ বিচাৰি পোৱা নগ’ল",
+  "com_ui_failed_to_fetch_answer": "উত্তৰ আনিব পৰা নগ’ল",
+  "com_ui_go_back_home": "ঘৰলৈ উভতি যাওক",
+  "com_ui_answer_not_found_description": "এই উত্তৰটো উপলব্ধ নহয়। ইয়াক আঁতৰোৱা হ’ব পাৰে, বা আপুনি খোলা লিংকটো ভুল।",
+  "com_ui_failed_to_fetch_answer_description": "এই উত্তৰটো ল’ড কৰোঁতে কিবা এটা ভুল হ’ল। আপোনাৰ সংযোগ পৰীক্ষা কৰক আৰু পুনৰ চেষ্টা কৰক।"
 }

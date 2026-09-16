@@ -1594,8 +1594,11 @@
   "com_nav_notifications_time_days_ago": "vor {{0}} Tg.",
   "com_ui_example_question_state_note": "Bundesland aus deinem Profil abgerufen",
   "com_ui_state_prefix": "Bundesland:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "Ihre Frage wurde beantwortet",
+  "com_ui_answer_not_found": "Antwort nicht gefunden",
+  "com_ui_failed_to_fetch_answer": "Antwort konnte nicht geladen werden",
+  "com_ui_go_back_home": "Zurück zur Startseite",
+  "com_ui_answer_not_found_description": "Diese Antwort ist nicht verfügbar. Möglicherweise wurde sie entfernt oder der geöffnete Link ist falsch.",
+  "com_ui_failed_to_fetch_answer_description": "Beim Laden dieser Antwort ist ein Fehler aufgetreten. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+  "com_ui_retry": "Erneut versuchen"
 }

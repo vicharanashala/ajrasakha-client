@@ -964,8 +964,11 @@
   "com_nav_notifications_time_days_ago": "{{0}} روز پیش",
   "com_ui_example_question_state_note": "استان از پروفایل شما دریافت شد",
   "com_ui_state_prefix": "استان:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "به پرسش شما پاسخ داده شد",
+  "com_ui_answer_not_found": "پاسخ پیدا نشد",
+  "com_ui_failed_to_fetch_answer": "دریافت پاسخ ناموفق بود",
+  "com_ui_go_back_home": "بازگشت به صفحهٔ اصلی",
+  "com_ui_answer_not_found_description": "این پاسخ در دسترس نیست. ممکن است حذف شده باشد یا پیوندی که باز کرده‌اید نادرست باشد.",
+  "com_ui_failed_to_fetch_answer_description": "هنگام بارگذاری این پاسخ خطایی رخ داد. اتصال خود را بررسی کنید و دوباره تلاش کنید.",
+  "com_ui_retry": "تلاش دوباره"
 }

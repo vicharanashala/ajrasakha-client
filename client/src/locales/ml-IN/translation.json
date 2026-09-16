@@ -2242,7 +2242,9 @@
     }
   },
   "com_ui_your_question_is_answered": "നിങ്ങളുടെ ചോദ്യത്തിന് മറുപടി നൽകി",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_answer_not_found": "ഉത്തരം കണ്ടെത്തിയില്ല",
+  "com_ui_failed_to_fetch_answer": "ഉത്തരം ലഭ്യമാക്കാനായില്ല",
+  "com_ui_go_back_home": "ഹോമിലേക്ക് മടങ്ങുക",
+  "com_ui_answer_not_found_description": "ഈ ഉത്തരം ലഭ്യമല്ല. അത് നീക്കം ചെയ്തിരിക്കാം, അല്ലെങ്കിൽ നിങ്ങൾ തുറന്ന ലിങ്ക് തെറ്റാണ്.",
+  "com_ui_failed_to_fetch_answer_description": "ഈ ഉത്തരം ലോഡ് ചെയ്യുന്നതിൽ പിശക് സംഭവിച്ചു. നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക."
 }

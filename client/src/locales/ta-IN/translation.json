@@ -2242,7 +2242,9 @@
     }
   },
   "com_ui_your_question_is_answered": "உங்கள் கேள்விக்கு பதிலளிக்கப்பட்டது",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_answer_not_found": "பதில் கிடைக்கவில்லை",
+  "com_ui_failed_to_fetch_answer": "பதிலைப் பெற முடியவில்லை",
+  "com_ui_go_back_home": "முகப்புக்குத் திரும்பு",
+  "com_ui_answer_not_found_description": "இந்தப் பதில் கிடைக்கவில்லை. அது நீக்கப்பட்டிருக்கலாம், அல்லது நீங்கள் திறந்த இணைப்பு தவறானது.",
+  "com_ui_failed_to_fetch_answer_description": "இந்தப் பதிலை ஏற்றும்போது ஏதோ தவறு நேர்ந்தது. உங்கள் இணைய இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்."
 }

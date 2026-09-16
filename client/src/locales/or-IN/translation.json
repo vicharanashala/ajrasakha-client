@@ -2242,7 +2242,9 @@
     }
   },
   "com_ui_your_question_is_answered": "ଆପଣଙ୍କ ପ୍ରଶ୍ନର ଉତ୍ତର ଦିଆଯାଇଛି",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_answer_not_found": "ଉତ୍ତର ମିଳିଲା ନାହିଁ",
+  "com_ui_failed_to_fetch_answer": "ଉତ୍ତର ଆଣିବାରେ ବିଫଳ",
+  "com_ui_go_back_home": "ହୋମ୍‌କୁ ଫେରନ୍ତୁ",
+  "com_ui_answer_not_found_description": "ଏହି ଉତ୍ତର ଉପଲବ୍ଧ ନାହିଁ। ଏହା ହଟାଇ ଦିଆଯାଇଥାଇପାରେ, କିମ୍ବା ଆପଣ ଖୋଲିଥିବା ଲିଙ୍କ୍ ଭୁଲ ଅଟେ।",
+  "com_ui_failed_to_fetch_answer_description": "ଏହି ଉତ୍ତର ଲୋଡ୍ କରିବା ସମୟରେ କିଛି ଭୁଲ ହେଲା। ଆପଣଙ୍କ ଇଣ୍ଟରନେଟ୍ ସଂଯୋଗ ଯାଞ୍ଚ କରନ୍ତୁ ଏବଂ ପୁନର୍ବାର ଚେଷ୍ଟା କରନ୍ତୁ।"
 }

@@ -964,8 +964,11 @@
   "com_nav_notifications_time_days_ago": "{{0}} napja",
   "com_ui_example_question_state_note": "Az állam a profiljából lett lekérve",
   "com_ui_state_prefix": "Állam:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "A kérdésére válasz érkezett",
+  "com_ui_answer_not_found": "A válasz nem található",
+  "com_ui_failed_to_fetch_answer": "A válasz betöltése sikertelen",
+  "com_ui_go_back_home": "Vissza a főoldalra",
+  "com_ui_answer_not_found_description": "Ez a válasz nem érhető el. Lehet, hogy eltávolították, vagy a megnyitott hivatkozás hibás.",
+  "com_ui_failed_to_fetch_answer_description": "Hiba történt a válasz betöltése közben. Ellenőrizze a kapcsolatot, és próbálja újra.",
+  "com_ui_retry": "Újrapróbálkozás"
 }

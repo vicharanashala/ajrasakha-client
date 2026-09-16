@@ -2242,7 +2242,9 @@
     }
   },
   "com_ui_your_question_is_answered": "మీ ప్రశ్నకు సమాధానం ఇవ్వబడింది",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_answer_not_found": "సమాధానం కనుగొనబడలేదు",
+  "com_ui_failed_to_fetch_answer": "సమాధానాన్ని పొందడంలో విఫలమైంది",
+  "com_ui_go_back_home": "హోమ్‌కి తిరిగి వెళ్లండి",
+  "com_ui_answer_not_found_description": "ఈ సమాధానం అందుబాటులో లేదు. దీన్ని తీసివేసి ఉండవచ్చు, లేదా మీరు తెరిచిన లింక్ తప్పు.",
+  "com_ui_failed_to_fetch_answer_description": "ఈ సమాధానాన్ని లోడ్ చేసేటప్పుడు ఏదో తప్పు జరిగింది. మీ ఇంటర్నెట్ కనెక్షన్‌ని తనిఖీ చేసి మళ్లీ ప్రయత్నించండి."
 }

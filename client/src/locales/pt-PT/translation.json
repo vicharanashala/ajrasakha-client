@@ -1394,8 +1394,11 @@
   "com_nav_notifications_time_days_ago": "há {{0}} d",
   "com_ui_example_question_state_note": "Estado obtido do seu perfil",
   "com_ui_state_prefix": "Estado:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "A sua pergunta foi respondida",
+  "com_ui_answer_not_found": "Resposta não encontrada",
+  "com_ui_failed_to_fetch_answer": "Falha ao carregar a resposta",
+  "com_ui_go_back_home": "Voltar ao início",
+  "com_ui_answer_not_found_description": "Esta resposta não está disponível. Pode ter sido removida ou a ligação que abriu está incorreta.",
+  "com_ui_failed_to_fetch_answer_description": "Ocorreu um erro ao carregar esta resposta. Verifique a sua ligação e tente novamente.",
+  "com_ui_retry": "Tentar novamente"
 }

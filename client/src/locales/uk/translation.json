@@ -1415,8 +1415,11 @@
   "com_nav_notifications_time_days_ago": "{{0}} дн тому",
   "com_ui_example_question_state_note": "Область отримано з вашого профілю",
   "com_ui_state_prefix": "Штат:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "На ваше запитання надано відповідь",
+  "com_ui_answer_not_found": "Відповідь не знайдено",
+  "com_ui_failed_to_fetch_answer": "Не вдалося завантажити відповідь",
+  "com_ui_go_back_home": "Повернутися на головну",
+  "com_ui_answer_not_found_description": "Ця відповідь недоступна. Можливо, її видалено або відкрите посилання хибне.",
+  "com_ui_failed_to_fetch_answer_description": "Під час завантаження відповіді сталася помилка. Перевірте підключення та повторіть спробу.",
+  "com_ui_retry": "Повторити"
 }

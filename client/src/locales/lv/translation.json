@@ -1596,8 +1596,11 @@
   "com_nav_notifications_time_days_ago": "pirms {{0}} d",
   "com_ui_example_question_state_note": "Štats iegūts no jūsu profila",
   "com_ui_state_prefix": "Štats:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "Uz jūsu jautājumu ir atbildēts",
+  "com_ui_answer_not_found": "Atbilde nav atrasta",
+  "com_ui_failed_to_fetch_answer": "Neizdevās ielādēt atbildi",
+  "com_ui_go_back_home": "Atpakaļ uz sākumu",
+  "com_ui_answer_not_found_description": "Šī atbilde nav pieejama. Iespējams, tā ir noņemta vai atvērtā saite ir nepareiza.",
+  "com_ui_failed_to_fetch_answer_description": "Ielādējot šo atbildi, radās kļūda. Pārbaudiet savienojumu un mēģiniet vēlreiz.",
+  "com_ui_retry": "Mēģināt vēlreiz"
 }

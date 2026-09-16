@@ -434,8 +434,12 @@
   "com_nav_notifications_time_days_ago": "{{0}} hr lalu",
   "com_ui_example_question_state_note": "Provinsi diambil dari profil Anda",
   "com_ui_state_prefix": "Provinsi:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "Pertanyaan Anda telah dijawab",
+  "com_ui_answer_not_found": "Jawaban tidak ditemukan",
+  "com_ui_failed_to_fetch_answer": "Gagal memuat jawaban",
+  "com_ui_go_back_home": "Kembali ke beranda",
+  "com_ui_answer_not_found_description": "Jawaban ini tidak tersedia. Mungkin sudah dihapus, atau tautan yang Anda buka salah.",
+  "com_ui_failed_to_fetch_answer_description": "Terjadi kesalahan saat memuat jawaban ini. Periksa koneksi Anda dan coba lagi.",
+  "com_ui_retry": "Coba lagi",
+  "com_ui_back_to_chat": "Kembali ke obrolan"
 }

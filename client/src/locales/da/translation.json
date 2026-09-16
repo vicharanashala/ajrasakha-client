@@ -1059,8 +1059,11 @@
   "com_nav_notifications_time_days_ago": "for {{0}} d. siden",
   "com_ui_example_question_state_note": "Delstat hentet fra din profil",
   "com_ui_state_prefix": "Delstat:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "Dit spørgsmål er besvaret",
+  "com_ui_answer_not_found": "Svaret blev ikke fundet",
+  "com_ui_failed_to_fetch_answer": "Svaret kunne ikke hentes",
+  "com_ui_go_back_home": "Tilbage til forsiden",
+  "com_ui_answer_not_found_description": "Dette svar er ikke tilgængeligt. Det kan være fjernet, eller linket, du åbnede, er forkert.",
+  "com_ui_failed_to_fetch_answer_description": "Der opstod en fejl under indlæsningen af dette svar. Tjek din forbindelse, og prøv igen.",
+  "com_ui_retry": "Prøv igen"
 }

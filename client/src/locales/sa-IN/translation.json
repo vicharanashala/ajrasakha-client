@@ -2240,8 +2240,10 @@
       }
     }
   },
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "भवतः प्रश्नस्य उत्तरं दत्तम् अस्ति",
+  "com_ui_answer_not_found": "उत्तरं न प्राप्तम्",
+  "com_ui_failed_to_fetch_answer": "उत्तरम् आनेतुं न शक्तम्",
+  "com_ui_go_back_home": "मुख्यपृष्ठं प्रति प्रत्यागच्छन्तु",
+  "com_ui_answer_not_found_description": "इदम् उत्तरं न उपलभ्यते। सम्भवतः तत् अपाकृतम् अस्ति, अथवा भवता उद्घाटितं सम्पर्कसूत्रम् अशुद्धम् अस्ति।",
+  "com_ui_failed_to_fetch_answer_description": "इदम् उत्तरं भारयितुं समये काचित् त्रुटिः अभवत्। स्वस्य अन्तर्जाल-सम्पर्कं परीक्ष्य पुनः प्रयतताम्।"
 }

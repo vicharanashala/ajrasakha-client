@@ -2114,7 +2114,9 @@
   "com_ui_example_question_state_note": "ਤੁਹਾਡੀ ਪ੍ਰੋਫਾਈਲ ਤੋਂ ਰਾਜ ਪ੍ਰਾਪਤ ਕੀਤਾ ਗਿਆ",
   "com_ui_state_prefix": "ਰਾਜ:",
   "com_ui_your_question_is_answered": "ਤੁਹਾਡੇ ਸਵਾਲ ਦਾ ਜਵਾਬ ਦਿੱਤਾ ਗਿਆ ਹੈ",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_answer_not_found": "ਜਵਾਬ ਨਹੀਂ ਮਿਲਿਆ",
+  "com_ui_failed_to_fetch_answer": "ਜਵਾਬ ਲਿਆਉਣ ਵਿੱਚ ਅਸਫਲ",
+  "com_ui_go_back_home": "ਹੋਮ 'ਤੇ ਵਾਪਸ ਜਾਓ",
+  "com_ui_answer_not_found_description": "ਇਹ ਜਵਾਬ ਉਪਲਬਧ ਨਹੀਂ ਹੈ। ਸ਼ਾਇਦ ਇਸਨੂੰ ਹਟਾ ਦਿੱਤਾ ਗਿਆ ਹੋਵੇ, ਜਾਂ ਤੁਹਾਡੇ ਵੱਲੋਂ ਖੋਲ੍ਹਿਆ ਲਿੰਕ ਗਲਤ ਹੈ।",
+  "com_ui_failed_to_fetch_answer_description": "ਇਹ ਜਵਾਬ ਲੋਡ ਕਰਦੇ ਸਮੇਂ ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਆਪਣੇ ਇੰਟਰਨੈਟ ਕਨੈਕਸ਼ਨ ਦੀ ਜਾਂਚ ਕਰੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
 }

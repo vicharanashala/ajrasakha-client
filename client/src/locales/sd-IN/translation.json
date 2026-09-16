@@ -2240,8 +2240,10 @@
       }
     }
   },
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "توهانجي سوال جو جواب ڏنو ويو آهي",
+  "com_ui_answer_not_found": "جواب نه مليو",
+  "com_ui_failed_to_fetch_answer": "جواب حاصل ڪرڻ ۾ ناڪامي",
+  "com_ui_go_back_home": "هوم تي واپس وڃو",
+  "com_ui_answer_not_found_description": "هي جواب موجود ناهي. ٿي سگهي ٿو ته ان کي هٽايو ويو هجي، يا توهان کوليل لنڪ غلط آهي.",
+  "com_ui_failed_to_fetch_answer_description": "هي جواب لوڊ ڪرڻ دوران ڪجهه غلط ٿي ويو. پنهنجو انٽرنيٽ ڪنيڪشن چيڪ ڪريو ۽ ٻيهر ڪوشش ڪريو."
 }

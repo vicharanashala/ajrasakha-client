@@ -1455,8 +1455,11 @@
   "com_nav_notifications_time_days_ago": "{{0}} дн назад",
   "com_ui_example_question_state_note": "Штат получен из вашего профиля",
   "com_ui_state_prefix": "Штат:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "На ваш вопрос дан ответ",
+  "com_ui_answer_not_found": "Ответ не найден",
+  "com_ui_failed_to_fetch_answer": "Не удалось загрузить ответ",
+  "com_ui_go_back_home": "Вернуться на главную",
+  "com_ui_answer_not_found_description": "Этот ответ недоступен. Возможно, он был удалён или открытая ссылка неверна.",
+  "com_ui_failed_to_fetch_answer_description": "При загрузке ответа произошла ошибка. Проверьте подключение и повторите попытку.",
+  "com_ui_retry": "Повторить"
 }

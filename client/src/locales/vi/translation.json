@@ -530,8 +530,12 @@
   "com_nav_notifications_time_days_ago": "{{0}} ngày trước",
   "com_ui_example_question_state_note": "Tiểu bang được lấy từ hồ sơ của bạn",
   "com_ui_state_prefix": "Tiểu bang:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "Câu hỏi của bạn đã được trả lời",
+  "com_ui_answer_not_found": "Không tìm thấy câu trả lời",
+  "com_ui_failed_to_fetch_answer": "Không tải được câu trả lời",
+  "com_ui_go_back_home": "Quay lại trang chủ",
+  "com_ui_answer_not_found_description": "Câu trả lời này không khả dụng. Có thể nó đã bị xóa hoặc liên kết bạn mở không đúng.",
+  "com_ui_failed_to_fetch_answer_description": "Đã xảy ra lỗi khi tải câu trả lời này. Hãy kiểm tra kết nối và thử lại.",
+  "com_ui_retry": "Thử lại",
+  "com_ui_back_to_chat": "Quay lại trò chuyện"
 }

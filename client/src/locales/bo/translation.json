@@ -188,8 +188,12 @@
       }
     }
   },
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "ཁྱེད་ཀྱི་དྲི་བར་ལན་འབྱོར་སོང་།",
+  "com_ui_answer_not_found": "ལན་འདེབས་རྙེད་མ་སོང་།",
+  "com_ui_failed_to_fetch_answer": "ལན་འདེབས་ལེན་མ་ཐུབ།",
+  "com_ui_go_back_home": "མདུན་ངོས་སུ་ཕྱིར་ལོག",
+  "com_ui_answer_not_found_description": "ལན་འདེབས་འདི་མི་འདུག ཕྱིར་བསུབས་ཟིན་པའམ། ཁྱེད་ཀྱིས་ཕྱེ་བའི་དྲ་མཐུད་ནོར་བ་ཡིན་སྲིད།",
+  "com_ui_failed_to_fetch_answer_description": "ལན་འདེབས་འདི་སྣོན་སྐབས་ནོར་འཁྲུལ་བྱུང་། ཁྱེད་ཀྱི་དྲ་སྦྲེལ་ལ་ཞིབ་བཤེར་བྱས་ནས་ཡང་བསྐྱར་ཚོད་ལྟ་གནང་།",
+  "com_ui_retry": "ཡང་བསྐྱར་ཚོད་ལྟ།",
+  "com_ui_back_to_chat": "ཁ་བརྡར་ཕྱིར་ལོག"
 }

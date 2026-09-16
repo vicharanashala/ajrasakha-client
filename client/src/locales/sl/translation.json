@@ -196,8 +196,12 @@
   "com_nav_notifications_time_days_ago": "pred {{0}} d",
   "com_ui_example_question_state_note": "Zvezna država pridobljena iz vašega profila",
   "com_ui_state_prefix": "Zvezna država:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "Na vaše vprašanje je odgovorjeno",
+  "com_ui_answer_not_found": "Odgovora ni mogoče najti",
+  "com_ui_failed_to_fetch_answer": "Odgovora ni bilo mogoče naložiti",
+  "com_ui_go_back_home": "Nazaj na začetno stran",
+  "com_ui_answer_not_found_description": "Ta odgovor ni na voljo. Morda je bil odstranjen ali pa je povezava, ki ste jo odprli, napačna.",
+  "com_ui_failed_to_fetch_answer_description": "Pri nalaganju tega odgovora je prišlo do napake. Preverite povezavo in poskusite znova.",
+  "com_ui_retry": "Poskusi znova",
+  "com_ui_back_to_chat": "Nazaj na klepet"
 }

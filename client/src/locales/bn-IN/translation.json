@@ -2242,7 +2242,9 @@
     }
   },
   "com_ui_your_question_is_answered": "আপনার প্রশ্নের উত্তর দেওয়া হয়েছে",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_answer_not_found": "উত্তর পাওয়া যায়নি",
+  "com_ui_failed_to_fetch_answer": "উত্তর আনা যায়নি",
+  "com_ui_go_back_home": "হোমে ফিরে যান",
+  "com_ui_answer_not_found_description": "এই উত্তরটি উপলব্ধ নেই। এটি সরিয়ে ফেলা হয়ে থাকতে পারে, অথবা আপনি যে লিঙ্কটি খুলেছেন সেটি ভুল।",
+  "com_ui_failed_to_fetch_answer_description": "এই উত্তরটি লোড করার সময় কিছু ভুল হয়েছে। আপনার ইন্টারনেট সংযোগ চেক করুন এবং আবার চেষ্টা করুন।"
 }

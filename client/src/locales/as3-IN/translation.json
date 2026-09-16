@@ -2240,8 +2240,10 @@
       }
     }
   },
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "तुंदे सवाल दा जवाब देई ओड़ेआ ऐ",
+  "com_ui_answer_not_found": "जवाब नेईं लब्भा",
+  "com_ui_failed_to_fetch_answer": "जवाब हासल नेईं होई सक्या",
+  "com_ui_go_back_home": "घर वापस जाओ",
+  "com_ui_answer_not_found_description": "एह् जवाब उपलब्ध नेईं ऐ। एह् हटाया गेदा होई सकदा ऐ, जां तुसें खोल्ल्या लिंक गलत ऐ।",
+  "com_ui_failed_to_fetch_answer_description": "एह् जवाब लोड करदे बेल्लै कुछ गलत होई गेआ। अपना इंटरनेट कनेक्शन जाचो ते परतियै कोशिश करो।"
 }

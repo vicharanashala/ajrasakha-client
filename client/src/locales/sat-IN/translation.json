@@ -2240,8 +2240,10 @@
       }
     }
   },
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "ᱟᱢᱟᱜ ᱠᱩᱠᱞᱤ ᱨᱮᱭᱟᱜ ᱚᱛᱚᱨ ᱮᱢ ᱠᱟᱱᱟ",
+  "com_ui_answer_not_found": "ᱚᱛᱚᱨ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ",
+  "com_ui_failed_to_fetch_answer": "ᱚᱛᱚᱨ ᱟᱜᱩ ᱵᱟᱝ ᱦᱩᱭ ᱞᱮᱱᱟ",
+  "com_ui_go_back_home": "ᱚᱲᱟᱜ ᱨᱮ ᱨᱩᱣᱟᱹᱲ ᱢᱮ",
+  "com_ui_answer_not_found_description": "ᱱᱚᱶᱟ ᱚᱛᱚᱨ ᱵᱟᱝ ᱧᱟᱢᱚᱜ ᱠᱟᱱᱟ᱾ ᱱᱚᱶᱟ ᱚᱪᱚᱜ ᱟᱠᱟᱱᱟ ᱠᱷᱟᱱ, ᱵᱟᱝ ᱠᱷᱟᱱ ᱟᱢ ᱡᱷᱤᱡ ᱟᱠᱟᱫ ᱞᱤᱸᱠ ᱵᱷᱩᱞ ᱠᱟᱱᱟ᱾",
+  "com_ui_failed_to_fetch_answer_description": "ᱱᱚᱶᱟ ᱚᱛᱚᱨ ᱞᱚᱰ ᱡᱚᱦᱚᱜ ᱪᱮᱫ ᱦᱚᱸ ᱵᱷᱩᱞ ᱦᱩᱭ ᱮᱱᱟ᱾ ᱟᱢᱟᱜ ᱤᱱᱴᱟᱨᱱᱮᱴ ᱡᱚᱲᱟᱣ ᱧᱮᱞ ᱢᱮ ᱟᱨ ᱟᱨᱦᱚᱸ ᱪᱮᱥᱴᱟ ᱢᱮ᱾"
 }

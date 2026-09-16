@@ -848,8 +848,11 @@
   "com_nav_notifications_time_days_ago": "{{0}} dni temu",
   "com_ui_example_question_state_note": "Stan pobrany z Twojego profilu",
   "com_ui_state_prefix": "Stan:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "Na Twoje pytanie udzielono odpowiedzi",
+  "com_ui_answer_not_found": "Nie znaleziono odpowiedzi",
+  "com_ui_failed_to_fetch_answer": "Nie udało się pobrać odpowiedzi",
+  "com_ui_go_back_home": "Wróć do strony głównej",
+  "com_ui_answer_not_found_description": "Ta odpowiedź jest niedostępna. Mogła zostać usunięta lub otwarty link jest nieprawidłowy.",
+  "com_ui_failed_to_fetch_answer_description": "Podczas wczytywania tej odpowiedzi wystąpił błąd. Sprawdź połączenie i spróbuj ponownie.",
+  "com_ui_retry": "Spróbuj ponownie"
 }

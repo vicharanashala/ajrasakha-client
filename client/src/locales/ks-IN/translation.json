@@ -2240,8 +2240,10 @@
       }
     }
   },
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "تُہنٛدِس سوالَس چھُ جواب دِنہٕ آمُت",
+  "com_ui_answer_not_found": "جواب آو نَہ لَبنہٕ",
+  "com_ui_failed_to_fetch_answer": "جواب حٲصِل کَرنس مَنٛز ناکٲمی",
+  "com_ui_go_back_home": "ہوم پؠٹھ واپَس گٔژھِو",
+  "com_ui_answer_not_found_description": "یہِ جواب چھُ نہٕ دستِیاب۔ ممکن چھُ زِ یہِ آو ہٹاونہٕ، یا تُہیہِ کھولمُت لِنٛک چھُ غلط۔",
+  "com_ui_failed_to_fetch_answer_description": "یہِ جواب لوڈ کَران وَقتہٕ گَو کینٛہہ غلط۔ پَنُن اِنٛٹَرنیٚٹ کَنیکشَن چیٚک کٔرِو تہٕ دُبارٕ کوٗشِش کٔرِو۔"
 }

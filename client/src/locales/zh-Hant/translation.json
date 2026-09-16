@@ -1056,8 +1056,11 @@
   "com_nav_notifications_time_days_ago": "{{0}} 天前",
   "com_ui_example_question_state_note": "已從您的資料中取得所在州",
   "com_ui_state_prefix": "州:",
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "您的問題已獲得回覆",
+  "com_ui_answer_not_found": "找不到答案",
+  "com_ui_failed_to_fetch_answer": "取得答案失敗",
+  "com_ui_go_back_home": "返回首頁",
+  "com_ui_answer_not_found_description": "此答案無法使用。可能已被移除，或您開啟的連結有誤。",
+  "com_ui_failed_to_fetch_answer_description": "載入此答案時發生錯誤。請檢查連線後再試一次。",
+  "com_ui_retry": "重試"
 }

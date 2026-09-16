@@ -998,8 +998,11 @@
       }
     }
   },
-  "com_ui_your_question_is_answered": "Your question is answered",
-  "com_ui_answer_not_found": "Answer not found",
-  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_your_question_is_answered": "تمت الإجابة على سؤالك",
+  "com_ui_answer_not_found": "لم يتم العثور على الإجابة",
+  "com_ui_failed_to_fetch_answer": "تعذّر جلب الإجابة",
+  "com_ui_go_back_home": "العودة إلى الصفحة الرئيسية",
+  "com_ui_answer_not_found_description": "هذه الإجابة غير متاحة. ربما تم حذفها أو أن الرابط الذي فتحته غير صحيح.",
+  "com_ui_failed_to_fetch_answer_description": "حدث خطأ أثناء تحميل هذه الإجابة. تحقق من اتصالك وحاول مرة أخرى.",
+  "com_ui_retry": "إعادة المحاولة"
 }
