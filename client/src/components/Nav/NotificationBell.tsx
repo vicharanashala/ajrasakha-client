@@ -48,7 +48,7 @@ function NotificationRow({
   localize: Localize;
   onOpen: (notification: AppNotification) => void;
 }) {
-  const isClickable = !!notification.originalQuestion;
+  const isClickable = notification.type !== 'CUSTOM' && (!!notification.originalQuestion || !!notification.messageId);
   const displayText = notification.message ?? notification.originalQuestion ?? '';
   const isAlert = notification.type === 'CUSTOM';
   const TypeIcon = isAlert ? AlertTriangle : Info;
@@ -141,6 +141,8 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
   };
 
   const handleOpenNotification = (notification: AppNotification) => {
+    if (notification.type === 'CUSTOM') return; // Do not navigate if custom
+
     markAsVisited(notification._id);
     setOpen(false);
     clearMessagesCache(queryClient, conversation?.conversationId);
@@ -203,7 +205,7 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
       <OGDialog open={open} onOpenChange={handleOpenChange} triggerRef={buttonRef}>
         <OGDialogContent
           showCloseButton
-          className="notification-modal-shell flex w-11/12 max-w-md flex-col gap-0 overflow-hidden p-0 sm:max-w-lg lg:max-w-xl"
+          className="notification-modal-shell flex flex-col gap-0 overflow-hidden p-0 w-11/12 sm:w-[450px] max-w-lg h-[75vh] sm:h-[600px] max-h-[800px]"
         >
           <OGDialogHeader className="flex shrink-0 flex-row items-center justify-between gap-3 space-y-0 border-b border-border-light py-4 pl-5 pr-14 text-left sm:pl-6">
             <div className="flex min-w-0 items-center gap-2.5">
