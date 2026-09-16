@@ -1595,5 +1595,9 @@
   "com_nav_notifications_time_yesterday": "Vakar",
   "com_nav_notifications_time_days_ago": "pirms {{0}} d",
   "com_ui_example_question_state_note": "Štats iegūts no jūsu profila",
-  "com_ui_state_prefix": "Štats:"
+  "com_ui_state_prefix": "Štats:",
+  "com_ui_your_question_is_answered": "Your question is answered",
+  "com_ui_answer_not_found": "Answer not found",
+  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
+  "com_ui_go_back_home": "Go back home"
 }

@@ -125,7 +125,7 @@ function NotificationRow({
 function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
   const localize = useLocalize();
   const [open, setOpen] = useState(false);
-  const { notifications, unreadCount, markAsVisited, markAllVisited, fetchNotifications } =
+  const { notifications, unreadCount, markAsVisited, markAllVisited, fetchNotifications, filter, setFilter, page, setPage, totalPages } =
     useNotifications();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -228,6 +228,21 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
             )}
           </OGDialogHeader>
 
+          <div className="flex shrink-0 flex-row items-center gap-4 border-b border-border-light px-5 sm:px-6">
+            <button 
+              onClick={() => { setFilter('unread'); setPage(1); }}
+              className={cn("pb-3 pt-3 text-sm font-medium transition-colors border-b-2", filter === 'unread' ? "border-green-600 text-green-600" : "border-transparent text-text-secondary hover:text-text-primary")}
+            >
+              Unread
+            </button>
+            <button 
+              onClick={() => { setFilter('all'); setPage(1); }}
+              className={cn("pb-3 pt-3 text-sm font-medium transition-colors border-b-2", filter === 'all' ? "border-green-600 text-green-600" : "border-transparent text-text-secondary hover:text-text-primary")}
+            >
+              All
+            </button>
+          </div>
+
           <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-2 sm:p-3">
             {notifications.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-3.5 px-8 py-14 text-center">
@@ -256,6 +271,26 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
               </div>
             )}
           </div>
+          
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between border-t border-border-light px-5 py-3 sm:px-6">
+              <button
+                disabled={page <= 1}
+                onClick={() => setPage(p => p - 1)}
+                className="text-sm text-green-600 disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span className="text-xs text-text-secondary">Page {page} of {totalPages}</span>
+              <button
+                disabled={page >= totalPages}
+                onClick={() => setPage(p => p + 1)}
+                className="text-sm text-green-600 disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </OGDialogContent>
       </OGDialog>
     </div>

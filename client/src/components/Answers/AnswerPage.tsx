@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '~/hooks/AuthContext';
-import { Calendar, User, BookOpen, AlertTriangle, Settings, ArrowLeft } from 'lucide-react';
+import { Calendar, User, BookOpen, ArrowLeft } from 'lucide-react';
+import { useLocalize } from '~/hooks';
 
 interface AnswerData {
   question: string;
@@ -18,6 +19,7 @@ export default function AnswerPage() {
   const { messageId } = useParams<{ messageId: string }>();
   const navigate = useNavigate();
   const { token, user } = useAuthContext();
+  const localize = useLocalize();
   
   const [data, setData] = useState<AnswerData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -33,8 +35,8 @@ export default function AnswerPage() {
         });
         
         if (!res.ok) {
-          if (res.status === 404) throw new Error('Answer not found');
-          throw new Error('Failed to fetch answer');
+          if (res.status === 404) throw new Error(localize('com_ui_answer_not_found') || 'Answer not found');
+          throw new Error(localize('com_ui_failed_to_fetch_answer') || 'Failed to fetch answer');
         }
         
         const jsonData = await res.json();
@@ -47,12 +49,13 @@ export default function AnswerPage() {
     }
     
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messageId, token]);
 
   if (loading) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-gray-500">Loading...</div>
+        <div className="text-gray-500">{localize('com_ui_loading') || 'Loading...'}</div>
       </div>
     );
   }
@@ -60,21 +63,20 @@ export default function AnswerPage() {
   if (error || !data) {
     return (
       <div className="flex h-full w-full flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 gap-4">
-        <div className="text-red-500">{error || 'Answer not found'}</div>
+        <div className="text-red-500">{error || localize('com_ui_answer_not_found') || 'Answer not found'}</div>
         <button onClick={() => navigate('/')} className="text-blue-500 hover:underline">
-          Go back home
+          {localize('com_ui_go_back_home') || 'Go back home'}
         </button>
       </div>
     );
   }
 
-  // A simple markdown renderer for the answer text (since it might contain markdown or HTML)
-  // For safety, you might want to use react-markdown or DOMPurify, but for this implementation
-  // we'll render it safely if it's text, or dangerouslySetInnerHTML if it's HTML.
-  // Assuming it's simple text with some HTML for now, or just text.
   const createMarkup = (htmlString: string) => {
     return { __html: htmlString };
   };
+
+  const localizedTitle = localize('com_ui_your_question_is_answered');
+  const displayTitle = localizedTitle === 'com_ui_your_question_is_answered' ? 'Your question is answered' : localizedTitle;
 
   return (
     <div className="flex h-full w-full flex-col overflow-y-auto bg-gray-50 dark:bg-gray-900">
@@ -86,14 +88,14 @@ export default function AnswerPage() {
           className="mb-4 flex w-fit items-center gap-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Chat
+          {localize('com_ui_back_to_chat') || 'Back to Chat'}
         </button>
 
         {/* Header Card */}
         <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-800">
           <div className="flex items-start justify-between">
             <div className="flex flex-col gap-2">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Your question is answered</h1>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{displayTitle}</h1>
               <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                 <Calendar className="h-4 w-4" />
                 <span>{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
@@ -120,11 +122,8 @@ export default function AnswerPage() {
 
           {/* Expert Answer */}
           <div className="flex gap-4">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-500 text-white">
-              {/* Using a simple circular icon for AjraSakha Agent */}
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-              </svg>
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full overflow-hidden">
+              <img src="/assets/logo.svg" alt="Annam Leafy Logo" className="h-full w-full object-contain" />
             </div>
             
             <div className="flex flex-col gap-1 w-full max-w-full">
@@ -138,7 +137,7 @@ export default function AnswerPage() {
 
               {/* Metadata Block */}
               {data.metadata && (
-                <div className="mt-8 flex flex-col gap-4 rounded-xl bg-gray-100 p-5 dark:bg-gray-800/50">
+                <div className="mt-8 flex flex-col gap-4 rounded-xl bg-gray-50 p-5 border border-gray-200 dark:bg-gray-800/50 dark:border-gray-700">
                   
                   {data.metadata.answeredBy && (
                     <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
@@ -148,43 +147,78 @@ export default function AnswerPage() {
                   )}
 
                   {data.metadata.sources && data.metadata.sources.length > 0 && (
-                    <div className="flex flex-col gap-1 text-sm text-gray-700 dark:text-gray-300">
-                      <div className="flex items-center gap-2">
-                        <BookOpen className="h-4 w-4 text-green-600" />
-                        <span className="font-semibold">Sources:</span>
-                      </div>
-                      <div className="pl-6 flex flex-wrap gap-2">
-                        {data.metadata.sources.map((source, idx) => (
-                          <span key={idx} className="text-blue-600 hover:underline cursor-pointer dark:text-blue-400 font-medium">
-                            {source}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                    <div className="flex flex-col gap-3 text-sm text-gray-700 dark:text-gray-300 mt-2">
+                      <span className="font-bold text-gray-900 dark:text-gray-100">Sources</span>
+                      <hr className="border-gray-200 dark:border-gray-700 mb-2" />
+                      
+                      <div className="flex flex-col gap-3">
+                        {data.metadata.sources.map((source: any, idx) => {
+                          let name = '';
+                          let url = '';
+                          let page = '';
 
-                  {(data.metadata.notices && data.metadata.notices.length > 0) && (
-                    <div className="mt-2 text-sm text-gray-700 dark:text-gray-300 border-t border-gray-200 dark:border-gray-700 pt-4">
-                      {data.metadata.notices.map((notice, idx) => (
-                         <div key={idx} className="flex flex-col gap-2">
-                           <div className="font-semibold text-yellow-600 flex items-center gap-2">
-                             <AlertTriangle className="h-4 w-4" />
-                             ⚠️ {notice.includes('Notice') ? notice : `Important Notice`} ⚠️
-                           </div>
-                           <p className="text-sm">{notice}</p>
-                         </div>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {(data.metadata.disclaimers && data.metadata.disclaimers.length > 0) && (
-                    <div className="mt-2 text-sm text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-4 flex flex-col gap-1">
-                      {data.metadata.disclaimers.map((disc, idx) => (
-                        <p key={idx}>{disc}</p>
-                      ))}
-                    </div>
-                  )}
+                          if (typeof source === 'string') {
+                            // Fallback for old string format
+                            const mdMatch = source.match(/^\[(.*?)\]\((.*?)\)$/);
+                            if (mdMatch) {
+                              name = mdMatch[1];
+                              url = mdMatch[2];
+                            } else {
+                              try {
+                                const parsedUrl = new URL(source);
+                                name = parsedUrl.hostname.replace('www.', '');
+                                url = source;
+                              } catch (e) {
+                                name = source;
+                              }
+                            }
+                          } else if (typeof source === 'object' && source !== null) {
+                            // New object format
+                            name = source.sourceName || source.name || source.title || '';
+                            url = source.source || source.url || source.link || '';
+                            page = source.page || '';
+                          }
 
+                          // If name is empty but we have a url, fallback to domain name
+                          if (!name && url) {
+                            try {
+                              const parsedUrl = new URL(url);
+                              name = parsedUrl.hostname.replace('www.', '');
+                            } catch (e) {
+                              name = url;
+                            }
+                          }
+
+                          return (
+                            <div key={idx} className="flex flex-col gap-1 p-4 rounded-xl bg-gray-100 border border-gray-200 dark:bg-gray-800 dark:border-gray-700 transition-colors">
+                              <div className="flex items-start gap-2">
+                                <BookOpen className="h-4 w-4 mt-0.5 text-gray-500 shrink-0" />
+                                {url ? (
+                                  <a 
+                                    href={url} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="font-semibold text-gray-900 dark:text-gray-100 hover:underline break-all"
+                                  >
+                                    {name || 'Unknown Source'}
+                                  </a>
+                                ) : (
+                                  <span className="font-semibold text-gray-900 dark:text-gray-100 break-all">
+                                    {name || 'Unknown Source'}
+                                  </span>
+                                )}
+                              </div>
+                              {page && (
+                                <div className="pl-6 text-xs text-gray-500 dark:text-gray-400">
+                                  Page: {page}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
               

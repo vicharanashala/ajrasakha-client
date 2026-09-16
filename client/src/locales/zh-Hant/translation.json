@@ -1055,5 +1055,9 @@
   "com_nav_notifications_time_yesterday": "昨天",
   "com_nav_notifications_time_days_ago": "{{0}} 天前",
   "com_ui_example_question_state_note": "已從您的資料中取得所在州",
-  "com_ui_state_prefix": "州:"
+  "com_ui_state_prefix": "州:",
+  "com_ui_your_question_is_answered": "Your question is answered",
+  "com_ui_answer_not_found": "Answer not found",
+  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
+  "com_ui_go_back_home": "Go back home"
 }

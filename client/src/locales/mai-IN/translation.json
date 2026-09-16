@@ -2237,5 +2237,9 @@
       "question": "की हमर व्यक्तिगत जानकारी सुरक्षित अछि?",
       "answer": "अहाँक व्यक्तिगत जानकारी केवल परियोजना के स्वीकृत उद्देश्य सब लेल आ परियोजना के गोपनीयता आ डेटा सुरक्षा नियम सब के अनुसार ही एकत्र आ प्रयोग कएल जेबाक चाही।"
     }
-  }
+  },
+  "com_ui_your_question_is_answered": "Your question is answered",
+  "com_ui_answer_not_found": "Answer not found",
+  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
+  "com_ui_go_back_home": "Go back home"
 }

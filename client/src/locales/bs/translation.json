@@ -59,5 +59,9 @@
   "com_nav_notifications_time_yesterday": "Juče",
   "com_nav_notifications_time_days_ago": "prije {{0}} d",
   "com_ui_example_question_state_note": "Država je preuzeta iz vašeg profila",
-  "com_ui_state_prefix": "Država:"
+  "com_ui_state_prefix": "Država:",
+  "com_ui_your_question_is_answered": "Your question is answered",
+  "com_ui_answer_not_found": "Answer not found",
+  "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
+  "com_ui_go_back_home": "Go back home"
 }
