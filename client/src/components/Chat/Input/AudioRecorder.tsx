@@ -166,7 +166,7 @@ export default function AudioRecorder({
         // default look (matches the always-on glowing mic treatment), not something that
         // only appears once recording starts. Listening bumps the glow up a notch so
         // there's still a visible state change when it's actually capturing audio.
-        'relative flex size-16 items-center justify-center rounded-full bg-green-500 p-2 transition-all duration-300 disabled:opacity-50',
+        'relative flex size-20 items-center justify-center rounded-full bg-green-500 p-2 sm:size-16 transition-all duration-300 disabled:opacity-50',
         isListening === true || isLoading === true
           ? 'bg-emerald-400'
           : 'hover:bg-green-400',
@@ -189,7 +189,7 @@ export default function AudioRecorder({
           50% { transform: scale(1.03); box-shadow: 0 0 14px 3px rgba(117, 215, 178, 0.22); }
         }
       `}</style>
-      <span className="relative z-10 flex size-6 items-center justify-center">
+      <span className="relative z-10 flex size-8 items-center justify-center sm:size-6">
         {renderIcon()}
       </span>
     </button>
