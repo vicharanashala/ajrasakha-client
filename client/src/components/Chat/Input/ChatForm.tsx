@@ -982,33 +982,12 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     hidden={isSubmitting}
                   />
                 {/* The actual mic button lives here (not just a decorative icon), so
-                    tapping it directly starts/stops recording. Its own pulse animation
-                    (see AudioRecorder.tsx) is the main "listening" indicator; this layer
-                    just adds a faint outer ring counter-rotating slowly, in the same
-                    emerald tone as the button, for a subtle parallax/machinery feel
-                    rather than a flat, static ring. */}
+                    tapping it directly starts/stops recording. While listening, the
+                    volume-driven orb inside it (see AudioRecorder.tsx) is the indicator. */}
                 <div
                   className="relative flex size-24 items-center justify-center sm:size-20"
                   {...(isVoiceListening ? { role: 'status', 'aria-label': 'Listening' } : {})}
                 >
-                  {isVoiceListening && (
-                    <>
-                      <style>{`
-                        @keyframes voice-orb-ring-outer { to { transform: rotate(-360deg); } }
-                      `}</style>
-                      <span
-                        className="absolute inline-block size-24 rounded-full opacity-40 sm:size-20"
-                        style={{
-                          background:
-                            'conic-gradient(from 90deg, transparent, #75D7B2, transparent 60%)',
-                          WebkitMask:
-                            'radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px))',
-                          mask: 'radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px))',
-                          animation: 'voice-orb-ring-outer 4s linear infinite',
-                        }}
-                      />
-                    </>
-                  )}
                   {isSubmitting && showStopButton ? (
                     <VoiceStopButton
                       onClick={handleVoiceStopClick}
