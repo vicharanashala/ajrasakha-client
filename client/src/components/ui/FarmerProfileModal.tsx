@@ -37,7 +37,6 @@ import { useAuthContext } from '~/hooks/AuthContext';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';
 import store from '~/store';
-import { useCropsClient } from '~/hooks/useCrops';
 import { CropPickerModal } from './CropPickerModal';
 
 // ── Form Types ───────────────────────────────────────────────────────────────
@@ -298,15 +297,15 @@ const FarmerProfileModal = ({
 
   const selectedPrimaryCropList = selectedPrimaryCrop
     ? selectedPrimaryCrop
-      .split(',')
-      .map((c: string) => c.trim())
-      .filter(Boolean)
+        .split(',')
+        .map((c: string) => c.trim())
+        .filter(Boolean)
     : [];
   const selectedSecondaryCropList = selectedSecondaryCrop
     ? selectedSecondaryCrop
-      .split(',')
-      .map((c: string) => c.trim())
-      .filter(Boolean)
+        .split(',')
+        .map((c: string) => c.trim())
+        .filter(Boolean)
     : [];
 
   // ↓↓↓ Add the crop-picker derived values here, right after the two lists above ↓↓↓
@@ -385,12 +384,14 @@ const FarmerProfileModal = ({
   };
 
   const baseUrl = import.meta.env.VITE_AJRASAKHA_SERVER_URL ?? '';
+  console.log('baseUrl', baseUrl);
 
   const { data: statesList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['states'],
     queryFn: async () => {
       try {
         const data = await dataService.getLocationStates(baseUrl);
+        console.log('data is', data);
         return Array.isArray(data) ? data : [];
       } catch (error) {
         console.error('Failed to fetch states', error);
@@ -400,6 +401,8 @@ const FarmerProfileModal = ({
     enabled: open,
     staleTime: Infinity,
   });
+
+  console.log('StateList', statesList);
 
   const stateObj = statesList.find((s) => s.name === selectedState);
   const { data: districtsList = [] } = useQuery<{ code: number | string; name: string }[]>({

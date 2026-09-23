@@ -11,10 +11,10 @@ import {
 } from '@librechat/client';
 import { cn } from '~/utils';
 import { useCropsClient } from '~/hooks/useCrops';
+import placeholderImage from '../../../public/assets/place-holder-image.jpg';
 
 // Swap for wherever your static fallback image actually lives (public/assets, CDN, etc.)
-const DEFAULT_CROP_IMAGE_URL =
-  'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f33e.png';
+const DEFAULT_CROP_IMAGE_URL = placeholderImage;
 
 interface CropPickerModalProps {
   open: boolean;

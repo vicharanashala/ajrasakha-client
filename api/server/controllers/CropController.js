@@ -2,11 +2,14 @@ const axios = require('axios');
 
 async function CropController(req, res) {
   try {
-    const response = await axios.get(process.env.CROPS_API, {
-      headers: {
-        'x-internal-api-key': process.env.EXTERNAL_API_KEY,
+    const response = await axios.get(
+      `${process.env.VITE_AJRASAKHA_SERVER_URL}/crops/get-all-crops-client`,
+      {
+        headers: {
+          'x-internal-api-key': process.env.EXTERNAL_API_KEY,
+        },
       },
-    });
+    );
 
     return res.status(200).json(response.data);
   } catch (error) {
