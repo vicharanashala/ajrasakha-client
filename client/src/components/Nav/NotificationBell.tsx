@@ -5,7 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { TooltipAnchor, OGDialog, OGDialogContent, OGDialogHeader, OGDialogTitle } from '@librechat/client';
 import { Bell, BellOff, Info, AlertTriangle, Check, ChevronRight } from 'lucide-react';
 import type useLocalizeHook from '~/hooks/useLocalize';
-import { useLocalize, useNewConvo } from '~/hooks';
+import { useLocalize } from '~/hooks';
 import { clearMessagesCache, cn } from '~/utils';
 import useNotifications, { AppNotification } from '~/hooks/useNotifications';
 import store from '~/store';
@@ -129,7 +129,6 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
     useNotifications();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { newConversation: newConvo } = useNewConvo();
   const { conversation } = store.useCreateConversationAtom(0);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -148,12 +147,8 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
     clearMessagesCache(queryClient, conversation?.conversationId);
     queryClient.invalidateQueries([QueryKeys.messages]);
     
-    if (notification.messageId) {
-      navigate(`/answer/${notification.messageId}`);
-    } else {
-      newConvo();
-      navigate('/c/new', { state: { autoQuestion: notification.originalQuestion } });
-    }
+    // Without a messageId the answer page shows its not-found state instead of starting a new query.
+    navigate(notification.messageId ? `/answer/${notification.messageId}` : '/answer');
   };
 
   const bellIcon = (

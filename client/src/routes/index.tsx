@@ -109,7 +109,7 @@ export const router = createBrowserRouter(
               element: <ChatRoute />,
             },
             {
-              path: 'answer/:messageId',
+              path: 'answer/:messageId?',
               element: <AnswerPage />,
             },
             {
