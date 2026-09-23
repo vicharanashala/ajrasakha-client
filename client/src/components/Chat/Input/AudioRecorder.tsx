@@ -4,8 +4,10 @@ import { useLocalize, useSpeechToText, useGetAudioSettings } from '~/hooks';
 import { useChatFormContext } from '~/Providers';
 import { globalAudioId } from '~/common';
 import { cn } from '~/utils';
+import VoiceOrb from './VoiceOrb';
 
 const isExternalSTT = (speechToTextEndpoint: string) => speechToTextEndpoint === 'external';
+
 export default function AudioRecorder({
   disabled,
   ask,
@@ -116,35 +118,10 @@ export default function AudioRecorder({
   };
 
   const renderIcon = () => {
+    // While listening the volume-driven orb (rendered on the button) is the indicator, so the
+    // glyph is dropped.
     if (isListening === true) {
-      // Live equalizer bars in place of the mic glyph while actively recording. Each bar is
-      // offset from the last, so the peak travels across them like a passing waveform —
-      // reads as sound arriving over time, which is what recording actually is.
-      return (
-        <span className="flex h-5 items-center gap-[3px]" aria-hidden="true">
-          <style>{`
-            @keyframes voice-mic-wave {
-              0%, 100% { transform: scaleY(0.3); }
-              50% { transform: scaleY(1); }
-            }
-            @media (prefers-reduced-motion: reduce) {
-              .voice-mic-wave-bar { animation: none !important; transform: scaleY(0.7); }
-            }
-          `}</style>
-          {[0, 1, 2, 3, 4].map((i) => (
-            <span
-              key={i}
-              className="voice-mic-wave-bar h-full w-[3px] rounded-full bg-white"
-              style={{
-                // Center-anchored, not bottom-anchored: top and bottom both draw in toward
-                // the middle as the bar shrinks, instead of the bottom staying fixed.
-                transformOrigin: 'center',
-                animation: `voice-mic-wave 1.1s ease-in-out ${i * 0.13}s infinite`,
-              }}
-            />
-          ))}
-        </span>
-      );
+      return null;
     }
     // White glyph in both themes: the button underneath is always the solid green fill,
     // so the icon colour follows the button, not the page theme.
@@ -162,24 +139,23 @@ export default function AudioRecorder({
       onClick={isListening === true ? handleStopRecording : handleStartRecording}
       disabled={disabled || isLoading === true}
       className={cn(
-        // Solid green "ready" circle at rest, not just an outline — this is the button's
-        // default look (matches the always-on glowing mic treatment), not something that
-        // only appears once recording starts. Listening bumps the glow up a notch so
-        // there's still a visible state change when it's actually capturing audio.
-        'relative flex size-16 items-center justify-center rounded-full bg-green-500 p-2 transition-all duration-300 disabled:opacity-50',
-        isListening === true || isLoading === true
-          ? 'bg-emerald-400'
-          : 'hover:bg-green-400',
+        // Solid green "ready" circle at rest. While listening the fill disappears and the
+        // volume-driven orb takes over, so the button is only a transparent tap target.
+        'relative flex size-20 items-center justify-center rounded-full bg-green-500 p-2 sm:size-16 transition-all duration-300 disabled:opacity-50',
+        isListening === true
+          ? 'bg-transparent hover:bg-transparent'
+          : isLoading === true
+            ? 'bg-emerald-400'
+            : 'hover:bg-green-400',
       )}
       style={{
         boxShadow:
-          isListening === true || isLoading === true
-            ? '0 0 10px 2px rgba(117, 215, 178, 0.4)'
-            : '0 0 8px 1px rgba(25, 135, 84, 0.3)',
-        animation:
-          isListening === true || isLoading === true
-            ? 'voice-mic-pulse 1.8s ease-in-out infinite'
-            : undefined,
+          isListening === true
+            ? 'none'
+            : isLoading === true
+              ? '0 0 10px 2px rgba(117, 215, 178, 0.4)'
+              : '0 0 8px 1px rgba(25, 135, 84, 0.3)',
+        animation: isLoading === true ? 'voice-mic-pulse 1.8s ease-in-out infinite' : undefined,
       }}
       aria-pressed={isListening}
     >
@@ -189,7 +165,8 @@ export default function AudioRecorder({
           50% { transform: scale(1.03); box-shadow: 0 0 14px 3px rgba(117, 215, 178, 0.22); }
         }
       `}</style>
-      <span className="relative z-10 flex size-6 items-center justify-center">
+      {isListening === true && <VoiceOrb />}
+      <span className="relative z-10 flex size-8 items-center justify-center sm:size-6">
         {renderIcon()}
       </span>
     </button>
