@@ -4,14 +4,33 @@ const { requireJwtAuth } = require('~/server/middleware');
 const Notification = require('~/db/notification');
 const { logger } = require('@librechat/data-schemas');
 
-// GET /api/notifications - list notifications for authenticated user
 router.get('/', requireJwtAuth, async (req, res) => {
   try {
-    const notifications = await Notification.find({ userId: req.user.id, isVisited: false })
+    const { filter = 'unread', page = 1, limit = 10 } = req.query;
+    
+    const query = { userId: req.user.id };
+    if (filter === 'unread') query.isVisited = false;
+    else if (filter === 'read') query.isVisited = true;
+
+    const parsedPage = Math.max(1, parseInt(page, 10) || 1);
+    const parsedLimit = Math.max(1, parseInt(limit, 10) || 10);
+    const skip = (parsedPage - 1) * parsedLimit;
+
+    const total = await Notification.countDocuments(query);
+    const unreadCount = await Notification.countDocuments({ userId: req.user.id, isVisited: false });
+    const notifications = await Notification.find(query)
       .sort({ createdAt: -1 })
-      .limit(50)
+      .skip(skip)
+      .limit(parsedLimit)
       .lean();
-    res.status(200).json(notifications);
+
+    res.status(200).json({
+      notifications,
+      total,
+      unreadCount,
+      page: parsedPage,
+      pages: Math.ceil(total / parsedLimit)
+    });
   } catch (err) {
     logger.error('Error fetching notifications:', err);
     res.status(500).json({ message: 'Error fetching notifications' });

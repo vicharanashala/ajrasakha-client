@@ -2,7 +2,14 @@ import { useRef, useState, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { QueryKeys } from 'librechat-data-provider';
 import { useQueryClient } from '@tanstack/react-query';
-import { TooltipAnchor, OGDialog, OGDialogContent, OGDialogHeader, OGDialogTitle } from '@librechat/client';
+import {
+  TooltipAnchor,
+  OGDialog,
+  OGDialogContent,
+  OGDialogHeader,
+  OGDialogTitle,
+  OGDialogTemplate,
+} from '@librechat/client';
 import { Bell, BellOff, Info, AlertTriangle, Check, ChevronRight } from 'lucide-react';
 import type useLocalizeHook from '~/hooks/useLocalize';
 import { useLocalize, useNewConvo } from '~/hooks';
@@ -48,7 +55,7 @@ function NotificationRow({
   localize: Localize;
   onOpen: (notification: AppNotification) => void;
 }) {
-  const isClickable = !!notification.originalQuestion;
+  const isClickable = notification.type !== 'CUSTOM' && (!!notification.originalQuestion || !!notification.messageId);
   const displayText = notification.message ?? notification.originalQuestion ?? '';
   const isAlert = notification.type === 'CUSTOM';
   const TypeIcon = isAlert ? AlertTriangle : Info;
@@ -125,12 +132,15 @@ function NotificationRow({
 function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
   const localize = useLocalize();
   const [open, setOpen] = useState(false);
-  const { notifications, unreadCount, markAsVisited, markAllVisited, fetchNotifications } =
+  const { notifications, unreadCount, markAsVisited, markAllVisited, fetchNotifications, filter, setFilter, page, setPage, totalPages } =
     useNotifications();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { newConversation: newConvo } = useNewConvo();
   const { conversation } = store.useCreateConversationAtom(0);
+  // Notification whose message history is missing, shown in the "ask again" modal.
+  const [missingHistoryNotification, setMissingHistoryNotification] =
+    useState<AppNotification | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleOpenChange = (isOpen: boolean) => {
@@ -141,12 +151,32 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
   };
 
   const handleOpenNotification = (notification: AppNotification) => {
+    if (notification.type === 'CUSTOM') return; // Do not navigate if custom
+
     markAsVisited(notification._id);
     setOpen(false);
+
+    // Without a messageId there is no history to open, so let the user choose to ask again.
+    if (!notification.messageId) {
+      setMissingHistoryNotification(notification);
+      return;
+    }
+
+    clearMessagesCache(queryClient, conversation?.conversationId);
+    queryClient.invalidateQueries([QueryKeys.messages]);
+    navigate(`/answer/${notification.messageId}`);
+  };
+
+  // Starts a new conversation that re-submits the original question of the missing notification.
+  const handleAskAgain = () => {
+    const question = missingHistoryNotification?.originalQuestion;
+    setMissingHistoryNotification(null);
+    if (!question) return;
+
     clearMessagesCache(queryClient, conversation?.conversationId);
     queryClient.invalidateQueries([QueryKeys.messages]);
     newConvo();
-    navigate('/c/new', { state: { autoQuestion: notification.originalQuestion } });
+    navigate('/c/new', { state: { autoQuestion: question } });
   };
 
   const bellIcon = (
@@ -198,7 +228,7 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
       <OGDialog open={open} onOpenChange={handleOpenChange} triggerRef={buttonRef}>
         <OGDialogContent
           showCloseButton
-          className="notification-modal-shell flex w-11/12 max-w-md flex-col gap-0 overflow-hidden p-0 sm:max-w-lg lg:max-w-xl"
+          className="notification-modal-shell flex flex-col gap-0 overflow-hidden p-0 w-11/12 sm:w-[450px] max-w-lg h-[75vh] sm:h-[600px] max-h-[800px]"
         >
           <OGDialogHeader className="flex shrink-0 flex-row items-center justify-between gap-3 space-y-0 border-b border-border-light py-4 pl-5 pr-14 text-left sm:pl-6">
             <div className="flex min-w-0 items-center gap-2.5">
@@ -222,6 +252,21 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
               </button>
             )}
           </OGDialogHeader>
+
+          <div className="flex shrink-0 flex-row items-center gap-4 border-b border-border-light px-5 sm:px-6">
+            <button 
+              onClick={() => { setFilter('unread'); setPage(1); }}
+              className={cn("pb-3 pt-3 text-sm font-medium transition-colors border-b-2", filter === 'unread' ? "border-green-600 text-green-600" : "border-transparent text-text-secondary hover:text-text-primary")}
+            >
+              Unread
+            </button>
+            <button 
+              onClick={() => { setFilter('all'); setPage(1); }}
+              className={cn("pb-3 pt-3 text-sm font-medium transition-colors border-b-2", filter === 'all' ? "border-green-600 text-green-600" : "border-transparent text-text-secondary hover:text-text-primary")}
+            >
+              All
+            </button>
+          </div>
 
           <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-2 sm:p-3">
             {notifications.length === 0 ? (
@@ -251,7 +296,49 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
               </div>
             )}
           </div>
+          
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between border-t border-border-light px-5 py-3 sm:px-6">
+              <button
+                disabled={page <= 1}
+                onClick={() => setPage(p => p - 1)}
+                className="text-sm text-green-600 disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span className="text-xs text-text-secondary">Page {page} of {totalPages}</span>
+              <button
+                disabled={page >= totalPages}
+                onClick={() => setPage(p => p + 1)}
+                className="text-sm text-green-600 disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </OGDialogContent>
+      </OGDialog>
+      <OGDialog
+        open={missingHistoryNotification !== null}
+        onOpenChange={(isOpen) => !isOpen && setMissingHistoryNotification(null)}
+      >
+        <OGDialogTemplate
+          title={localize('com_nav_notifications_history_not_found')}
+          description={localize('com_nav_notifications_history_not_found_description')}
+          className="w-11/12 max-w-md"
+          main={
+            missingHistoryNotification?.originalQuestion ? (
+              <p className="break-words rounded-lg bg-surface-secondary p-3 text-sm text-text-primary">
+                {missingHistoryNotification.originalQuestion}
+              </p>
+            ) : undefined
+          }
+          selection={{
+            selectHandler: handleAskAgain,
+            selectClasses: 'bg-green-600 text-white hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700',
+            selectText: localize('com_nav_notifications_ask_again'),
+          }}
+        />
       </OGDialog>
     </div>
   );

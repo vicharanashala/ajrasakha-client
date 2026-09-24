@@ -59,5 +59,13 @@
   "com_nav_notifications_time_yesterday": "Juče",
   "com_nav_notifications_time_days_ago": "prije {{0}} d",
   "com_ui_example_question_state_note": "Država je preuzeta iz vašeg profila",
-  "com_ui_state_prefix": "Država:"
+  "com_ui_state_prefix": "Država:",
+  "com_ui_your_question_is_answered": "Na vaše pitanje je odgovoreno",
+  "com_ui_answer_not_found": "Odgovor nije pronađen",
+  "com_ui_failed_to_fetch_answer": "Učitavanje odgovora nije uspjelo",
+  "com_ui_go_back_home": "Nazad na početnu",
+  "com_ui_answer_not_found_description": "Ovaj odgovor nije dostupan. Možda je uklonjen ili je link koji ste otvorili neispravan.",
+  "com_ui_failed_to_fetch_answer_description": "Došlo je do greške pri učitavanju ovog odgovora. Provjerite vezu i pokušajte ponovo.",
+  "com_ui_retry": "Pokušaj ponovo",
+  "com_ui_back_to_chat": "Nazad na razgovor"
 }

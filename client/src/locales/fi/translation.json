@@ -738,5 +738,12 @@
   "com_nav_notifications_time_yesterday": "Eilen",
   "com_nav_notifications_time_days_ago": "{{0}} pv sitten",
   "com_ui_example_question_state_note": "Osavaltio haettu profiilistasi",
-  "com_ui_state_prefix": "Osavaltio:"
+  "com_ui_state_prefix": "Osavaltio:",
+  "com_ui_your_question_is_answered": "Kysymykseesi on vastattu",
+  "com_ui_answer_not_found": "Vastausta ei löytynyt",
+  "com_ui_failed_to_fetch_answer": "Vastauksen haku epäonnistui",
+  "com_ui_go_back_home": "Takaisin etusivulle",
+  "com_ui_answer_not_found_description": "Tämä vastaus ei ole käytettävissä. Se on voitu poistaa tai avaamasi linkki on virheellinen.",
+  "com_ui_failed_to_fetch_answer_description": "Vastauksen lataamisessa tapahtui virhe. Tarkista yhteytesi ja yritä uudelleen.",
+  "com_ui_retry": "Yritä uudelleen"
 }

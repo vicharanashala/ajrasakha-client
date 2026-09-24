@@ -864,5 +864,13 @@
   "com_nav_notifications_time_yesterday": "Gisteren",
   "com_nav_notifications_time_days_ago": "{{0}} d geleden",
   "com_ui_example_question_state_note": "Staat opgehaald uit je profiel",
-  "com_ui_state_prefix": "Staat:"
+  "com_ui_state_prefix": "Staat:",
+  "com_ui_your_question_is_answered": "Je vraag is beantwoord",
+  "com_ui_answer_not_found": "Antwoord niet gevonden",
+  "com_ui_failed_to_fetch_answer": "Kan antwoord niet laden",
+  "com_ui_go_back_home": "Terug naar start",
+  "com_ui_answer_not_found_description": "Dit antwoord is niet beschikbaar. Mogelijk is het verwijderd of is de link die je opende onjuist.",
+  "com_ui_failed_to_fetch_answer_description": "Er is iets misgegaan bij het laden van dit antwoord. Controleer je verbinding en probeer het opnieuw.",
+  "com_ui_retry": "Opnieuw proberen",
+  "com_ui_back_to_chat": "Terug naar chat"
 }
