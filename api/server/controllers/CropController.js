@@ -6,7 +6,7 @@ async function CropController(req, res) {
       `${process.env.VITE_AJRASAKHA_SERVER_URL}/crops/get-all-crops-client`,
       {
         headers: {
-          'x-internal-api-key': process.env.EXTERNAL_API_KEY,
+          'x-internal-api-key': process.env.WEB_WEBHOOK_API_KEY,
         },
       },
     );
