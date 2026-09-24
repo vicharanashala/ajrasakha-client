@@ -2,10 +2,17 @@ import { useRef, useState, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { QueryKeys } from 'librechat-data-provider';
 import { useQueryClient } from '@tanstack/react-query';
-import { TooltipAnchor, OGDialog, OGDialogContent, OGDialogHeader, OGDialogTitle } from '@librechat/client';
+import {
+  TooltipAnchor,
+  OGDialog,
+  OGDialogContent,
+  OGDialogHeader,
+  OGDialogTitle,
+  OGDialogTemplate,
+} from '@librechat/client';
 import { Bell, BellOff, Info, AlertTriangle, Check, ChevronRight } from 'lucide-react';
 import type useLocalizeHook from '~/hooks/useLocalize';
-import { useLocalize } from '~/hooks';
+import { useLocalize, useNewConvo } from '~/hooks';
 import { clearMessagesCache, cn } from '~/utils';
 import useNotifications, { AppNotification } from '~/hooks/useNotifications';
 import store from '~/store';
@@ -129,7 +136,11 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
     useNotifications();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { newConversation: newConvo } = useNewConvo();
   const { conversation } = store.useCreateConversationAtom(0);
+  // Notification whose message history is missing, shown in the "ask again" modal.
+  const [missingHistoryNotification, setMissingHistoryNotification] =
+    useState<AppNotification | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleOpenChange = (isOpen: boolean) => {
@@ -144,11 +155,28 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
 
     markAsVisited(notification._id);
     setOpen(false);
+
+    // Without a messageId there is no history to open, so let the user choose to ask again.
+    if (!notification.messageId) {
+      setMissingHistoryNotification(notification);
+      return;
+    }
+
     clearMessagesCache(queryClient, conversation?.conversationId);
     queryClient.invalidateQueries([QueryKeys.messages]);
-    
-    // Without a messageId the answer page shows its not-found state instead of starting a new query.
-    navigate(notification.messageId ? `/answer/${notification.messageId}` : '/answer');
+    navigate(`/answer/${notification.messageId}`);
+  };
+
+  // Starts a new conversation that re-submits the original question of the missing notification.
+  const handleAskAgain = () => {
+    const question = missingHistoryNotification?.originalQuestion;
+    setMissingHistoryNotification(null);
+    if (!question) return;
+
+    clearMessagesCache(queryClient, conversation?.conversationId);
+    queryClient.invalidateQueries([QueryKeys.messages]);
+    newConvo();
+    navigate('/c/new', { state: { autoQuestion: question } });
   };
 
   const bellIcon = (
@@ -289,6 +317,28 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
             </div>
           )}
         </OGDialogContent>
+      </OGDialog>
+      <OGDialog
+        open={missingHistoryNotification !== null}
+        onOpenChange={(isOpen) => !isOpen && setMissingHistoryNotification(null)}
+      >
+        <OGDialogTemplate
+          title={localize('com_nav_notifications_history_not_found')}
+          description={localize('com_nav_notifications_history_not_found_description')}
+          className="w-11/12 max-w-md"
+          main={
+            missingHistoryNotification?.originalQuestion ? (
+              <p className="break-words rounded-lg bg-surface-secondary p-3 text-sm text-text-primary">
+                {missingHistoryNotification.originalQuestion}
+              </p>
+            ) : undefined
+          }
+          selection={{
+            selectHandler: handleAskAgain,
+            selectClasses: 'bg-green-600 text-white hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700',
+            selectText: localize('com_nav_notifications_ask_again'),
+          }}
+        />
       </OGDialog>
     </div>
   );
