@@ -59,5 +59,13 @@
   "com_nav_notifications_time_yesterday": "تۈنۈگۈن",
   "com_nav_notifications_time_days_ago": "{{0}} كۈن ئىلگىرى",
   "com_ui_example_question_state_note": "شىتات ئارخىپىڭىزدىن ئېلىندى",
-  "com_ui_state_prefix": "شىتات:"
+  "com_ui_state_prefix": "شىتات:",
+  "com_ui_your_question_is_answered": "سوئالىڭىزغا جاۋاب بېرىلدى",
+  "com_ui_answer_not_found": "جاۋاب تېپىلمىدى",
+  "com_ui_failed_to_fetch_answer": "جاۋابنى ئېلىش مەغلۇب بولدى",
+  "com_ui_go_back_home": "باش بەتكە قايتىش",
+  "com_ui_answer_not_found_description": "بۇ جاۋابنى ئىشلەتكىلى بولمايدۇ. ئۇ ئۆچۈرۈۋېتىلگەن ياكى سىز ئاچقان ئۇلانما خاتا بولۇشى مۇمكىن.",
+  "com_ui_failed_to_fetch_answer_description": "بۇ جاۋابنى يۈكلەۋاتقاندا خاتالىق كۆرۈلدى. ئۇلىنىشىڭىزنى تەكشۈرۈپ قايتا سىناڭ.",
+  "com_ui_retry": "قايتا سىناش",
+  "com_ui_back_to_chat": "پاراڭغا قايتىش"
 }

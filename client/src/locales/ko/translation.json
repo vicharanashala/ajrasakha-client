@@ -1241,5 +1241,12 @@
   "com_nav_notifications_time_yesterday": "어제",
   "com_nav_notifications_time_days_ago": "{{0}}일 전",
   "com_ui_example_question_state_note": "프로필에서 주(州) 정보를 가져왔습니다",
-  "com_ui_state_prefix": "주:"
+  "com_ui_state_prefix": "주:",
+  "com_ui_your_question_is_answered": "질문에 답변이 등록되었습니다",
+  "com_ui_answer_not_found": "답변을 찾을 수 없습니다",
+  "com_ui_failed_to_fetch_answer": "답변을 불러오지 못했습니다",
+  "com_ui_go_back_home": "홈으로 돌아가기",
+  "com_ui_answer_not_found_description": "이 답변을 사용할 수 없습니다. 삭제되었거나 열어본 링크가 올바르지 않을 수 있습니다.",
+  "com_ui_failed_to_fetch_answer_description": "답변을 불러오는 중 문제가 발생했습니다. 연결 상태를 확인한 후 다시 시도해 주세요.",
+  "com_ui_retry": "다시 시도"
 }

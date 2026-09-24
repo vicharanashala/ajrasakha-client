@@ -19,6 +19,7 @@ import dashboardRoutes from './Dashboard';
 import ShareRoute from './ShareRoute';
 import ChatRoute from './ChatRoute';
 import Search from './Search';
+import AnswerPage from '~/components/Answers/AnswerPage';
 import Root from './Root';
 
 const AuthLayout = () => (
@@ -106,6 +107,10 @@ export const router = createBrowserRouter(
             {
               path: 'c/:conversationId?',
               element: <ChatRoute />,
+            },
+            {
+              path: 'answer/:messageId?',
+              element: <AnswerPage />,
             },
             {
               path: 'search',

@@ -864,5 +864,12 @@
   "com_nav_notifications_time_yesterday": "Včera",
   "com_nav_notifications_time_days_ago": "před {{0}} d",
   "com_ui_example_question_state_note": "Stát byl načten z vašeho profilu",
-  "com_ui_state_prefix": "Stát:"
+  "com_ui_state_prefix": "Stát:",
+  "com_ui_your_question_is_answered": "Na vaši otázku bylo odpovězeno",
+  "com_ui_answer_not_found": "Odpověď nebyla nalezena",
+  "com_ui_failed_to_fetch_answer": "Odpověď se nepodařilo načíst",
+  "com_ui_go_back_home": "Zpět na úvodní stránku",
+  "com_ui_answer_not_found_description": "Tato odpověď není k dispozici. Mohla být odstraněna nebo je odkaz, který jste otevřeli, nesprávný.",
+  "com_ui_failed_to_fetch_answer_description": "Při načítání této odpovědi došlo k chybě. Zkontrolujte připojení a zkuste to znovu.",
+  "com_ui_retry": "Zkusit znovu"
 }

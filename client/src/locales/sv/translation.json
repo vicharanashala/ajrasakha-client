@@ -686,5 +686,13 @@
   "com_nav_notifications_time_yesterday": "Igår",
   "com_nav_notifications_time_days_ago": "{{0}} d sedan",
   "com_ui_example_question_state_note": "Delstat hämtad från din profil",
-  "com_ui_state_prefix": "Delstat:"
+  "com_ui_state_prefix": "Delstat:",
+  "com_ui_your_question_is_answered": "Din fråga har besvarats",
+  "com_ui_answer_not_found": "Svaret hittades inte",
+  "com_ui_failed_to_fetch_answer": "Det gick inte att hämta svaret",
+  "com_ui_go_back_home": "Tillbaka till startsidan",
+  "com_ui_answer_not_found_description": "Det här svaret är inte tillgängligt. Det kan ha tagits bort, eller så är länken du öppnade felaktig.",
+  "com_ui_failed_to_fetch_answer_description": "Något gick fel när svaret skulle läsas in. Kontrollera din anslutning och försök igen.",
+  "com_ui_retry": "Försök igen",
+  "com_ui_back_to_chat": "Tillbaka till chatten"
 }

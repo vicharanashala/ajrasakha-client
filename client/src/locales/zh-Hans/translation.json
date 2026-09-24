@@ -1474,5 +1474,12 @@
   "com_nav_notifications_time_yesterday": "昨天",
   "com_nav_notifications_time_days_ago": "{{0}} 天前",
   "com_ui_example_question_state_note": "已从您的资料中获取所在州",
-  "com_ui_state_prefix": "州:"
+  "com_ui_state_prefix": "州:",
+  "com_ui_your_question_is_answered": "您的问题已得到回答",
+  "com_ui_answer_not_found": "未找到答案",
+  "com_ui_failed_to_fetch_answer": "获取答案失败",
+  "com_ui_go_back_home": "返回首页",
+  "com_ui_answer_not_found_description": "该答案不可用。它可能已被删除，或者您打开的链接有误。",
+  "com_ui_failed_to_fetch_answer_description": "加载该答案时出错。请检查网络连接后重试。",
+  "com_ui_retry": "重试"
 }

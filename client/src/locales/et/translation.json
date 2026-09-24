@@ -1098,5 +1098,12 @@
   "com_nav_notifications_time_yesterday": "Eile",
   "com_nav_notifications_time_days_ago": "{{0}} p tagasi",
   "com_ui_example_question_state_note": "Osariik toodi teie profiililt",
-  "com_ui_state_prefix": "Osariik:"
+  "com_ui_state_prefix": "Osariik:",
+  "com_ui_your_question_is_answered": "Teie küsimusele on vastatud",
+  "com_ui_answer_not_found": "Vastust ei leitud",
+  "com_ui_failed_to_fetch_answer": "Vastuse laadimine ebaõnnestus",
+  "com_ui_go_back_home": "Tagasi avalehele",
+  "com_ui_answer_not_found_description": "See vastus pole saadaval. Võimalik, et see on eemaldatud või avatud link on vale.",
+  "com_ui_failed_to_fetch_answer_description": "Selle vastuse laadimisel tekkis viga. Kontrollige ühendust ja proovige uuesti.",
+  "com_ui_retry": "Proovi uuesti"
 }

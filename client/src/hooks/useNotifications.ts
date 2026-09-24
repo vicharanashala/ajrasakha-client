@@ -5,6 +5,7 @@ export interface AppNotification {
   _id: string;
   userId: string;
   originalQuestion?: string;
+  messageId?: string;
   message?: string;
   type?: string;
   isVisited: boolean;
@@ -12,32 +13,46 @@ export interface AppNotification {
   updatedAt: string;
 }
 
-export default function useNotifications() {
+export default function useNotifications(initialFilter = 'unread') {
   const { token } = useAuthContext();
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState(initialFilter);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [serverUnreadCount, setServerUnreadCount] = useState<number | null>(null);
 
-  const fetchNotifications = useCallback(async () => {
+  const fetchNotifications = useCallback(async (currentFilter = filter, currentPage = page) => {
     if (!token) return;
     setLoading(true);
     try {
-      const res = await fetch('/api/notifications', {
+      const res = await fetch(`/api/notifications?filter=${currentFilter}&page=${currentPage}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         const data = await res.json();
-        setNotifications(data);
+        // Fallback for backwards compatibility if backend not updated yet
+        if (Array.isArray(data)) {
+          setNotifications(data);
+          setTotalPages(1);
+        } else {
+          setNotifications(data.notifications || []);
+          setTotalPages(data.pages || 1);
+          if (data.unreadCount !== undefined) {
+             setServerUnreadCount(data.unreadCount);
+          }
+        }
       }
     } catch (err) {
       console.error('Failed to fetch notifications:', err);
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, filter, page]);
 
   useEffect(() => {
-    fetchNotifications();
-  }, [fetchNotifications]);
+    fetchNotifications(filter, page);
+  }, [fetchNotifications, filter, page]);
 
   const markAsVisited = useCallback(
     async (id: string) => {
@@ -48,12 +63,17 @@ export default function useNotifications() {
           headers: { Authorization: `Bearer ${token}` },
         });
         // Remove from list immediately when clicked
-        setNotifications((prev) => prev.filter((n) => n._id !== id));
+        if (filter === 'unread') {
+          setNotifications((prev) => prev.filter((n) => n._id !== id));
+        } else {
+          setNotifications((prev) => prev.map((n) => n._id === id ? { ...n, isVisited: true } : n));
+        }
+        setServerUnreadCount((prev) => prev !== null ? Math.max(0, prev - 1) : null);
       } catch (err) {
         console.error('Failed to mark notification as visited:', err);
       }
     },
-    [token],
+    [token, filter],
   );
 
   const markAllVisited = useCallback(async () => {
@@ -63,13 +83,18 @@ export default function useNotifications() {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}` },
       });
-      setNotifications((prev) => prev.map((n) => ({ ...n, isVisited: true })));
+      if (filter === 'unread') {
+        setNotifications([]);
+      } else {
+        setNotifications((prev) => prev.map((n) => ({ ...n, isVisited: true })));
+      }
+      setServerUnreadCount(0);
     } catch (err) {
       console.error('Failed to mark all notifications as visited:', err);
     }
   }, [token]);
 
-  const unreadCount = notifications.filter((n) => !n.isVisited).length;
+  const unreadCount = serverUnreadCount !== null ? serverUnreadCount : notifications.filter((n) => !n.isVisited).length;
 
-  return { notifications, loading, unreadCount, fetchNotifications, markAsVisited, markAllVisited };
+  return { notifications, loading, unreadCount, fetchNotifications, markAsVisited, markAllVisited, filter, setFilter, page, setPage, totalPages };
 }
