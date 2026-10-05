@@ -89,7 +89,7 @@ export type LocalizeFunction = (
   options?: Record<string, string | number>,
 ) => string;
 
-export type ChatFormValues = { text: string };
+export type ChatFormValues = { text: string; audioFileIds?: string[] };
 
 export const mainTextareaId = 'prompt-textarea';
 export const globalAudioId = 'global-audio';
@@ -349,6 +349,8 @@ export type TAskProps = {
    *  `librechat-data-provider` and never included in the outgoing request payload
    *  (see useChatFunctions.ts), so it is never sent to or stored by the backend. */
   isExampleQuestion?: boolean;
+  /** IDs of the saved voice recordings for this message; stored in the message's `metadata`. */
+  audioFileIds?: string[];
 };
 
 export type TOptions = {

@@ -6,6 +6,7 @@ import type { TMessage } from 'librechat-data-provider';
 import type { TMessageContentProps, TDisplayProps } from '~/common';
 import Error from '~/components/Messages/Content/Error';
 import { useMessageContext } from '~/Providers';
+import AudioMessagePlayer from './AudioMessagePlayer';
 import MarkdownLite from './MarkdownLite';
 import EditMessage from './EditMessage';
 import Thinking from './Parts/Thinking';
@@ -118,6 +119,10 @@ const DisplayMessage = ({ text, isCreatedByUser, message, showCursor }: TDisplay
   // survive a reload of the conversation from the server.
   const isExampleQuestion = isCreatedByUser && !!(message as { isExampleQuestion?: boolean })?.isExampleQuestion;
 
+  const audioFileIds = isCreatedByUser
+    ? (message?.metadata?.audioFileIds as string[] | undefined)
+    : undefined;
+
   return (
     <Container message={message}>
       <div
@@ -131,6 +136,13 @@ const DisplayMessage = ({ text, isCreatedByUser, message, showCursor }: TDisplay
       >
         {content}
       </div>
+      {audioFileIds?.map((fileId, i) => (
+        <AudioMessagePlayer
+          key={fileId}
+          fileId={fileId}
+          label={audioFileIds.length > 1 ? `Voice message ${i + 1}` : undefined}
+        />
+      ))}
       {isExampleQuestion && (
         <p className="mt-1.5 flex items-center gap-1 text-xs text-text-tertiary opacity-80">
           <Info className="size-3 shrink-0" aria-hidden="true" />

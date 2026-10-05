@@ -243,6 +243,10 @@ class BaseClient {
   }
 
   createUserMessage({ messageId, parentMessageId, conversationId, text }) {
+    const requestedAudioIds = this.options?.req?.body?.metadata?.audioFileIds;
+    const audioFileIds = Array.isArray(requestedAudioIds)
+      ? requestedAudioIds.filter((id) => typeof id === 'string')
+      : [];
     return {
       messageId,
       parentMessageId,
@@ -250,6 +254,7 @@ class BaseClient {
       sender: 'User',
       text,
       isCreatedByUser: true,
+      ...(audioFileIds.length > 0 && { metadata: { audioFileIds } }),
     };
   }
 

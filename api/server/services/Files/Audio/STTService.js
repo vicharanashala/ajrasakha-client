@@ -1,11 +1,19 @@
 const axios = require('axios');
 const fs = require('fs').promises;
 const FormData = require('form-data');
+const { v4 } = require('uuid');
 const { Readable } = require('stream');
 const { logger } = require('@librechat/data-schemas');
 const { genAzureEndpoint, logAxiosError } = require('@librechat/api');
-const { extractEnvVariable, STTProviders } = require('librechat-data-provider');
+const {
+  FileSources,
+  FileContext,
+  STTProviders,
+  extractEnvVariable,
+} = require('librechat-data-provider');
+const { getStrategyFunctions } = require('~/server/services/Files/strategies');
 const { getAppConfig } = require('~/server/services/Config');
+const { createFile } = require('~/models');
 
 /**
  * Maps MIME types to their corresponding file extensions for audio files.
@@ -337,6 +345,45 @@ class STTService {
   }
 
   /**
+   * Stores the recorded audio in Firebase Storage and records it as a file.
+   * Failures are logged and never affect the transcription response.
+   * @async
+   * @param {Object} req - The request object.
+   * @param {Buffer} audioBuffer - The recorded audio.
+   * @param {Object} audioFile - The audio file object containing mimetype and size.
+   * @returns {Promise<string | undefined>} The saved file's ID, or undefined if saving failed.
+   */
+  async saveAudioRecording(req, audioBuffer, audioFile) {
+    try {
+      const { saveBuffer } = getStrategyFunctions(FileSources.firebase);
+      const file_id = v4();
+      const filename = `audio.${getFileExtensionFromMime(audioFile.mimetype)}`;
+      const filepath = await saveBuffer({
+        userId: req.user.id,
+        buffer: audioBuffer,
+        fileName: `${file_id}__${filename}`,
+        basePath: 'audio',
+      });
+      await createFile(
+        {
+          user: req.user.id,
+          file_id,
+          bytes: audioFile.size,
+          filepath,
+          filename,
+          type: audioFile.mimetype,
+          source: FileSources.firebase,
+          context: FileContext.message_attachment,
+        },
+        true,
+      );
+      return file_id;
+    } catch (error) {
+      logger.error('[STT] Failed to save audio recording:', error);
+    }
+  }
+
+  /**
    * Processes a speech-to-text request.
    * @async
    * @param {Object} req - The request object.
@@ -359,7 +406,11 @@ class STTService {
       const [provider, sttSchema] = await this.getProviderSchema(req);
       const language = req.body?.language || '';
       const text = await this.sttRequest(provider, sttSchema, { audioBuffer, audioFile, language });
-      res.json({ text });
+      const file_id =
+        process.env.SAVE_STT_AUDIO === 'true'
+          ? await this.saveAudioRecording(req, audioBuffer, audioFile)
+          : undefined;
+      res.json({ text, ...(file_id && { file_id }) });
     } catch (error) {
       logAxiosError({ message: 'An error occurred while processing the audio:', error });
       res.sendStatus(500);

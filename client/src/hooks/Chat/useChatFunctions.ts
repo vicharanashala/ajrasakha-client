@@ -84,6 +84,7 @@ export default function useChatFunctions({
       messageId = null,
       position,
       isExampleQuestion,
+      audioFileIds,
     },
     {
       editedContent = null,
@@ -217,6 +218,7 @@ export default function useChatFunctions({
       messageId: isContinued && messageId != null && messageId ? messageId : intermediateId,
       thread_id,
       error: false,
+      ...(audioFileIds?.length ? { metadata: { audioFileIds } } : {}),
     };
 
     const submissionFiles = overrideFiles ?? targetParentMessage?.files;

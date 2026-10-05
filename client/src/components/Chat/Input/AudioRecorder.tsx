@@ -85,10 +85,16 @@ export default function AudioRecorder({
     [setValue, speechToTextEndpoint],
   );
 
+  const onAudioSaved = useCallback(
+    (fileId: string) => setValue('audioFileIds', [...(getValues('audioFileIds') ?? []), fileId]),
+    [setValue, getValues],
+  );
+
   const { isListening, isLoading, startRecording, stopRecording } = useSpeechToText(
     setText,
     onTranscriptionComplete,
     enabled,
+    onAudioSaved,
   );
 
   useEffect(() => {

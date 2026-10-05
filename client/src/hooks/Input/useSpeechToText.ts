@@ -6,6 +6,7 @@ const useSpeechToText = (
   setText: (text: string) => void,
   onTranscriptionComplete: (text: string) => void,
   enabled = false,
+  onAudioSaved?: (fileId: string) => void,
 ): {
   isLoading?: boolean;
   isListening?: boolean;
@@ -30,7 +31,7 @@ const useSpeechToText = (
     externalStartRecording: startSpeechRecordingExternal,
     externalStopRecording: stopSpeechRecordingExternal,
     error: speechErrorExternal,
-  } = useSpeechToTextExternal(setText, onTranscriptionComplete, enabled);
+  } = useSpeechToTextExternal(setText, onTranscriptionComplete, enabled, onAudioSaved);
 
   const isListening = externalSpeechToText ? speechIsListeningExternal : speechIsListeningBrowser;
   const isLoading = externalSpeechToText ? speechIsLoadingExternal : speechIsLoadingBrowser;

@@ -10,6 +10,7 @@ const useSpeechToTextExternal = (
   setText: (text: string) => void,
   onTranscriptionComplete: (text: string) => void,
   enabled = false,
+  onAudioSaved?: (fileId: string) => void,
 ) => {
   const localize = useLocalize();
   const { showToast } = useToastContext();
@@ -36,6 +37,9 @@ const useSpeechToTextExternal = (
   const { mutate: processAudio, isLoading: isProcessing } = useSpeechToTextMutation({
     onSuccess: (data) => {
       const extractedText = data.text;
+      if (data.file_id) {
+        onAudioSaved?.(data.file_id);
+      }
       setText(extractedText);
       setIsRequestBeingMade(false);
 

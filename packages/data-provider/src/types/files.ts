@@ -129,6 +129,8 @@ export type AvatarUploadResponse = {
 
 export type SpeechToTextResponse = {
   text: string;
+  /** Present when the server saved the recorded audio */
+  file_id?: string;
 };
 
 export type VoiceResponse = string[];

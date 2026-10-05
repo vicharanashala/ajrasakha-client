@@ -33,7 +33,7 @@ export default function useSubmitMessage() {
 
   const submitMessage = useCallback(
     async (
-      data?: { text: string; isExampleQuestion?: boolean },
+      data?: { text: string; isExampleQuestion?: boolean; audioFileIds?: string[] },
       position?: { latitude: number; longitude: number },
     ) => {
       if (!data) {
@@ -85,6 +85,7 @@ export default function useSubmitMessage() {
           // useChatFunctions.ts), so it's shown in the bubble (MessageContent.tsx) but never
           // sent to or stored by the backend.
           isExampleQuestion: shouldAppendState,
+          audioFileIds: data.audioFileIds ?? methods.getValues('audioFileIds'),
         },
         {
           addedConvo: addedConvo ?? undefined,
