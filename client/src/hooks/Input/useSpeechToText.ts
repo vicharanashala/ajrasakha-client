@@ -1,3 +1,4 @@
+import type { AudioRecording } from 'librechat-data-provider';
 import useSpeechToTextBrowser from './useSpeechToTextBrowser';
 import useSpeechToTextExternal from './useSpeechToTextExternal';
 import useGetAudioSettings from './useGetAudioSettings';
@@ -6,7 +7,7 @@ const useSpeechToText = (
   setText: (text: string) => void,
   onTranscriptionComplete: (text: string) => void,
   enabled = false,
-  onAudioSaved?: (fileId: string) => void,
+  onAudioSaved?: (audio: AudioRecording) => void,
 ): {
   isLoading?: boolean;
   isListening?: boolean;
