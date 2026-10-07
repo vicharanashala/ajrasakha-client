@@ -215,8 +215,8 @@ jobs:
             VITE_AJRASAKHA_SERVER_URL=${{ secrets.VITE_AJRASAKHA_SERVER_URL_STAGING }}
             WEB_WEBHOOK_API_KEY=${{ secrets.WEB_WEBHOOK_API_KEY }}
             GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}
-            GCP_BUCKET_NAME=${{ secrets.GCP_BUCKET_NAME_STAGING }}
-            GCP_STORAGE_PREFIX=${{ secrets.GCP_STORAGE_PREFIX_STAGING }}
+            GCP_BUCKET_NAME=${{ secrets.GCP_BUCKET_NAME }}
+            GCP_STORAGE_PREFIX=${{ secrets.GCP_STORAGE_PREFIX }}
             GCP_STORAGE_CLASS=${{ secrets.GCP_STORAGE_CLASS }}
           flags: --allow-unauthenticated --port=3080 --memory=2Gi --min-instances=0 --timeout=300
 
