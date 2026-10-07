@@ -49,8 +49,8 @@ const FarmerProfileSchema = new Schema(
       default: [],
     },
     location: {
-      latitude: { type: Number },
-      longitude: { type: Number },
+      geo_latitude: { type: Number },
+      geo_longitude: { type: Number },
     },
     landhold: { type: Number },
   },

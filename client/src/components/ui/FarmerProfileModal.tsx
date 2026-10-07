@@ -64,10 +64,6 @@ type FarmerProfileForm = {
   usesAgriApps: string;
   highestEducatedPerson: string;
   numberOfSmartphones: number;
-  location?: {
-    latitude: number;
-    longitude: number;
-  };
   landhold: string;
 };
 
@@ -279,12 +275,12 @@ const FarmerProfileModal = ({
     formState: { errors },
   } = useForm<FarmerProfileForm>({ mode: 'onChange' });
 
-  const { isLocating, locationError, getLocation } = useGeolocation({
-    onSuccess: (latitude, longitude) => {
-      setValue('location.latitude', latitude, { shouldValidate: true });
-      setValue('location.longitude', longitude, { shouldValidate: true });
-    },
-  });
+  // const { isLocating, locationError, getLocation } = useGeolocation({
+  //   onSuccess: (latitude, longitude) => {
+  //     setValue('location.latitude', latitude, { shouldValidate: true });
+  //     setValue('location.longitude', longitude, { shouldValidate: true });
+  //   },
+  // });
 
   const [cropPickerField, setCropPickerField] = useState<'primaryCrop' | 'secondaryCrop' | null>(null);
 
@@ -560,7 +556,7 @@ const FarmerProfileModal = ({
       .map((c) => c.trim())
       .filter(Boolean);
 
-    const profile: IFarmerProfile = {
+       const profile: IFarmerProfile = {
       ...data,
       state: resolvedState,
       district: resolvedDistrict,
@@ -575,17 +571,10 @@ const FarmerProfileModal = ({
       usesAgriApps: data.usesAgriApps === 'yes',
       landhold: data.landhold ? Number(data.landhold) : undefined,
       platform: detectDevice(),
-      location:
-        data.location?.latitude && data.location?.longitude
-          ? {
-            latitude: Number(data.location.latitude),
-            longitude: Number(data.location.longitude),
-          }
-          : undefined,
     };
     saveMutation.mutate(profile);
   };
-
+  
   const inputClass =
     'mt-1.5 block h-12 w-full rounded-xl border border-border-medium bg-transparent px-3.5 text-base text-text-primary placeholder-text-secondary transition-colors focus:border-green-600 focus:outline-none focus:ring-1 focus:ring-green-600';
   const errorClass = 'mt-1 text-xs text-red-500';
@@ -1068,8 +1057,8 @@ const FarmerProfileModal = ({
         title: localize('com_farmer_profile_demographic_details'),
         fields: [
           'languagePreference',
-          'location.latitude',
-          'location.longitude',
+          undefined,
+          undefined,
           'farmerName',
           'age',
           'gender',
@@ -1145,7 +1134,7 @@ const FarmerProfileModal = ({
           <form onSubmit={handleSubmit(onSubmit)} className="flex min-h-0 flex-1 flex-col">
             {/* Required: without coordinates the saved profile stays incomplete server-side,
               and the user is asked for their location again on every load. */}
-            <input
+            {/* <input
               type="hidden"
               {...register('location.latitude', {
                 required: localize('com_farmer_validation_field_required'),
@@ -1156,7 +1145,7 @@ const FarmerProfileModal = ({
               {...register('location.longitude', {
                 required: localize('com_farmer_validation_field_required'),
               })}
-            />
+            /> */}
 
             {/* ── Notice — pinned above the scrollable area ── */}
             {/* <p className="shrink-0 px-1 pb-3 text-xs font-medium text-red-500 sm:text-sm">
@@ -1378,7 +1367,7 @@ const FarmerProfileModal = ({
                           </div>
                         </div>
                       </div>
-                      <div className="mt-2 flex flex-wrap items-center gap-3">
+                      {/* <div className="mt-2 flex flex-wrap items-center gap-3">
                         <button
                           type="button"
                           onClick={getLocation}
@@ -1398,10 +1387,10 @@ const FarmerProfileModal = ({
                         {locationError && (
                           <span className="text-sm text-red-500">{locationError}</span>
                         )}
-                      </div>
-                      {errors.location?.latitude && (
+                      </div> */}
+                      {/* {errors.location?.latitude && (
                         <p className={errorClass}>{errors.location.latitude.message}</p>
-                      )}
+                      )} */}
                     </div>
 
                     {/* ── State → District → Block → Village ── */}
