@@ -4,7 +4,6 @@ import { useRecoilState } from 'recoil';
 import { useQuery } from '@tanstack/react-query';
 import { useForm, Controller } from 'react-hook-form';
 import type { FieldPath } from 'react-hook-form';
-import useGeolocation from '~/hooks/useGeolocation';
 import { SearchableSelect, SearchableMultiSelect } from '~/components/ui';
 import LogoutConfirmModal from '~/components/ui/LogoutConfirmModal';
 import { LangSelector } from '~/components/Nav/SettingsTabs/General/General';
@@ -23,7 +22,6 @@ import {
   Leaf,
   Smartphone,
   Landmark,
-  MapPin,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -64,10 +62,6 @@ type FarmerProfileForm = {
   usesAgriApps: string;
   highestEducatedPerson: string;
   numberOfSmartphones: number;
-  location?: {
-    latitude: number;
-    longitude: number;
-  };
   landhold: string;
 };
 
@@ -279,12 +273,6 @@ const FarmerProfileModal = ({
     formState: { errors },
   } = useForm<FarmerProfileForm>({ mode: 'onChange' });
 
-  const { isLocating, locationError, getLocation } = useGeolocation({
-    onSuccess: (latitude, longitude) => {
-      setValue('location.latitude', latitude, { shouldValidate: true });
-      setValue('location.longitude', longitude, { shouldValidate: true });
-    },
-  });
 
   const [cropPickerField, setCropPickerField] = useState<'primaryCrop' | 'secondaryCrop' | null>(null);
 
@@ -575,13 +563,7 @@ const FarmerProfileModal = ({
       usesAgriApps: data.usesAgriApps === 'yes',
       landhold: data.landhold ? Number(data.landhold) : undefined,
       platform: detectDevice(),
-      location:
-        data.location?.latitude && data.location?.longitude
-          ? {
-            latitude: Number(data.location.latitude),
-            longitude: Number(data.location.longitude),
-          }
-          : undefined,
+      // location is always derived on the backend via geocoding — never sent from the client
     };
     saveMutation.mutate(profile);
   };
@@ -1068,8 +1050,6 @@ const FarmerProfileModal = ({
         title: localize('com_farmer_profile_demographic_details'),
         fields: [
           'languagePreference',
-          'location.latitude',
-          'location.longitude',
           'farmerName',
           'age',
           'gender',
@@ -1143,21 +1123,6 @@ const FarmerProfileModal = ({
           </OGDialogHeader>
 
           <form onSubmit={handleSubmit(onSubmit)} className="flex min-h-0 flex-1 flex-col">
-            {/* Required: without coordinates the saved profile stays incomplete server-side,
-              and the user is asked for their location again on every load. */}
-            <input
-              type="hidden"
-              {...register('location.latitude', {
-                required: localize('com_farmer_validation_field_required'),
-              })}
-            />
-            <input
-              type="hidden"
-              {...register('location.longitude', {
-                required: localize('com_farmer_validation_field_required'),
-              })}
-            />
-
             {/* ── Notice — pinned above the scrollable area ── */}
             {/* <p className="shrink-0 px-1 pb-3 text-xs font-medium text-red-500 sm:text-sm">
             {localize('com_farmer_profile_fill_all_required')}
@@ -1355,54 +1320,6 @@ const FarmerProfileModal = ({
                       </div>
                     </div>
 
-                    {/* ── Location ── */}
-                    <div className={fieldClass}>
-                      <Label>{localize('com_farmer_label_current_location')}</Label>
-                      <div className="mb-3 mt-2 rounded-md border border-blue-100 bg-blue-50/50 p-3 dark:border-blue-800 dark:bg-blue-900/10">
-                        <div className="flex">
-                          <div className="flex-shrink-0">
-                            <svg
-                              className="h-5 w-5 text-blue-400 dark:text-blue-500"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          </div>
-                          <div className="ml-3 text-sm text-blue-700 dark:text-blue-400">
-                            <p>{localize('com_farmer_helper_location_capture')}</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="mt-2 flex flex-wrap items-center gap-3">
-                        <button
-                          type="button"
-                          onClick={getLocation}
-                          disabled={isLocating}
-                          className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border-heavy bg-surface-secondary px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-                        >
-                          <MapPin className="h-4 w-4" />
-                          {isLocating
-                            ? localize('com_farmer_button_locating')
-                            : localize('com_farmer_button_get_location')}
-                        </button>
-                        {watch('location.latitude') && watch('location.longitude') && (
-                          <span className="text-sm font-medium text-green-600 dark:text-green-500">
-                            {localize('com_farmer_location_captured_success')}
-                          </span>
-                        )}
-                        {locationError && (
-                          <span className="text-sm text-red-500">{locationError}</span>
-                        )}
-                      </div>
-                      {errors.location?.latitude && (
-                        <p className={errorClass}>{errors.location.latitude.message}</p>
-                      )}
-                    </div>
 
                     {/* ── State → District → Block → Village ── */}
                     <div className={fieldClass}>

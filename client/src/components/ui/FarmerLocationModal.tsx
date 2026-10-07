@@ -13,7 +13,6 @@ import {
 import { dataService } from 'librechat-data-provider';
 import type { IFarmerProfile } from 'librechat-data-provider';
 import { useSaveFarmerProfileMutation } from '~/data-provider';
-import useGeolocation from '~/hooks/useGeolocation';
 import { useLocalize } from '~/hooks';
 import { INDIAN_LANGUAGES, CROPS } from '~/utils/metaData';
 import SearchableSelect from './SearchableSelect';
@@ -363,12 +362,6 @@ const FarmerLocationModal = ({
     }
   };
 
-  const { isLocating, locationError, getLocation } = useGeolocation({
-    onSuccess: (latitude, longitude) => {
-      setValue('location.latitude', latitude, { shouldValidate: true });
-      setValue('location.longitude', longitude, { shouldValidate: true });
-    },
-  });
 
   const saveMutation = useSaveFarmerProfileMutation({
     onSuccess: () => {
@@ -389,11 +382,9 @@ const FarmerLocationModal = ({
     const profilePayload: IFarmerProfile = {};
 
     effectiveMissingFields.forEach((field) => {
-      if (field === 'location' && data.location?.latitude && data.location?.longitude) {
-        profilePayload.location = {
-          latitude: Number(data.location.latitude),
-          longitude: Number(data.location.longitude),
-        };
+      // location is always derived on the backend via geocoding — never sent from the client
+      if (field === 'location') {
+        return;
       } else if (['landhold', 'age', 'yearsOfExperience', 'numberOfSmartphones'].includes(field)) {
         if (data[field as keyof FarmerLocationForm]) {
           profilePayload[field as keyof IFarmerProfile] = Number(
@@ -650,10 +641,10 @@ const FarmerLocationModal = ({
   };
 
   const missingOrInvalidFields = effectiveMissingFields.flatMap((field) => {
+    // location is always derived on the backend via geocoding from address fields —
+    // client-side validation is not possible, so don't block form submission on it
     if (field === 'location') {
-      const hasLocation =
-        !!watch('location.latitude' as any) && !!watch('location.longitude' as any);
-      return hasLocation ? [] : [getFieldLabel(field)];
+      return [];
     }
 
     const customConfig = CUSTOM_FIELD_MAP[field];
@@ -941,59 +932,7 @@ const FarmerLocationModal = ({
           </div>
           )}
 
-          {isLocationMissing && (
-            <>
-              <input type="hidden" {...register('location.latitude')} />
-              <input type="hidden" {...register('location.longitude')} />
-              <div className="mb-4 rounded-lg border border-blue-100 bg-blue-50/50 p-4 dark:border-blue-800 dark:bg-blue-900/10">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <svg
-                      className="h-5 w-5 text-blue-400 dark:text-blue-500"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  <div className="ml-3">
-                    <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300">
-                      {localize('com_farmer_label_important')}
-                    </h3>
-                    <div className="mt-2 text-sm text-blue-700 dark:text-blue-400">
-                      <p>{localize('com_farmer_helper_location_capture')}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
-              <div className={fieldClass}>
-                <Label>{localize('com_farmer_label_current_location')}</Label>
-                <div className="mt-2 flex flex-col gap-3">
-                  <button
-                    type="button"
-                    onClick={getLocation}
-                    disabled={isLocating}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border-heavy bg-surface-secondary px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-fit"
-                  >
-                    {isLocating
-                      ? localize('com_farmer_button_locating')
-                      : localize('com_farmer_button_get_location')}
-                  </button>
-                  {watch('location.latitude') && watch('location.longitude') && (
-                    <span className="text-sm font-medium text-green-600 dark:text-green-500">
-                      {localize('com_farmer_location_captured_success')}
-                    </span>
-                  )}
-                  {locationError && <span className="text-sm text-red-500">{locationError}</span>}
-                </div>
-              </div>
-            </>
-          )}
 
           {submitError && <div className="mt-2 text-sm text-red-500">{submitError}</div>}
 

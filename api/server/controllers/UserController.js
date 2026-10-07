@@ -326,9 +326,7 @@ const saveFarmerProfileController = async (req, res) => {
         ? farmerProfile.cropsCultivated.map((c) => c.trim().toLowerCase())
         : farmerProfile.cropsCultivated;
     }
-    if (farmerProfile.location !== undefined) {
-      updateQuery.$set['farmerProfile.location'] = farmerProfile.location;
-    }
+
     if (farmerProfile.landhold !== undefined) {
       updateQuery.$set['farmerProfile.landhold'] = farmerProfile.landhold;
     }
@@ -353,42 +351,39 @@ const saveFarmerProfileController = async (req, res) => {
 
     let geocoded = null;
 
-    // If the client sent coordinates (e.g. registration with device GPS), trust those
-    if (farmerProfile.location === undefined) {
+    // Always geocode based on the farmer's provided address fields
+    try {
+      const existing = await User.findById(req.user.id).select('farmerProfile').lean();
+      const stored = existing?.farmerProfile ?? {};
 
-      try {
-        const existing = await User.findById(req.user.id).select('farmerProfile').lean();
-        const stored = existing?.farmerProfile ?? {};
+      const hasCoords =
+        typeof stored.location?.latitude === 'number' &&
+        typeof stored.location?.longitude === 'number';
+      const touchesLocation = LOCATION_KEYS.some((k) => farmerProfile[k] !== undefined);
 
-        const hasCoords =
-          typeof stored.location?.latitude === 'number' &&
-          typeof stored.location?.longitude === 'number';
-        const touchesLocation = LOCATION_KEYS.some((k) => farmerProfile[k] !== undefined);
+      // Geocode when a place field changed, or when the user has no coordinates yet
+      if (touchesLocation || !hasCoords) {
+        const merged = {};
+        LOCATION_KEYS.forEach((k) => {
+          const v = farmerProfile[k] ?? stored[k] ?? '';
+          merged[k] = String(v).trim().toLowerCase();
+        });
 
-        // Geocode when a place field changed, or when the user has no coordinates yet
-        if (touchesLocation || !hasCoords) {
-          const merged = {};
-          LOCATION_KEYS.forEach((k) => {
-            const v = farmerProfile[k] ?? stored[k] ?? '';
-            merged[k] = String(v).trim().toLowerCase();
-          });
-
-          if (merged.state) {
-            geocoded = await geocoding(merged);
-            if (geocoded) {
-              // Whole object: creates it if missing or null, replaces it if present
-              updateQuery.$set['farmerProfile.location'] = {
-                latitude: geocoded.latitude,
-                longitude: geocoded.longitude,
-              };
-            }
+        if (merged.state) {
+          geocoded = await geocoding(merged);
+          if (geocoded) {
+            // Whole object: creates it if missing or null, replaces it if present
+            updateQuery.$set['farmerProfile.location'] = {
+              latitude: geocoded.latitude,
+              longitude: geocoded.longitude,
+            };
           }
         }
-      } catch (err) {
-        // Never block the profile save because geocoding failed
-        console.log('error', err);
-        logger.error('Geocoding error:', err);
       }
+    } catch (err) {
+      // Never block the profile save because geocoding failed
+      console.log('error', err);
+      logger.error('Geocoding error:', err);
     }
 
     if (Object.keys(updateQuery.$set).length === 0) {
