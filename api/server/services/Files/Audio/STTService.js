@@ -388,10 +388,7 @@ class STTService {
       const [provider, sttSchema] = await this.getProviderSchema(req);
       const language = req.body?.language || '';
       const text = await this.sttRequest(provider, sttSchema, { audioBuffer, audioFile, language });
-      const audio =
-        process.env.SAVE_STT_AUDIO === 'true'
-          ? await this.saveAudioRecording(req, audioBuffer, audioFile)
-          : undefined;
+      const audio = await this.saveAudioRecording(req, audioBuffer, audioFile);
       res.json({ text, ...(audio && { audio }) });
     } catch (error) {
       logAxiosError({ message: 'An error occurred while processing the audio:', error });
