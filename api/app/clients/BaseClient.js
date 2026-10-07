@@ -251,7 +251,8 @@ class BaseClient {
           .filter(
             (recording) =>
               typeof recording?.filepath === 'string' &&
-              recording.filepath.includes(`audio%2F${userId}%2F`),
+              (recording.filepath.includes(`audio%2F${userId}%2F`) ||
+                recording.filepath.includes(`/audio/${userId}/`)),
           )
           .map(({ filepath, type, bytes }) => ({ filepath, type, bytes }))
       : [];

@@ -402,7 +402,8 @@ router.put('/:conversationId/:messageId/feedback', validateMessageReq, async (re
             .filter(
               (recording) =>
                 typeof recording?.filepath === 'string' &&
-                recording.filepath.includes(`audio%2F${req.user.id}%2F`),
+                (recording.filepath.includes(`audio%2F${req.user.id}%2F`) ||
+                  recording.filepath.includes(`/audio/${req.user.id}/`)),
             )
             .map(({ filepath, type, bytes }) => ({ filepath, type, bytes }))
         : [];

@@ -1,12 +1,11 @@
 const axios = require('axios');
 const fs = require('fs').promises;
 const FormData = require('form-data');
-const { v4 } = require('uuid');
 const { Readable } = require('stream');
 const { logger } = require('@librechat/data-schemas');
 const { genAzureEndpoint, logAxiosError } = require('@librechat/api');
-const { FileSources, STTProviders, extractEnvVariable } = require('librechat-data-provider');
-const { getStrategyFunctions } = require('~/server/services/Files/strategies');
+const { STTProviders, extractEnvVariable } = require('librechat-data-provider');
+const { saveAudioBuffer } = require('./audioStorage');
 const { getAppConfig } = require('~/server/services/Config');
 
 /**
@@ -351,14 +350,15 @@ class STTService {
    */
   async saveAudioRecording(req, audioBuffer, audioFile) {
     try {
-      const { saveBuffer } = getStrategyFunctions(FileSources.firebase);
-      const filename = `audio.${getFileExtensionFromMime(audioFile.mimetype)}`;
-      const filepath = await saveBuffer({
+      const filepath = await saveAudioBuffer({
         userId: req.user.id,
         buffer: audioBuffer,
-        fileName: `${v4()}__${filename}`,
-        basePath: 'audio',
+        fileName: `audio.${getFileExtensionFromMime(audioFile.mimetype)}`,
+        type: audioFile.mimetype,
       });
+      if (!filepath) {
+        return undefined;
+      }
       return { filepath, type: audioFile.mimetype, bytes: audioFile.size };
     } catch (error) {
       logger.error('[STT] Failed to save audio recording:', error);
