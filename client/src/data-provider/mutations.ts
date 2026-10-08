@@ -4,7 +4,13 @@ import {
   ConversationListResponse,
 } from 'librechat-data-provider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { dataService, MutationKeys, QueryKeys, defaultOrderQuery, request } from 'librechat-data-provider';
+import {
+  dataService,
+  MutationKeys,
+  QueryKeys,
+  defaultOrderQuery,
+  request,
+} from 'librechat-data-provider';
 import type { InfiniteData, UseMutationResult } from '@tanstack/react-query';
 import type * as t from 'librechat-data-provider';
 import {
@@ -1122,34 +1128,35 @@ export const useSaveFarmerProfileMutation = (
   const queryClient = useQueryClient();
   return useMutation((profile: t.IFarmerProfile) => dataService.saveFarmerProfile(profile), {
     onSuccess: (data, variables, context) => {
-      queryClient.setQueryData<t.TUserTermsResponse>(
-        [QueryKeys.userTerms],
-        (prev) => {
-          if (!prev) return prev;
-          let newMissingFields = prev.missingFields || [];
-          
-          Object.keys(variables).forEach((key) => {
-            if (key === 'location') {
-              if (variables.location?.latitude && variables.location?.longitude) {
-                 newMissingFields = newMissingFields.filter((f) => f !== 'location');
-              }
-            } else if (key === 'cropsCultivated') {
-              if (variables.cropsCultivated && variables.cropsCultivated.length > 0) {
-                 newMissingFields = newMissingFields.filter((f) => f !== 'cropsCultivated');
-              }
-            } else if (variables[key as keyof t.IFarmerProfile] !== undefined && variables[key as keyof t.IFarmerProfile] !== null && variables[key as keyof t.IFarmerProfile] !== '') {
-               newMissingFields = newMissingFields.filter((f) => f !== key);
-            }
-          });
+      queryClient.setQueryData<t.TUserTermsResponse>([QueryKeys.userTerms], (prev) => {
+        if (!prev) return prev;
+        let newMissingFields = prev.missingFields || [];
 
-          return {
-            ...prev,
-            farmerProfileCompleted: true,
-            farmerNeedsUpdate: newMissingFields.length > 0,
-            missingFields: newMissingFields,
-          } as t.TUserTermsResponse;
-        },
-      );
+        Object.keys(variables).forEach((key) => {
+          if (key === 'location') {
+            if (variables.location?.latitude && variables.location?.longitude) {
+              newMissingFields = newMissingFields.filter((f) => f !== 'location');
+            }
+          } else if (key === 'cropsCultivated') {
+            if (variables.cropsCultivated && variables.cropsCultivated.length > 0) {
+              newMissingFields = newMissingFields.filter((f) => f !== 'cropsCultivated');
+            }
+          } else if (
+            variables[key as keyof t.IFarmerProfile] !== undefined &&
+            variables[key as keyof t.IFarmerProfile] !== null &&
+            variables[key as keyof t.IFarmerProfile] !== ''
+          ) {
+            newMissingFields = newMissingFields.filter((f) => f !== key);
+          }
+        });
+
+        return {
+          ...prev,
+          farmerProfileCompleted: true,
+          farmerNeedsUpdate: newMissingFields.length > 0,
+          missingFields: newMissingFields,
+        } as t.TUserTermsResponse;
+      });
       options?.onSuccess?.(data, variables, context);
     },
     onError: options?.onError,
