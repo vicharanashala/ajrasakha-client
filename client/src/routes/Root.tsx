@@ -30,6 +30,7 @@ import {
   ImportantNoticeModal,
   FarmerProfileModal,
   FarmerLocationModal,
+  FarmerPlaceModal,
 } from '~/components/ui';
 
 export default function Root() {
@@ -37,6 +38,7 @@ export default function Root() {
   const [showTestingNotice, setShowTestingNotice] = useState(false);
   const [showFarmerProfile, setShowFarmerProfile] = useState(false);
   const [showFarmerLocation, setShowFarmerLocation] = useState(false);
+  const [showFarmerPlace, setShowFarmerPlace] = useState(false);
   const [navVisible, setNavVisible] = useState(() => {
     const savedNavVisible = localStorage.getItem('navVisible');
     return savedNavVisible !== null ? JSON.parse(savedNavVisible) : true;
@@ -89,6 +91,12 @@ export default function Root() {
     }
     if (termsData.farmerNeedsUpdate) {
       setShowFarmerLocation(true);
+      return;
+    }
+    // Profile is complete, but the place details are missing or placeholders.
+    // Shown only after the missing-fields modal is out of the way, and once per session.
+    if (termsData.locationNeedsUpdate && sessionStorage.getItem('placePopupDismissed') !== '1') {
+      setShowFarmerPlace(true);
     }
   }, [termsData]);
 
@@ -125,6 +133,11 @@ export default function Root() {
 
   const handleDeclineFarmerProfile = () => {
     setShowFarmerProfile(false);
+  };
+
+  const handleFarmerPlaceClose = () => {
+    sessionStorage.setItem('placePopupDismissed', '1');
+    setShowFarmerPlace(false);
   };
 
   if (!isAuthenticated) {
@@ -203,6 +216,7 @@ export default function Root() {
             missingFields={termsData?.missingFields || []}
             initialData={termsData?.farmerProfile}
           />
+          <FarmerPlaceModal open={showFarmerPlace} onClose={handleFarmerPlaceClose} />
         </AssistantsMapContext.Provider>
       </FileMapContext.Provider>
     </SetConvoProvider>
