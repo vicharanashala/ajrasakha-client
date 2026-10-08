@@ -133,8 +133,8 @@ export default function useChatFunctions({
       });
 
       const loc = user?.farmerProfile?.location;
-      if (loc?.geo_latitude != null && loc?.geo_longitude != null) {
-        conversation.promptPrefix += `\n\nLocation:\nLatitude:${loc.geo_latitude}\nLongitude:${loc.geo_longitude}`;
+      if (loc?.latitude != null && loc?.longitude != null) {
+        conversation.promptPrefix += `\n\nLocation:\nLatitude:${loc.latitude}\nLongitude:${loc.longitude}`;
       }
     }
 

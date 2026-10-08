@@ -45,15 +45,6 @@ const { getLogStores } = require('~/cache');
 
 const LOCATION_KEYS = ['villageName', 'blockName', 'district', 'state'];
 
-
-const toGeo = (loc) => {
-  const lat = loc?.geo_latitude ?? loc?.latitude;
-  const lng = loc?.geo_longitude ?? loc?.longitude;
-  return typeof lat === 'number' && typeof lng === 'number'
-    ? { geo_latitude: lat, geo_longitude: lng }
-    : null;
-};
-
 const geocoding = async ({ villageName, blockName, district, state }) => {
   const key = process.env.GOOGLE_MAPS_API_KEY;
   if (!key) return null;
@@ -384,18 +375,16 @@ const saveFarmerProfileController = async (req, res) => {
       if (touchesLocation || !hasStoredGeo) {
         const merged = {};
         LOCATION_KEYS.forEach((k) => {
-          merged[k] = String(farmerProfile[k] ?? stored[k] ?? '').trim().toLowerCase();
+          merged[k] = String(farmerProfile[k] ?? stored[k] ?? '')
+            .trim()
+            .toLowerCase();
         });
         if (merged.state) geo = await geocoding(merged);
       }
 
-      const hasLegacyKeys = storedLoc.latitude !== undefined || storedLoc.longitude !== undefined;
-      const legacyAsGeo = toGeo(storedLoc); // converts old latitude/longitude if present
-
       if (geo) {
-        updateQuery.$set['farmerProfile.location'] = geo; // whole object, so old keys are removed
-      } else if (hasLegacyKeys && legacyAsGeo) {
-        updateQuery.$set['farmerProfile.location'] = legacyAsGeo;
+        // Whole object, so any leftover geo_* keys are removed
+        updateQuery.$set['farmerProfile.location'] = geo;
       }
     } catch (err) {
       logger.error('Geocoding error:', err);
