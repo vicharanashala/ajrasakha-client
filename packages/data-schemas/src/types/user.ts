@@ -24,8 +24,8 @@ export interface IFarmerProfile {
   platform?: string;
   platformHistory?: { os: string; timestamp: string }[];
   location?: {
-    geo_latitude: number;
-    geo_longitude: number;
+    latitude: number;
+    longitude: number;
   };
   landhold?: number;
 }

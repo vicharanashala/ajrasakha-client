@@ -53,8 +53,8 @@ export interface IFarmerProfile {
   numberOfSmartphones: number;
   platform?: string;
   location: {
-    geo_latitude: number;
-    geo_longitude: number;
+    latitude: number;
+    longitude: number;
   };
 }
 
