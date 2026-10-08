@@ -45,6 +45,15 @@ const { getLogStores } = require('~/cache');
 
 const LOCATION_KEYS = ['villageName', 'blockName', 'district', 'state'];
 
+
+const toGeo = (loc) => {
+  const lat = loc?.geo_latitude ?? loc?.latitude;
+  const lng = loc?.geo_longitude ?? loc?.longitude;
+  return typeof lat === 'number' && typeof lng === 'number'
+    ? { geo_latitude: lat, geo_longitude: lng }
+    : null;
+};
+
 const geocoding = async ({ villageName, blockName, district, state }) => {
   const key = process.env.GOOGLE_MAPS_API_KEY;
   if (!key) return null;
@@ -70,7 +79,7 @@ const geocoding = async ({ villageName, blockName, district, state }) => {
 
     if (data.status === 'OK' && data.results?.[0]) {
       const { lat, lng } = data.results[0].geometry.location;
-      return { latitude: lat, longitude: lng };
+      return { geo_latitude: lat, geo_longitude: lng };
     }
     // ZERO_RESULTS -> try a coarser address; anything else (quota, denied) -> stop
     if (data.status !== 'ZERO_RESULTS') {
@@ -292,7 +301,9 @@ const saveFarmerProfileController = async (req, res) => {
       updateQuery.$set['farmerProfile.farmerName'] = farmerProfile.farmerName?.trim().toLowerCase();
     }
     if (farmerProfile.villageName !== undefined) {
-      updateQuery.$set['farmerProfile.villageName'] = farmerProfile.villageName?.trim().toLowerCase();
+      updateQuery.$set['farmerProfile.villageName'] = farmerProfile.villageName
+        ?.trim()
+        .toLowerCase();
     }
     if (farmerProfile.blockName !== undefined) {
       updateQuery.$set['farmerProfile.blockName'] = farmerProfile.blockName?.trim().toLowerCase();
@@ -310,24 +321,31 @@ const saveFarmerProfileController = async (req, res) => {
       updateQuery.$set['farmerProfile.nearestKVK'] = farmerProfile.nearestKVK?.trim();
     }
     if (farmerProfile.languagePreference !== undefined) {
-      updateQuery.$set['farmerProfile.languagePreference'] = farmerProfile.languagePreference?.trim().toLowerCase();
+      updateQuery.$set['farmerProfile.languagePreference'] = farmerProfile.languagePreference
+        ?.trim()
+        .toLowerCase();
     }
     if (farmerProfile.primaryCrop !== undefined) {
-      updateQuery.$set['farmerProfile.primaryCrop'] = farmerProfile.primaryCrop?.trim().toLowerCase();
+      updateQuery.$set['farmerProfile.primaryCrop'] = farmerProfile.primaryCrop
+        ?.trim()
+        .toLowerCase();
     }
     if (farmerProfile.secondaryCrop !== undefined) {
-      updateQuery.$set['farmerProfile.secondaryCrop'] = farmerProfile.secondaryCrop?.trim().toLowerCase();
+      updateQuery.$set['farmerProfile.secondaryCrop'] = farmerProfile.secondaryCrop
+        ?.trim()
+        .toLowerCase();
     }
     if (farmerProfile.highestEducatedPerson !== undefined) {
-      updateQuery.$set['farmerProfile.highestEducatedPerson'] = farmerProfile.highestEducatedPerson?.trim().toLowerCase();
+      updateQuery.$set['farmerProfile.highestEducatedPerson'] = farmerProfile.highestEducatedPerson
+        ?.trim()
+        .toLowerCase();
     }
     if (farmerProfile.cropsCultivated !== undefined) {
-      updateQuery.$set['farmerProfile.cropsCultivated'] = Array.isArray(farmerProfile.cropsCultivated)
+      updateQuery.$set['farmerProfile.cropsCultivated'] = Array.isArray(
+        farmerProfile.cropsCultivated,
+      )
         ? farmerProfile.cropsCultivated.map((c) => c.trim().toLowerCase())
         : farmerProfile.cropsCultivated;
-    }
-    if (farmerProfile.location !== undefined) {
-      updateQuery.$set['farmerProfile.location'] = farmerProfile.location;
     }
     if (farmerProfile.landhold !== undefined) {
       updateQuery.$set['farmerProfile.landhold'] = farmerProfile.landhold;
@@ -351,55 +369,43 @@ const saveFarmerProfileController = async (req, res) => {
       updateQuery.$set['farmerProfile.usesAgriApps'] = farmerProfile.usesAgriApps;
     }
 
-    let geocoded = null;
+    let geo = null;
 
-    // If the client sent coordinates (e.g. registration with device GPS), trust those
-    if (farmerProfile.location === undefined) {
+    try {
+      const existing = await User.findById(req.user.id).select('farmerProfile').lean();
+      const stored = existing?.farmerProfile ?? {};
+      const storedLoc = stored.location ?? {};
 
-      try {
-        const existing = await User.findById(req.user.id).select('farmerProfile').lean();
-        const stored = existing?.farmerProfile ?? {};
+      const hasStoredGeo =
+        typeof storedLoc.geo_latitude === 'number' && typeof storedLoc.geo_longitude === 'number';
+      const touchesLocation = LOCATION_KEYS.some((k) => farmerProfile[k] !== undefined);
 
-        const hasCoords =
-          typeof stored.location?.latitude === 'number' &&
-          typeof stored.location?.longitude === 'number';
-        const touchesLocation = LOCATION_KEYS.some((k) => farmerProfile[k] !== undefined);
-
-        // Geocode when a place field changed, or when the user has no coordinates yet
-        if (touchesLocation || !hasCoords) {
-          const merged = {};
-          LOCATION_KEYS.forEach((k) => {
-            const v = farmerProfile[k] ?? stored[k] ?? '';
-            merged[k] = String(v).trim().toLowerCase();
-          });
-
-          if (merged.state) {
-            geocoded = await geocoding(merged);
-            if (geocoded) {
-              // Whole object: creates it if missing or null, replaces it if present
-              updateQuery.$set['farmerProfile.location'] = {
-                latitude: geocoded.latitude,
-                longitude: geocoded.longitude,
-              };
-            }
-          }
-        }
-      } catch (err) {
-        // Never block the profile save because geocoding failed
-        console.log('error', err);
-        logger.error('Geocoding error:', err);
+      // Geocode when a place field changed, or when there are no coordinates yet
+      if (touchesLocation || !hasStoredGeo) {
+        const merged = {};
+        LOCATION_KEYS.forEach((k) => {
+          merged[k] = String(farmerProfile[k] ?? stored[k] ?? '').trim().toLowerCase();
+        });
+        if (merged.state) geo = await geocoding(merged);
       }
+
+      const hasLegacyKeys = storedLoc.latitude !== undefined || storedLoc.longitude !== undefined;
+      const legacyAsGeo = toGeo(storedLoc); // converts old latitude/longitude if present
+
+      if (geo) {
+        updateQuery.$set['farmerProfile.location'] = geo; // whole object, so old keys are removed
+      } else if (hasLegacyKeys && legacyAsGeo) {
+        updateQuery.$set['farmerProfile.location'] = legacyAsGeo;
+      }
+    } catch (err) {
+      logger.error('Geocoding error:', err);
     }
 
     if (Object.keys(updateQuery.$set).length === 0) {
       return res.status(200).json({ message: 'No changes provided to save' });
     }
 
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
-      updateQuery,
-      { new: true },
-    );
+    const user = await User.findByIdAndUpdate(req.user.id, updateQuery, { new: true });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }

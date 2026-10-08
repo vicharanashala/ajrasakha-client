@@ -217,6 +217,7 @@ export type TUser = {
   };
   createdAt: string;
   updatedAt: string;
+  farmerProfile?: IFarmerProfile;
 };
 
 export type TGetConversationsResponse = {
