@@ -45,8 +45,6 @@ const { getLogStores } = require('~/cache');
 
 const LOCATION_KEYS = ['villageName', 'blockName', 'district', 'state'];
 
-
-
 const geocoding = async ({ villageName, blockName, district, state }) => {
   const key = process.env.GOOGLE_MAPS_API_KEY;
   if (!key) return null;
