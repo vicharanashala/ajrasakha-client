@@ -72,7 +72,7 @@ const geocoding = async ({ villageName, blockName, district, state }) => {
 
     if (data.status === 'OK' && data.results?.[0]) {
       const { lat, lng } = data.results[0].geometry.location;
-      return { latitude: lat, longitude: lng };
+      return { geo_latitude: lat, geo_longitude: lng };
     }
     // ZERO_RESULTS -> try a coarser address; anything else (quota, denied) -> stop
     if (data.status !== 'ZERO_RESULTS') {
@@ -364,30 +364,33 @@ const saveFarmerProfileController = async (req, res) => {
 
     let geo = null;
 
-try {
-  const existing = await User.findById(req.user.id).select('farmerProfile').lean();
-  const stored = existing?.farmerProfile ?? {};
-  const storedLoc = stored.location ?? {};
+    try {
+      const existing = await User.findById(req.user.id).select('farmerProfile').lean();
+      const stored = existing?.farmerProfile ?? {};
+      const storedLoc = stored.location ?? {};
 
-  const hasCoords =
-    typeof storedLoc.latitude === 'number' && typeof storedLoc.longitude === 'number';
-  const touchesLocation = LOCATION_KEYS.some((k) => farmerProfile[k] !== undefined);
+      const hasStoredGeo =
+        typeof storedLoc.geo_latitude === 'number' && typeof storedLoc.geo_longitude === 'number';
+      const touchesLocation = LOCATION_KEYS.some((k) => farmerProfile[k] !== undefined);
 
-  if (touchesLocation || !hasCoords) {
-    const merged = {};
-    LOCATION_KEYS.forEach((k) => {
-      merged[k] = String(farmerProfile[k] ?? stored[k] ?? '').trim().toLowerCase();
-    });
-    if (merged.state) geo = await geocoding(merged);
-  }
+      // Geocode when a place field changed, or when there are no coordinates yet
+      if (touchesLocation || !hasStoredGeo) {
+        const merged = {};
+        LOCATION_KEYS.forEach((k) => {
+          merged[k] = String(farmerProfile[k] ?? stored[k] ?? '')
+            .trim()
+            .toLowerCase();
+        });
+        if (merged.state) geo = await geocoding(merged);
+      }
 
-  if (geo) {
-    // Whole object, so any leftover geo_* keys are removed
-    updateQuery.$set['farmerProfile.location'] = geo;
-  }
-} catch (err) {
-  logger.error('Geocoding error:', err);
-}
+      if (geo) {
+        // Whole object, so any leftover geo_* keys are removed
+        updateQuery.$set['farmerProfile.location'] = geo;
+      }
+    } catch (err) {
+      logger.error('Geocoding error:', err);
+    }
 
     if (Object.keys(updateQuery.$set).length === 0) {
       return res.status(200).json({ message: 'No changes provided to save' });
