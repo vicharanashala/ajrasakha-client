@@ -405,7 +405,7 @@ const saveFarmerProfileController = async (req, res) => {
       const storedLoc = stored.location ?? {};
 
       const hasStoredGeo =
-        typeof storedLoc.geo_latitude === 'number' && typeof storedLoc.geo_longitude === 'number';
+        typeof storedLoc.latitude === 'number' && typeof storedLoc.longitude === 'number';
       const touchesLocation = LOCATION_KEYS.some((k) => farmerProfile[k] !== undefined);
 
       // Geocode when a place field changed, or when there are no coordinates yet
