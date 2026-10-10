@@ -216,7 +216,7 @@ jobs:
             WEB_WEBHOOK_API_KEY=${{ secrets.WEB_WEBHOOK_API_KEY }}
             GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}
             GCP_BUCKET_NAME=${{ secrets.GCP_BUCKET_NAME }}
-            GCP_STORAGE_PREFIX=${{ secrets.GCP_STORAGE_PREFIX }}
+            GCP_STORAGE_PREFIX=${{ secrets.GCP_STORAGE_PREFIX }}/staging
             GCP_STORAGE_CLASS=${{ secrets.GCP_STORAGE_CLASS }}
           flags: --allow-unauthenticated --port=3080 --memory=2Gi --min-instances=0 --timeout=300
 
@@ -323,6 +323,6 @@ jobs:
             TS_PING_TARGET=${{ secrets.TS_PING_TARGET }}
             GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}
             GCP_BUCKET_NAME=${{ secrets.GCP_BUCKET_NAME }}
-            GCP_STORAGE_PREFIX=${{ secrets.GCP_STORAGE_PREFIX }}
+            GCP_STORAGE_PREFIX=${{ secrets.GCP_STORAGE_PREFIX }}/prod
             GCP_STORAGE_CLASS=${{ secrets.GCP_STORAGE_CLASS }}
           flags: --allow-unauthenticated --port=3080 --memory=2Gi --min-instances=0 --timeout=300
