@@ -42,6 +42,8 @@ const { deleteToolCalls } = require('~/models/ToolCall');
 const { deleteUserPrompts } = require('~/models/Prompt');
 const { deleteUserAgents } = require('~/models/Agent');
 const { getLogStores } = require('~/cache');
+const { geocoding } = require('~/server/utils/geocoding');
+const LOCATION_KEYS = ['villageName', 'blockName', 'district', 'state'];
 
 const getUserController = async (req, res) => {
   const appConfig = await getAppConfig({ role: req.user?.role });
@@ -71,6 +73,83 @@ const getUserController = async (req, res) => {
   res.status(200).send(userData);
 };
 
+// const getTermsStatusController = async (req, res) => {
+//   try {
+//     const user = await User.findById(req.user.id);
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+//     const farmerProfileCompleted = !!user.farmerProfile?.farmerName;
+//     const farmerProfileHasPlatform = !!user.farmerProfile?.platform;
+
+//     const requiredFields = [
+//       'farmerName',
+//       'age',
+//       'gender',
+//       'villageName',
+//       'blockName',
+//       'district',
+//       'state',
+//       'phoneNo',
+//       'languagePreference',
+//       'yearsOfExperience',
+//       'highestEducatedPerson',
+//       'numberOfSmartphones',
+//       'cropsCultivated',
+//       'primaryCrop',
+//       'secondaryCrop',
+//       'awarenessOfKCC',
+//       'usesAgriApps',
+//       'location',
+//       'landhold',
+//       'nearestKVK',
+//     ];
+
+//     const missingFields = [];
+
+//     for (const field of requiredFields) {
+//       if (field === 'location') {
+//         if (!user.farmerProfile?.location?.latitude || !user.farmerProfile?.location?.longitude) {
+//           missingFields.push('location');
+//         }
+//       } else if (field === 'cropsCultivated') {
+//         if (
+//           !user.farmerProfile?.cropsCultivated ||
+//           user.farmerProfile.cropsCultivated.length === 0
+//         ) {
+//           missingFields.push('cropsCultivated');
+//         }
+//       } else {
+//         const val = user.farmerProfile?.[field];
+//         if (val === undefined || val === null || val === '') {
+//           missingFields.push(field);
+//         }
+//       }
+//     }
+
+//     const farmerNeedsUpdate = missingFields.length > 0;
+
+//     res.status(200).json({
+//       termsAccepted: !!user.termsAccepted,
+//       secondTermsAccepted: !!user.secondTermsAccepted,
+//       farmerProfileCompleted,
+//       farmerProfileHasPlatform,
+//       farmerLocationCompleted: !missingFields.includes('location'),
+//       farmerLandholdCompleted: !missingFields.includes('landhold'),
+//       farmerNeedsUpdate,
+//       missingFields,
+//       farmerProfile: user.farmerProfile,
+//     });
+//   } catch (error) {
+//     logger.error('Error fetching terms acceptance status:', error);
+//     res.status(500).json({ message: 'Error fetching terms acceptance status' });
+//   }
+// };
+
+const PLACEHOLDERS = new Set(['', 'other', 'others', 'na', 'n/a', 'none', '-', '--', 'select']);
+const isBlankPlace = (v) => PLACEHOLDERS.has(String(v ?? '').trim().toLowerCase());
+const PLACE_FIELDS = ['state', 'district', 'blockName', 'villageName', 'nearestKVK'];
+
 const getTermsStatusController = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -80,14 +159,12 @@ const getTermsStatusController = async (req, res) => {
     const farmerProfileCompleted = !!user.farmerProfile?.farmerName;
     const farmerProfileHasPlatform = !!user.farmerProfile?.platform;
 
+    // Place fields and coordinates are no longer part of missingFields:
+    // place fields are handled by locationNeedsUpdate, coordinates are filled in by the server.
     const requiredFields = [
       'farmerName',
       'age',
       'gender',
-      'villageName',
-      'blockName',
-      'district',
-      'state',
       'phoneNo',
       'languagePreference',
       'yearsOfExperience',
@@ -98,19 +175,13 @@ const getTermsStatusController = async (req, res) => {
       'secondaryCrop',
       'awarenessOfKCC',
       'usesAgriApps',
-      'location',
       'landhold',
-      'nearestKVK',
     ];
 
     const missingFields = [];
 
     for (const field of requiredFields) {
-      if (field === 'location') {
-        if (!user.farmerProfile?.location?.latitude || !user.farmerProfile?.location?.longitude) {
-          missingFields.push('location');
-        }
-      } else if (field === 'cropsCultivated') {
+      if (field === 'cropsCultivated') {
         if (
           !user.farmerProfile?.cropsCultivated ||
           user.farmerProfile.cropsCultivated.length === 0
@@ -127,15 +198,20 @@ const getTermsStatusController = async (req, res) => {
 
     const farmerNeedsUpdate = missingFields.length > 0;
 
+    // Only for users who already completed the profile, so the two prompts never overlap
+    const locationNeedsUpdate =
+      farmerProfileCompleted && PLACE_FIELDS.some((f) => isBlankPlace(user.farmerProfile?.[f]));
+
     res.status(200).json({
       termsAccepted: !!user.termsAccepted,
       secondTermsAccepted: !!user.secondTermsAccepted,
       farmerProfileCompleted,
       farmerProfileHasPlatform,
-      farmerLocationCompleted: !missingFields.includes('location'),
+      farmerLocationCompleted: true, // kept for old clients; the GPS prompt is retired
       farmerLandholdCompleted: !missingFields.includes('landhold'),
       farmerNeedsUpdate,
       missingFields,
+      locationNeedsUpdate,
       farmerProfile: user.farmerProfile,
     });
   } catch (error) {
@@ -253,7 +329,9 @@ const saveFarmerProfileController = async (req, res) => {
       updateQuery.$set['farmerProfile.farmerName'] = farmerProfile.farmerName?.trim().toLowerCase();
     }
     if (farmerProfile.villageName !== undefined) {
-      updateQuery.$set['farmerProfile.villageName'] = farmerProfile.villageName?.trim().toLowerCase();
+      updateQuery.$set['farmerProfile.villageName'] = farmerProfile.villageName
+        ?.trim()
+        .toLowerCase();
     }
     if (farmerProfile.blockName !== undefined) {
       updateQuery.$set['farmerProfile.blockName'] = farmerProfile.blockName?.trim().toLowerCase();
@@ -271,24 +349,31 @@ const saveFarmerProfileController = async (req, res) => {
       updateQuery.$set['farmerProfile.nearestKVK'] = farmerProfile.nearestKVK?.trim();
     }
     if (farmerProfile.languagePreference !== undefined) {
-      updateQuery.$set['farmerProfile.languagePreference'] = farmerProfile.languagePreference?.trim().toLowerCase();
+      updateQuery.$set['farmerProfile.languagePreference'] = farmerProfile.languagePreference
+        ?.trim()
+        .toLowerCase();
     }
     if (farmerProfile.primaryCrop !== undefined) {
-      updateQuery.$set['farmerProfile.primaryCrop'] = farmerProfile.primaryCrop?.trim().toLowerCase();
+      updateQuery.$set['farmerProfile.primaryCrop'] = farmerProfile.primaryCrop
+        ?.trim()
+        .toLowerCase();
     }
     if (farmerProfile.secondaryCrop !== undefined) {
-      updateQuery.$set['farmerProfile.secondaryCrop'] = farmerProfile.secondaryCrop?.trim().toLowerCase();
+      updateQuery.$set['farmerProfile.secondaryCrop'] = farmerProfile.secondaryCrop
+        ?.trim()
+        .toLowerCase();
     }
     if (farmerProfile.highestEducatedPerson !== undefined) {
-      updateQuery.$set['farmerProfile.highestEducatedPerson'] = farmerProfile.highestEducatedPerson?.trim().toLowerCase();
+      updateQuery.$set['farmerProfile.highestEducatedPerson'] = farmerProfile.highestEducatedPerson
+        ?.trim()
+        .toLowerCase();
     }
     if (farmerProfile.cropsCultivated !== undefined) {
-      updateQuery.$set['farmerProfile.cropsCultivated'] = Array.isArray(farmerProfile.cropsCultivated)
+      updateQuery.$set['farmerProfile.cropsCultivated'] = Array.isArray(
+        farmerProfile.cropsCultivated,
+      )
         ? farmerProfile.cropsCultivated.map((c) => c.trim().toLowerCase())
         : farmerProfile.cropsCultivated;
-    }
-    if (farmerProfile.location !== undefined) {
-      updateQuery.$set['farmerProfile.location'] = farmerProfile.location;
     }
     if (farmerProfile.landhold !== undefined) {
       updateQuery.$set['farmerProfile.landhold'] = farmerProfile.landhold;
@@ -312,15 +397,41 @@ const saveFarmerProfileController = async (req, res) => {
       updateQuery.$set['farmerProfile.usesAgriApps'] = farmerProfile.usesAgriApps;
     }
 
+    let geo = null;
+
+    try {
+      const existing = await User.findById(req.user.id).select('farmerProfile').lean();
+      const stored = existing?.farmerProfile ?? {};
+      const storedLoc = stored.location ?? {};
+
+      const hasStoredGeo =
+        typeof storedLoc.latitude === 'number' && typeof storedLoc.longitude === 'number';
+      const touchesLocation = LOCATION_KEYS.some((k) => farmerProfile[k] !== undefined);
+
+      // Geocode when a place field changed, or when there are no coordinates yet
+      if (touchesLocation || !hasStoredGeo) {
+        const merged = {};
+        LOCATION_KEYS.forEach((k) => {
+          merged[k] = String(farmerProfile[k] ?? stored[k] ?? '')
+            .trim()
+            .toLowerCase();
+        });
+        if (merged.state) geo = await geocoding(merged);
+      }
+
+      if (geo) {
+        // Whole object, so any leftover geo_* keys are removed
+        updateQuery.$set['farmerProfile.location'] = geo;
+      }
+    } catch (err) {
+      logger.error('Geocoding error:', err);
+    }
+
     if (Object.keys(updateQuery.$set).length === 0) {
       return res.status(200).json({ message: 'No changes provided to save' });
     }
 
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
-      updateQuery,
-      { new: true },
-    );
+    const user = await User.findByIdAndUpdate(req.user.id, updateQuery, { new: true });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -538,6 +649,31 @@ const resendVerificationController = async (req, res) => {
   }
 };
 
+const getUserByIdController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!/^[a-f\d]{24}$/i.test(id)) {
+      return res.status(400).json({ message: 'Invalid user id' });
+    }
+
+    // Inclusion list: only what the bot needs, never password/tokens/etc.
+    const user = await User.findById(id).select('name email farmerProfile').lean();
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({
+      id: String(user._id),
+      name: user.name,
+      farmerProfile: user.farmerProfile ?? null,
+    });
+  } catch (error) {
+    logger.error('Error fetching user for bot:', error);
+    res.status(500).json({ message: 'Error fetching user' });
+  }
+};
+
 /**
  * OAuth MCP specific uninstall logic
  */
@@ -652,4 +788,5 @@ module.exports = {
   verifyEmailController,
   updateUserPluginsController,
   resendVerificationController,
+  getUserByIdController,
 };

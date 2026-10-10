@@ -133,9 +133,9 @@ export default function useChatFunctions({
         user,
       });
 
-      if (position && position.latitude && position.longitude) {
-        const locationText = `\n\nLocation:\nLatitude:${position.latitude}\nLongitude:${position.longitude}`;
-        conversation.promptPrefix += locationText;
+      const loc = user?.farmerProfile?.location;
+      if (loc?.latitude != null && loc?.longitude != null) {
+        conversation.promptPrefix += `\n\nLocation:\nLatitude:${loc.latitude}\nLongitude:${loc.longitude}`;
       }
     }
 
@@ -351,7 +351,9 @@ export default function useChatFunctions({
       // on `currentMsg` itself — `submission.userMessage` above is spread directly into the
       // outgoing request payload (see createPayload.ts), so keeping it off `currentMsg`
       // ensures it's never sent to or stored by the backend.
-      const displayMsg = isExampleQuestion ? { ...currentMsg, isExampleQuestion: true } : currentMsg;
+      const displayMsg = isExampleQuestion
+        ? { ...currentMsg, isExampleQuestion: true }
+        : currentMsg;
       setMessages([...submission.messages, displayMsg, initialResponse]);
     }
     if (index === 0 && setLatestMessage) {
