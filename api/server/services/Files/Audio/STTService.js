@@ -4,7 +4,8 @@ const FormData = require('form-data');
 const { Readable } = require('stream');
 const { logger } = require('@librechat/data-schemas');
 const { genAzureEndpoint, logAxiosError } = require('@librechat/api');
-const { extractEnvVariable, STTProviders } = require('librechat-data-provider');
+const { STTProviders, extractEnvVariable } = require('librechat-data-provider');
+const { saveAudioBuffer } = require('./audioStorage');
 const { getAppConfig } = require('~/server/services/Config');
 
 /**
@@ -337,6 +338,34 @@ class STTService {
   }
 
   /**
+   * Stores the recorded audio in Firebase Storage. The caller attaches the returned details to
+   * the message; no file record is created.
+   * Failures are logged and never affect the transcription response.
+   * @async
+   * @param {Object} req - The request object.
+   * @param {Buffer} audioBuffer - The recorded audio.
+   * @param {Object} audioFile - The audio file object containing mimetype and size.
+   * @returns {Promise<{ filepath: string, type: string, bytes: number } | undefined>} The saved
+   * recording, or undefined if saving failed.
+   */
+  async saveAudioRecording(req, audioBuffer, audioFile) {
+    try {
+      const filepath = await saveAudioBuffer({
+        userId: req.user.id,
+        buffer: audioBuffer,
+        fileName: `audio.${getFileExtensionFromMime(audioFile.mimetype)}`,
+        type: audioFile.mimetype,
+      });
+      if (!filepath) {
+        return undefined;
+      }
+      return { filepath, type: audioFile.mimetype, bytes: audioFile.size };
+    } catch (error) {
+      logger.error('[STT] Failed to save audio recording:', error);
+    }
+  }
+
+  /**
    * Processes a speech-to-text request.
    * @async
    * @param {Object} req - The request object.
@@ -359,7 +388,8 @@ class STTService {
       const [provider, sttSchema] = await this.getProviderSchema(req);
       const language = req.body?.language || '';
       const text = await this.sttRequest(provider, sttSchema, { audioBuffer, audioFile, language });
-      res.json({ text });
+      const audio = await this.saveAudioRecording(req, audioBuffer, audioFile);
+      res.json({ text, ...(audio && { audio }) });
     } catch (error) {
       logAxiosError({ message: 'An error occurred while processing the audio:', error });
       res.sendStatus(500);

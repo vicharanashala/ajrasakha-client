@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useToastContext, ListeningIcon, Spinner } from '@librechat/client';
+import type { AudioRecording } from 'librechat-data-provider';
 import { useLocalize, useSpeechToText, useGetAudioSettings } from '~/hooks';
 import { useChatFormContext } from '~/Providers';
 import { globalAudioId } from '~/common';
@@ -85,10 +86,17 @@ export default function AudioRecorder({
     [setValue, speechToTextEndpoint],
   );
 
+  const onAudioSaved = useCallback(
+    (audio: AudioRecording) =>
+      setValue('audioRecordings', [...(getValues('audioRecordings') ?? []), audio]),
+    [setValue, getValues],
+  );
+
   const { isListening, isLoading, startRecording, stopRecording } = useSpeechToText(
     setText,
     onTranscriptionComplete,
     enabled,
+    onAudioSaved,
   );
 
   useEffect(() => {

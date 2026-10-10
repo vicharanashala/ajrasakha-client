@@ -243,6 +243,19 @@ class BaseClient {
   }
 
   createUserMessage({ messageId, parentMessageId, conversationId, text }) {
+    const requestedRecordings = this.options?.req?.body?.metadata?.audioRecordings;
+    const userId = this.options?.req?.user?.id;
+    /** Only keep recordings stored under the requesting user's own audio folder */
+    const audioRecordings = Array.isArray(requestedRecordings)
+      ? requestedRecordings
+          .filter(
+            (recording) =>
+              typeof recording?.filepath === 'string' &&
+              (recording.filepath.includes(`audio%2F${userId}%2F`) ||
+                recording.filepath.includes(`/audio/${userId}/`)),
+          )
+          .map(({ filepath, type, bytes }) => ({ filepath, type, bytes }))
+      : [];
     return {
       messageId,
       parentMessageId,
@@ -250,6 +263,7 @@ class BaseClient {
       sender: 'User',
       text,
       isCreatedByUser: true,
+      ...(audioRecordings.length > 0 && { metadata: { audioRecordings } }),
     };
   }
 

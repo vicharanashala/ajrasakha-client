@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import { replaceSpecialVars } from 'librechat-data-provider';
+import type { AudioRecording } from 'librechat-data-provider';
 import { useChatContext, useChatFormContext, useAddedChatContext } from '~/Providers';
 import { useAuthContext } from '~/hooks/AuthContext';
 import {
@@ -33,7 +34,7 @@ export default function useSubmitMessage() {
 
   const submitMessage = useCallback(
     async (
-      data?: { text: string; isExampleQuestion?: boolean },
+      data?: { text: string; isExampleQuestion?: boolean; audioRecordings?: AudioRecording[] },
       position?: { latitude: number; longitude: number },
     ) => {
       if (!data) {
@@ -77,7 +78,11 @@ export default function useSubmitMessage() {
         {
           text: data.text,
           position,
-          // isExampleQuestion: shouldAppendState,
+          // Frontend-only display flag — never included in the outgoing request payload (see
+          // useChatFunctions.ts), so it's shown in the bubble (MessageContent.tsx) but never
+          // sent to or stored by the backend.
+          //isExampleQuestion: shouldAppendState,
+          audioRecordings: data.audioRecordings ?? methods.getValues('audioRecordings'),
         },
         {
           addedConvo: addedConvo ?? undefined,

@@ -1,11 +1,12 @@
 import firebase from 'firebase/app';
-import { getStorage } from 'firebase/storage';
+import { getStorage, connectStorageEmulator } from 'firebase/storage';
 import { logger } from '@librechat/data-schemas';
 import type { FirebaseStorage } from 'firebase/storage';
 import type { FirebaseApp } from 'firebase/app';
 
 let firebaseInitCount = 0;
 let firebaseApp: FirebaseApp | null = null;
+let firebaseStorage: FirebaseStorage | null = null;
 
 export const initializeFirebase = () => {
   if (firebaseApp) {
@@ -37,6 +38,23 @@ export const initializeFirebase = () => {
 };
 
 export const getFirebaseStorage = (): FirebaseStorage | null => {
+  if (firebaseStorage) {
+    return firebaseStorage;
+  }
+
   const app = initializeFirebase();
-  return app ? getStorage(app) : null;
+  if (!app) {
+    return null;
+  }
+
+  firebaseStorage = getStorage(app);
+
+  const emulatorHost = process.env.FIREBASE_STORAGE_EMULATOR_HOST;
+  if (emulatorHost) {
+    const [host, port] = emulatorHost.split(':');
+    connectStorageEmulator(firebaseStorage, host, Number(port));
+    logger.info(`Firebase Storage connected to emulator at ${emulatorHost}`);
+  }
+
+  return firebaseStorage;
 };

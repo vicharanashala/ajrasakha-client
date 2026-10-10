@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { AudioRecording } from './types/files';
 
 export type TFeedbackRating = 'thumbsUp' | 'thumbsDown' | 'other';
 export const FEEDBACK_RATINGS = ['thumbsUp', 'thumbsDown', 'other'] as const;
@@ -180,10 +181,17 @@ export function getTagsForRating(rating: TFeedbackRating): TFeedbackTag[] {
 export const feedbackTagKeySchema = z.enum(FEEDBACK_REASON_KEYS);
 export const feedbackRatingSchema = z.enum(FEEDBACK_RATINGS);
 
+export const audioRecordingSchema = z.object({
+  filepath: z.string(),
+  type: z.string(),
+  bytes: z.number(),
+});
+
 export const feedbackSchema = z.object({
   rating: feedbackRatingSchema,
   tag: feedbackTagKeySchema,
   text: z.string().max(1024).optional(),
+  audioRecordings: z.array(audioRecordingSchema).optional(),
   status: z.enum(['open', 'accepted', 'rejected']).optional(),
   reviewNote: z.string().optional(),
   createdAt: z.date().optional(),
@@ -196,6 +204,7 @@ export type TFeedback = {
   rating: TFeedbackRating;
   tag: TFeedbackTag | undefined;
   text?: string;
+  audioRecordings?: AudioRecording[];
   status?: 'open' | 'accepted' | 'rejected';
   reviewNote?: string;
   createdAt?: Date;
@@ -211,6 +220,7 @@ export function toMinimalFeedback(feedback: TFeedback | undefined): TMinimalFeed
     rating: feedback.rating,
     tag: feedback.tag.key,
     text: feedback.text,
+    audioRecordings: feedback.audioRecordings,
     status: feedback.status,
     reviewNote: feedback.reviewNote,
     createdAt: feedback.createdAt,

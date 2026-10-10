@@ -127,8 +127,16 @@ export type AvatarUploadResponse = {
   url: string;
 };
 
+export type AudioRecording = {
+  filepath: string;
+  type: string;
+  bytes: number;
+};
+
 export type SpeechToTextResponse = {
   text: string;
+  /** Present when the server saved the recorded audio */
+  audio?: AudioRecording;
 };
 
 export type VoiceResponse = string[];
