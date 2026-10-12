@@ -889,6 +889,17 @@ export const memorySchema = z.object({
   charLimit: z.number().optional().default(10000),
   personalize: z.boolean().default(true),
   messageWindowSize: z.number().optional().default(5),
+  autoExtract: z
+    .object({
+      enabled: z.boolean().optional().default(false),
+      domain: z.string().optional(),
+    })
+    .optional(),
+  injection: z
+    .object({
+      format: z.enum(['default', 'structured_profile']).optional().default('default'),
+    })
+    .optional(),
   agent: z
     .union([
       z.object({

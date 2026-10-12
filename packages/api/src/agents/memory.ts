@@ -19,10 +19,14 @@ import type { BaseMessage, ToolMessage } from '@langchain/core/messages';
 import type { Response as ServerResponse } from 'express';
 import { GenerationJobManager } from '~/stream/GenerationJobManager';
 import { Tokenizer } from '~/utils';
+import {
+  buildAgricultureMemoryContext,
+  isAgricultureMemoryConfig,
+} from './agricultureMemory';
 
 type RequiredMemoryMethods = Pick<
   MemoryMethods,
-  'setMemory' | 'deleteMemory' | 'getFormattedMemories'
+  'setMemory' | 'deleteMemory' | 'getFormattedMemories' | 'getAllUserMemories'
 >;
 
 type ToolEndMetadata = Record<string, unknown> & {
@@ -35,6 +39,13 @@ export interface MemoryConfig {
   instructions?: string;
   llmConfig?: Partial<LLMConfig>;
   tokenLimit?: number;
+  autoExtract?: {
+    enabled?: boolean;
+    domain?: string;
+  };
+  injection?: {
+    format?: 'default' | 'structured_profile';
+  };
 }
 
 export const memoryInstructions =
@@ -433,12 +444,20 @@ export async function createMemoryProcessor({
   const { validKeys, instructions, llmConfig, tokenLimit } = config;
   const finalInstructions = instructions || getDefaultInstructions(validKeys, tokenLimit);
 
-  const { withKeys, withoutKeys, totalTokens } = await memoryMethods.getFormattedMemories({
-    userId,
-  });
+  const [formattedMemories, allMemories] = await Promise.all([
+    memoryMethods.getFormattedMemories({
+      userId,
+    }),
+    memoryMethods.getAllUserMemories(userId),
+  ]);
+  const { withKeys, withoutKeys, totalTokens } = formattedMemories;
+
+  const memoryForInjection = isAgricultureMemoryConfig(config)
+    ? buildAgricultureMemoryContext(allMemories)
+    : withoutKeys;
 
   return [
-    withoutKeys,
+    memoryForInjection,
     async function (messages: BaseMessage[]): Promise<(TAttachment | null)[] | undefined> {
       try {
         return await processMemory({

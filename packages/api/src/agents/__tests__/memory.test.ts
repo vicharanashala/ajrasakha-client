@@ -3,19 +3,42 @@ import { Providers } from '@librechat/agents';
 import { Tools } from 'librechat-data-provider';
 import type { MemoryArtifact } from 'librechat-data-provider';
 import { createMemoryTool, processMemory } from '../memory';
+import {
+  buildAgricultureMemoryContext,
+  formatAgricultureMemoryHints,
+  isAgricultureMemoryConfig,
+} from '../agricultureMemory';
+
+jest.mock('@librechat/data-schemas', () => ({
+  logger: {
+    debug: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
+}));
 
 // Mock the logger
 jest.mock('winston', () => ({
+  addColors: jest.fn(),
   createLogger: jest.fn(() => ({
     debug: jest.fn(),
     warn: jest.fn(),
     error: jest.fn(),
   })),
-  format: {
-    combine: jest.fn(),
-    colorize: jest.fn(),
-    simple: jest.fn(),
-  },
+  format: Object.assign(
+    jest.fn((transformer?: (info: Record<string, unknown>) => Record<string, unknown>) => {
+      return typeof transformer === 'function' ? transformer : jest.fn();
+    }),
+    {
+      combine: jest.fn(),
+      colorize: jest.fn(),
+      simple: jest.fn(),
+      timestamp: jest.fn(),
+      printf: jest.fn(),
+      errors: jest.fn(),
+      json: jest.fn(),
+    },
+  ),
   transports: {
     Console: jest.fn(),
   },
@@ -465,5 +488,44 @@ describe('processMemory - GPT-5+ handling', () => {
         }),
       }),
     );
+  });
+});
+
+describe('agriculture memory helpers', () => {
+  it('should detect agriculture-specific memory configuration', () => {
+    expect(
+      isAgricultureMemoryConfig({
+        validKeys: ['crop', 'state', 'pincode'],
+        autoExtract: { enabled: true, domain: 'agriculture' },
+      }),
+    ).toBe(true);
+  });
+
+  it('should build a structured farmer profile for injection', () => {
+    const result = buildAgricultureMemoryContext([
+      { key: 'crop', value: 'Wheat' } as never,
+      { key: 'district', value: 'Ropar' } as never,
+      { key: 'state', value: 'Punjab' } as never,
+      { key: 'pincode', value: '140001' } as never,
+    ]);
+
+    expect(result).toContain('# Known Farmer Profile');
+    expect(result).toContain('- Crop: Wheat');
+    expect(result).toContain('- District: Ropar');
+    expect(result).toContain('- State: Punjab');
+    expect(result).toContain('- Pincode: 140001');
+    expect(result).toContain('Do not ask for the same field again');
+  });
+
+  it('should format regex-based agriculture extraction hints', () => {
+    const result = formatAgricultureMemoryHints(
+      "I'm from Ropar, Punjab and my pincode is 140001. I grow wheat on 3 acres. Please reply in Punjabi.",
+    );
+
+    expect(result).toContain('# Agriculture Profile Hints');
+    expect(result).toContain('Pincode -> 140001');
+    expect(result).toContain('Crop -> Wheat');
+    expect(result).toContain('Farm Size -> 3 acres');
+    expect(result).toContain('Preferred Language -> Punjabi');
   });
 });
