@@ -90,6 +90,18 @@ const messageSchema: Schema<IMessage> = new Schema(
           type: String,
           required: false,
         },
+        audioRecordings: {
+          type: [
+            {
+              _id: false,
+              filepath: { type: String, required: true },
+              type: { type: String, required: true },
+              bytes: { type: Number, required: true },
+            },
+          ],
+          default: undefined,
+          required: false,
+        },
         status: {
           type: String,
           enum: ['open', 'accepted', 'rejected'],

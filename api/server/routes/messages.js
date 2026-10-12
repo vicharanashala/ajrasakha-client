@@ -395,6 +395,23 @@ router.put('/:conversationId/:messageId/feedback', validateMessageReq, async (re
       feedback.updatedAt = new Date();
       feedback.createdAt = existingMessage?.feedback?.createdAt || new Date();
       feedback.status = existingMessage?.feedback?.status || 'open';
+
+      /** Only keep recordings stored under the requesting user's own audio folder */
+      const audioRecordings = Array.isArray(feedback.audioRecordings)
+        ? feedback.audioRecordings
+            .filter(
+              (recording) =>
+                typeof recording?.filepath === 'string' &&
+                (recording.filepath.includes(`audio%2F${req.user.id}%2F`) ||
+                  recording.filepath.includes(`/audio/${req.user.id}/`)),
+            )
+            .map(({ filepath, type, bytes }) => ({ filepath, type, bytes }))
+        : [];
+      if (audioRecordings.length > 0) {
+        feedback.audioRecordings = audioRecordings;
+      } else {
+        delete feedback.audioRecordings;
+      }
     }
 
     const updatedMessage = await updateMessage(

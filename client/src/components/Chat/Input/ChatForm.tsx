@@ -79,7 +79,7 @@ const VoiceStopButton = memo(
       onClick={onClick}
       aria-label={label}
       title={label}
-      className="relative flex size-20 items-center justify-center rounded-full bg-green-500 sm:size-16 transition-colors duration-300 hover:bg-green-400"
+      className="relative flex size-20 items-center justify-center rounded-full bg-green-500 transition-colors duration-300 hover:bg-green-400 sm:size-16"
       style={{ boxShadow: '0 0 10px 2px rgba(117, 215, 178, 0.4)' }}
     >
       {isConfirming ? (
@@ -112,44 +112,44 @@ const InputModeToggle = memo(
   }) => {
     const isScrollButtonVisible = useRecoilValue(store.isScrollToBottomVisible) || hidden;
     return (
-    <div
-      role="tablist"
-      aria-label="Input mode"
-      aria-hidden={isScrollButtonVisible}
-      className={cn(
-        'flex shrink-0 items-center gap-0.5 rounded-full bg-surface-secondary p-1',
-        'transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none',
-        isScrollButtonVisible
-          ? 'pointer-events-none scale-95 opacity-0'
-          : 'scale-100 opacity-100',
-      )}
-    >
-      {INPUT_MODE_TABS.map(({ mode, label, Icon }) => {
-        const isActive = inputMode === mode;
-        return (
-          <button
-            key={mode}
-            type="button"
-            role="tab"
-            aria-selected={isActive}
-            title={label}
-            tabIndex={isScrollButtonVisible ? -1 : 0}
-            onClick={() => setInputMode(mode)}
-            className={cn(
-              'flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium',
-              'transition-colors duration-200 motion-reduce:transition-none',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-medium',
-              isActive
-                ? 'bg-surface-tertiary-alt text-green-500 shadow-sm dark:text-green-400'
-                : 'text-text-secondary hover:text-text-primary',
-            )}
-          >
-            <Icon className="size-4 shrink-0" aria-hidden="true" />
-            <span>{label}</span>
-          </button>
-        );
-      })}
-    </div>
+      <div
+        role="tablist"
+        aria-label="Input mode"
+        aria-hidden={isScrollButtonVisible}
+        className={cn(
+          'flex shrink-0 items-center gap-0.5 rounded-full bg-surface-secondary p-1',
+          'transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none',
+          isScrollButtonVisible
+            ? 'pointer-events-none scale-95 opacity-0'
+            : 'scale-100 opacity-100',
+        )}
+      >
+        {INPUT_MODE_TABS.map(({ mode, label, Icon }) => {
+          const isActive = inputMode === mode;
+          return (
+            <button
+              key={mode}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              title={label}
+              tabIndex={isScrollButtonVisible ? -1 : 0}
+              onClick={() => setInputMode(mode)}
+              className={cn(
+                'flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium',
+                'transition-colors duration-200 motion-reduce:transition-none',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-medium',
+                isActive
+                  ? 'bg-surface-tertiary-alt text-green-500 shadow-sm dark:text-green-400'
+                  : 'text-text-secondary hover:text-text-primary',
+              )}
+            >
+              <Icon className="size-4 shrink-0" aria-hidden="true" />
+              <span>{label}</span>
+            </button>
+          );
+        })}
+      </div>
     );
   },
 );
@@ -593,37 +593,35 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   );
 
   // Location permission
-  useEffect(() => {
-    // Request location only if not already allowed
-    if (!locationAllowed) {
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          async (pos) => {
-            try {
-              const { latitude, longitude } = pos.coords;
-              setPosition({ latitude, longitude });
-              setLocationAllowed(true);
-            } catch (err) {
-              console.error('Error fetching location data:', err);
-            }
-          },
-          (error) => {
-            console.error('Geolocation error:', error);
-            setLocationAllowed(false);
-          },
-        );
-      } else {
-        console.warn('Geolocation is not supported by your browser.');
-      }
-    }
-  }, [locationAllowed]);
+  // useEffect(() => {
+  //   // Request location only if not already allowed
+  //   if (!locationAllowed) {
+  //     if ('geolocation' in navigator) {
+  //       navigator.geolocation.getCurrentPosition(
+  //         async (pos) => {
+  //           try {
+  //             const { latitude, longitude } = pos.coords;
+  //             setPosition({ latitude, longitude });
+  //             setLocationAllowed(true);
+  //           } catch (err) {
+  //             console.error('Error fetching location data:', err);
+  //           }
+  //         },
+  //         (error) => {
+  //           console.error('Geolocation error:', error);
+  //           setLocationAllowed(false);
+  //         },
+  //       );
+  //     } else {
+  //       console.warn('Geolocation is not supported by your browser.');
+  //     }
+  //   }
+  // }, [locationAllowed]);
 
   const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useRecoilState(
     store.isFeedbackDialogOpen,
   );
-  const [showFeedbackReminder] = useRecoilState(
-    store.showFeedbackReminder,
-  );
+  const [showFeedbackReminder] = useRecoilState(store.showFeedbackReminder);
   const [shakeCount] = useRecoilState(store.feedbackShake);
 
   /**
@@ -694,7 +692,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
           (conversationId == null || conversationId === Constants.NEW_CONVO) &&
           !isSubmitting &&
           conversation?.messages?.length === 0
-          ? 'transition-all duration-200 mb-1.5 sm:mb-6'
+          ? 'mb-1.5 transition-all duration-200 sm:mb-6'
           : 'mb-1.5 sm:mb-6',
       )}
     >
@@ -758,7 +756,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                * keeps its own natural height instead of both being stuck at the taller one.
                */
               <div
-                className="relative overflow-hidden transition-[height] duration-[600ms] ease-[cubic-bezier(0.65,0,0.35,1)] motion-reduce:transition-none [will-change:height]"
+                className="duration-[600ms] ease-[cubic-bezier(0.65,0,0.35,1)] relative overflow-hidden transition-[height] [will-change:height] motion-reduce:transition-none"
                 style={panelsHeight != null ? { height: panelsHeight } : undefined}
               >
                 <div
@@ -776,189 +774,199 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                      * means it's fully invisible well before the gap below it would be
                      * visible, so the wrapper just quietly collapses over empty space.
                      */
-                    'transition-[opacity,transform] duration-[280ms] ease-[cubic-bezier(0,0,0.2,1)] motion-reduce:transition-none [will-change:opacity,transform]',
+                    'duration-[280ms] ease-[cubic-bezier(0,0,0.2,1)] transition-[opacity,transform] [will-change:opacity,transform] motion-reduce:transition-none',
                     inputMode === 'voice'
-                      ? 'pointer-events-none translate-y-3 opacity-0 z-0'
-                      : 'translate-y-0 opacity-100 z-10',
+                      ? 'pointer-events-none z-0 translate-y-3 opacity-0'
+                      : 'z-10 translate-y-0 opacity-100',
                   )}
                   aria-hidden={inputMode === 'voice'}
                 >
-                {/* Mode switch centred above the composer. */}
-                <div className="flex min-h-9 w-full items-center justify-center">
-                  <InputModeToggle
-                    inputMode={inputMode}
-                    setInputMode={setInputMode}
-                    hidden={isSubmitting}
-                  />
-                </div>
-                <div
-                  ref={inputRowRef}
-                  className={cn(
-                    'flex w-full gap-1.5 transition-[border-color,padding] duration-200 sm:gap-2',
-                    isRTL ? 'flex-row-reverse' : 'flex-row',
-                    isExpandedComposer
-                      ? cn(
-                          'flex-wrap items-center rounded-3xl border bg-surface-chat p-1.5 sm:p-2',
-                          isTextAreaFocused ? 'border-border-medium' : 'border-border-light',
-                        )
-                      : 'items-end border border-transparent',
-                  )}
-                >
-                  {/* Attachments and tool badges open as a column anchored to this button
+                  {/* Mode switch centred above the composer. */}
+                  <div className="flex min-h-9 w-full items-center justify-center">
+                    <InputModeToggle
+                      inputMode={inputMode}
+                      setInputMode={setInputMode}
+                      hidden={isSubmitting}
+                    />
+                  </div>
+                  <div
+                    ref={inputRowRef}
+                    className={cn(
+                      'flex w-full gap-1.5 transition-[border-color,padding] duration-200 sm:gap-2',
+                      isRTL ? 'flex-row-reverse' : 'flex-row',
+                      isExpandedComposer
+                        ? cn(
+                            'flex-wrap items-center rounded-3xl border bg-surface-chat p-1.5 sm:p-2',
+                            isTextAreaFocused ? 'border-border-medium' : 'border-border-light',
+                          )
+                        : 'items-end border border-transparent',
+                    )}
+                  >
+                    {/* Attachments and tool badges open as a column anchored to this button
                       rather than as a row inside the composer: the composer and the panel
                       wrapper both clip overflow for the mode-swap height animation, so an
                       in-flow panel would either be cut off or push the input down. Ariakit
                       portals it out and handles placement, outside-click and Escape. */}
-                  <Ariakit.PopoverProvider
-                    open={showLeftOptions}
-                    setOpen={setShowLeftOptions}
-                    placement={isRTL ? 'top-end' : 'top-start'}
-                  >
-                    <Ariakit.PopoverDisclosure
-                      render={
-                        <button
-                          type="button"
-                          aria-label={showLeftOptions ? 'Close options' : 'Open options'}
-                          className={cn(
-                            'flex shrink-0 items-center justify-center rounded-full text-text-primary',
-                            isExpandedComposer ? 'order-2 size-9 sm:size-10' : 'size-11 md:size-[52px]',
-                            'transition-colors duration-200 hover:bg-surface-hover',
-                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-medium',
-                            showLeftOptions ? 'bg-surface-hover' : 'bg-surface-secondary',
-                          )}
-                        >
-                          <Plus
-                            className={cn(
-                              'size-5 transition-transform duration-200',
-                              showLeftOptions && 'rotate-45',
-                            )}
-                            aria-hidden="true"
-                          />
-                        </button>
-                      }
-                    />
-                    <Ariakit.Popover
-                      portal
-                      unmountOnHide
-                      gutter={8}
-                      overflowPadding={12}
-                      className={cn(
-                        // No min-width: the items are icon-only here (Badge only reveals its
-                        // label inside a 600px-wide @container), so the menu hugs them.
-                        'z-30 flex w-max max-w-[calc(100vw-2rem)] flex-col items-stretch gap-0.5',
-                        'rounded-2xl border border-border-light bg-surface-chat p-1.5 shadow-lg outline-none',
-                        'origin-bottom translate-y-1 scale-95 opacity-0 transition-[opacity,transform] duration-200 ease-out',
-                        'data-[enter]:translate-y-0 data-[enter]:scale-100 data-[enter]:opacity-100',
-                        'motion-reduce:transition-none',
-                      )}
+                    <Ariakit.PopoverProvider
+                      open={showLeftOptions}
+                      setOpen={setShowLeftOptions}
+                      placement={isRTL ? 'top-end' : 'top-start'}
                     >
-                      <AttachFileChat conversation={conversation} disableInputs={disableInputs} />
-                      <BadgeRow
-                        vertical
-                        showEphemeralBadges={
-                          !isAgentsEndpoint(endpoint) && !isAssistantsEndpoint(endpoint)
-                        }
-                        isSubmitting={isSubmitting}
-                        conversationId={conversationId}
-                        onChange={setBadges}
-                        isInChat={
-                          Array.isArray(conversation?.messages) && conversation.messages.length >= 1
+                      <Ariakit.PopoverDisclosure
+                        render={
+                          <button
+                            type="button"
+                            aria-label={showLeftOptions ? 'Close options' : 'Open options'}
+                            className={cn(
+                              'flex shrink-0 items-center justify-center rounded-full text-text-primary',
+                              isExpandedComposer
+                                ? 'order-2 size-9 sm:size-10'
+                                : 'size-11 md:size-[52px]',
+                              'transition-colors duration-200 hover:bg-surface-hover',
+                              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-medium',
+                              showLeftOptions ? 'bg-surface-hover' : 'bg-surface-secondary',
+                            )}
+                          >
+                            <Plus
+                              className={cn(
+                                'size-5 transition-transform duration-200',
+                                showLeftOptions && 'rotate-45',
+                              )}
+                              aria-hidden="true"
+                            />
+                          </button>
                         }
                       />
-                    </Ariakit.Popover>
-                  </Ariakit.PopoverProvider>
-                  <div
-                    className={cn(
-                      'relative flex min-w-0 items-end overflow-hidden transition-colors duration-200',
-                      isExpandedComposer
-                        ? // Full width on its own line; the card around it draws the border now.
-                          'order-1 w-full basis-full'
-                        : cn(
-                            'flex-1 rounded-full border bg-surface-chat',
-                            isTextAreaFocused ? 'border-border-medium' : 'border-border-light',
-                          ),
-                    )}
-                  >
-                  <TextareaAutosize
-                    {...registerProps}
-                    ref={(e) => {
-                      ref(e);
-                      (textAreaRef as React.MutableRefObject<HTMLTextAreaElement | null>).current =
-                        e;
-                    }}
-                    disabled={disableInputs || isNotAppendable}
-                    onPaste={handlePaste}
-                    onKeyDown={handleKeyDown}
-                    onKeyUp={handleKeyUp}
-                    onCompositionStart={handleCompositionStart}
-                    onCompositionEnd={handleCompositionEnd}
-                    id={mainTextareaId}
-                    tabIndex={0}
-                    data-testid="text-input"
-                    rows={1}
-                    onFocus={() => {
-                      handleFocusOrClick();
-                      setIsTextAreaFocused(true);
-                    }}
-                    onBlur={setIsTextAreaFocused.bind(null, false)}
-                    aria-label={localize('com_ui_message_input')}
-                    onClick={handleFocusOrClick}
-                    style={{ height: 44, overflowY: 'auto' }}
-                    className={cn(
-                      baseClasses,
-                      removeFocusRings,
-                      'scrollbar-hover transition-[max-height] duration-200 disabled:cursor-not-allowed',
-                    )}
-                  />
-                  {/* Marks that there's more text below the fold. A gradient fading into the
+                      <Ariakit.Popover
+                        portal
+                        unmountOnHide
+                        gutter={8}
+                        overflowPadding={12}
+                        className={cn(
+                          // No min-width: the items are icon-only here (Badge only reveals its
+                          // label inside a 600px-wide @container), so the menu hugs them.
+                          'z-30 flex w-max max-w-[calc(100vw-2rem)] flex-col items-stretch gap-0.5',
+                          'rounded-2xl border border-border-light bg-surface-chat p-1.5 shadow-lg outline-none',
+                          'origin-bottom translate-y-1 scale-95 opacity-0 transition-[opacity,transform] duration-200 ease-out',
+                          'data-[enter]:translate-y-0 data-[enter]:scale-100 data-[enter]:opacity-100',
+                          'motion-reduce:transition-none',
+                        )}
+                      >
+                        <AttachFileChat conversation={conversation} disableInputs={disableInputs} />
+                        <BadgeRow
+                          vertical
+                          showEphemeralBadges={
+                            !isAgentsEndpoint(endpoint) && !isAssistantsEndpoint(endpoint)
+                          }
+                          isSubmitting={isSubmitting}
+                          conversationId={conversationId}
+                          onChange={setBadges}
+                          isInChat={
+                            Array.isArray(conversation?.messages) &&
+                            conversation.messages.length >= 1
+                          }
+                        />
+                      </Ariakit.Popover>
+                    </Ariakit.PopoverProvider>
+                    <div
+                      className={cn(
+                        'relative flex min-w-0 items-end overflow-hidden transition-colors duration-200',
+                        isExpandedComposer
+                          ? // Full width on its own line; the card around it draws the border now.
+                            'order-1 w-full basis-full'
+                          : cn(
+                              'flex-1 rounded-full border bg-surface-chat',
+                              isTextAreaFocused ? 'border-border-medium' : 'border-border-light',
+                            ),
+                      )}
+                    >
+                      <TextareaAutosize
+                        {...registerProps}
+                        ref={(e) => {
+                          ref(e);
+                          (
+                            textAreaRef as React.MutableRefObject<HTMLTextAreaElement | null>
+                          ).current = e;
+                        }}
+                        disabled={disableInputs || isNotAppendable}
+                        onPaste={handlePaste}
+                        onKeyDown={handleKeyDown}
+                        onKeyUp={handleKeyUp}
+                        onCompositionStart={handleCompositionStart}
+                        onCompositionEnd={handleCompositionEnd}
+                        id={mainTextareaId}
+                        tabIndex={0}
+                        data-testid="text-input"
+                        rows={1}
+                        onFocus={() => {
+                          handleFocusOrClick();
+                          setIsTextAreaFocused(true);
+                        }}
+                        onBlur={setIsTextAreaFocused.bind(null, false)}
+                        aria-label={localize('com_ui_message_input')}
+                        onClick={handleFocusOrClick}
+                        style={{ height: 44, overflowY: 'auto' }}
+                        className={cn(
+                          baseClasses,
+                          removeFocusRings,
+                          'scrollbar-hover transition-[max-height] duration-200 disabled:cursor-not-allowed',
+                        )}
+                      />
+                      {/* Marks that there's more text below the fold. A gradient fading into the
                       composer's own background, the same treatment the composer uses over the
                       message list — the blur this replaced smeared the last line rather than
                       letting it dissolve. */}
-                  {(isCollapsed || isTextAreaScrollable) && (
-                    <div
-                      aria-hidden="true"
-                      className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-surface-chat via-surface-chat/70 to-transparent transition-opacity duration-200"
-                    />
-                  )}
-                  {!isExpandedComposer && (
-                    <div className="flex shrink-0 items-center pb-2 pr-2">{modelSelectorNode}</div>
-                  )}
-                  </div>
-                  {/* Trailing controls. Compact, they sit at the end of the single row beside
+                      {(isCollapsed || isTextAreaScrollable) && (
+                        <div
+                          aria-hidden="true"
+                          className="via-surface-chat/70 pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-surface-chat to-transparent transition-opacity duration-200"
+                        />
+                      )}
+                      {!isExpandedComposer && (
+                        <div className="flex shrink-0 items-center pb-2 pr-2">
+                          {modelSelectorNode}
+                        </div>
+                      )}
+                    </div>
+                    {/* Trailing controls. Compact, they sit at the end of the single row beside
                       the input; expanded, the row wraps and this group takes the far end of the
                       line below the input, opposite the "+" button. Keeping them in one group
                       across both layouts means the model selector and textarea never remount
                       when the composer changes shape. */}
-                  <div
-                    className={cn(
-                      'flex shrink-0 items-center gap-1.5 sm:gap-2',
-                      isExpandedComposer && cn('order-3', isRTL ? 'mr-auto' : 'ml-auto'),
-                    )}
-                  >
-                    <CollapseChat
-                      isCollapsed={isCollapsed}
-                      isScrollable={isMoreThanThreeRows}
-                      setIsCollapsed={setIsCollapsed}
-                    />
-                    {isExpandedComposer && modelSelectorNode}
-                    {isSubmitting && showStopButton ? (
-                      <StopButton
-                        stop={handleStopGenerating}
-                        setShowStopButton={setShowStopButton}
-                        className={isExpandedComposer ? 'size-9 sm:size-10 md:size-10' : undefined}
+                    <div
+                      className={cn(
+                        'flex shrink-0 items-center gap-1.5 sm:gap-2',
+                        isExpandedComposer && cn('order-3', isRTL ? 'mr-auto' : 'ml-auto'),
+                      )}
+                    >
+                      <CollapseChat
+                        isCollapsed={isCollapsed}
+                        isScrollable={isMoreThanThreeRows}
+                        setIsCollapsed={setIsCollapsed}
                       />
-                    ) : (
-                      <SendButton
-                        ref={submitButtonRef}
-                        control={methods.control}
-                        className={isExpandedComposer ? 'size-9 sm:size-10 md:size-10' : undefined}
-                        disabled={
-                          filesLoading || isSubmitting || disableInputs || isNotAppendable
-                        }
-                      />
-                    )}
+                      {isExpandedComposer && modelSelectorNode}
+                      {isSubmitting && showStopButton ? (
+                        <StopButton
+                          stop={handleStopGenerating}
+                          setShowStopButton={setShowStopButton}
+                          className={
+                            isExpandedComposer ? 'size-9 sm:size-10 md:size-10' : undefined
+                          }
+                        />
+                      ) : (
+                        <SendButton
+                          ref={submitButtonRef}
+                          control={methods.control}
+                          className={
+                            isExpandedComposer ? 'size-9 sm:size-10 md:size-10' : undefined
+                          }
+                          disabled={
+                            filesLoading || isSubmitting || disableInputs || isNotAppendable
+                          }
+                        />
+                      )}
+                    </div>
                   </div>
-                </div>
                 </div>
                 <div
                   ref={voicePanelRef}
@@ -966,79 +974,79 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                     'absolute inset-x-0 top-0 flex flex-col items-center justify-center gap-1 px-4 pb-0 pt-2 text-center text-text-secondary sm:pt-2.5',
                     // See the matching comment on the Type panel above — content fades
                     // faster than the wrapper's height settles, on purpose.
-                    'transition-[opacity,transform] duration-[280ms] ease-[cubic-bezier(0,0,0.2,1)] motion-reduce:transition-none [will-change:opacity,transform]',
+                    'duration-[280ms] ease-[cubic-bezier(0,0,0.2,1)] transition-[opacity,transform] [will-change:opacity,transform] motion-reduce:transition-none',
                     inputMode === 'voice'
-                      ? 'translate-y-0 opacity-100 z-10'
-                      : 'pointer-events-none translate-y-3 opacity-0 z-0',
+                      ? 'z-10 translate-y-0 opacity-100'
+                      : 'pointer-events-none z-0 translate-y-3 opacity-0',
                   )}
                   aria-hidden={inputMode !== 'voice'}
                 >
-                {/* Voice/Text selector, stacked in normal flow above the mic button
+                  {/* Voice/Text selector, stacked in normal flow above the mic button
                     (the panel is a centered flex column, so this just becomes its first
                     child) instead of pinned to a corner. */}
-                <InputModeToggle
+                  <InputModeToggle
                     inputMode={inputMode}
                     setInputMode={setInputMode}
                     hidden={isSubmitting}
                   />
-                {/* The actual mic button lives here (not just a decorative icon), so
+                  {/* The actual mic button lives here (not just a decorative icon), so
                     tapping it directly starts/stops recording. While listening, the
                     volume-driven orb inside it (see AudioRecorder.tsx) is the indicator. */}
-                <div
-                  className="relative flex size-24 items-center justify-center sm:size-20"
-                  {...(isVoiceListening ? { role: 'status', 'aria-label': 'Listening' } : {})}
-                >
-                  {isSubmitting && showStopButton ? (
-                    <VoiceStopButton
-                      onClick={handleVoiceStopClick}
-                      isConfirming={isStopConfirming}
-                      label={
-                        isStopConfirming
-                          ? localize('com_nav_stop_generating')
-                          : localize('com_ui_answer_generating')
-                      }
-                    />
-                  ) : SpeechToText ? (
-                    <AudioRecorder
-                      methods={methods}
-                      ask={submitMessage}
-                      textAreaRef={textAreaRef}
-                      disabled={disableInputs || isNotAppendable}
-                      isSubmitting={isSubmitting}
-                      enabled={!isFeedbackDialogOpen}
-                      // The pendingVoiceStop effect above now derives itself from
-                      // onListeningChange going false (covers a manual tap AND the recognizer
-                      // auto-stopping on its own), so onStopRecording isn't needed here for
-                      // that anymore — don't jump to the Type tab the instant listening stops
-                      // either way; the transcript (especially from an external STT
-                      // round-trip) can take a second or two to arrive, and that effect waits
-                      // for isTranscribing to actually clear first.
-                      onListeningChange={setIsVoiceListening}
-                      onLoadingChange={setIsTranscribing}
-                    />
-                  ) : (
-                    <Mic className="relative size-6" aria-hidden="true" />
+                  <div
+                    className="relative flex size-24 items-center justify-center sm:size-20"
+                    {...(isVoiceListening ? { role: 'status', 'aria-label': 'Listening' } : {})}
+                  >
+                    {isSubmitting && showStopButton ? (
+                      <VoiceStopButton
+                        onClick={handleVoiceStopClick}
+                        isConfirming={isStopConfirming}
+                        label={
+                          isStopConfirming
+                            ? localize('com_nav_stop_generating')
+                            : localize('com_ui_answer_generating')
+                        }
+                      />
+                    ) : SpeechToText ? (
+                      <AudioRecorder
+                        methods={methods}
+                        ask={submitMessage}
+                        textAreaRef={textAreaRef}
+                        disabled={disableInputs || isNotAppendable}
+                        isSubmitting={isSubmitting}
+                        enabled={!isFeedbackDialogOpen}
+                        // The pendingVoiceStop effect above now derives itself from
+                        // onListeningChange going false (covers a manual tap AND the recognizer
+                        // auto-stopping on its own), so onStopRecording isn't needed here for
+                        // that anymore — don't jump to the Type tab the instant listening stops
+                        // either way; the transcript (especially from an external STT
+                        // round-trip) can take a second or two to arrive, and that effect waits
+                        // for isTranscribing to actually clear first.
+                        onListeningChange={setIsVoiceListening}
+                        onLoadingChange={setIsTranscribing}
+                      />
+                    ) : (
+                      <Mic className="relative size-6" aria-hidden="true" />
+                    )}
+                  </div>
+                  <span className="text-xs font-medium sm:text-sm">
+                    {isSubmitting && showStopButton
+                      ? isStopConfirming
+                        ? localize('com_ui_tap_stop_responding')
+                        : localize('com_ui_answer_generating')
+                      : isVoiceListening
+                        ? localize('com_ui_speech_listening', {
+                            duration: formatListeningDuration(listeningDuration),
+                          })
+                        : isTranscribing
+                          ? localize('com_ui_speech_converting')
+                          : localize('com_ui_speech_tap_to_speak')}
+                  </span>
+                  {isTranscribing && !isVoiceListening && (
+                    <div className="flex items-center justify-center gap-1.5 text-emerald-400">
+                      <Spinner size={14} />
+                    </div>
                   )}
                 </div>
-                <span className="text-xs font-medium sm:text-sm">
-                  {isSubmitting && showStopButton
-                    ? isStopConfirming
-                      ? localize('com_ui_tap_stop_responding')
-                      : localize('com_ui_answer_generating')
-                    : isVoiceListening
-                    ? localize('com_ui_speech_listening', {
-                        duration: formatListeningDuration(listeningDuration),
-                      })
-                    : isTranscribing
-                      ? localize('com_ui_speech_converting')
-                      : localize('com_ui_speech_tap_to_speak')}
-                </span>
-                {isTranscribing && !isVoiceListening && (
-                  <div className="flex items-center justify-center gap-1.5 text-emerald-400">
-                    <Spinner size={14} />
-                  </div>
-                )}
-              </div>
               </div>
             )}
             {/* Mobile model selector: portaled to the top mobile nav bar, and kept

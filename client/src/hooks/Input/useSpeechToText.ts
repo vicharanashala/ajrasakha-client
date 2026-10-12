@@ -1,3 +1,4 @@
+import type { AudioRecording } from 'librechat-data-provider';
 import useSpeechToTextBrowser from './useSpeechToTextBrowser';
 import useSpeechToTextExternal from './useSpeechToTextExternal';
 import useGetAudioSettings from './useGetAudioSettings';
@@ -6,6 +7,7 @@ const useSpeechToText = (
   setText: (text: string) => void,
   onTranscriptionComplete: (text: string) => void,
   enabled = false,
+  onAudioSaved?: (audio: AudioRecording) => void,
 ): {
   isLoading?: boolean;
   isListening?: boolean;
@@ -30,7 +32,7 @@ const useSpeechToText = (
     externalStartRecording: startSpeechRecordingExternal,
     externalStopRecording: stopSpeechRecordingExternal,
     error: speechErrorExternal,
-  } = useSpeechToTextExternal(setText, onTranscriptionComplete, enabled);
+  } = useSpeechToTextExternal(setText, onTranscriptionComplete, enabled, onAudioSaved);
 
   const isListening = externalSpeechToText ? speechIsListeningExternal : speechIsListeningBrowser;
   const isLoading = externalSpeechToText ? speechIsLoadingExternal : speechIsLoadingBrowser;

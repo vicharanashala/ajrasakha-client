@@ -6,7 +6,13 @@ import { useParams } from 'react-router-dom';
 import { Constants, buildTree } from 'librechat-data-provider';
 import type { TMessage } from 'librechat-data-provider';
 import type { ChatFormValues } from '~/common';
-import { ChatContext, AddedChatContext, useFileMapContext, ChatFormProvider } from '~/Providers';
+import {
+  ChatContext,
+  AddedChatContext,
+  useFileMapContext,
+  ChatFormProvider,
+  MessagesViewProvider,
+} from '~/Providers';
 import {
   useResumableStreamToggle,
   useAddedResponse,
@@ -18,6 +24,7 @@ import ConversationStarters from './Input/ConversationStarters';
 import { useGetMessagesByConvoId } from '~/data-provider';
 import ExampleQuestionTiles from './ExampleQuestionTiles';
 import MessagesView from './Messages/MessagesView';
+import FeedbackReminderPanel from './Messages/FeedbackReminderPanel';
 import Presentation from './Presentation';
 import ChatForm from './Input/ChatForm';
 import Landing from './Landing';
@@ -106,7 +113,14 @@ function ChatView({ index = 0 }: { index?: number }) {
   } else if (!isLandingPage) {
     content = <MessagesView messagesTree={messagesTree} bottomInset={composerHeight} />;
   } else {
-    content = <Landing centerFormOnLanding={centerFormOnLanding} hasContentBelow={showExampleQuestions} />;
+    // The feedback reminder must also show on the landing page, otherwise a required-feedback
+    // block on send fails silently there.
+    content = (
+      <MessagesViewProvider>
+        <FeedbackReminderPanel onSubmitFeedback={() => {}} />
+        <Landing centerFormOnLanding={centerFormOnLanding} hasContentBelow={showExampleQuestions} />
+      </MessagesViewProvider>
+    );
   }
 
   return (

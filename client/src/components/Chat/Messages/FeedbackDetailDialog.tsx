@@ -7,7 +7,7 @@ import {
   DialogDescription,
   useToastContext,
 } from '@librechat/client';
-import { TFeedback, TFeedbackTag, getTagsForRating } from 'librechat-data-provider';
+import { TFeedback, TFeedbackTag, AudioRecording, getTagsForRating } from 'librechat-data-provider';
 import { Mic, Square } from 'lucide-react';
 import { useLocalize, useSpeechToText } from '~/hooks';
 import { useForm } from 'react-hook-form';
@@ -69,6 +69,7 @@ const FeedbackDetailDialog = memo(
 
     const [selectedTag, setSelectedTag] = useState<TFeedbackTag | undefined>(undefined);
     const [submittedFeedback, setSubmittedFeedback] = useState<TFeedback | undefined>(undefined);
+    const [audioRecordings, setAudioRecordings] = useState<AudioRecording[]>([]);
 
     const { isListening, startRecording, stopRecording, error } = useSpeechToText(
       (text) => {
@@ -80,12 +81,14 @@ const FeedbackDetailDialog = memo(
         setSubmittedFeedback((prev) => (prev ? { ...prev, text } : prev));
       },
       open,
+      (audio) => setAudioRecordings((prev) => [...prev, audio]),
     );
 
     useEffect(() => {
       if (!open) {
         setSelectedTag(undefined);
         setSubmittedFeedback(undefined);
+        setAudioRecordings([]);
         methods.reset({ text: '' });
         stopRecording();
       }
@@ -103,17 +106,19 @@ const FeedbackDetailDialog = memo(
         rating,
         tag: selectedTag,
         text,
+        audioRecordings: audioRecordings.length > 0 ? audioRecordings : undefined,
       };
       setSubmittedFeedback(feedback);
       onSubmit(feedback);
       onOpenChange(false);
       showToast({ message: localize('com_ui_feedback_thank_you'), status: 'success' });
-    }, [rating, selectedTag, methods, onSubmit, onOpenChange, showToast, localize]);
+    }, [rating, selectedTag, audioRecordings, methods, onSubmit, onOpenChange, showToast, localize]);
 
     const handleClear = useCallback(() => {
       methods.reset({ text: '' });
       setSelectedTag(undefined);
       setSubmittedFeedback(undefined);
+      setAudioRecordings([]);
       onClear();
       onOpenChange(false);
     }, [methods, onClear, onOpenChange]);

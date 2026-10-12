@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import { replaceSpecialVars } from 'librechat-data-provider';
+import type { AudioRecording } from 'librechat-data-provider';
 import { useChatContext, useChatFormContext, useAddedChatContext } from '~/Providers';
 import { useAuthContext } from '~/hooks/AuthContext';
 import {
@@ -33,7 +34,7 @@ export default function useSubmitMessage() {
 
   const submitMessage = useCallback(
     async (
-      data?: { text: string; isExampleQuestion?: boolean },
+      data?: { text: string; isExampleQuestion?: boolean; audioRecordings?: AudioRecording[] },
       position?: { latitude: number; longitude: number },
     ) => {
       if (!data) {
@@ -66,25 +67,22 @@ export default function useSubmitMessage() {
       updateFarmerPlatform.mutate(platform);
       updateLastActiveAt.mutate();
 
-      // Example-question taps get the farmer's saved state appended to the question itself
-      // (visible in the chat bubble, so it always reaches the model regardless of whether the
-      // active endpoint/preset has a promptPrefix set — unlike the geolocation `position`
-      // below, which is silently dropped when promptPrefix is empty). Manually typed messages
-      // and slash-command prompts never set `isExampleQuestion`, so they're unaffected.
-      const farmerState = termsData?.farmerProfile?.state;
-      const shouldAppendState = !!(data.isExampleQuestion && farmerState);
-      const finalText = shouldAppendState
-        ? `${data.text}\n\n${localize('com_ui_state_prefix')} ${farmerState}`
-        : data.text;
+      // Disabled: appending the farmer's saved state to example questions.
+      // const farmerState = termsData?.farmerProfile?.state;
+      // const shouldAppendState = !!(data.isExampleQuestion && farmerState);
+      // const finalText = shouldAppendState
+      //   ? `${data.text}\n\n${localize('com_ui_state_prefix')} ${farmerState}`
+      //   : data.text;
 
       ask(
         {
-          text: finalText,
+          text: data.text,
           position,
           // Frontend-only display flag — never included in the outgoing request payload (see
           // useChatFunctions.ts), so it's shown in the bubble (MessageContent.tsx) but never
           // sent to or stored by the backend.
-          isExampleQuestion: shouldAppendState,
+          //isExampleQuestion: shouldAppendState,
+          audioRecordings: data.audioRecordings ?? methods.getValues('audioRecordings'),
         },
         {
           addedConvo: addedConvo ?? undefined,

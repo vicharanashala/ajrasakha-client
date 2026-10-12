@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRecoilState } from 'recoil';
 import { useToastContext } from '@librechat/client';
+import type { AudioRecording } from 'librechat-data-provider';
 import { useSpeechToTextMutation } from '~/data-provider';
 import useGetAudioSettings from './useGetAudioSettings';
 import { useLocalize } from '~/hooks';
@@ -10,6 +11,7 @@ const useSpeechToTextExternal = (
   setText: (text: string) => void,
   onTranscriptionComplete: (text: string) => void,
   enabled = false,
+  onAudioSaved?: (audio: AudioRecording) => void,
 ) => {
   const localize = useLocalize();
   const { showToast } = useToastContext();
@@ -36,6 +38,9 @@ const useSpeechToTextExternal = (
   const { mutate: processAudio, isLoading: isProcessing } = useSpeechToTextMutation({
     onSuccess: (data) => {
       const extractedText = data.text;
+      if (data.audio) {
+        onAudioSaved?.(data.audio);
+      }
       setText(extractedText);
       setIsRequestBeingMade(false);
 
