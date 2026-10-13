@@ -20,6 +20,7 @@ router.get('/:messageId', requireJwtAuth, async (req, res) => {
   try {
 
     const axios = require('axios');
+    console.log(`Fetching answer for message ID: ${messageId} from Review System API at ${REVIEW_SYSTEM_URL}`);
     const response = await axios.get(`${REVIEW_SYSTEM_URL}/answers/message/${messageId}`, {
       headers: {
         'Content-Type': 'application/json',
@@ -28,6 +29,7 @@ router.get('/:messageId', requireJwtAuth, async (req, res) => {
     });
 
     const data = response.data;
+    console.log('Fetched answer from Review System API:', data);
     return res.status(200).json(data);
   } catch (error) {
     console.error('Error fetching answer from Review System API:', error);
