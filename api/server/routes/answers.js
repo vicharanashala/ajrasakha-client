@@ -20,7 +20,7 @@ router.get('/:messageId', requireJwtAuth, async (req, res) => {
   try {
 
     const axios = require('axios');
-    const response = await axios.get(`${REVIEW_SYSTEM_URL}/api/answers/message/${messageId}`, {
+    const response = await axios.get(`${REVIEW_SYSTEM_URL}/answers/message/${messageId}`, {
       headers: {
         'Content-Type': 'application/json',
         'x-internal-api-key': INTERNAL_API_KEY
