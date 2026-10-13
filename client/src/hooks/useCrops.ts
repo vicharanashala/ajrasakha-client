@@ -14,7 +14,7 @@ interface CropsResponse {
 }
 
 const fetchCropsForClient = async (): Promise<Crop[]> => {
-  const { data } = await axios.get<CropsResponse>('http://localhost:3090/api/crops');
+  const { data } = await axios.get<CropsResponse>('/api/crops');
   return (data.crops ?? []).slice(2);
 };
 
