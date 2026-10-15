@@ -379,8 +379,8 @@ const FarmerProfileModal = ({
     setValue('villageName', '', { shouldValidate: false });
   };
 
-  const baseUrl = import.meta.env.VITE_AJRASAKHA_SERVER_URL ?? '';
-  console.log('baseUrl', baseUrl);
+  // Proxied through this server, which adds the review-system API key
+  const baseUrl = '/api';
 
   const { data: statesList = [] } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['states'],

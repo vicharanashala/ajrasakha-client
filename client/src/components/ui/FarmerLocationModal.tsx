@@ -176,7 +176,8 @@ const FarmerLocationModal = ({
     updateCropsCultivated(selectedCropsList.filter((crop) => crop !== cropToRemove));
   };
 
-  const baseUrl = import.meta.env.VITE_AJRASAKHA_SERVER_URL ?? '';
+  // Proxied through this server, which adds the review-system API key
+  const baseUrl = '/api';
 
   const { data: statesList = [], refetch: refetchStates } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['states'],
