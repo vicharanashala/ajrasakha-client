@@ -8,8 +8,13 @@ const proxyLocation = (path, queryKeys = []) => async (req, res) => {
   const baseUrl = process.env.VITE_AJRASAKHA_SERVER_URL;
   const apiKey = process.env.WEB_WEBHOOK_API_KEY;
 
-  if (!baseUrl || !apiKey) {
-    logger.error('Missing VITE_AJRASAKHA_SERVER_URL or WEB_WEBHOOK_API_KEY in environment variables');
+  if (!baseUrl) {
+    console.error('###Missing VITE_AJRASAKHA_SERVER_URL in environment variables');
+    return res.status(500).json({ message: 'Server configuration error' });
+  }
+
+  if (!apiKey) {
+    console.error('###Missing WEB_WEBHOOK_API_KEY in environment variables');
     return res.status(500).json({ message: 'Server configuration error' });
   }
 
@@ -26,9 +31,12 @@ const proxyLocation = (path, queryKeys = []) => async (req, res) => {
       headers: { 'x-internal-api-key': apiKey },
       timeout: 15000,
     });
+    console.log(`Successfully fetched location/${path} with params:`, params);
+    console.log(`Response data:`, response.data);
     return res.status(200).json(response.data);
   } catch (error) {
-    logger.error(`Error fetching location/${path}:`, {
+    console.error(`Error fetching location/${path} with params:`, params);
+    console.error(`Error fetching location/${path}:`, {
       message: error.message,
       status: error.response?.status,
       data: error.response?.data,
