@@ -33,6 +33,7 @@ const notifications = require('./notifications');
 const diagnostics = require('./diagnostics');
 const crops = require('./crop');
 const answers = require('./answers');
+const location = require('./location');
 
 module.exports = {
   mcp,
@@ -70,4 +71,5 @@ module.exports = {
   diagnostics,
   crops,
   answers,
+  location,
 };
