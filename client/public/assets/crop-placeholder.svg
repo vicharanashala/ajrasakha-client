@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Crop placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d9f2dc"/>
+      <stop offset="1" stop-color="#a8dcae"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" fill="url(#bg)"/>
+  <circle cx="148" cy="52" r="16" fill="#fff4b8" opacity="0.9"/>
+  <path d="M0 150 Q50 128 100 144 T200 138 V200 H0Z" fill="#6fbf7a"/>
+  <path d="M0 172 Q60 152 110 166 T200 160 V200 H0Z" fill="#4aa35a"/>
+  <path d="M100 160 V98" stroke="#2f7d3f" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <path d="M100 116 C80 116 64 102 62 82 C84 82 100 96 100 116Z" fill="#3f9b4f"/>
+  <path d="M100 100 C120 100 136 86 138 66 C116 66 100 80 100 100Z" fill="#58b568"/>
+</svg>
