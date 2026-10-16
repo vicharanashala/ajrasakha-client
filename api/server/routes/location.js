@@ -6,7 +6,7 @@ const router = express.Router();
 
 const proxyLocation = (path, queryKeys = []) => async (req, res) => {
   const baseUrl = process.env.VITE_AJRASAKHA_SERVER_URL;
-  const apiKey = process.env.WEB_WEBHOOK_API_KEY;
+  const apiKey = (process.env.WEB_WEBHOOK_API_KEY || '').replace(/^["']|["']$/g, '');
 
   if (!baseUrl) {
     console.error('###Missing VITE_AJRASAKHA_SERVER_URL in environment variables');
@@ -26,7 +26,11 @@ const proxyLocation = (path, queryKeys = []) => async (req, res) => {
   }
 
   try {
-    const response = await axios.get(`${baseUrl}/location/${path}`, {
+    let cleanBaseUrl = baseUrl.replace(/\/+$/, '');
+    if (!cleanBaseUrl.endsWith('/api')) {
+      cleanBaseUrl = `${cleanBaseUrl}/api`;
+    }
+    const response = await axios.get(`${cleanBaseUrl}/location/${path}`, {
       params,
       headers: { 'x-internal-api-key': apiKey },
       timeout: 15000,

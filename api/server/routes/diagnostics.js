@@ -4,8 +4,6 @@ const net = require('net');
 const { execFileSync } = require('child_process');
 const router = express.Router();
 
-const LGD_API_KEY = process.env.LGD_API_KEY || process.env.LGD_VILLAGES_API_KEY;
-const TEST_URL = 'https://api.data.gov.in/resource/a71e60f0-a21d-43de-a6c5-fa5d21600cdb';
 const SOCKS_PROXY_HOST = process.env.SOCKS_PROXY_HOST || '127.0.0.1';
 const SOCKS_PROXY_PORT = Number(process.env.SOCKS_PROXY_PORT) || 1055;
 
@@ -96,85 +94,6 @@ function runTailscaleStatus({ asJson = false } = {}) {
 }
 
 /**
- * GET /api/diagnostics/test-lgd
- * Tests if data.gov.in is reachable from this Cloud Run server
- * This endpoint is used to PROVE the connectivity issue.
- */
-router.get('/test-lgd', async (req, res) => {
-  const startTime = Date.now();
-
-  console.log('========================================');
-  console.log('[DIAGNOSTIC] Starting LGD connectivity test');
-  console.log('[DIAGNOSTIC] Test URL:', TEST_URL);
-  console.log(
-    '[DIAGNOSTIC] API Key configured:',
-    LGD_API_KEY ? `YES (length: ${LGD_API_KEY.length})` : 'NO',
-  );
-  console.log('========================================');
-
-  try {
-    const response = await axios.get(TEST_URL, {
-      params: {
-        'api-key': LGD_API_KEY,
-        format: 'json',
-        limit: 1,
-      },
-      timeout: 30000,
-      headers: {
-        'User-Agent': 'AjraSakha-CloudRun-Diagnostic/1.0',
-      },
-    });
-
-    const duration = Date.now() - startTime;
-
-    console.log('[DIAGNOSTIC] SUCCESS - Response received in', duration, 'ms');
-    console.log('[DIAGNOSTIC] Status:', response.status);
-
-    return res.json({
-      success: true,
-      reachable: true,
-      duration_ms: duration,
-      httpStatus: response.status,
-      message: '✅ data.gov.in IS reachable from this Cloud Run server',
-      data: {
-        recordCount: response.data?.records?.length || 0,
-        sampleRecord: response.data?.records?.[0] || null,
-      },
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    const duration = Date.now() - startTime;
-
-    console.log('========================================');
-    console.log('[DIAGNOSTIC] FAILED - Connection error');
-    console.log('[DIAGNOSTIC] Duration:', duration, 'ms');
-    console.log('[DIAGNOSTIC] Error code:', error.code);
-    console.log('[DIAGNOSTIC] Error message:', error.message);
-    console.log('[DIAGNOSTIC] Error errno:', error.errno);
-    console.log('[DIAGNOSTIC] Error syscall:', error.syscall);
-    console.log('[DIAGNOSTIC] Full error:', error.stack);
-    console.log('========================================');
-
-    return res.json({
-      success: false,
-      reachable: false,
-      duration_ms: duration,
-      httpStatus: error.response?.status || null,
-      error: {
-        code: error.code,
-        message: error.message,
-        errno: error.errno,
-        syscall: error.syscall,
-        address: error.address,
-        port: error.port,
-      },
-      diagnosis: getDiagnosis(error),
-      timestamp: new Date().toISOString(),
-    });
-  }
-});
-
-/**
  * GET /api/diagnostics/server-info
  * Returns info about the server environment
  */
@@ -231,7 +150,6 @@ router.get('/full-test', async (req, res) => {
       revision: process.env.K_REVISION || 'unknown',
     },
     egressIp: null,
-    lgdTest: null,
   };
 
   // Get egress IP
@@ -245,44 +163,6 @@ router.get('/full-test', async (req, res) => {
     results.egressIp = {
       success: false,
       error: error.message,
-    };
-  }
-
-  // Test LGD
-  const startTime = Date.now();
-  try {
-    const response = await axios.get(TEST_URL, {
-      params: {
-        'api-key': LGD_API_KEY,
-        format: 'json',
-        limit: 1,
-      },
-      timeout: 30000,
-      headers: {
-        'User-Agent': 'AjraSakha-CloudRun-Diagnostic/1.0',
-      },
-    });
-
-    results.lgdTest = {
-      success: true,
-      reachable: true,
-      duration_ms: Date.now() - startTime,
-      httpStatus: response.status,
-      recordCount: response.data?.records?.length || 0,
-    };
-  } catch (error) {
-    results.lgdTest = {
-      success: false,
-      reachable: false,
-      duration_ms: Date.now() - startTime,
-      httpStatus: error.response?.status || null,
-      error: {
-        code: error.code,
-        message: error.message,
-        errno: error.errno,
-        syscall: error.syscall,
-      },
-      diagnosis: getDiagnosis(error),
     };
   }
 
@@ -445,28 +325,6 @@ router.get('/tailscale-ping', (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
-
-function getDiagnosis(error) {
-  if (error.code === 'ECONNRESET') {
-    return '🚨 ECONNRESET: The server actively closed the connection. This typically means data.gov.in is BLOCKING this Cloud Run IP address. The TCP connection was established but the server forcibly closed it before sending data.';
-  }
-  if (error.code === 'ENOTFOUND') {
-    return '🚨 DNS FAILURE: Could not resolve the hostname api.data.gov.in';
-  }
-  if (error.code === 'ETIMEDOUT') {
-    return '🚨 TIMEOUT: data.gov.in took too long to respond (>30s)';
-  }
-  if (error.code === 'ECONNREFUSED') {
-    return '🚨 CONNECTION REFUSED: data.gov.in actively rejected the connection';
-  }
-  if (error.response?.status === 403) {
-    return '🚨 FORBIDDEN: API key may be invalid or restricted';
-  }
-  if (error.response?.status === 429) {
-    return '🚨 RATE LIMITED: Too many requests from this IP';
-  }
-  return `❌ UNKNOWN ERROR: ${error.code || 'no code'} - ${error.message}`;
-}
 
 function getSocksProxyDiagnosis(error) {
   if (!error) {
