@@ -1,7 +1,6 @@
 const accessPermissions = require('./accessPermissions');
 const assistants = require('./assistants');
 const categories = require('./categories');
-const locations = require('./locations');
 const endpoints = require('./endpoints');
 const staticRoute = require('./static');
 const messages = require('./messages');
@@ -61,7 +60,6 @@ module.exports = {
   endpoints,
   assistants,
   categories,
-  locations,
   staticRoute,
   accessPermissions,
   webhooks,
