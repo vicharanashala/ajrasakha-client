@@ -33,7 +33,8 @@ const DESCENDANTS: Record<Level, Level[]> = {
   nearestKVK: [],
 };
 
-const baseUrl = import.meta.env.VITE_AJRASAKHA_SERVER_URL ?? '';
+// Proxied through this server, which adds the review-system API key
+const baseUrl = '/api';
 const asList = (d: unknown): Option[] => (Array.isArray(d) ? d : []);
 const norm = (s: string) => s.trim().toLowerCase();
 const same = (a: string, b: string) => norm(a) === norm(b);

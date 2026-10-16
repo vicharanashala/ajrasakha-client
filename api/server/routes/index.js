@@ -1,7 +1,6 @@
 const accessPermissions = require('./accessPermissions');
 const assistants = require('./assistants');
 const categories = require('./categories');
-const locations = require('./locations');
 const endpoints = require('./endpoints');
 const staticRoute = require('./static');
 const messages = require('./messages');
@@ -33,6 +32,7 @@ const notifications = require('./notifications');
 const diagnostics = require('./diagnostics');
 const crops = require('./crop');
 const answers = require('./answers');
+const location = require('./location');
 
 module.exports = {
   mcp,
@@ -60,7 +60,6 @@ module.exports = {
   endpoints,
   assistants,
   categories,
-  locations,
   staticRoute,
   accessPermissions,
   webhooks,
@@ -70,4 +69,5 @@ module.exports = {
   diagnostics,
   crops,
   answers,
+  location,
 };
