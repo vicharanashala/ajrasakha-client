@@ -5,16 +5,16 @@ const { logger } = require('@librechat/data-schemas');
 const router = express.Router();
 
 const proxyLocation = (path, queryKeys = []) => async (req, res) => {
-  const baseUrl = process.env.VITE_AJRASAKHA_SERVER_URL;
-  const apiKey = (process.env.WEB_WEBHOOK_API_KEY || '').replace(/^["']|["']$/g, '');
+  const baseUrl = process.env.REVIEW_SYSTEM_URL;
+  const apiKey = (process.env.REVIEW_SYSTEM_API_AUTH_KEY || '').replace(/^["']|["']$/g, '');
 
   if (!baseUrl) {
-    console.error('###Missing VITE_AJRASAKHA_SERVER_URL in environment variables');
+    console.error('###Missing REVIEW_SYSTEM_URL in environment variables');
     return res.status(500).json({ message: 'Server configuration error' });
   }
 
   if (!apiKey) {
-    console.error('###Missing WEB_WEBHOOK_API_KEY in environment variables');
+    console.error('###Missing REVIEW_SYSTEM_API_AUTH_KEY in environment variables');
     return res.status(500).json({ message: 'Server configuration error' });
   }
 
