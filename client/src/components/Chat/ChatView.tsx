@@ -185,7 +185,10 @@ function ChatView({ index = 0 }: { index?: number }) {
                       isLandingPage
                         ? // `safe center` centres the content when it fits and, when it is taller than
                           // the space available, grows downward and scrolls instead of spilling upward.
-                          'flex min-h-0 w-full flex-1 flex-col items-center justify-center [justify-content:safe_center] overflow-y-auto pt-14 sm:contents'
+                          // The bottom edge fades out instead of cutting off, so cards dissolve above the
+                          // composer and it is clear there is more to scroll. The bottom padding lets the
+                          // last card scroll fully clear of the fade.
+                          'flex min-h-0 w-full flex-1 flex-col items-center justify-center [justify-content:safe_center] overflow-y-auto pb-7 pt-14 [-webkit-mask-image:linear-gradient(to_bottom,black_calc(100%_-_28px),transparent)] [mask-image:linear-gradient(to_bottom,black_calc(100%_-_28px),transparent)] sm:contents'
                         : 'contents'
                     }
                   >
