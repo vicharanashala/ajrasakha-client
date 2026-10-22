@@ -144,7 +144,7 @@ function ChatView({ index = 0 }: { index?: number }) {
                         // Unlike a live conversation, the composer isn't fixed to the viewport
                         // on phones here — the notice has to sit below it, not behind it — so
                         // this applies at every width.
-                        'relative flex-1 items-center justify-center overflow-y-auto pb-40 sm:pb-44'
+                        'relative flex-1 items-center justify-center overflow-y-auto pb-40 pt-14 sm:pb-44 sm:pt-0'
                       : // `relative` anchors the composer, which is pulled out of flow below
                         // so the message list can run its full height underneath it.
                         'relative min-h-0 flex-1 overflow-hidden',

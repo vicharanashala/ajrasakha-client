@@ -70,17 +70,17 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
         aria-expanded={open}
         aria-label={fullAddress ? `Location: ${fullAddress}. Change location` : 'Set location'}
         title={fullAddress || undefined}
-        className="group flex max-w-[16rem] items-center gap-2 rounded-full border border-border-light bg-surface-primary py-1 pl-1 pr-3 text-sm shadow-sm transition-colors hover:border-border-medium hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary sm:max-w-md"
+        className="group flex max-w-[13rem] items-center gap-2 rounded-full border border-border-light bg-surface-primary py-1 pl-1 pr-2.5 text-sm shadow-sm sm:pr-3 transition-colors hover:border-border-medium hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary sm:max-w-md"
       >
         <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-green-500/10 text-green-500 dark:text-green-400">
           <MapPin className="size-4" aria-hidden="true" />
         </span>
         <span className="flex min-w-0 items-baseline gap-1.5 capitalize">
-          <span className="max-w-[60%] shrink-0 truncate font-semibold text-text-primary">
+          <span className="max-w-full shrink-0 truncate font-semibold text-text-primary sm:max-w-[60%]">
             {primaryPart || 'Set location'}
           </span>
           {otherParts.length > 0 && (
-            <span className="min-w-0 truncate text-text-secondary">{otherParts.join(', ')}</span>
+            <span className="hidden min-w-0 truncate text-text-secondary sm:inline">{otherParts.join(', ')}</span>
           )}
         </span>
         <ChevronDown
