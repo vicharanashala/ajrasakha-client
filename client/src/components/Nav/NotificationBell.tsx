@@ -11,7 +11,16 @@ import {
   OGDialogTemplate,
   Spinner,
 } from '@librechat/client';
-import { Bell, BellOff, Info, AlertTriangle, Check, ChevronRight } from 'lucide-react';
+import {
+  Bell,
+  BellDot,
+  BellOff,
+  Check,
+  ChevronRight,
+  Inbox,
+  MessageSquareText,
+  TriangleAlert,
+} from 'lucide-react';
 import type useLocalizeHook from '~/hooks/useLocalize';
 import { useLocalize, useNewConvo } from '~/hooks';
 import { clearMessagesCache, cn } from '~/utils';
@@ -22,9 +31,9 @@ type Localize = ReturnType<typeof useLocalizeHook>;
 
 // Filter tabs shown at the top of the notifications dialog.
 const NOTIFICATION_TABS = [
-  { filter: 'unread', label: 'Unread' },
-  { filter: 'all', label: 'All' },
-  { filter: 'alerts', label: 'Alerts' },
+  { filter: 'unread', label: 'Unread', Icon: BellDot },
+  { filter: 'all', label: 'All', Icon: Inbox },
+  { filter: 'alerts', label: 'Alerts', Icon: TriangleAlert },
 ];
 
 /** "2m ago" / "3h ago" / "Yesterday" / "4d ago", falling back to a plain date once it's more
@@ -66,7 +75,7 @@ function NotificationRow({
   const isClickable = notification.type !== 'CUSTOM' && (!!notification.originalQuestion || !!notification.messageId);
   const displayText = notification.message ?? notification.originalQuestion ?? '';
   const isAlert = notification.type === 'CUSTOM';
-  const TypeIcon = isAlert ? AlertTriangle : Info;
+  const TypeIcon = isAlert ? TriangleAlert : MessageSquareText;
   const accentTextClass = isAlert ? 'text-amber-500' : 'text-green-600 dark:text-green-400';
   const accentBgClass = isAlert ? 'bg-amber-500/15' : 'bg-green-600/15';
   const accentDotClass = isAlert ? 'bg-amber-500' : 'bg-green-600 dark:bg-green-400';
@@ -255,6 +264,9 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
         >
           <OGDialogHeader className="flex shrink-0 flex-row items-center justify-between gap-3 space-y-0 border-b border-border-light py-4 pl-5 pr-14 text-left sm:pl-6">
             <div className="flex min-w-0 items-center gap-2.5">
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-green-600/15 text-green-600 dark:text-green-400">
+                <Bell className="size-4" aria-hidden="true" />
+              </span>
               <OGDialogTitle className="text-base font-semibold text-text-primary sm:text-lg">
                 {localize('com_nav_notifications')}
               </OGDialogTitle>
@@ -282,8 +294,9 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
                 key={tab.filter}
                 type="button"
                 onClick={() => { setFilter(tab.filter); setPage(1); }}
-                className={cn("pb-3 pt-3 text-sm font-medium transition-colors border-b-2", filter === tab.filter ? "border-green-600 text-green-600" : "border-transparent text-text-secondary hover:text-text-primary")}
+                className={cn("flex items-center gap-1.5 pb-3 pt-3 text-sm font-medium transition-colors border-b-2", filter === tab.filter ? "border-green-600 text-green-600" : "border-transparent text-text-secondary hover:text-text-primary")}
               >
+                <tab.Icon className="size-4" aria-hidden="true" />
                 {tab.label}
               </button>
             ))}
