@@ -149,8 +149,8 @@ export const LangSelector = ({
             type="text"
             value={languageQuery}
             onChange={(e) => setLanguageQuery(e.target.value)}
-            placeholder="Search language"
-            aria-label="Search language"
+            placeholder={localize('com_nav_search_language')}
+            aria-label={localize('com_nav_search_language')}
             autoComplete="off"
             className="w-full border-0 bg-transparent p-0 text-sm text-gray-900 placeholder:text-gray-400 !shadow-none !outline-none !ring-0 focus:!outline-none focus-visible:!outline-none focus-visible:!ring-0 dark:text-gray-100"
           />
@@ -162,7 +162,7 @@ export const LangSelector = ({
         >
           {visibleOptions.length === 0 && (
             <li className="col-span-full px-3 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
-              No languages found
+              {localize('com_ui_no_results_found')}
             </li>
           )}
           {visibleOptions.map((option) => {

@@ -182,17 +182,17 @@ function AuthLayout({
                   </span>
                   <span className="min-w-0 flex-1">
                     <h2 className="text-lg font-semibold leading-tight text-gray-900 dark:text-gray-100">
-                      Select Language
+                      {localize('com_auth_select_language')}
                     </h2>
                     <p className="mt-0.5 text-sm font-normal text-gray-500 dark:text-gray-400">
-                      Choose the language you are most comfortable with.
+                      {localize('com_auth_select_language_desc')}
                     </p>
                   </span>
                   <button
                     type="button"
                     onClick={closeLangDialog}
                     className="-mr-1.5 -mt-1 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
-                    aria-label="Close"
+                    aria-label={localize('com_ui_close')}
                   >
                     <X className="size-5" aria-hidden="true" />
                   </button>
