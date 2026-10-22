@@ -425,7 +425,7 @@ router.put('/:conversationId/:messageId/feedback', validateMessageReq, async (re
 
     try {
       const reviewSystemUrl = process.env.REVIEW_SYSTEM_URL;
-      const internalApiKey = process.env.INTERNAL_API_KEY;
+      const internalApiKey = process.env.REVIEW_SYSTEM_API_AUTH_KEY;
       if (reviewSystemUrl) {
         const baseUrl = reviewSystemUrl.replace(/\/$/, '').replace(/\/api$/, '');
         const fetchUrl = `${baseUrl}/api/feedbacks/question/${messageId}`;

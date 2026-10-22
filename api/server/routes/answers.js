@@ -5,16 +5,16 @@ const { logger } = require('@librechat/data-schemas');
 
 router.get('/:messageId', requireJwtAuth, async (req, res) => {
   const { messageId } = req.params;
-    const REVIEW_SYSTEM_URL = process.env.VITE_AJRASAKHA_SERVER_URL;
-    const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY;
+    const REVIEW_SYSTEM_URL = process.env.REVIEW_SYSTEM_URL;
+    const REVIEW_SYSTEM_API_AUTH_KEY = process.env.REVIEW_SYSTEM_API_AUTH_KEY;
    if (!REVIEW_SYSTEM_URL) {
-      console.error('$$$Missing VITE_AJRASAKHA_SERVER_URL in environment variables');
-      return res.status(500).json({ message: 'Server configuration error, missing VITE_AJRASAKHA_SERVER_URL' });
+      console.error('$$$Missing REVIEW_SYSTEM_URL in environment variables');
+      return res.status(500).json({ message: 'Server configuration error, missing REVIEW_SYSTEM_URL' });
     }
 
-    if (!INTERNAL_API_KEY) {
-      console.error('$$$Missing INTERNAL_API_KEY in environment variables');
-      return res.status(500).json({ message: 'Server configuration error, missing INTERNAL_API_KEY' });
+    if (!REVIEW_SYSTEM_API_AUTH_KEY) {
+      console.error('$$$Missing REVIEW_SYSTEM_API_AUTH_KEY in environment variables');
+      return res.status(500).json({ message: 'Server configuration error, missing REVIEW_SYSTEM_API_AUTH_KEY' });
     }
 
   try {
@@ -24,7 +24,7 @@ router.get('/:messageId', requireJwtAuth, async (req, res) => {
     const response = await axios.get(`${REVIEW_SYSTEM_URL}/answers/message/${messageId}`, {
       headers: {
         'Content-Type': 'application/json',
-        'x-internal-api-key': INTERNAL_API_KEY
+        'x-internal-api-key': REVIEW_SYSTEM_API_AUTH_KEY
       }
     });
 
