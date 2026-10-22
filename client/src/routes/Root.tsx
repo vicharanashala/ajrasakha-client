@@ -35,19 +35,33 @@ import {
 
 export default function Root() {
   // The answer page is a standalone reading view, so the mobile menu bar and top glow are hidden there.
-  const isAnswerPage = useLocation().pathname.startsWith('/answer/');
+  const { pathname } = useLocation();
+  const isAnswerPage = pathname.startsWith('/answer/');
   const [showTerms, setShowTerms] = useState(false);
   const [showTestingNotice, setShowTestingNotice] = useState(false);
   const [showFarmerProfile, setShowFarmerProfile] = useState(false);
   const [showFarmerLocation, setShowFarmerLocation] = useState(false);
   const [showFarmerPlace, setShowFarmerPlace] = useState(false);
+  // On mobile the sidebar always starts closed. The closed state is saved so the sidebar's own
+  // first-visit logic does not toggle it open again.
   const [navVisible, setNavVisible] = useState(() => {
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      localStorage.setItem('navVisible', JSON.stringify(false));
+      return false;
+    }
     const savedNavVisible = localStorage.getItem('navVisible');
     return savedNavVisible !== null ? JSON.parse(savedNavVisible) : true;
   });
 
   const { isAuthenticated, logout } = useAuthContext();
   const isSmallScreen = useMediaQuery('(max-width: 768px)');
+
+  // Closes the sidebar on mobile when an answer opens, for example from a notification.
+  useEffect(() => {
+    if (isSmallScreen && isAnswerPage) {
+      setNavVisible(false);
+    }
+  }, [isSmallScreen, isAnswerPage, pathname]);
 
   // Global health check - runs once per authenticated session
   useHealthCheck(isAuthenticated);
