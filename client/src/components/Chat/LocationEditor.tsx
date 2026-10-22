@@ -1,6 +1,16 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Check, Loader2, Pencil, Search } from 'lucide-react';
+import {
+  Check,
+  Flag,
+  Home,
+  LayoutGrid,
+  Loader2,
+  MapPinned,
+  Pencil,
+  Search,
+  Sprout,
+} from 'lucide-react';
 import { dataService, QueryKeys } from 'librechat-data-provider';
 import type { IFarmerProfile } from 'librechat-data-provider';
 import { useSaveFarmerProfileMutation } from '~/data-provider';
@@ -17,6 +27,14 @@ const LABELS: Record<Level, string> = {
   blockName: 'Block',
   villageName: 'Village',
   nearestKVK: 'Nearest KVK',
+};
+// Icon shown beside each location level.
+const LEVEL_ICONS = {
+  state: Flag,
+  district: MapPinned,
+  blockName: LayoutGrid,
+  villageName: Home,
+  nearestKVK: Sprout,
 };
 const ANCESTORS: Record<Level, Level[]> = {
   state: [],
@@ -207,69 +225,91 @@ export default function LocationEditor({
 
   return (
     <div className="text-sm text-text-primary">
-      <ul className="flex flex-col">
+      <ul className="flex flex-col gap-1">
         {LEVELS.map((level) => {
           const reason = missingAncestor(level, draft);
           const isEditing = editing === level;
+          const LevelIcon = LEVEL_ICONS[level];
           return (
             <li key={level}>
-              <div className="flex items-center justify-between gap-2 px-2 py-2">
-                <div className="min-w-0">
-                  <div className="text-xs text-text-secondary">{LABELS[level]}</div>
-                  <div
+              <button
+                type="button"
+                disabled={!!reason}
+                aria-expanded={isEditing}
+                title={reason ? `Select ${LABELS[reason]} first` : `Edit ${LABELS[level]}`}
+                onClick={() => {
+                  setSearch('');
+                  setEditing(isEditing ? null : level);
+                }}
+                className={cn(
+                  'group flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent',
+                  isEditing && 'bg-surface-secondary',
+                )}
+              >
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-green-500/10 text-green-500 dark:text-green-400">
+                  <LevelIcon className="size-4" aria-hidden="true" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-xs text-text-secondary">{LABELS[level]}</span>
+                  <span
+                    title={draft[level] || undefined}
                     className={cn(
-                      'truncate font-medium',
+                      'block truncate font-semibold',
                       level !== 'nearestKVK' && 'capitalize',
-                      !draft[level] && 'text-text-tertiary',
+                      draft[level] ? 'text-text-primary' : 'font-normal text-text-tertiary',
                     )}
                   >
                     {draft[level] || `Select ${LABELS[level]}`}
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  disabled={!!reason}
-                  title={reason ? `Select ${LABELS[reason]} first` : `Edit ${LABELS[level]}`}
-                  onClick={() => {
-                    setSearch('');
-                    setEditing(isEditing ? null : level);
-                  }}
-                  className="rounded-md p-1.5 text-text-secondary hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  <Pencil className="h-4 w-4" />
-                </button>
-              </div>
+                  </span>
+                </span>
+                <Pencil
+                  className="size-4 shrink-0 text-text-tertiary transition-colors group-hover:text-text-primary"
+                  aria-hidden="true"
+                />
+              </button>
               {isEditing && (
-                <div className="mx-2 mb-2 rounded-lg border border-border-light">
-                  <div className="flex items-center gap-2 border-b border-border-light px-2 py-1.5">
-                    <Search className="h-4 w-4 text-text-secondary" />
+                <div className="mx-1 mb-2 mt-1 overflow-hidden rounded-lg border border-border-light bg-surface-primary">
+                  <div className="flex items-center gap-2 border-b border-border-light px-3 py-2">
+                    <Search className="size-4 shrink-0 text-text-tertiary" aria-hidden="true" />
                     <input
                       autoFocus
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                       placeholder={`Search ${LABELS[level]}…`}
+                      aria-label={`Search ${LABELS[level]}`}
                       className="w-full bg-transparent outline-none placeholder:text-text-tertiary"
                     />
                   </div>
                   <div className="max-h-48 overflow-y-auto py-1">
                     {loading[level] ? (
                       <div className="flex items-center gap-2 px-3 py-2 text-text-secondary">
-                        <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+                        <Loader2 className="size-4 animate-spin" aria-hidden="true" /> Loading…
                       </div>
                     ) : filtered.length === 0 ? (
                       <div className="px-3 py-2 text-text-secondary">No options found</div>
                     ) : (
-                      filtered.map((name) => (
-                        <button
-                          key={name}
-                          type="button"
-                          onClick={() => pick(level, name)}
-                          className="flex w-full items-center justify-between gap-2 px-3 py-1.5 text-left hover:bg-surface-hover"
-                        >
-                          <span className="break-words">{name}</span>
-                          {same(name, draft[level]) && <Check className="h-4 w-4 shrink-0" />}
-                        </button>
-                      ))
+                      filtered.map((name) => {
+                        const selected = same(name, draft[level]);
+                        return (
+                          <button
+                            key={name}
+                            type="button"
+                            onClick={() => pick(level, name)}
+                            className={cn(
+                              'flex w-full items-center justify-between gap-2 px-3 py-2 text-left transition-colors hover:bg-surface-hover focus-visible:bg-surface-hover focus-visible:outline-none',
+                              selected && 'bg-green-500/10 font-medium',
+                            )}
+                          >
+                            <span className="break-words">{name}</span>
+                            {selected && (
+                              <Check
+                                className="size-4 shrink-0 text-green-500 dark:text-green-400"
+                                aria-hidden="true"
+                              />
+                            )}
+                          </button>
+                        );
+                      })
                     )}
                   </div>
                 </div>
@@ -278,13 +318,13 @@ export default function LocationEditor({
           );
         })}
       </ul>
-      {error && <p className="px-2 pb-1 text-xs text-red-500">{error}</p>}
-      <div className="mt-1 flex justify-end gap-2 border-t border-border-light px-2 pt-2">
+      {error && <p role="alert" className="px-2 pb-1 text-xs text-red-500">{error}</p>}
+      <div className="mt-2 flex justify-end gap-2 border-t border-border-light px-1 pt-3">
         {onCancel && (
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-md px-3 py-1.5 hover:bg-surface-hover"
+            className="rounded-lg px-4 py-2 text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary"
           >
             {cancelLabel}
           </button>
@@ -302,7 +342,7 @@ export default function LocationEditor({
               nearestKVK: draft.nearestKVK,
             } as IFarmerProfile);
           }}
-          className="flex items-center gap-1.5 rounded-md bg-surface-submit px-3 py-1.5 text-white disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex items-center gap-1.5 rounded-lg bg-green-600 px-5 py-2 font-medium text-white transition-colors hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary disabled:cursor-not-allowed disabled:opacity-50"
         >
           {saveMutation.isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
           Save

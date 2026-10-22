@@ -99,7 +99,7 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
             role="dialog"
             aria-label="Edit location"
             style={{ top: pos.top, left: pos.left, width: Math.min(320, window.innerWidth - 16) }}
-            className="fixed z-[110] rounded-xl border border-border-light bg-surface-primary p-2 shadow-lg duration-150 animate-in fade-in-0 zoom-in-95"
+            className="fixed z-[110] max-h-[calc(100dvh-6rem)] overflow-y-auto rounded-xl border border-border-light bg-surface-primary p-2 shadow-lg duration-150 animate-in fade-in-0 zoom-in-95"
           >
             <LocationEditor
               profile={profile}
