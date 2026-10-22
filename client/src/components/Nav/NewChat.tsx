@@ -139,7 +139,7 @@ export default function NewChat({
           <div className="flex-shrink-0" style={{ height: 32, width: 32 }}>
             {logo}
           </div>
-          <span className="truncate text-lg font-bold tracking-tight text-text-primary">Ajrasakha</span>
+          <span className="truncate text-lg font-semibold text-text-primary">Ajrasakha</span>
         </div>
         <div className="flex items-center gap-0.5">
           {headerButtons}
