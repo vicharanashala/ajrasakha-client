@@ -229,7 +229,7 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
             ? `${fullAddress}${isSmallScreen ? `. Drag to move${activePosition ? ", double tap to reset" : ""}` : ""}`
             : undefined
         }
-        className={cn("group flex max-w-[13rem] items-center gap-2 rounded-full border border-border-light bg-surface-primary py-1 pl-1 pr-2.5 text-sm shadow-sm sm:pr-3 transition-colors hover:border-border-medium hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary sm:max-w-md", isSmallScreen && "select-none cursor-grab active:cursor-grabbing", isSmallScreen && "fixed z-40", isSmallScreen && !activePosition && "right-3 top-[3.125rem]", isDragging && "shadow-lg")}
+        className={cn("group flex max-w-[13rem] items-center gap-2 rounded-full border border-border-light bg-surface-primary py-1 pl-1 pr-2.5 text-sm shadow-sm sm:pr-3 transition-colors hover:border-border-medium hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary sm:max-w-md", isSmallScreen && "select-none cursor-grab active:cursor-grabbing", activePosition && "fixed z-40", isDragging && "shadow-lg")}
       >
         <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-green-500/10 text-green-500 dark:text-green-400">
           <MapPin className="size-4" aria-hidden="true" />
@@ -254,8 +254,8 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
 
   return (
     <>
-      {/* On small screens the pill floats at the top right until the user drags it elsewhere. */}
-      {isSmallScreen ? createPortal(triggerButton, document.body) : triggerButton}
+      {/* The pill stays in the header until a small screen user drags it elsewhere. */}
+      {activePosition ? createPortal(triggerButton, document.body) : triggerButton}
 
       {open &&
         createPortal(

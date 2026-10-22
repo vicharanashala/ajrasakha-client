@@ -62,7 +62,6 @@ export default function Header() {
     <div className="flex items-center gap-1.5 sm:gap-2">
       {/* {interfaceConfig.presets === true && interfaceConfig.modelSelect && <PresetsMenu />}
       {hasAccessToMultiConvo === true && <AddMultiConvo />} */}
-      <LocationMenu isSmallScreen={isSmallScreen}/>
     </div>
   );
 
@@ -97,7 +96,8 @@ export default function Header() {
          works even when parent panels apply CSS transforms */}
       {createPortal(
         <div className="fixed right-3 top-3 z-[100] flex items-center gap-1.5">
-          {/* <TemporaryChat /> */}
+          {/* Sits where the temporary chat button used to be, left of the share menu. */}
+          <LocationMenu isSmallScreen={isSmallScreen} />
           <ExportAndShareMenu isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false} />
         </div>,
         document.body,
