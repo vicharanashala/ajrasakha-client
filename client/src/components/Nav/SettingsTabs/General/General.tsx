@@ -1,5 +1,6 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, useState } from 'react';
 import Cookies from 'js-cookie';
+import { Check, Search } from 'lucide-react';
 import { useRecoilState } from 'recoil';
 import { Dropdown, ThemeContext } from '@librechat/client';
 import ArchivedChats from './ArchivedChats';
@@ -83,6 +84,7 @@ export const LangSelector = ({
   defaultLanguageOptions,
   compactOnMobile = false,
   required = false,
+  inline = false,
 }: {
   langcode: string;
   onChange: (value: string) => void;
@@ -97,8 +99,12 @@ export const LangSelector = ({
   compactOnMobile?: boolean;
   /** When true, appends a small red asterisk to the caption to mark this field as required. */
   required?: boolean;
+  /** When true, shows the languages as a scrollable list instead of a dropdown (used in the login language dialog). */
+  inline?: boolean;
 }) => {
   const localize = useLocalize();
+  // Search text for the inline language list.
+  const [languageQuery, setLanguageQuery] = useState('');
 
   const languageOptions: LanguageOption[] = [
     { value: 'auto', label: localize('com_nav_lang_auto') },
@@ -128,6 +134,67 @@ export const LangSelector = ({
   ];
 
   const labelId = 'language-selector-label';
+
+  if (inline) {
+    const allOptions = defaultLanguageOptions || languageOptions;
+    const term = languageQuery.trim().toLowerCase();
+    const visibleOptions = term
+      ? allOptions.filter((o) => o.label.toLowerCase().includes(term))
+      : allOptions;
+    return (
+      <div>
+        <div className="mb-4 flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 focus-within:border-green-600 focus-within:ring-1 focus-within:ring-green-600 dark:border-gray-700 dark:bg-gray-800/50">
+          <Search className="size-4 shrink-0 text-gray-400" aria-hidden="true" />
+          <input
+            type="text"
+            value={languageQuery}
+            onChange={(e) => setLanguageQuery(e.target.value)}
+            placeholder="Search language"
+            aria-label="Search language"
+            autoComplete="off"
+            className="w-full border-0 bg-transparent p-0 text-sm text-gray-900 placeholder:text-gray-400 !shadow-none !outline-none !ring-0 focus:!outline-none focus-visible:!outline-none focus-visible:!ring-0 dark:text-gray-100"
+          />
+        </div>
+        <ul
+          role="listbox"
+          aria-label={localize('com_nav_language')}
+          className="grid max-h-[45vh] grid-cols-1 gap-1 overflow-y-auto pr-1 sm:grid-cols-2"
+        >
+          {visibleOptions.length === 0 && (
+            <li className="col-span-full px-3 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+              No languages found
+            </li>
+          )}
+          {visibleOptions.map((option) => {
+            const selected = option.value === langcode;
+            return (
+              <li key={option.value}>
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected={selected}
+                  onClick={() => onChange(option.value)}
+                  className={`flex w-full items-center justify-between gap-2 rounded-lg border px-3 py-2 text-left text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 ${
+                    selected
+                      ? 'border-green-600/40 bg-green-600/10 font-medium text-gray-900 dark:text-gray-100'
+                      : 'border-gray-200 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <span className="truncate">{option.label}</span>
+                  {selected && (
+                    <Check
+                      className="size-4 shrink-0 text-green-600 dark:text-green-400"
+                      aria-hidden="true"
+                    />
+                  )}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-between gap-2 text-gray-700 dark:text-gray-100">

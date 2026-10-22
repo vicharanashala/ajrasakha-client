@@ -1,5 +1,5 @@
 import { ThemeSelector } from '@librechat/client';
-import { BadgeCheck, Languages, Mic } from 'lucide-react';
+import { BadgeCheck, Languages, Mic, X } from 'lucide-react';
 import { cn } from '~/utils';
 import { TStartupConfig } from 'librechat-data-provider';
 import { ErrorMessage } from '~/components/Auth/ErrorMessage';
@@ -174,26 +174,33 @@ function AuthLayout({
             leaveTo="opacity-0 scale-95"
           >
             <div className="fixed inset-0 flex items-center justify-center p-4">
-              <DialogPanel className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-black/5 dark:bg-gray-900 dark:ring-white/10">
-                <DialogTitle as="div" className="mb-5 flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                    Select Language
-                  </h2>
-
+              <DialogPanel className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 dark:bg-gray-900 dark:ring-white/10">
+                <DialogTitle as="div" className="flex items-start gap-3 border-b border-gray-200 p-5 sm:p-6 dark:border-gray-800">
+                  {/* Icon tile keeps the dialog tied to the language button that opens it. */}
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-green-600/10 text-green-600 dark:bg-green-400/10 dark:text-green-400">
+                    <Languages className="size-5" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <h2 className="text-lg font-semibold leading-tight text-gray-900 dark:text-gray-100">
+                      Select Language
+                    </h2>
+                    <p className="mt-0.5 text-sm font-normal text-gray-500 dark:text-gray-400">
+                      Choose the language you are most comfortable with.
+                    </p>
+                  </span>
                   <button
+                    type="button"
                     onClick={closeLangDialog}
-                    className="rounded-md p-1 text-gray-500 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                    className="-mr-1.5 -mt-1 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
                     aria-label="Close"
                   >
-                    ✕
+                    <X className="size-5" aria-hidden="true" />
                   </button>
                 </DialogTitle>
 
-                <LangSelector
-                  langcode={langcode}
-                  onChange={handleLangChange}
-                  portal={false}
-                />
+                <div className="p-5 sm:p-6">
+                  <LangSelector langcode={langcode} onChange={handleLangChange} inline />
+                </div>
               </DialogPanel>
             </div>
           </TransitionChild>
