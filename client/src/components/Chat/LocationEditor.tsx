@@ -57,9 +57,24 @@ const baseUrl = '/api';
 const isTouchDevice = () => window.matchMedia?.('(pointer: coarse)').matches ?? false;
 const asList = (d: unknown): Option[] => (Array.isArray(d) ? d : []);
 const norm = (s: string) => s.trim().toLowerCase();
-const same = (a: string, b: string) => norm(a) === norm(b);
-const findByName = (list: Option[], name: string) =>
-  name ? list.find((o) => same(o.name, name)) : undefined;
+// Comparison key that ignores case, "&" vs "and", spacing and punctuation, so saved names still match the API lists.
+const matchKey = (s: string) =>
+  norm(s)
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]/g, '');
+const same = (a: string, b: string) => matchKey(a) === matchKey(b);
+// Finds a list option by name, retrying without a trailing "(code)" suffix such as "Village(76)".
+const findByName = (list: Option[], name: string) => {
+  if (!name) {
+    return undefined;
+  }
+  const exact = list.find((o) => same(o.name, name));
+  if (exact) {
+    return exact;
+  }
+  const bare = (v: string) => v.replace(/\s*\([^)]*\)\s*$/, '');
+  return list.find((o) => same(bare(o.name), bare(name)));
+};
 
 // Placeholders saved by the old form ("Other", "NA"...) count as empty
 const BLANK = new Set(['other', 'others', 'na', 'n/a', 'none', '-', '--', 'select']);
@@ -99,6 +114,8 @@ export default function LocationEditor({
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
 
+  // Query keys use a locationEditor prefix so they never share cache with the older farmer modals,
+  // which store failed or empty responses under the same keys and would hide the lists here.
   // Failed requests are reported as errors (so they can be retried) instead of being stored as an
   // empty list, which would otherwise show "No options found" until the page is reloaded.
   const q = <T,>(key: unknown[], enabled: boolean, fn: () => Promise<T[]>) =>
@@ -110,29 +127,29 @@ export default function LocationEditor({
       retry: 1,
     });
 
-  const { data: states = [], isFetching: sLoad, isError: sErr, refetch: sRetry } = q<Option>(['states'], true, async () =>
+  const { data: states = [], isFetching: sLoad, isError: sErr, refetch: sRetry } = q<Option>(['locationEditor', 'states'], true, async () =>
     asList(await dataService.getLocationStates(baseUrl)),
   );
   const stateObj = findByName(states, draft.state);
   const { data: districts = [], isFetching: dLoad, isError: dErr, refetch: dRetry } = q<Option>(
-    ['districts', stateObj?.code, draft.state],
+    ['locationEditor', 'districts', stateObj?.code, draft.state],
     stateObj?.code !== undefined,
     async () => asList(await dataService.getLocationDistricts(baseUrl, stateObj!.code)),
   );
   const districtObj = findByName(districts, draft.district);
   const { data: blocks = [], isFetching: bLoad, isError: bErr, refetch: bRetry } = q<Option>(
-    ['subdistricts', districtObj?.code, draft.district],
+    ['locationEditor', 'subdistricts', districtObj?.code, draft.district],
     districtObj?.code !== undefined,
     async () => asList(await dataService.getLocationBlocks(baseUrl, districtObj!.code)),
   );
   const blockObj = findByName(blocks, draft.blockName);
   const { data: villages = [], isFetching: vLoad, isError: vErr, refetch: vRetry } = q<Option>(
-    ['villages', blockObj?.code, draft.blockName],
+    ['locationEditor', 'villages', blockObj?.code, draft.blockName],
     blockObj?.code !== undefined,
     async () => asList(await dataService.getLocationVillages(baseUrl, blockObj!.code)),
   );
   const { data: kvks = [], isFetching: kLoad, isError: kErr, refetch: kRetry } = q<Option>(
-    ['kvks', districtObj?.code, draft.district],
+    ['locationEditor', 'kvks', districtObj?.code, draft.district],
     districtObj?.code !== undefined,
     async () => {
       const data = await dataService.getLocationKvks(baseUrl, districtObj!.code);
