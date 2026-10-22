@@ -1,4 +1,4 @@
-import { useRef, useState, memo } from 'react';
+import { useRef, useState, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { QueryKeys } from 'librechat-data-provider';
 import { useQueryClient } from '@tanstack/react-query';
@@ -133,7 +133,7 @@ function NotificationRow({
 function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
   const localize = useLocalize();
   const [open, setOpen] = useState(false);
-  const { notifications, loading, unreadCount, markAsVisited, markAllVisited, fetchNotifications, filter, setFilter, page, setPage, totalPages } =
+  const { notifications, loading, unreadCount, markAsVisited, markAllVisited, refresh, loadMore, hasMore, filter, setFilter, setPage } =
     useNotifications();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -143,11 +143,26 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
   const [missingHistoryNotification, setMissingHistoryNotification] =
     useState<AppNotification | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [loadMoreTrigger, setLoadMoreTrigger] = useState<HTMLDivElement | null>(null);
+
+  // Loads the next page when the end of the list scrolls into view.
+  useEffect(() => {
+    if (!loadMoreTrigger || !hasMore) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) loadMore();
+      },
+      { root: scrollContainerRef.current, rootMargin: '120px' },
+    );
+    observer.observe(loadMoreTrigger);
+    return () => observer.disconnect();
+  }, [loadMoreTrigger, hasMore, loadMore]);
 
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
     if (isOpen) {
-      fetchNotifications();
+      refresh();
     }
   };
 
@@ -269,7 +284,10 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
             </button>
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-2 sm:p-3">
+          <div
+            ref={scrollContainerRef}
+            className="flex min-h-0 flex-1 flex-col overflow-y-auto p-2 sm:p-3"
+          >
             {loading && notifications.length === 0 ? (
               <div
                 role="status"
@@ -302,29 +320,19 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
                     onOpen={handleOpenNotification}
                   />
                 ))}
+                {hasMore && (
+                  <div
+                    ref={setLoadMoreTrigger}
+                    role="status"
+                    aria-label="Loading more notifications"
+                    className="flex h-10 items-center justify-center"
+                  >
+                    <Spinner className="size-5 text-green-600 dark:text-green-400" />
+                  </div>
+                )}
               </div>
             )}
           </div>
-          
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between border-t border-border-light px-5 py-3 sm:px-6">
-              <button
-                disabled={page <= 1}
-                onClick={() => setPage(p => p - 1)}
-                className="text-sm text-green-600 disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <span className="text-xs text-text-secondary">Page {page} of {totalPages}</span>
-              <button
-                disabled={page >= totalPages}
-                onClick={() => setPage(p => p + 1)}
-                className="text-sm text-green-600 disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          )}
         </OGDialogContent>
       </OGDialog>
       <OGDialog

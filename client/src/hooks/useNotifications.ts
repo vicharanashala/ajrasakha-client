@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuthContext } from './AuthContext';
 
 export interface AppNotification {
@@ -22,39 +22,70 @@ export default function useNotifications(initialFilter = 'unread') {
   const [totalPages, setTotalPages] = useState(1);
   const [serverUnreadCount, setServerUnreadCount] = useState<number | null>(null);
 
+  // Latest request id, used to ignore responses that arrive after the tab or page changed.
+  const latestRequestId = useRef(0);
+
+  // Loads one page of notifications. Page 1 replaces the list and later pages are appended.
   const fetchNotifications = useCallback(async (currentFilter = filter, currentPage = page) => {
     if (!token) return;
+    const requestId = ++latestRequestId.current;
     setLoading(true);
     try {
       const res = await fetch(`/api/notifications?filter=${currentFilter}&page=${currentPage}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (res.ok) {
-        const data = await res.json();
-        // Fallback for backwards compatibility if backend not updated yet
-        if (Array.isArray(data)) {
-          setNotifications(data);
-          setTotalPages(1);
-        } else {
-          setNotifications(data.notifications || []);
-          setTotalPages(data.pages || 1);
-          if (data.unreadCount !== undefined) {
-             setServerUnreadCount(data.unreadCount);
-          }
+      if (!res.ok || requestId !== latestRequestId.current) return;
+
+      const data = await res.json();
+      // Fallback for backwards compatibility if backend not updated yet
+      const incoming: AppNotification[] = Array.isArray(data) ? data : data.notifications || [];
+      setNotifications((prev) => {
+        if (currentPage <= 1) return incoming;
+        const knownIds = new Set(prev.map((n) => n._id));
+        return [...prev, ...incoming.filter((n) => !knownIds.has(n._id))];
+      });
+      if (Array.isArray(data)) {
+        setTotalPages(1);
+      } else {
+        setTotalPages(data.pages || 1);
+        if (data.unreadCount !== undefined) {
+          setServerUnreadCount(data.unreadCount);
         }
       }
     } catch (err) {
       console.error('Failed to fetch notifications:', err);
     } finally {
-      setLoading(false);
+      if (requestId === latestRequestId.current) {
+        setLoading(false);
+      }
     }
   }, [token, filter, page]);
 
-  // Clears the previous list when the tab or page changes so the loading state shows instead of stale rows.
+  // Clears the list when the tab changes so the loading state shows instead of stale rows.
   useEffect(() => {
-    setNotifications([]);
+    if (page === 1) {
+      setNotifications([]);
+    }
     fetchNotifications(filter, page);
   }, [fetchNotifications, filter, page]);
+
+  const hasMore = page < totalPages;
+
+  // Requests the next page for infinite scrolling.
+  const loadMore = useCallback(() => {
+    if (!loading && hasMore) {
+      setPage((prev) => prev + 1);
+    }
+  }, [loading, hasMore]);
+
+  // Reloads the first page, used when the notification dialog opens.
+  const refresh = useCallback(() => {
+    if (page === 1) {
+      fetchNotifications(filter, 1);
+    } else {
+      setPage(1);
+    }
+  }, [page, filter, fetchNotifications]);
 
   const markAsVisited = useCallback(
     async (id: string) => {
@@ -98,5 +129,5 @@ export default function useNotifications(initialFilter = 'unread') {
 
   const unreadCount = serverUnreadCount !== null ? serverUnreadCount : notifications.filter((n) => !n.isVisited).length;
 
-  return { notifications, loading, unreadCount, fetchNotifications, markAsVisited, markAllVisited, filter, setFilter, page, setPage, totalPages };
+  return { notifications, loading, unreadCount, refresh, loadMore, hasMore, markAsVisited, markAllVisited, filter, setFilter, setPage };
 }
