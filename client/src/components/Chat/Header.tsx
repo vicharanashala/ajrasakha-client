@@ -97,7 +97,8 @@ export default function Header() {
       {createPortal(
         <div className="fixed right-3 top-3 z-[100] flex items-center gap-1.5">
           {/* Sits where the temporary chat button used to be, left of the share menu. */}
-          <LocationMenu isSmallScreen={isSmallScreen} />
+          {/* Hidden while the sidebar covers the screen on phones. */}
+          {!(navVisible && isSmallScreen) && <LocationMenu isSmallScreen={isSmallScreen} />}
           <ExportAndShareMenu isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false} />
         </div>,
         document.body,
