@@ -20,6 +20,13 @@ import store from '~/store';
 
 type Localize = ReturnType<typeof useLocalizeHook>;
 
+// Filter tabs shown at the top of the notifications dialog.
+const NOTIFICATION_TABS = [
+  { filter: 'unread', label: 'Unread' },
+  { filter: 'all', label: 'All' },
+  { filter: 'alerts', label: 'Alerts' },
+];
+
 /** "2m ago" / "3h ago" / "Yesterday" / "4d ago", falling back to a plain date once it's more
  *  than a week old — the exact timestamp is always still available via the row's `title`. */
 function formatRelativeTime(dateString: string, localize: Localize): string {
@@ -270,18 +277,16 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
           </OGDialogHeader>
 
           <div className="flex shrink-0 flex-row items-center gap-4 border-b border-border-light px-5 sm:px-6">
-            <button 
-              onClick={() => { setFilter('unread'); setPage(1); }}
-              className={cn("pb-3 pt-3 text-sm font-medium transition-colors border-b-2", filter === 'unread' ? "border-green-600 text-green-600" : "border-transparent text-text-secondary hover:text-text-primary")}
-            >
-              Unread
-            </button>
-            <button 
-              onClick={() => { setFilter('all'); setPage(1); }}
-              className={cn("pb-3 pt-3 text-sm font-medium transition-colors border-b-2", filter === 'all' ? "border-green-600 text-green-600" : "border-transparent text-text-secondary hover:text-text-primary")}
-            >
-              All
-            </button>
+            {NOTIFICATION_TABS.map((tab) => (
+              <button
+                key={tab.filter}
+                type="button"
+                onClick={() => { setFilter(tab.filter); setPage(1); }}
+                className={cn("pb-3 pt-3 text-sm font-medium transition-colors border-b-2", filter === tab.filter ? "border-green-600 text-green-600" : "border-transparent text-text-secondary hover:text-text-primary")}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
 
           <div
