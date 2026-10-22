@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useMediaQuery } from '@librechat/client';
 import type { ContextType } from '~/common';
 import {
@@ -34,18 +34,34 @@ import {
 } from '~/components/ui';
 
 export default function Root() {
+  // The answer page is a standalone reading view, so the mobile menu bar and top glow are hidden there.
+  const { pathname } = useLocation();
+  const isAnswerPage = pathname.startsWith('/answer/');
   const [showTerms, setShowTerms] = useState(false);
   const [showTestingNotice, setShowTestingNotice] = useState(false);
   const [showFarmerProfile, setShowFarmerProfile] = useState(false);
   const [showFarmerLocation, setShowFarmerLocation] = useState(false);
   const [showFarmerPlace, setShowFarmerPlace] = useState(false);
+  // On mobile the sidebar always starts closed. The closed state is saved so the sidebar's own
+  // first-visit logic does not toggle it open again.
   const [navVisible, setNavVisible] = useState(() => {
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      localStorage.setItem('navVisible', JSON.stringify(false));
+      return false;
+    }
     const savedNavVisible = localStorage.getItem('navVisible');
     return savedNavVisible !== null ? JSON.parse(savedNavVisible) : true;
   });
 
   const { isAuthenticated, logout } = useAuthContext();
   const isSmallScreen = useMediaQuery('(max-width: 768px)');
+
+  // Closes the sidebar on mobile when an answer opens, for example from a notification.
+  useEffect(() => {
+    if (isSmallScreen && isAnswerPage) {
+      setNavVisible(false);
+    }
+  }, [isSmallScreen, isAnswerPage, pathname]);
 
   // Global health check - runs once per authenticated session
   useHealthCheck(isAuthenticated);
@@ -166,21 +182,25 @@ export default function Root() {
                         : undefined
                     }
                   >
-                    {/* Soft brand-green glow washing down from the very top of the app
-                        column, behind the mobile nav as well as the chat area. Decorative:
-                        `-z-10` puts it under the content and `isolate` on this column keeps
-                        that negative index from escaping behind the sidebar. Dark mode uses
-                        the lighter brand green at a lower alpha, since the dark green on a
-                        near-black page reads as a colour cast rather than light. */}
-                    <div
-                      aria-hidden="true"
-                      className={cn(
-                        'pointer-events-none absolute inset-x-0 top-0 -z-10 h-56 sm:h-72',
-                        'bg-[radial-gradient(120%_100%_at_50%_0%,rgba(25,135,84,0.13),transparent_72%)]',
-                        'dark:bg-[radial-gradient(120%_100%_at_50%_0%,rgba(117,215,178,0.09),transparent_72%)]',
-                      )}
-                    />
-                    <MobileNav navVisible={navVisible} setNavVisible={setNavVisible} />
+                    {!isAnswerPage && (
+                      <>
+                        {/* Soft brand-green glow washing down from the very top of the app
+                            column, behind the mobile nav as well as the chat area. Decorative:
+                            `-z-10` puts it under the content and `isolate` on this column keeps
+                            that negative index from escaping behind the sidebar. Dark mode uses
+                            the lighter brand green at a lower alpha, since the dark green on a
+                            near-black page reads as a colour cast rather than light. */}
+                        <div
+                          aria-hidden="true"
+                          className={cn(
+                            'pointer-events-none absolute inset-x-0 top-0 -z-10 h-56 sm:h-72',
+                            'bg-[radial-gradient(120%_100%_at_50%_0%,rgba(25,135,84,0.13),transparent_72%)]',
+                            'dark:bg-[radial-gradient(120%_100%_at_50%_0%,rgba(117,215,178,0.09),transparent_72%)]',
+                          )}
+                        />
+                        <MobileNav navVisible={navVisible} setNavVisible={setNavVisible} />
+                      </>
+                    )}
                     <Outlet context={{ navVisible, setNavVisible } satisfies ContextType} />
                   </div>
                 </div>

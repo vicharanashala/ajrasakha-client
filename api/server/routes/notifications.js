@@ -11,6 +11,8 @@ router.get('/', requireJwtAuth, async (req, res) => {
     const query = { userId: req.user.id };
     if (filter === 'unread') query.isVisited = false;
     else if (filter === 'read') query.isVisited = true;
+    // Alerts are the custom notifications, regardless of read state.
+    else if (filter === 'alerts') query.type = 'CUSTOM';
 
     const parsedPage = Math.max(1, parseInt(page, 10) || 1);
     const parsedLimit = Math.max(1, parseInt(limit, 10) || 10);

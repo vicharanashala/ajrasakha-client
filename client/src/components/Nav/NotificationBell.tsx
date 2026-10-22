@@ -1,4 +1,4 @@
-import { useRef, useState, memo } from 'react';
+import { useRef, useState, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { QueryKeys } from 'librechat-data-provider';
 import { useQueryClient } from '@tanstack/react-query';
@@ -9,8 +9,18 @@ import {
   OGDialogHeader,
   OGDialogTitle,
   OGDialogTemplate,
+  Spinner,
 } from '@librechat/client';
-import { Bell, BellOff, Info, AlertTriangle, Check, ChevronRight } from 'lucide-react';
+import {
+  Bell,
+  BellDot,
+  BellOff,
+  Check,
+  ChevronRight,
+  Inbox,
+  MessageSquareText,
+  TriangleAlert,
+} from 'lucide-react';
 import type useLocalizeHook from '~/hooks/useLocalize';
 import { useLocalize, useNewConvo } from '~/hooks';
 import { clearMessagesCache, cn } from '~/utils';
@@ -18,6 +28,13 @@ import useNotifications, { AppNotification } from '~/hooks/useNotifications';
 import store from '~/store';
 
 type Localize = ReturnType<typeof useLocalizeHook>;
+
+// Filter tabs shown at the top of the notifications dialog.
+const NOTIFICATION_TABS = [
+  { filter: 'unread', label: 'Unread', Icon: BellDot },
+  { filter: 'all', label: 'All', Icon: Inbox },
+  { filter: 'alerts', label: 'Alerts', Icon: TriangleAlert },
+];
 
 /** "2m ago" / "3h ago" / "Yesterday" / "4d ago", falling back to a plain date once it's more
  *  than a week old — the exact timestamp is always still available via the row's `title`. */
@@ -58,7 +75,7 @@ function NotificationRow({
   const isClickable = notification.type !== 'CUSTOM' && (!!notification.originalQuestion || !!notification.messageId);
   const displayText = notification.message ?? notification.originalQuestion ?? '';
   const isAlert = notification.type === 'CUSTOM';
-  const TypeIcon = isAlert ? AlertTriangle : Info;
+  const TypeIcon = isAlert ? TriangleAlert : MessageSquareText;
   const accentTextClass = isAlert ? 'text-amber-500' : 'text-green-600 dark:text-green-400';
   const accentBgClass = isAlert ? 'bg-amber-500/15' : 'bg-green-600/15';
   const accentDotClass = isAlert ? 'bg-amber-500' : 'bg-green-600 dark:bg-green-400';
@@ -132,7 +149,7 @@ function NotificationRow({
 function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
   const localize = useLocalize();
   const [open, setOpen] = useState(false);
-  const { notifications, unreadCount, markAsVisited, markAllVisited, fetchNotifications, filter, setFilter, page, setPage, totalPages } =
+  const { notifications, loading, unreadCount, markAsVisited, markAllVisited, refresh, loadMore, hasMore, filter, setFilter, setPage } =
     useNotifications();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -142,11 +159,26 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
   const [missingHistoryNotification, setMissingHistoryNotification] =
     useState<AppNotification | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [loadMoreTrigger, setLoadMoreTrigger] = useState<HTMLDivElement | null>(null);
+
+  // Loads the next page when the end of the list scrolls into view.
+  useEffect(() => {
+    if (!loadMoreTrigger || !hasMore) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) loadMore();
+      },
+      { root: scrollContainerRef.current, rootMargin: '120px' },
+    );
+    observer.observe(loadMoreTrigger);
+    return () => observer.disconnect();
+  }, [loadMoreTrigger, hasMore, loadMore]);
 
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
     if (isOpen) {
-      fetchNotifications();
+      refresh();
     }
   };
 
@@ -232,6 +264,9 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
         >
           <OGDialogHeader className="flex shrink-0 flex-row items-center justify-between gap-3 space-y-0 border-b border-border-light py-4 pl-5 pr-14 text-left sm:pl-6">
             <div className="flex min-w-0 items-center gap-2.5">
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-green-600/15 text-green-600 dark:text-green-400">
+                <Bell className="size-4" aria-hidden="true" />
+              </span>
               <OGDialogTitle className="text-base font-semibold text-text-primary sm:text-lg">
                 {localize('com_nav_notifications')}
               </OGDialogTitle>
@@ -254,22 +289,32 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
           </OGDialogHeader>
 
           <div className="flex shrink-0 flex-row items-center gap-4 border-b border-border-light px-5 sm:px-6">
-            <button 
-              onClick={() => { setFilter('unread'); setPage(1); }}
-              className={cn("pb-3 pt-3 text-sm font-medium transition-colors border-b-2", filter === 'unread' ? "border-green-600 text-green-600" : "border-transparent text-text-secondary hover:text-text-primary")}
-            >
-              Unread
-            </button>
-            <button 
-              onClick={() => { setFilter('all'); setPage(1); }}
-              className={cn("pb-3 pt-3 text-sm font-medium transition-colors border-b-2", filter === 'all' ? "border-green-600 text-green-600" : "border-transparent text-text-secondary hover:text-text-primary")}
-            >
-              All
-            </button>
+            {NOTIFICATION_TABS.map((tab) => (
+              <button
+                key={tab.filter}
+                type="button"
+                onClick={() => { setFilter(tab.filter); setPage(1); }}
+                className={cn("flex items-center gap-1.5 pb-3 pt-3 text-sm font-medium transition-colors border-b-2", filter === tab.filter ? "border-green-600 text-green-600" : "border-transparent text-text-secondary hover:text-text-primary")}
+              >
+                <tab.Icon className="size-4" aria-hidden="true" />
+                {tab.label}
+              </button>
+            ))}
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-2 sm:p-3">
-            {notifications.length === 0 ? (
+          <div
+            ref={scrollContainerRef}
+            className="flex min-h-0 flex-1 flex-col overflow-y-auto p-2 sm:p-3"
+          >
+            {loading && notifications.length === 0 ? (
+              <div
+                role="status"
+                aria-label="Loading notifications"
+                className="flex flex-1 items-center justify-center py-14"
+              >
+                <Spinner className="size-6 text-green-600 dark:text-green-400" />
+              </div>
+            ) : notifications.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-3.5 px-8 py-14 text-center">
                 <span className="flex h-14 w-14 items-center justify-center rounded-full bg-green-600/10 text-green-600 dark:text-green-400">
                   <BellOff className="h-6 w-6" aria-hidden="true" />
@@ -293,29 +338,19 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
                     onOpen={handleOpenNotification}
                   />
                 ))}
+                {hasMore && (
+                  <div
+                    ref={setLoadMoreTrigger}
+                    role="status"
+                    aria-label="Loading more notifications"
+                    className="flex h-10 items-center justify-center"
+                  >
+                    <Spinner className="size-5 text-green-600 dark:text-green-400" />
+                  </div>
+                )}
               </div>
             )}
           </div>
-          
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between border-t border-border-light px-5 py-3 sm:px-6">
-              <button
-                disabled={page <= 1}
-                onClick={() => setPage(p => p - 1)}
-                className="text-sm text-green-600 disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <span className="text-xs text-text-secondary">Page {page} of {totalPages}</span>
-              <button
-                disabled={page >= totalPages}
-                onClick={() => setPage(p => p + 1)}
-                className="text-sm text-green-600 disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          )}
         </OGDialogContent>
       </OGDialog>
       <OGDialog

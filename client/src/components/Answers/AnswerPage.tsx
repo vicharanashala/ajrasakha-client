@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '~/hooks/AuthContext';
-import { Calendar, User, BookOpen, ArrowLeft } from 'lucide-react';
+import { Calendar, BookOpen, ArrowLeft, ExternalLink } from 'lucide-react';
 import { useLocalize } from '~/hooks';
 import AnswerNotFound from './AnswerNotFound';
+import AnswerContent from './AnswerContent';
+import MessageAudio from '~/components/Chat/Messages/MessageAudio';
 
 interface AnswerData {
   question: string;
@@ -14,6 +16,70 @@ interface AnswerData {
     notices?: string[];
     disclaimers?: string[];
   };
+}
+
+type RawSource = string | Record<string, any>;
+
+interface SourceDisplay {
+  name: string;
+  url: string;
+  page: string;
+}
+
+// Extracts a display name, link and page from a source in either the old string or new object format.
+function getSourceDisplay(source: RawSource): SourceDisplay {
+  let name = '';
+  let url = '';
+  let page = '';
+
+  if (typeof source === 'string') {
+    const mdMatch = source.match(/^\[(.*?)\]\((.*?)\)$/);
+    if (mdMatch) {
+      name = mdMatch[1];
+      url = mdMatch[2];
+    } else {
+      try {
+        url = new URL(source).href;
+      } catch {
+        name = source;
+      }
+    }
+  } else if (typeof source === 'object' && source !== null) {
+    name = source.sourceName || source.name || source.title || '';
+    url = source.source || source.url || source.link || '';
+    page = source.page || '';
+  }
+
+  if (!name && url) {
+    try {
+      name = new URL(url).hostname.replace('www.', '');
+    } catch {
+      name = url;
+    }
+  }
+
+  return { name: name || 'Unknown source', url, page: page ? String(page) : '' };
+}
+
+// Animated equalizer bars shown while the answer is being read aloud.
+function SoundBars() {
+  return (
+    <span aria-hidden="true" className="flex h-[18px] w-[18px] items-center justify-center gap-[3px]">
+      {[0, 0.3, 0.15].map((delay) => (
+        <span
+          key={delay}
+          className="h-4 w-[3px] origin-center animate-sound-bar rounded-full bg-current motion-reduce:animate-none motion-reduce:scale-y-75"
+          style={{ animationDelay: `${delay}s` }}
+        />
+      ))}
+    </span>
+  );
+}
+
+// Formats a page value such as "1,2" or "3-5" as "Pages 1, 2" or "Pages 3-5".
+function formatPages(page: string): string {
+  const spaced = page.replace(/\s*,\s*/g, ', ').trim();
+  return /[,\-–]/.test(spaced) ? `Pages ${spaced}` : `Page ${spaced}`;
 }
 
 export default function AnswerPage() {
@@ -63,10 +129,28 @@ export default function AnswerPage() {
     fetchData();
   }, [fetchData]);
 
+  // Stops reading aloud when the user leaves this answer, for both browser and external voices.
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis?.cancel();
+      const audio = document.getElementById(`audio-${messageId}`) as HTMLAudioElement | null;
+      audio?.pause();
+    };
+  }, [messageId]);
+
   if (loading) {
     return (
-      <div className="flex h-full w-full items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-gray-500">{localize('com_ui_loading') || 'Loading...'}</div>
+      <div
+        role="status"
+        className="flex h-full w-full items-center justify-center bg-surface-primary"
+      >
+        <div className="flex items-center gap-3 text-sm text-text-secondary">
+          <span
+            aria-hidden="true"
+            className="size-5 animate-spin rounded-full border-2 border-border-medium border-t-green-500"
+          />
+          {localize('com_ui_loading')}
+        </div>
       </div>
     );
   }
@@ -77,161 +161,150 @@ export default function AnswerPage() {
     );
   }
 
-  const createMarkup = (htmlString: string) => {
-    return { __html: htmlString };
-  };
-
   const localizedTitle = localize('com_ui_your_question_is_answered');
   const displayTitle = localizedTitle === 'com_ui_your_question_is_answered' ? 'Your question is answered' : localizedTitle;
+  const userName = user?.name || user?.username || 'You';
+  const expertName = data.metadata?.answeredBy || 'Expert';
+  const sources = data.metadata?.sources ?? [];
+  const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
   return (
-    <div className="flex h-full w-full flex-col overflow-y-auto bg-gray-50 dark:bg-gray-900">
-      <div className="mx-auto flex w-full max-w-4xl flex-col p-4 sm:p-6 lg:p-8">
-        
-        {/* Back Button */}
-        <button 
-          onClick={() => navigate('/')}
-          className="mb-4 flex w-fit items-center gap-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+    <div className="h-full w-full overflow-y-auto bg-surface-primary">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-5 sm:gap-8 sm:px-6 sm:py-8 lg:max-w-5xl lg:px-4 lg:py-10 2xl:max-w-6xl">
+        <header className="flex flex-col gap-4">
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="-ml-2 flex w-fit items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary"
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+            {localize('com_ui_back_to_chat')}
+          </button>
+          <div className="flex flex-col gap-1.5">
+            <h1 className="text-2xl font-semibold text-text-primary sm:text-3xl">{displayTitle}</h1>
+            <p className="flex items-center gap-2 text-sm text-text-tertiary">
+              <Calendar className="size-4" aria-hidden="true" />
+              {today}
+            </p>
+          </div>
+        </header>
+
+        {/* Question */}
+        <section
+          aria-label="Your question"
+          className="flex items-start gap-3 rounded-2xl border border-border-light bg-surface-secondary p-4 sm:gap-4 sm:p-5"
         >
-          <ArrowLeft className="h-4 w-4" />
-          {localize('com_ui_back_to_chat') || 'Back to Chat'}
-        </button>
-
-        {/* Header Card */}
-        <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-800">
-          <div className="flex items-start justify-between">
-            <div className="flex flex-col gap-2">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{displayTitle}</h1>
-              <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                <Calendar className="h-4 w-4" />
-                <span>{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-              </div>
-            </div>
+          <span
+            aria-hidden="true"
+            className="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface-tertiary text-sm font-semibold uppercase text-text-primary"
+          >
+            {userName.charAt(0)}
+          </span>
+          <div className="flex min-w-0 flex-col gap-1">
+            <span className="text-sm font-medium text-text-secondary">{userName}</span>
+            <p className="whitespace-pre-wrap break-words text-base text-text-primary sm:text-lg">
+              {data.question}
+            </p>
           </div>
-        </div>
+        </section>
 
-        {/* Conversation Area */}
-        <div className="flex flex-col gap-8">
-          
-          {/* User Question */}
-          <div className="flex gap-4">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-blue-500 text-white">
-              <User className="h-5 w-5" />
+        {/* Answer */}
+        <article
+          aria-label="Expert answer"
+          className="rounded-2xl border border-border-light bg-surface-primary p-4 shadow-sm sm:p-6 lg:px-5 lg:py-8"
+        >
+          <div className="mb-6 flex items-center gap-3 border-b border-border-light pb-4">
+            <span className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-green-500/10">
+              <img src="/assets/annam-logo.png" alt="" className="size-6 object-contain" />
+            </span>
+            <div className="flex min-w-0 flex-col">
+              <span className="truncate font-semibold text-text-primary">{expertName}</span>
+              <span className="text-xs text-text-tertiary">Expert answer</span>
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="font-semibold text-gray-900 dark:text-white">{user?.name || user?.username || 'User'}</span>
-              <div className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                {data.question}
-              </div>
-            </div>
-          </div>
-
-          {/* Expert Answer */}
-          <div className="flex gap-4">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full overflow-hidden">
-              <img src="/assets/logo.svg" alt="Annam Leafy Logo" className="h-full w-full object-contain" />
-            </div>
-            
-            <div className="flex flex-col gap-1 w-full max-w-full">
-              <span className="font-semibold text-gray-900 dark:text-white">{data.metadata?.answeredBy || 'Expert'}</span>
-              
-              {/* Answer Content */}
-              <div 
-                className="prose prose-sm md:prose-base dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 mt-2"
-                dangerouslySetInnerHTML={createMarkup(data.answer)}
-              />
-
-              {/* Metadata Block */}
-              {data.metadata && (
-                <div className="mt-8 flex flex-col gap-4 rounded-xl bg-gray-50 p-5 border border-gray-200 dark:bg-gray-800/50 dark:border-gray-700">
-                  
-                  {data.metadata.answeredBy && (
-                    <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                      <User className="h-4 w-4 text-blue-500" />
-                      <span>Answered by: <strong>{data.metadata.answeredBy}</strong></span>
-                    </div>
+            {/* Reads the answer aloud using the app's text to speech settings. */}
+            {messageId && (
+              <div className="ml-auto shrink-0">
+                <MessageAudio
+                  index={0}
+                  messageId={messageId}
+                  content={data.answer}
+                  renderButton={({ onClick, title, icon, isActive }) => (
+                    <button
+                      type="button"
+                      onClick={onClick}
+                      aria-label={title}
+                      aria-pressed={isActive}
+                      className={`flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary ${
+                        isActive
+                          ? 'border-green-500/40 bg-green-500/10 text-green-500 dark:text-green-400'
+                          : 'border-border-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary'
+                      }`}
+                    >
+                      {isActive ? <SoundBars /> : icon}
+                      <span className="hidden sm:inline">{title}</span>
+                    </button>
                   )}
-
-                  {data.metadata.sources && data.metadata.sources.length > 0 && (
-                    <div className="flex flex-col gap-3 text-sm text-gray-700 dark:text-gray-300 mt-2">
-                      <span className="font-bold text-gray-900 dark:text-gray-100">Sources</span>
-                      <hr className="border-gray-200 dark:border-gray-700 mb-2" />
-                      
-                      <div className="flex flex-col gap-3">
-                        {data.metadata.sources.map((source: any, idx) => {
-                          let name = '';
-                          let url = '';
-                          let page = '';
-
-                          if (typeof source === 'string') {
-                            // Fallback for old string format
-                            const mdMatch = source.match(/^\[(.*?)\]\((.*?)\)$/);
-                            if (mdMatch) {
-                              name = mdMatch[1];
-                              url = mdMatch[2];
-                            } else {
-                              try {
-                                const parsedUrl = new URL(source);
-                                name = parsedUrl.hostname.replace('www.', '');
-                                url = source;
-                              } catch (e) {
-                                name = source;
-                              }
-                            }
-                          } else if (typeof source === 'object' && source !== null) {
-                            // New object format
-                            name = source.sourceName || source.name || source.title || '';
-                            url = source.source || source.url || source.link || '';
-                            page = source.page || '';
-                          }
-
-                          // If name is empty but we have a url, fallback to domain name
-                          if (!name && url) {
-                            try {
-                              const parsedUrl = new URL(url);
-                              name = parsedUrl.hostname.replace('www.', '');
-                            } catch (e) {
-                              name = url;
-                            }
-                          }
-
-                          return (
-                            <div key={idx} className="flex flex-col gap-1 p-4 rounded-xl bg-gray-100 border border-gray-200 dark:bg-gray-800 dark:border-gray-700 transition-colors">
-                              <div className="flex items-start gap-2">
-                                <BookOpen className="h-4 w-4 mt-0.5 text-gray-500 shrink-0" />
-                                {url ? (
-                                  <a 
-                                    href={url} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="font-semibold text-gray-900 dark:text-gray-100 hover:underline break-all"
-                                  >
-                                    {name || 'Unknown Source'}
-                                  </a>
-                                ) : (
-                                  <span className="font-semibold text-gray-900 dark:text-gray-100 break-all">
-                                    {name || 'Unknown Source'}
-                                  </span>
-                                )}
-                              </div>
-                              {page && (
-                                <div className="pl-6 text-xs text-gray-500 dark:text-gray-400">
-                                  Page: {page}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-              
-            </div>
+                />
+              </div>
+            )}
           </div>
-          
-        </div>
+
+          <AnswerContent answer={data.answer} />
+        </article>
+
+        {/* Sources */}
+        {sources.length > 0 && (
+          <section aria-labelledby="answer-sources" className="flex flex-col gap-3">
+            <h2 id="answer-sources" className="text-lg font-semibold text-text-primary">
+              Sources
+            </h2>
+            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {sources.map((source, idx) => {
+                const { name, url, page } = getSourceDisplay(source);
+                const content = (
+                  <>
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-green-500/10 text-green-500 dark:text-green-400">
+                      <BookOpen className="size-5" aria-hidden="true" />
+                    </span>
+                    <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
+                      <span className="break-words text-sm font-semibold text-text-primary sm:text-base">{name}</span>
+                      {page && (
+                        <span className="rounded-md bg-surface-tertiary px-2 py-0.5 text-xs font-medium text-text-secondary">
+                          {formatPages(page)}
+                        </span>
+                      )}
+                    </span>
+                    {url && (
+                      <ExternalLink
+                        className="size-4 shrink-0 text-text-tertiary transition-colors group-hover:text-text-primary"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </>
+                );
+                // Underline is switched off because a global link style would otherwise underline the whole card.
+                const cardClass =
+                  'group flex items-center gap-3 rounded-xl border border-border-light bg-surface-secondary p-3 no-underline transition-colors sm:p-4 [&_*]:no-underline';
+                return (
+                  <li key={idx}>
+                    {url ? (
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${cardClass} hover:border-border-medium hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary`}
+                      >
+                        {content}
+                      </a>
+                    ) : (
+                      <div className={cardClass}>{content}</div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
       </div>
     </div>
   );
