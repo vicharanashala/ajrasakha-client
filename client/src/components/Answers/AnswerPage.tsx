@@ -5,6 +5,7 @@ import { Calendar, BookOpen, ArrowLeft, ExternalLink } from 'lucide-react';
 import { useLocalize } from '~/hooks';
 import AnswerNotFound from './AnswerNotFound';
 import AnswerContent from './AnswerContent';
+import MessageAudio from '~/components/Chat/Messages/MessageAudio';
 
 interface AnswerData {
   question: string;
@@ -196,6 +197,32 @@ export default function AnswerPage() {
               <span className="truncate font-semibold text-text-primary">{expertName}</span>
               <span className="text-xs text-text-tertiary">Expert answer</span>
             </div>
+            {/* Reads the answer aloud using the app's text to speech settings. */}
+            {messageId && (
+              <div className="ml-auto shrink-0">
+                <MessageAudio
+                  index={0}
+                  messageId={messageId}
+                  content={data.answer}
+                  renderButton={({ onClick, title, icon, isActive }) => (
+                    <button
+                      type="button"
+                      onClick={onClick}
+                      aria-label={title}
+                      aria-pressed={isActive}
+                      className={`flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary ${
+                        isActive
+                          ? 'border-green-500/40 bg-green-500/10 text-green-500 dark:text-green-400'
+                          : 'border-border-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary'
+                      }`}
+                    >
+                      {icon}
+                      <span className="hidden sm:inline">{title}</span>
+                    </button>
+                  )}
+                />
+              </div>
+            )}
           </div>
 
           <AnswerContent answer={data.answer} />
