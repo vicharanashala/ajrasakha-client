@@ -61,6 +61,21 @@ function getSourceDisplay(source: RawSource): SourceDisplay {
   return { name: name || 'Unknown source', url, page: page ? String(page) : '' };
 }
 
+// Animated equalizer bars shown while the answer is being read aloud.
+function SoundBars() {
+  return (
+    <span aria-hidden="true" className="flex h-[18px] w-[18px] items-center justify-center gap-[3px]">
+      {[0, 0.3, 0.15].map((delay) => (
+        <span
+          key={delay}
+          className="h-4 w-[3px] origin-center animate-sound-bar rounded-full bg-current motion-reduce:animate-none motion-reduce:scale-y-75"
+          style={{ animationDelay: `${delay}s` }}
+        />
+      ))}
+    </span>
+  );
+}
+
 // Formats a page value such as "1,2" or "3-5" as "Pages 1, 2" or "Pages 3-5".
 function formatPages(page: string): string {
   const spaced = page.replace(/\s*,\s*/g, ', ').trim();
@@ -216,7 +231,7 @@ export default function AnswerPage() {
                           : 'border-border-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary'
                       }`}
                     >
-                      {icon}
+                      {isActive ? <SoundBars /> : icon}
                       <span className="hidden sm:inline">{title}</span>
                     </button>
                   )}
