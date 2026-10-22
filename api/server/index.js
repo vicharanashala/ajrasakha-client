@@ -456,6 +456,33 @@ const startServer = async () => {
     console.warn('Response compression has been disabled via DISABLE_COMPRESSION.');
   }
 
+  // Optional per-environment install name (for example "Ajrasakha-staging"), so the same build
+  // can be installed as a differently named app on each environment.
+  const pwaAppName = (process.env.PWA_APP_NAME || '').trim();
+  if (pwaAppName) {
+    indexHTML = indexHTML
+      .replace(/(name="application-name" content=")[^"]*"/, `$1${pwaAppName.replace(/"/g, '&quot;')}"`)
+      .replace(
+        /(name="apple-mobile-web-app-title" content=")[^"]*"/,
+        `$1${pwaAppName.replace(/"/g, '&quot;')}"`,
+      );
+    app.get('/manifest.json', (_req, res) => {
+      try {
+        const manifest = JSON.parse(
+          fs.readFileSync(path.join(appConfig.paths.dist, 'manifest.json'), 'utf8'),
+        );
+        res.type('application/manifest+json').json({
+          ...manifest,
+          name: pwaAppName,
+          short_name: pwaAppName,
+        });
+      } catch (error) {
+        logger.error('Failed to serve manifest.json', error);
+        res.status(500).end();
+      }
+    });
+  }
+
   app.use(staticCache(appConfig.paths.dist));
   app.use(staticCache(appConfig.paths.fonts));
   app.use(staticCache(appConfig.paths.assets));

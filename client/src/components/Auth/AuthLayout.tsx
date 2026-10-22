@@ -283,6 +283,8 @@ function AuthLayout({
               aria-hidden="true"
               className="h-auto w-40 object-contain brightness-0 invert"
             />
+            {/* Product name under the company lockup. */}
+            <p className="mt-5 text-3xl font-bold tracking-tight">Ajrasakha</p>
             <div className="flex flex-1 flex-col justify-center gap-7 py-10">
               <h2 className="max-w-[18rem] text-2xl font-semibold leading-snug">
                 {localize('com_ui_landing_tagline')}
