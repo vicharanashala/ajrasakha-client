@@ -513,6 +513,11 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
        * actually shorter than it was when it expanded; growing text never triggers it.
        */
       const length = textArea.value.length;
+      // An empty box is always one row. While resizing, the placeholder can wrap and read as two
+      // rows, which would otherwise leave the composer stuck expanded with nothing typed in it.
+      if (length === 0) {
+        rows = 1;
+      }
       if (rows > 1) {
         if (visualRowCountRef.current <= 1) {
           expandedAtLengthRef.current = length;
@@ -520,6 +525,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
       } else if (
         visualRowCountRef.current > 1 &&
         expandedAtLengthRef.current != null &&
+        length > 0 &&
         length >= expandedAtLengthRef.current
       ) {
         rows = visualRowCountRef.current;
