@@ -77,10 +77,6 @@ export default function AnswerPage() {
     );
   }
 
-  const createMarkup = (htmlString: string) => {
-    return { __html: htmlString };
-  };
-
   const localizedTitle = localize('com_ui_your_question_is_answered');
   const displayTitle = localizedTitle === 'com_ui_your_question_is_answered' ? 'Your question is answered' : localizedTitle;
 
@@ -136,10 +132,10 @@ export default function AnswerPage() {
               <span className="font-semibold text-gray-900 dark:text-white">{data.metadata?.answeredBy || 'Expert'}</span>
               
               {/* Answer Content */}
-              <div 
-                className="prose prose-sm md:prose-base dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 mt-2"
-                dangerouslySetInnerHTML={createMarkup(data.answer)}
-              />
+              {/* Rendered as text with line breaks preserved, so bullets and numbered sections keep their layout. */}
+              <div className="mt-2 max-w-none whitespace-pre-line break-words text-sm leading-relaxed text-gray-700 dark:text-gray-300 md:text-base">
+                {data.answer}
+              </div>
 
               {/* Metadata Block */}
               {data.metadata && (
