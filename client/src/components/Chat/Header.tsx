@@ -13,7 +13,8 @@ import { PresetsMenu } from './Menus';
 import { useGetStartupConfig } from '~/data-provider';
 import ExportAndShareMenu from './ExportAndShareMenu';
 import BookmarkMenu from './Menus/BookmarkMenu';
-import { TemporaryChat } from './TemporaryChat';
+// Temporary (anonymous) chat is hidden for now. Restore the import and the button below to bring it back.
+// import { TemporaryChat } from './TemporaryChat';
 import AddMultiConvo from './AddMultiConvo';
 import { useAuthContext, useHasAccess } from '~/hooks';
 import { cn } from '~/utils';
@@ -96,7 +97,7 @@ export default function Header() {
          works even when parent panels apply CSS transforms */}
       {createPortal(
         <div className="fixed right-3 top-3 z-[100] flex items-center gap-1.5">
-          <TemporaryChat />
+          {/* <TemporaryChat /> */}
           <ExportAndShareMenu isSharedButtonEnabled={startupConfig?.sharedLinksEnabled ?? false} />
         </div>,
         document.body,
