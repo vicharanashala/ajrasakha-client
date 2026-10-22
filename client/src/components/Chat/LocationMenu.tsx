@@ -49,11 +49,14 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
 
   if (!profile) return null;
 
-  const summary = (
+  // Location parts shown in the trigger. The first part is emphasised and the rest are muted.
+  const parts = (
     isSmallScreen
       ? [profile.district, profile.state]
       : [profile.villageName, profile.blockName, profile.district, profile.state]
-  )
+  ).filter(Boolean) as string[];
+  const [primaryPart, ...otherParts] = parts;
+  const fullAddress = [profile.villageName, profile.blockName, profile.district, profile.state]
     .filter(Boolean)
     .join(', ');
 
@@ -65,12 +68,27 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="flex max-w-[16rem] items-center gap-1.5 rounded-lg border border-border-light bg-surface-primary px-2.5 py-1.5 text-sm font-medium text-text-primary hover:bg-surface-hover sm:max-w-sm"
+        aria-label={fullAddress ? `Location: ${fullAddress}. Change location` : 'Set location'}
+        title={fullAddress || undefined}
+        className="group flex max-w-[16rem] items-center gap-2 rounded-full border border-border-light bg-surface-primary py-1 pl-1 pr-3 text-sm shadow-sm transition-colors hover:border-border-medium hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary sm:max-w-md"
       >
-        <MapPin className="h-4 w-4 shrink-0 text-text-secondary" />
-        <span className="truncate capitalize">{summary || 'Set location'}</span>
+        <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-green-500/10 text-green-500 dark:text-green-400">
+          <MapPin className="size-4" aria-hidden="true" />
+        </span>
+        <span className="flex min-w-0 items-baseline gap-1.5 capitalize">
+          <span className="max-w-[60%] shrink-0 truncate font-semibold text-text-primary">
+            {primaryPart || 'Set location'}
+          </span>
+          {otherParts.length > 0 && (
+            <span className="min-w-0 truncate text-text-secondary">{otherParts.join(', ')}</span>
+          )}
+        </span>
         <ChevronDown
-          className={cn('h-4 w-4 shrink-0 transition-transform', open && 'rotate-180')}
+          className={cn(
+            'size-4 shrink-0 text-text-tertiary transition-transform group-hover:text-text-primary',
+            open && 'rotate-180',
+          )}
+          aria-hidden="true"
         />
       </button>
 
@@ -81,7 +99,7 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
             role="dialog"
             aria-label="Edit location"
             style={{ top: pos.top, left: pos.left, width: Math.min(320, window.innerWidth - 16) }}
-            className="fixed z-[110] rounded-xl border border-border-light bg-surface-primary p-2 shadow-lg"
+            className="fixed z-[110] rounded-xl border border-border-light bg-surface-primary p-2 shadow-lg duration-150 animate-in fade-in-0 zoom-in-95"
           >
             <LocationEditor
               profile={profile}
