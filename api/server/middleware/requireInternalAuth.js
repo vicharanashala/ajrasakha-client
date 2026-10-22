@@ -8,7 +8,7 @@ const safeEqual = (a, b) => {
 };
 
 const requireInternalAuth = (req, res, next) => {
-  const expected = process.env.INTERNAL_API_KEY;
+  const expected = process.env.WEB_APPLICATION_API_AUTH_KEY;
   if (!expected) {
     // Fail closed: if the key isn't configured, the endpoint stays off
     return res.status(503).json({ message: 'Internal API not configured' });

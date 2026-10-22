@@ -215,6 +215,7 @@ jobs:
             REVIEW_SYSTEM_URL=${{ secrets.REVIEW_SYSTEM_URL }}
             REVIEW_SYSTEM_API_AUTH_KEY=${{ secrets.REVIEW_SYSTEM_API_AUTH_KEY }}
             INTERNAL_API_KEY=${{ secrets.INTERNAL_API_KEY }}
+            WEB_APPLICATION_API_AUTH_KEY=${{ secrets.WEB_APPLICATION_API_AUTH_KEY }}
           flags: --allow-unauthenticated --port=3080 --memory=2Gi --min-instances=0 --timeout=300
 
   deploy_production:
@@ -319,4 +320,5 @@ jobs:
             REVIEW_SYSTEM_URL=${{ secrets.REVIEW_SYSTEM_URL }}
             REVIEW_SYSTEM_API_AUTH_KEY=${{ secrets.REVIEW_SYSTEM_API_AUTH_KEY }}
             INTERNAL_API_KEY=${{ secrets.INTERNAL_API_KEY }}
+            WEB_APPLICATION_API_AUTH_KEY=${{ secrets.WEB_APPLICATION_API_AUTH_KEY }}
           flags: --allow-unauthenticated --port=3080 --memory=2Gi --min-instances=0 --timeout=300

@@ -8,7 +8,7 @@ const router = express.Router();
 router.patch('/:messageId/status', async (req, res) => {
   try {
     const internalApiKey = req.headers['x-internal-api-key'];
-    const expectedApiKey = process.env.INTERNAL_API_KEY;
+    const expectedApiKey = process.env.WEB_APPLICATION_API_AUTH_KEY;
 
     if (!expectedApiKey || internalApiKey !== expectedApiKey) {
       return res.status(403).json({ message: 'Forbidden: Invalid API key' });
