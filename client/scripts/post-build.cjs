@@ -5,7 +5,8 @@ async function postBuild() {
     await fs.copy('public/assets', 'dist/assets');
     await fs.copy('public/robots.txt', 'dist/robots.txt');
     await fs.copy('public/sw.js', 'dist/sw.js');
-    console.log('✅ PWA icons, robots.txt and sw.js copied successfully. Glob pattern warnings resolved.');
+    await fs.copy('public/manifest.json', 'dist/manifest.json');
+    console.log('✅ PWA icons, manifest.json, robots.txt and sw.js copied successfully. Glob pattern warnings resolved.');
   } catch (err) {
     console.error('❌ Error copying files:', err);
     process.exit(1);

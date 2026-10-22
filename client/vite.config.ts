@@ -43,13 +43,16 @@ export default defineConfig(({ command }) => ({
       },
       useCredentials: true,
       includeManifestIcons: false,
+      // The app manifest is public/manifest.json (linked in index.html). Generating a second one
+      // here added a competing "LibreChat" manifest to the page.
+      manifest: false,
       workbox: {
         globPatterns: [
           '**/*.{js,css,html}',
           'assets/favicon*.png',
           'assets/icon-*.png',
           'assets/apple-touch-icon*.png',
-          'assets/maskable-icon.png',
+          'assets/maskable-icon*.png',
           'manifest.webmanifest',
         ],
         globIgnores: ['images/**/*', '**/*.map', 'index.html'],
@@ -57,41 +60,6 @@ export default defineConfig(({ command }) => ({
         navigateFallbackDenylist: [/^\/oauth/, /^\/api/],
       },
       includeAssets: [],
-      manifest: {
-        name: 'LibreChat',
-        short_name: 'LibreChat',
-        display: 'standalone',
-        background_color: '#000000',
-        theme_color: '#009688',
-        icons: [
-          {
-            src: 'assets/favicon-32x32.png',
-            sizes: '32x32',
-            type: 'image/png',
-          },
-          {
-            src: 'assets/favicon-16x16.png',
-            sizes: '16x16',
-            type: 'image/png',
-          },
-          {
-            src: 'assets/apple-touch-icon-180x180.png',
-            sizes: '180x180',
-            type: 'image/png',
-          },
-          {
-            src: 'assets/icon-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: 'assets/maskable-icon.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable',
-          },
-        ],
-      },
     }),
     sourcemapExclude({ excludeNodeModules: true }),
     compression({
