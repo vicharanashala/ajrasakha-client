@@ -53,6 +53,8 @@ const DESCENDANTS: Record<Level, Level[]> = {
 
 // Proxied through this server, which adds the review-system API key
 const baseUrl = '/api';
+// On touch screens focusing the search box opens the keyboard, which covers the panel buttons.
+const isTouchDevice = () => window.matchMedia?.('(pointer: coarse)').matches ?? false;
 const asList = (d: unknown): Option[] => (Array.isArray(d) ? d : []);
 const norm = (s: string) => s.trim().toLowerCase();
 const same = (a: string, b: string) => norm(a) === norm(b);
@@ -97,43 +99,39 @@ export default function LocationEditor({
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
 
+  // Failed requests are reported as errors (so they can be retried) instead of being stored as an
+  // empty list, which would otherwise show "No options found" until the page is reloaded.
   const q = <T,>(key: unknown[], enabled: boolean, fn: () => Promise<T[]>) =>
     useQuery<T[]>({
       queryKey: key,
-      queryFn: async () => {
-        try {
-          return await fn();
-        } catch (e) {
-          console.error(e);
-          return [];
-        }
-      },
+      queryFn: fn,
       enabled,
       staleTime: Infinity,
+      retry: 1,
     });
 
-  const { data: states = [], isFetching: sLoad } = q<Option>(['states'], true, async () =>
+  const { data: states = [], isFetching: sLoad, isError: sErr, refetch: sRetry } = q<Option>(['states'], true, async () =>
     asList(await dataService.getLocationStates(baseUrl)),
   );
   const stateObj = findByName(states, draft.state);
-  const { data: districts = [], isFetching: dLoad } = q<Option>(
+  const { data: districts = [], isFetching: dLoad, isError: dErr, refetch: dRetry } = q<Option>(
     ['districts', stateObj?.code, draft.state],
     stateObj?.code !== undefined,
     async () => asList(await dataService.getLocationDistricts(baseUrl, stateObj!.code)),
   );
   const districtObj = findByName(districts, draft.district);
-  const { data: blocks = [], isFetching: bLoad } = q<Option>(
+  const { data: blocks = [], isFetching: bLoad, isError: bErr, refetch: bRetry } = q<Option>(
     ['subdistricts', districtObj?.code, draft.district],
     districtObj?.code !== undefined,
     async () => asList(await dataService.getLocationBlocks(baseUrl, districtObj!.code)),
   );
   const blockObj = findByName(blocks, draft.blockName);
-  const { data: villages = [], isFetching: vLoad } = q<Option>(
+  const { data: villages = [], isFetching: vLoad, isError: vErr, refetch: vRetry } = q<Option>(
     ['villages', blockObj?.code, draft.blockName],
     blockObj?.code !== undefined,
     async () => asList(await dataService.getLocationVillages(baseUrl, blockObj!.code)),
   );
-  const { data: kvks = [], isFetching: kLoad } = q<Option>(
+  const { data: kvks = [], isFetching: kLoad, isError: kErr, refetch: kRetry } = q<Option>(
     ['kvks', districtObj?.code, draft.district],
     districtObj?.code !== undefined,
     async () => {
@@ -160,6 +158,21 @@ export default function LocationEditor({
     blockName: bLoad,
     villageName: vLoad,
     nearestKVK: kLoad,
+  };
+
+  const failed: Record<Level, boolean> = {
+    state: sErr,
+    district: dErr,
+    blockName: bErr,
+    villageName: vErr,
+    nearestKVK: kErr,
+  };
+  const retryLoad: Record<Level, () => void> = {
+    state: () => void sRetry(),
+    district: () => void dRetry(),
+    blockName: () => void bRetry(),
+    villageName: () => void vRetry(),
+    nearestKVK: () => void kRetry(),
   };
 
   const saveMutation = useSaveFarmerProfileMutation({
@@ -272,7 +285,7 @@ export default function LocationEditor({
                   <div className="flex items-center gap-2 border-b border-border-light px-3 py-2">
                     <Search className="size-4 shrink-0 text-text-tertiary" aria-hidden="true" />
                     <input
-                      autoFocus
+                      autoFocus={!isTouchDevice()}
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                       placeholder={`Search ${LABELS[level]}…`}
@@ -284,6 +297,17 @@ export default function LocationEditor({
                     {loading[level] ? (
                       <div className="flex items-center gap-2 px-3 py-2 text-text-secondary">
                         <Loader2 className="size-4 animate-spin" aria-hidden="true" /> Loading…
+                      </div>
+                    ) : failed[level] ? (
+                      <div className="flex items-center justify-between gap-3 px-3 py-2 text-text-secondary">
+                        <span>Could not load {LABELS[level]} options.</span>
+                        <button
+                          type="button"
+                          onClick={() => retryLoad[level]()}
+                          className="shrink-0 rounded-md px-2 py-1 font-medium text-green-600 hover:bg-surface-hover dark:text-green-400"
+                        >
+                          Retry
+                        </button>
                       </div>
                     ) : filtered.length === 0 ? (
                       <div className="px-3 py-2 text-text-secondary">No options found</div>
@@ -319,7 +343,7 @@ export default function LocationEditor({
         })}
       </ul>
       {error && <p role="alert" className="px-2 pb-1 text-xs text-red-500">{error}</p>}
-      <div className="mt-2 flex justify-end gap-2 border-t border-border-light px-1 pt-3">
+      <div className="sticky bottom-0 mt-2 flex justify-end gap-2 border-t border-border-light bg-surface-primary px-1 pb-1 pt-3">
         {onCancel && (
           <button
             type="button"

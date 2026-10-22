@@ -142,18 +142,26 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
     }
   };
 
-  // Position the portaled panel under the trigger
+  // Position the portaled panel next to the trigger. The visible height is used so that on phones
+  // the panel stays above the on-screen keyboard, and it is recalculated when the keyboard moves.
   useLayoutEffect(() => {
-    if (!open || !triggerRef.current) return;
-    const rect = triggerRef.current.getBoundingClientRect();
-    const width = Math.min(320, window.innerWidth - 16);
-    const left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8));
-    // Opens upward when the pill sits in the lower half of the screen so the panel stays visible.
-    if (rect.top > window.innerHeight / 2) {
-      setPos({ bottom: window.innerHeight - rect.top + 8, left, maxHeight: rect.top - 16 });
-    } else {
-      setPos({ top: rect.bottom + 8, left, maxHeight: window.innerHeight - rect.bottom - 16 });
-    }
+    if (!open) return;
+    const updatePosition = () => {
+      if (!triggerRef.current) return;
+      const rect = triggerRef.current.getBoundingClientRect();
+      const visibleHeight = window.visualViewport?.height ?? window.innerHeight;
+      const width = Math.min(320, window.innerWidth - 16);
+      const left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8));
+      // Opens upward when the pill sits in the lower half of the screen so the panel stays visible.
+      if (rect.top > visibleHeight / 2) {
+        setPos({ bottom: window.innerHeight - rect.top + 8, left, maxHeight: rect.top - 16 });
+      } else {
+        setPos({ top: rect.bottom + 8, left, maxHeight: visibleHeight - rect.bottom - 16 });
+      }
+    };
+    updatePosition();
+    window.visualViewport?.addEventListener('resize', updatePosition);
+    return () => window.visualViewport?.removeEventListener('resize', updatePosition);
   }, [open]);
 
   // Close on outside click / Escape / resize
@@ -165,7 +173,11 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
       setOpen(false);
     };
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
-    const onResize = () => setOpen(false);
+    // Only a width change closes the panel. Opening the phone keyboard changes the height alone.
+    const openedWidth = window.innerWidth;
+    const onResize = () => {
+      if (window.innerWidth !== openedWidth) setOpen(false);
+    };
     document.addEventListener('mousedown', onDown);
     document.addEventListener('keydown', onKey);
     window.addEventListener('resize', onResize);
