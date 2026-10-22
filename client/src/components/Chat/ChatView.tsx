@@ -95,6 +95,26 @@ function ChatView({ index = 0 }: { index?: number }) {
    */
   const composerRef = useRef<HTMLDivElement>(null);
   const [composerHeight, setComposerHeight] = useState(0);
+  const landingScrollRef = useRef<HTMLDivElement>(null);
+
+  // Starts the landing content at the top so the greeting is visible. Something on load, such
+  // as focusing the input, can otherwise leave the box scrolled to the bottom on phones.
+  useEffect(() => {
+    const element = landingScrollRef.current;
+    if (!isLandingPage || !element) {
+      return;
+    }
+    const resetScroll = () => {
+      element.scrollTop = 0;
+    };
+    resetScroll();
+    const frame = requestAnimationFrame(resetScroll);
+    const timer = window.setTimeout(resetScroll, 300);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+    };
+  }, [isLandingPage]);
 
   useEffect(() => {
     const element = composerRef.current;
@@ -144,17 +164,31 @@ function ChatView({ index = 0 }: { index?: number }) {
                         // Unlike a live conversation, the composer isn't fixed to the viewport
                         // on phones here — the notice has to sit below it, not behind it — so
                         // this applies at every width.
-                        'relative flex-1 items-center justify-center overflow-y-auto pb-40 pt-14 sm:pb-44 sm:pt-0'
+                        // On phones the greeting and cards scroll inside their own box
+                        // that ends where the composer begins, so the last card can never
+                        // sit behind the Voice/Text switch on a short screen. From `sm` up the
+                        // box is `contents`, so this keeps the layout described above.
+                        'relative flex min-h-0 flex-1 flex-col sm:items-center sm:justify-center sm:overflow-y-auto sm:pb-[var(--composer-pad,11rem)]'
                       : // `relative` anchors the composer, which is pulled out of flow below
                         // so the message list can run its full height underneath it.
                         'relative min-h-0 flex-1 overflow-hidden',
                   )}
                   style={
                     isLandingPage && composerHeight
-                      ? { paddingBottom: composerHeight + 16 }
+                      ? ({ '--composer-pad': `${composerHeight + 16}px` } as React.CSSProperties)
                       : undefined
                   }
                 >
+                  <div
+                    ref={landingScrollRef}
+                    className={
+                      isLandingPage
+                        ? // `safe center` centres the content when it fits and, when it is taller than
+                          // the space available, grows downward and scrolls instead of spilling upward.
+                          'flex min-h-0 w-full flex-1 flex-col items-center justify-center [justify-content:safe_center] overflow-y-auto pt-14 sm:contents'
+                        : 'contents'
+                    }
+                  >
                   {content}
                   {/* Kept as a sibling of Landing rather than nested inside it: Landing's own
                       wrapper collapses to `max-h-0` on larger screens when centerFormOnLanding
@@ -162,12 +196,13 @@ function ChatView({ index = 0 }: { index?: number }) {
                       height and get visually covered by ChatForm below. As a sibling, its
                       layout height is unaffected by that collapse. */}
                   {showExampleQuestions && <ExampleQuestionTiles />}
+                  </div>
                   <div
                     ref={composerRef}
                     className={cn(
                       'w-full',
                       isLandingPage
-                        ? 'absolute inset-x-0 bottom-0 mx-auto max-w-3xl transition-all duration-200 xl:max-w-4xl'
+                        ? 'relative mx-auto max-w-3xl shrink-0 transition-all duration-200 sm:absolute sm:inset-x-0 sm:bottom-0 xl:max-w-4xl'
                         : // The composer floats over the message list rather than sitting in
                           // normal flow, so messages can scroll a full screen's worth behind
                           // it instead of stopping at a hard edge above it. Its own backdrop

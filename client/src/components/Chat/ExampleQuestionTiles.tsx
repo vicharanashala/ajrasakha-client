@@ -180,10 +180,6 @@ export default function ExampleQuestionTiles() {
             className={cn(
               'animate-riseIn',
               'group flex h-full w-full cursor-pointer items-center text-start',
-              // Short viewports (an iPhone SE is 667px tall) cannot fit four of these
-              // above the composer, and the overflow runs underneath it. Showing three
-              // keeps the screen whole.
-              index >= 3 && '[@media(max-height:700px)]:hidden',
               'gap-2.5 rounded-xl p-2 pr-2.5 sm:gap-3.5 sm:rounded-2xl sm:p-3 sm:pr-4',
               // Fixed to the height of the longest a card can get (the 3-line clamp below,
               // plus this padding) so every card is the same size regardless of how short its
