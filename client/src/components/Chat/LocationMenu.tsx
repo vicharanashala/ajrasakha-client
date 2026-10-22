@@ -6,16 +6,19 @@ import { useAuthContext } from '~/hooks';
 import { cn } from '~/utils';
 import LocationEditor from './LocationEditor'; // adjust path if it lives elsewhere
 
-const POSITION_STORAGE_KEY = 'locationMenuPosition';
+// The version suffix drops positions saved by earlier builds, which could sit over the top bar.
+const POSITION_STORAGE_KEY_PREFIX = 'locationMenuPosition:v2';
 const EDGE_GAP = 8;
+// Keeps the dragged pill below the mobile top bar so it never covers the menu or model buttons.
+const MIN_TOP = 50;
 const DRAG_THRESHOLD = 5;
 
 type Position = { left: number; top: number };
 
-// Reads the saved pill position, ignoring missing or invalid values.
-function readSavedPosition(): Position | null {
+// Reads the saved pill position for a user, ignoring missing or invalid values.
+function readSavedPosition(storageKey: string): Position | null {
   try {
-    const saved = JSON.parse(localStorage.getItem(POSITION_STORAGE_KEY) ?? 'null');
+    const saved = JSON.parse(localStorage.getItem(storageKey) ?? 'null');
     return typeof saved?.left === 'number' && typeof saved?.top === 'number' ? saved : null;
   } catch {
     return null;
@@ -26,7 +29,7 @@ function readSavedPosition(): Position | null {
 function clampPosition(position: Position, width: number, height: number): Position {
   return {
     left: Math.min(Math.max(EDGE_GAP, position.left), Math.max(EDGE_GAP, window.innerWidth - width - EDGE_GAP)),
-    top: Math.min(Math.max(EDGE_GAP, position.top), Math.max(EDGE_GAP, window.innerHeight - height - EDGE_GAP)),
+    top: Math.min(Math.max(MIN_TOP, position.top), Math.max(MIN_TOP, window.innerHeight - height - EDGE_GAP)),
   };
 }
 
@@ -45,14 +48,26 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Dragged position of the pill. While null the pill stays in its normal place in the header.
-  const [dragPosition, setDragPosition] = useState<Position | null>(readSavedPosition);
+  // The position is saved per user, so accounts sharing a browser keep their own spot.
+  const positionStorageKey = `${POSITION_STORAGE_KEY_PREFIX}:${user?.id ?? 'guest'}`;
+  const [dragPosition, setDragPosition] = useState<Position | null>(() =>
+    readSavedPosition(positionStorageKey),
+  );
+
+  // Loads the saved position again when a different user signs in.
+  useEffect(() => {
+    setDragPosition(readSavedPosition(positionStorageKey));
+  }, [positionStorageKey]);
+
   const [isDragging, setIsDragging] = useState(false);
+  // Dragging is only available on small screens, larger screens always use the default place.
+  const activePosition = isSmallScreen ? dragPosition : null;
   const dragRef = useRef({ startX: 0, startY: 0, originLeft: 0, originTop: 0, width: 0, height: 0, moved: false });
   const suppressClickRef = useRef(false);
 
   // Starts a drag from the pill. The drag only counts once the pointer moves past a small threshold.
   const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
-    if (event.button !== 0 || !triggerRef.current) return;
+    if (!isSmallScreen || event.button !== 0 || !triggerRef.current) return;
     const rect = triggerRef.current.getBoundingClientRect();
     dragRef.current = {
       startX: event.clientX,
@@ -87,7 +102,7 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
       suppressClickRef.current = true;
       setDragPosition((position) => {
         try {
-          localStorage.setItem(POSITION_STORAGE_KEY, JSON.stringify(position));
+          localStorage.setItem(positionStorageKey, JSON.stringify(position));
         } catch {
           // Storage can be unavailable, the position then lasts for this session only.
         }
@@ -102,11 +117,11 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
       window.removeEventListener('pointerup', onUp);
       window.removeEventListener('pointercancel', onUp);
     };
-  }, [isDragging]);
+  }, [isDragging, positionStorageKey]);
 
   // Keeps a dragged pill on screen when the window is resized.
   useEffect(() => {
-    if (!dragPosition) return;
+    if (!activePosition) return;
     const onResize = () => {
       const rect = triggerRef.current?.getBoundingClientRect();
       if (rect) setDragPosition((position) => position && clampPosition(position, rect.width, rect.height));
@@ -114,14 +129,14 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
     onResize();
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
-  }, [dragPosition === null]);
+  }, [activePosition === null]);
 
   // Puts the pill back in its default place in the header.
   const resetPosition = () => {
     setOpen(false);
     setDragPosition(null);
     try {
-      localStorage.removeItem(POSITION_STORAGE_KEY);
+      localStorage.removeItem(positionStorageKey);
     } catch {
       // Nothing to clean up when storage is unavailable.
     }
@@ -186,13 +201,23 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
           }
           setOpen((o) => !o);
         }}
-        onDoubleClick={dragPosition ? resetPosition : undefined}
-        style={dragPosition ? { left: dragPosition.left, top: dragPosition.top, touchAction: 'none' } : { touchAction: 'none' }}
+        onDoubleClick={activePosition ? resetPosition : undefined}
+        style={
+          activePosition
+            ? { left: activePosition.left, top: activePosition.top, touchAction: 'none' }
+            : isSmallScreen
+              ? { touchAction: 'none' }
+              : undefined
+        }
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label={fullAddress ? `Location: ${fullAddress}. Change location` : 'Set location'}
-        title={fullAddress ? `${fullAddress}. Drag to move${dragPosition ? ", double click to reset" : ""}` : undefined}
-        className={cn("group flex max-w-[13rem] items-center gap-2 rounded-full border border-border-light bg-surface-primary py-1 pl-1 pr-2.5 text-sm shadow-sm sm:pr-3 transition-colors hover:border-border-medium hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary sm:max-w-md select-none cursor-grab active:cursor-grabbing", dragPosition && "fixed z-[100]", isDragging && "shadow-lg")}
+        title={
+          fullAddress
+            ? `${fullAddress}${isSmallScreen ? `. Drag to move${activePosition ? ", double tap to reset" : ""}` : ""}`
+            : undefined
+        }
+        className={cn("group flex max-w-[13rem] items-center gap-2 rounded-full border border-border-light bg-surface-primary py-1 pl-1 pr-2.5 text-sm shadow-sm sm:pr-3 transition-colors hover:border-border-medium hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary sm:max-w-md", isSmallScreen && "select-none cursor-grab active:cursor-grabbing", isSmallScreen && "fixed z-40", isSmallScreen && !activePosition && "right-3 top-[3.125rem]", isDragging && "shadow-lg")}
       >
         <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-green-500/10 text-green-500 dark:text-green-400">
           <MapPin className="size-4" aria-hidden="true" />
@@ -217,7 +242,8 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
 
   return (
     <>
-      {dragPosition ? createPortal(triggerButton, document.body) : triggerButton}
+      {/* On small screens the pill floats at the top right until the user drags it elsewhere. */}
+      {isSmallScreen ? createPortal(triggerButton, document.body) : triggerButton}
 
       {open &&
         createPortal(
