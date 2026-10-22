@@ -6,25 +6,139 @@ import { useAuthContext } from '~/hooks';
 import { cn } from '~/utils';
 import LocationEditor from './LocationEditor'; // adjust path if it lives elsewhere
 
+const POSITION_STORAGE_KEY = 'locationMenuPosition';
+const EDGE_GAP = 8;
+const DRAG_THRESHOLD = 5;
+
+type Position = { left: number; top: number };
+
+// Reads the saved pill position, ignoring missing or invalid values.
+function readSavedPosition(): Position | null {
+  try {
+    const saved = JSON.parse(localStorage.getItem(POSITION_STORAGE_KEY) ?? 'null');
+    return typeof saved?.left === 'number' && typeof saved?.top === 'number' ? saved : null;
+  } catch {
+    return null;
+  }
+}
+
+// Keeps the pill fully inside the viewport.
+function clampPosition(position: Position, width: number, height: number): Position {
+  return {
+    left: Math.min(Math.max(EDGE_GAP, position.left), Math.max(EDGE_GAP, window.innerWidth - width - EDGE_GAP)),
+    top: Math.min(Math.max(EDGE_GAP, position.top), Math.max(EDGE_GAP, window.innerHeight - height - EDGE_GAP)),
+  };
+}
+
 export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolean }) {
   const { user } = useAuthContext();
   const profile = user?.farmerProfile as IFarmerProfile | undefined;
 
   const [open, setOpen] = useState(false);
-  const [pos, setPos] = useState({ top: 0, left: 0 });
+  const [pos, setPos] = useState<{ top?: number; bottom?: number; left: number; maxHeight: number }>({
+    top: 0,
+    left: 0,
+    maxHeight: 0,
+  });
 
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+
+  // Dragged position of the pill. While null the pill stays in its normal place in the header.
+  const [dragPosition, setDragPosition] = useState<Position | null>(readSavedPosition);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragRef = useRef({ startX: 0, startY: 0, originLeft: 0, originTop: 0, width: 0, height: 0, moved: false });
+  const suppressClickRef = useRef(false);
+
+  // Starts a drag from the pill. The drag only counts once the pointer moves past a small threshold.
+  const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
+    if (event.button !== 0 || !triggerRef.current) return;
+    const rect = triggerRef.current.getBoundingClientRect();
+    dragRef.current = {
+      startX: event.clientX,
+      startY: event.clientY,
+      originLeft: rect.left,
+      originTop: rect.top,
+      width: rect.width,
+      height: rect.height,
+      moved: false,
+    };
+    suppressClickRef.current = false;
+    setIsDragging(true);
+  };
+
+  // Follows the pointer while dragging and saves the final position.
+  useEffect(() => {
+    if (!isDragging) return;
+    const onMove = (event: PointerEvent) => {
+      const drag = dragRef.current;
+      const dx = event.clientX - drag.startX;
+      const dy = event.clientY - drag.startY;
+      if (!drag.moved && Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+      drag.moved = true;
+      setOpen(false);
+      setDragPosition(
+        clampPosition({ left: drag.originLeft + dx, top: drag.originTop + dy }, drag.width, drag.height),
+      );
+    };
+    const onUp = () => {
+      setIsDragging(false);
+      if (!dragRef.current.moved) return;
+      suppressClickRef.current = true;
+      setDragPosition((position) => {
+        try {
+          localStorage.setItem(POSITION_STORAGE_KEY, JSON.stringify(position));
+        } catch {
+          // Storage can be unavailable, the position then lasts for this session only.
+        }
+        return position;
+      });
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+    };
+  }, [isDragging]);
+
+  // Keeps a dragged pill on screen when the window is resized.
+  useEffect(() => {
+    if (!dragPosition) return;
+    const onResize = () => {
+      const rect = triggerRef.current?.getBoundingClientRect();
+      if (rect) setDragPosition((position) => position && clampPosition(position, rect.width, rect.height));
+    };
+    onResize();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, [dragPosition === null]);
+
+  // Puts the pill back in its default place in the header.
+  const resetPosition = () => {
+    setOpen(false);
+    setDragPosition(null);
+    try {
+      localStorage.removeItem(POSITION_STORAGE_KEY);
+    } catch {
+      // Nothing to clean up when storage is unavailable.
+    }
+  };
 
   // Position the portaled panel under the trigger
   useLayoutEffect(() => {
     if (!open || !triggerRef.current) return;
     const rect = triggerRef.current.getBoundingClientRect();
     const width = Math.min(320, window.innerWidth - 16);
-    setPos({
-      top: rect.bottom + 8,
-      left: Math.max(8, Math.min(rect.left, window.innerWidth - width - 8)),
-    });
+    const left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8));
+    // Opens upward when the pill sits in the lower half of the screen so the panel stays visible.
+    if (rect.top > window.innerHeight / 2) {
+      setPos({ bottom: window.innerHeight - rect.top + 8, left, maxHeight: rect.top - 16 });
+    } else {
+      setPos({ top: rect.bottom + 8, left, maxHeight: window.innerHeight - rect.bottom - 16 });
+    }
   }, [open]);
 
   // Close on outside click / Escape / resize
@@ -60,17 +174,25 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
     .filter(Boolean)
     .join(', ');
 
-  return (
-    <>
+  const triggerButton = (
       <button
         ref={triggerRef}
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onPointerDown={handlePointerDown}
+        onClick={() => {
+          if (suppressClickRef.current) {
+            suppressClickRef.current = false;
+            return;
+          }
+          setOpen((o) => !o);
+        }}
+        onDoubleClick={dragPosition ? resetPosition : undefined}
+        style={dragPosition ? { left: dragPosition.left, top: dragPosition.top, touchAction: 'none' } : { touchAction: 'none' }}
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label={fullAddress ? `Location: ${fullAddress}. Change location` : 'Set location'}
-        title={fullAddress || undefined}
-        className="group flex max-w-[13rem] items-center gap-2 rounded-full border border-border-light bg-surface-primary py-1 pl-1 pr-2.5 text-sm shadow-sm sm:pr-3 transition-colors hover:border-border-medium hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary sm:max-w-md"
+        title={fullAddress ? `${fullAddress}. Drag to move${dragPosition ? ", double click to reset" : ""}` : undefined}
+        className={cn("group flex max-w-[13rem] items-center gap-2 rounded-full border border-border-light bg-surface-primary py-1 pl-1 pr-2.5 text-sm shadow-sm sm:pr-3 transition-colors hover:border-border-medium hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary sm:max-w-md select-none cursor-grab active:cursor-grabbing", dragPosition && "fixed z-[100]", isDragging && "shadow-lg")}
       >
         <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-green-500/10 text-green-500 dark:text-green-400">
           <MapPin className="size-4" aria-hidden="true" />
@@ -91,6 +213,11 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
           aria-hidden="true"
         />
       </button>
+  );
+
+  return (
+    <>
+      {dragPosition ? createPortal(triggerButton, document.body) : triggerButton}
 
       {open &&
         createPortal(
@@ -98,8 +225,14 @@ export default function LocationMenu({ isSmallScreen }: { isSmallScreen?: boolea
             ref={panelRef}
             role="dialog"
             aria-label="Edit location"
-            style={{ top: pos.top, left: pos.left, width: Math.min(320, window.innerWidth - 16) }}
-            className="fixed z-[110] max-h-[calc(100dvh-6rem)] overflow-y-auto rounded-xl border border-border-light bg-surface-primary p-2 shadow-lg duration-150 animate-in fade-in-0 zoom-in-95"
+            style={{
+              top: pos.top,
+              bottom: pos.bottom,
+              left: pos.left,
+              maxHeight: pos.maxHeight,
+              width: Math.min(320, window.innerWidth - 16),
+            }}
+            className="fixed z-[110] overflow-y-auto rounded-xl border border-border-light bg-surface-primary p-2 shadow-lg duration-150 animate-in fade-in-0 zoom-in-95"
           >
             <LocationEditor
               profile={profile}
