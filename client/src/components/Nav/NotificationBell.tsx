@@ -9,6 +9,7 @@ import {
   OGDialogHeader,
   OGDialogTitle,
   OGDialogTemplate,
+  Spinner,
 } from '@librechat/client';
 import { Bell, BellOff, Info, AlertTriangle, Check, ChevronRight } from 'lucide-react';
 import type useLocalizeHook from '~/hooks/useLocalize';
@@ -132,7 +133,7 @@ function NotificationRow({
 function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
   const localize = useLocalize();
   const [open, setOpen] = useState(false);
-  const { notifications, unreadCount, markAsVisited, markAllVisited, fetchNotifications, filter, setFilter, page, setPage, totalPages } =
+  const { notifications, loading, unreadCount, markAsVisited, markAllVisited, fetchNotifications, filter, setFilter, page, setPage, totalPages } =
     useNotifications();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -269,7 +270,15 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
           </div>
 
           <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-2 sm:p-3">
-            {notifications.length === 0 ? (
+            {loading && notifications.length === 0 ? (
+              <div
+                role="status"
+                aria-label="Loading notifications"
+                className="flex flex-1 items-center justify-center py-14"
+              >
+                <Spinner className="size-6 text-green-600 dark:text-green-400" />
+              </div>
+            ) : notifications.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-3.5 px-8 py-14 text-center">
                 <span className="flex h-14 w-14 items-center justify-center rounded-full bg-green-600/10 text-green-600 dark:text-green-400">
                   <BellOff className="h-6 w-6" aria-hidden="true" />

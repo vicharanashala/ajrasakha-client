@@ -50,7 +50,9 @@ export default function useNotifications(initialFilter = 'unread') {
     }
   }, [token, filter, page]);
 
+  // Clears the previous list when the tab or page changes so the loading state shows instead of stale rows.
   useEffect(() => {
+    setNotifications([]);
     fetchNotifications(filter, page);
   }, [fetchNotifications, filter, page]);
 
