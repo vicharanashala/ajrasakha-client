@@ -135,8 +135,11 @@ export default function NewChat({
   return (
     <>
       <div className="mb-3 mt-2 flex items-center justify-between pl-1">
-        <div className="flex-shrink-0" style={{ height: 32, width: 32 }}>
-          {logo}
+        <div className="flex min-w-0 items-center gap-2">
+          <div className="flex-shrink-0" style={{ height: 32, width: 32 }}>
+            {logo}
+          </div>
+          <span className="truncate text-base font-semibold text-text-primary">Ajrasakha</span>
         </div>
         <div className="flex items-center gap-0.5">
           {headerButtons}
