@@ -367,7 +367,8 @@ const Conversations: FC<ConversationsProps> = ({
           <span className="ml-2 text-text-primary">{localize('com_ui_loading')}</span>
         </div>
       ) : (
-        <div className="flex-1">
+        // Soft fade at the top and bottom edges so rows ease in and out while scrolling.
+        <div className="flex-1 [mask-image:linear-gradient(to_bottom,transparent,black_12px,black_calc(100%-16px),transparent)]">
           <AutoSizer>
             {({ width, height }) => (
               <List
@@ -380,7 +381,7 @@ const Conversations: FC<ConversationsProps> = ({
                 rowRenderer={rowRenderer}
                 overscanRowCount={10}
                 aria-readonly={false}
-                className="outline-none"
+                className="overscroll-contain outline-none"
                 aria-label="Conversations"
                 onRowsRendered={handleRowsRendered}
                 tabIndex={-1}
