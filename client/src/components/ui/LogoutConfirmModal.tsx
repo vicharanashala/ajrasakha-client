@@ -5,6 +5,7 @@ import {
   OGDialogHeader,
   OGDialogTitle,
 } from '@librechat/client';
+import { LogOut } from 'lucide-react';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils';
 
@@ -15,7 +16,7 @@ const ACTION_BUTTON_BASE = cn(
   'transition-[background-color,box-shadow,transform] duration-200',
   'focus-visible:outline-none focus-visible:ring-2',
   'motion-reduce:transition-none',
-  'sm:w-auto sm:min-w-[7rem]',
+  'sm:flex-1',
 );
 
 const LogoutConfirmModal = ({
@@ -39,50 +40,45 @@ const LogoutConfirmModal = ({
       <OGDialogContent
         showCloseButton={false}
         onInteractOutside={(e) => e.preventDefault()}
-        className="w-11/12 max-w-sm gap-0 p-5 text-left sm:p-6"
+        className="w-11/12 max-w-sm gap-0 overflow-hidden p-0 text-center"
       >
-        {/* Mark and copy sit side by side rather than stacked and centred: the dialog stays
-            short, and the eye runs straight from the logo into the title. */}
-        <OGDialogHeader className="flex flex-row items-start gap-3.5 space-y-0 text-left sm:gap-4 sm:text-left">
-          {/* The app mark rather than a generic sign-out glyph: signing out ends a session
-              without losing anything, so the moment stays on-brand instead of alarming. */}
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-green-500/10 dark:bg-green-400/10 sm:size-12">
-            <img
-              src="/assets/annam-logo.png"
-              alt=""
-              aria-hidden="true"
-              className="size-6 object-contain sm:size-7"
-            />
-          </span>
-          <div className="flex min-w-0 flex-col gap-1.5">
-            <OGDialogTitle className="text-left text-base font-semibold text-text-primary sm:text-lg">
-              {localize('com_nav_log_out')}
-            </OGDialogTitle>
-            {/* The dialog's own description element, so screen readers announce it with the
-                title instead of it being a loose paragraph. */}
-            <OGDialogDescription className="text-left text-sm leading-relaxed text-text-secondary">
-              {localize('com_nav_log_out_confirm_message')}
-            </OGDialogDescription>
-          </div>
-        </OGDialogHeader>
+        {/* Soft brand-tinted top area so the dialog feels part of the app, not a system prompt. */}
+        <div className="bg-gradient-to-b from-green-500/10 to-transparent px-6 pb-2 pt-8 dark:from-green-400/10">
+          <OGDialogHeader className="flex flex-col items-center gap-4 space-y-0 text-center sm:text-center">
+            {/* App mark with a small sign-out badge: signing out ends a session without
+                losing anything, so the moment stays on-brand instead of alarming. */}
+            <span className="relative flex size-16 items-center justify-center rounded-2xl bg-surface-primary shadow-md ring-1 ring-green-600/20 dark:ring-green-400/20">
+              <img
+                src="/assets/annam-logo.png"
+                alt=""
+                aria-hidden="true"
+                className="size-9 object-contain"
+              />
+              <span className="absolute -bottom-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full bg-green-600 text-white ring-2 ring-surface-primary">
+                <LogOut className="size-3.5" aria-hidden="true" />
+              </span>
+            </span>
+            <div className="flex min-w-0 flex-col gap-1.5">
+              <OGDialogTitle className="text-center text-lg font-semibold text-text-primary sm:text-xl">
+                {localize('com_nav_log_out')}
+              </OGDialogTitle>
+              {/* The dialog's own description element, so screen readers announce it with the
+                  title instead of it being a loose paragraph. */}
+              <OGDialogDescription className="text-center text-sm leading-relaxed text-text-secondary">
+                {localize('com_nav_log_out_confirm_message')}
+              </OGDialogDescription>
+            </div>
+          </OGDialogHeader>
+        </div>
 
         {/* Full width and stacked on a phone, where thumb reach matters more than economy;
             a right-aligned pair from sm up, which is where a confirm dialog expects them. */}
-        <div className="mt-6 flex flex-col-reverse gap-2.5 sm:flex-row sm:justify-end sm:gap-3">
+        <div className="mt-4 flex flex-col gap-2.5 border-t border-border-light p-5 sm:flex-row sm:gap-3 sm:px-6">
+          {/* Cancel is the highlighted, focused default so a stray Enter keeps the session. */}
           <button
             type="button"
+            autoFocus
             onClick={() => onOpenChange(false)}
-            className={cn(
-              ACTION_BUTTON_BASE,
-              'border border-border-medium bg-transparent font-medium text-text-primary',
-              'hover:bg-surface-hover focus-visible:ring-border-heavy',
-            )}
-          >
-            {localize('com_ui_cancel')}
-          </button>
-          <button
-            type="button"
-            onClick={handleConfirm}
             className={cn(
               ACTION_BUTTON_BASE,
               'bg-green-600 font-semibold text-white',
@@ -94,6 +90,17 @@ const LogoutConfirmModal = ({
               'active:translate-y-0 active:scale-[0.97]',
               'motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100',
               'focus-visible:ring-green-600/50',
+            )}
+          >
+            {localize('com_ui_cancel')}
+          </button>
+          <button
+            type="button"
+            onClick={handleConfirm}
+            className={cn(
+              ACTION_BUTTON_BASE,
+              'border border-border-medium bg-transparent font-medium text-text-secondary',
+              'hover:bg-surface-hover hover:text-text-primary focus-visible:ring-border-heavy',
             )}
           >
             {localize('com_nav_log_out')}
