@@ -9,8 +9,8 @@ import LocationEditor from './LocationEditor'; // adjust path if it lives elsewh
 // The version suffix drops positions saved by earlier builds, which could sit over the top bar.
 const POSITION_STORAGE_KEY_PREFIX = 'locationMenuPosition:v2';
 const EDGE_GAP = 8;
-// Keeps the dragged pill below the mobile top bar so it never covers the menu or model buttons.
-const MIN_TOP = 50;
+// Lowest top offset while dragging; the pill may now sit over the mobile top bar.
+const MIN_TOP = EDGE_GAP;
 const DRAG_THRESHOLD = 5;
 
 type Position = { left: number; top: number };
