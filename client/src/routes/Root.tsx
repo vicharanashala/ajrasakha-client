@@ -200,7 +200,7 @@ export default function Root() {
                             transform: navVisible
                               ? `translateX(${NAV_WIDTH.MOBILE}px)`
                               : 'translateX(0)',
-                            transition: 'transform 0.2s ease-out',
+                            transition: 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
                           }
                         : undefined
                     }

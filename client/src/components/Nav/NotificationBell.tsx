@@ -213,8 +213,8 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
 
   const bellIcon = (
     <span className="relative flex h-5 w-5 flex-shrink-0 items-center justify-center">
-      <Bell className="h-5 w-5 text-text-primary" />
-      {unreadCount > 0 && (
+      <Bell className="h-5 w-5 origin-top text-text-primary transition-transform duration-300 ease-out group-hover:-rotate-12 motion-reduce:transition-none" />
+      {collapsed && unreadCount > 0 && (
         <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
           {unreadCount > 9 ? '9+' : unreadCount}
         </span>
@@ -233,7 +233,7 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
               type="button"
               ref={buttonRef}
               onClick={() => handleOpenChange(true)}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border-none bg-transparent text-text-primary duration-0 hover:bg-gray-300 dark:hover:bg-gray-800"
+              className="group flex h-10 w-10 items-center justify-center rounded-xl border-none bg-transparent text-text-primary transition-colors duration-200 ease-out hover:bg-surface-hover"
               aria-label={localize('com_nav_notifications')}
             >
               {bellIcon}
@@ -245,11 +245,18 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
           type="button"
           ref={buttonRef}
           onClick={() => handleOpenChange(true)}
-          className="mb-1 flex w-full items-center gap-2 rounded-xl border-none bg-transparent px-2 py-2 text-left text-sm font-medium text-text-primary duration-0 hover:bg-gray-300 dark:hover:bg-gray-800"
+          className="group mb-1 flex w-full items-center gap-3 rounded-xl border-none bg-transparent px-3 py-2 text-left text-sm font-medium text-text-secondary transition-colors duration-200 ease-out hover:bg-surface-hover hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary"
           aria-label={localize('com_nav_notifications')}
         >
           {bellIcon}
-          <span className="truncate">{localize('com_nav_notifications')}</span>
+          <span className="min-w-0 flex-1 truncate">{localize('com_nav_notifications')}</span>
+          {/* Green dot signals unread notifications. */}
+          {unreadCount > 0 && (
+            <span
+              className="size-2 flex-shrink-0 rounded-full bg-green-500"
+              aria-label={localize('com_nav_notifications_new_count', { 0: unreadCount })}
+            />
+          )}
         </button>
       )}
 

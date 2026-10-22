@@ -9,7 +9,8 @@ router.use(requireJwtAuth);
 
 router.get('/enable', async function (req, res) {
   if (!isEnabled(process.env.SEARCH)) {
-    return res.send(false);
+    // Title search runs on MongoDB when Meilisearch is off, so the search box stays available.
+    return res.send(true);
   }
 
   try {

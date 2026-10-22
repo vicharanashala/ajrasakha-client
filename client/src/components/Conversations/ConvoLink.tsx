@@ -24,12 +24,14 @@ const ConvoLink: React.FC<ConvoLinkProps> = ({
     <div
       className={cn(
         'flex grow items-center gap-2 overflow-hidden rounded-lg px-2',
-        isActiveConvo || isPopoverActive ? 'bg-gray-300 dark:bg-gray-800' : '',
+        isActiveConvo || isPopoverActive ? 'bg-green-600/10 font-semibold text-text-primary' : '',
       )}
       title={title ?? undefined}
       aria-current={isActiveConvo ? 'page' : undefined}
       style={{ width: '100%' }}
     >
+      {/* Dot marks the open conversation. */}
+      {isActiveConvo && <span className="size-1.5 flex-shrink-0 rounded-full bg-green-500" aria-hidden="true" />}
       {children}
       <div
         className="relative flex-1 grow overflow-hidden whitespace-nowrap text-ellipsis"

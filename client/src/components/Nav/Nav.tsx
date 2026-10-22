@@ -56,7 +56,7 @@ const NavMask = memo(
       id="mobile-nav-mask-toggle"
       role="button"
       tabIndex={0}
-      className={`nav-mask transition-opacity duration-200 ease-in-out ${navVisible ? 'active opacity-100' : 'opacity-0'}`}
+      className={`nav-mask transition-opacity duration-300 ease-in-out ${navVisible ? 'active opacity-100' : 'opacity-0'}`}
       onClick={toggleNavVisible}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -290,7 +290,7 @@ const Nav = memo(
               />
             </div>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="mt-1 flex items-center gap-1 border-t border-border-light pt-2">
             <div className="min-w-0 flex-1">
               <Suspense fallback={<Skeleton className="mt-1 h-12 w-full rounded-xl" />}>
                 <AccountSettings />
@@ -357,7 +357,7 @@ const Nav = memo(
             style={{
               width: sidebarWidth,
               transform: navVisible ? 'translateX(0)' : `translateX(-${sidebarWidth}px)`,
-              transition: 'transform 0.2s ease-out',
+              transition: 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
             }}
           >
             {sidebarContent}
@@ -373,7 +373,7 @@ const Nav = memo(
     return (
       <div
         className="flex-shrink-0 overflow-hidden"
-        style={{ width: desktopWidth, transition: 'width 0.2s ease-out' }}
+        style={{ width: desktopWidth, transition: 'width 0.3s cubic-bezier(0.22, 1, 0.36, 1)' }}
       >
         <div
           data-testid="nav"
@@ -394,7 +394,7 @@ const Nav = memo(
             'nav active h-full border-r border-gray-200 dark:border-gray-800',
             navVisible ? 'bg-gray-50 dark:bg-gray-900' : 'bg-presentation',
           )}
-          style={{ width: desktopWidth, transition: 'width 0.2s ease-out' }}
+          style={{ width: desktopWidth, transition: 'width 0.3s cubic-bezier(0.22, 1, 0.36, 1)' }}
         >
           {navVisible ? sidebarContent : collapsedContent}
         </div>

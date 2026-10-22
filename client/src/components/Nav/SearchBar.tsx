@@ -93,9 +93,7 @@ const SearchBar = forwardRef((props: SearchBarProps, ref: React.Ref<HTMLDivEleme
       isTyping: true,
     }));
     debouncedSetDebouncedQuery(value);
-    if (value.length > 0 && location.pathname !== '/search') {
-      navigate('/search', { replace: true });
-    }
+    // No redirect to /search: it needs message search (Meilisearch). The sidebar list filters by title instead.
   };
 
   // Automatically set isTyping to false when loading is done and debouncedQuery matches query
@@ -109,7 +107,7 @@ const SearchBar = forwardRef((props: SearchBarProps, ref: React.Ref<HTMLDivEleme
   return (
     <div
       ref={ref}
-      className="group relative my-1 flex h-10 cursor-pointer items-center gap-3 rounded-lg border-2 border-transparent px-3 py-2 text-text-primary focus-within:border-ring-primary focus-within:bg-gray-300 dark:focus-within:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-800"
+      className="group relative my-2 flex h-10 cursor-pointer items-center gap-3 rounded-xl border border-border-medium px-3 py-2 text-text-primary focus-within:border-ring-primary focus-within:bg-surface-hover dark:focus-within:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-800"
     >
       <Search
         aria-hidden="true"

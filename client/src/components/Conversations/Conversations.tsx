@@ -82,7 +82,7 @@ const ChatsHeader: FC<ChatsHeaderProps> = memo(({ isExpanded, onToggle }) => {
   return (
     <button
       onClick={onToggle}
-      className="group flex w-full items-center justify-between px-1 py-2 text-xs font-bold text-text-secondary"
+      className="group flex w-full items-center justify-between px-1 py-2 text-[11px] font-semibold uppercase tracking-wider text-text-secondary"
       type="button"
     >
       <span className="select-none">{localize('com_ui_chats')}</span>

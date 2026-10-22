@@ -1,5 +1,5 @@
 const { logger } = require('@librechat/data-schemas');
-const { createTempChatExpirationDate } = require('@librechat/api');
+const { createTempChatExpirationDate, isEnabled } = require('@librechat/api');
 const { getMessages, deleteMessages } = require('./Message');
 const { Conversation } = require('~/db/models');
 
@@ -180,7 +180,11 @@ module.exports = {
 
     filters.push({ $or: [{ expiredAt: null }, { expiredAt: { $exists: false } }] });
 
-    if (search) {
+    if (search && !isEnabled(process.env.SEARCH)) {
+      // Meilisearch is off, so fall back to a case-insensitive title match in MongoDB.
+      const escaped = String(search).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      filters.push({ title: { $regex: escaped, $options: 'i' } });
+    } else if (search) {
       try {
         const meiliResults = await Conversation.meiliSearch(search, { filter: `user = "${user}"` });
         const matchingIds = Array.isArray(meiliResults.hits)

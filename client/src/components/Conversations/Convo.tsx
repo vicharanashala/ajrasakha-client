@@ -5,9 +5,7 @@ import { Constants } from 'librechat-data-provider';
 import { useToastContext, useMediaQuery } from '@librechat/client';
 import type { TConversation } from 'librechat-data-provider';
 import { useUpdateConversationMutation } from '~/data-provider';
-import EndpointIcon from '~/components/Endpoints/EndpointIcon';
 import { useNavigateToConvo, useLocalize, useShiftKey } from '~/hooks';
-import { useGetEndpointsQuery } from '~/data-provider';
 import { NotificationSeverity } from '~/common';
 import { ConvoOptions } from './ConvoOptions';
 import RenameForm from './RenameForm';
@@ -32,7 +30,6 @@ export default function Conversation({
   const localize = useLocalize();
   const { showToast } = useToastContext();
   const { navigateToConvo } = useNavigateToConvo();
-  const { data: endpointsConfig } = useGetEndpointsQuery();
   const currentConvoId = useMemo(() => params.conversationId, [params.conversationId]);
   const updateConvoMutation = useUpdateConversationMutation(currentConvoId ?? '');
   const activeConvos = useRecoilValue(store.allConversationsSelector);
@@ -148,10 +145,10 @@ export default function Conversation({
   return (
     <div
       className={cn(
-        'group relative flex h-12 w-full items-center rounded-lg md:h-9',
+        'group relative flex h-12 w-full items-center rounded-lg transition-colors duration-200 ease-out md:h-9',
         isActiveConvo || isPopoverActive
-          ? 'bg-gray-300 dark:bg-gray-800'
-          : 'hover:bg-gray-300 dark:hover:bg-gray-800',
+          ? 'bg-green-600/10'
+          : 'hover:bg-surface-hover',
       )}
       role="button"
       tabIndex={renaming ? -1 : 0}
@@ -221,19 +218,12 @@ export default function Conversation({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               />
             </svg>
-          ) : (
-            <EndpointIcon
-              conversation={conversation}
-              endpointsConfig={endpointsConfig}
-              size={20}
-              context="menu-item"
-            />
-          )}
+          ) : null}
         </ConvoLink>
       )}
       <div
         className={cn(
-          'mr-2 flex origin-left',
+          'mr-2 flex origin-left transition-all duration-200 ease-out',
           isPopoverActive || isActiveConvo
             ? 'pointer-events-auto scale-x-100 opacity-100'
             : 'pointer-events-none max-w-0 scale-x-0 opacity-0 group-focus-within:pointer-events-auto group-focus-within:max-w-[60px] group-focus-within:scale-x-100 group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:max-w-[60px] group-hover:scale-x-100 group-hover:opacity-100',

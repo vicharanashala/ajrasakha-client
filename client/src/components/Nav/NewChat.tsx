@@ -139,7 +139,7 @@ export default function NewChat({
           <div className="flex-shrink-0" style={{ height: 32, width: 32 }}>
             {logo}
           </div>
-          <span className="truncate text-base font-semibold text-text-primary">Ajrasakha</span>
+          <span className="truncate text-lg font-bold tracking-tight text-text-primary">Ajrasakha</span>
         </div>
         <div className="flex items-center gap-0.5">
           {headerButtons}
@@ -166,18 +166,21 @@ export default function NewChat({
           />
         </div>
       </div>
+      {/* Primary action: solid brand button. */}
       <button
         type="button"
         data-testid="nav-new-chat-button"
         aria-label={localize('com_ui_new_chat')}
         onClick={clickHandler}
-        className="mb-1 flex w-full items-center gap-2 rounded-xl border-none bg-transparent px-2 py-2 text-left text-sm font-medium text-text-primary duration-0 hover:bg-gray-300 dark:hover:bg-gray-800"
+        className="group flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 ease-out hover:-translate-y-px hover:bg-green-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary active:translate-y-0 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
       >
-        <NewChatIcon className="icon-lg flex-shrink-0 text-text-primary" />
+        <NewChatIcon className="size-4 !text-white transition-transform duration-200 ease-out group-hover:rotate-6" />
         <span className="truncate">{localize('com_ui_new_chat')}</span>
       </button>
-      {notificationBell}
+      {/* Search sits directly under the primary action. */}
       {subHeaders != null ? subHeaders : null}
+      {notificationBell}
+      <div role="separator" className="mx-2 my-2 h-px bg-border-light" />
     </>
   );
 }
