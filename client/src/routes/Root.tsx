@@ -56,6 +56,29 @@ export default function Root() {
   const { isAuthenticated, logout } = useAuthContext();
   const isSmallScreen = useMediaQuery('(max-width: 768px)');
 
+  // Locks the page itself so it never scrolls. Only the chat and sidebar areas scroll, which keeps the
+  // header, composer and notice fixed on phones where the address bar changes the viewport height.
+  useEffect(() => {
+    const root = document.documentElement;
+    const body = document.body;
+    const previous = {
+      rootOverflow: root.style.overflow,
+      bodyOverflow: body.style.overflow,
+      rootOverscroll: root.style.overscrollBehavior,
+      bodyOverscroll: body.style.overscrollBehavior,
+    };
+    root.style.overflow = 'hidden';
+    body.style.overflow = 'hidden';
+    root.style.overscrollBehavior = 'none';
+    body.style.overscrollBehavior = 'none';
+    return () => {
+      root.style.overflow = previous.rootOverflow;
+      body.style.overflow = previous.bodyOverflow;
+      root.style.overscrollBehavior = previous.rootOverscroll;
+      body.style.overscrollBehavior = previous.bodyOverscroll;
+    };
+  }, []);
+
   // Closes the sidebar on mobile when an answer opens, for example from a notification.
   useEffect(() => {
     if (isSmallScreen && isAnswerPage) {
@@ -166,7 +189,7 @@ export default function Root() {
         <AssistantsMapContext.Provider value={assistantsMap}>
           <AgentsMapContext.Provider value={agentsMap}>
             <PromptGroupsProvider>
-              <div className="flex h-dvh">
+              <div className="flex h-dvh overflow-hidden">
                 <div className="relative z-0 flex h-full w-full overflow-hidden">
                   <Nav navVisible={navVisible} setNavVisible={setNavVisible} />
                   <div
