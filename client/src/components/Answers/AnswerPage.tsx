@@ -146,7 +146,7 @@ export default function AnswerPage() {
 
   return (
     <div className="h-full w-full overflow-y-auto bg-surface-primary">
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-5 sm:gap-8 sm:px-6 sm:py-8 lg:py-10">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-5 sm:gap-8 sm:px-6 sm:py-8 lg:max-w-5xl lg:px-4 lg:py-10 2xl:max-w-6xl">
         <header className="flex flex-col gap-4">
           <button
             type="button"
@@ -187,7 +187,7 @@ export default function AnswerPage() {
         {/* Answer */}
         <article
           aria-label="Expert answer"
-          className="rounded-2xl border border-border-light bg-surface-primary p-4 shadow-sm sm:p-6 lg:p-8"
+          className="rounded-2xl border border-border-light bg-surface-primary p-4 shadow-sm sm:p-6 lg:px-5 lg:py-8"
         >
           <div className="mb-6 flex items-center gap-3 border-b border-border-light pb-4">
             <span className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-green-500/10">
