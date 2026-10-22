@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useMediaQuery } from '@librechat/client';
 import type { ContextType } from '~/common';
 import {
@@ -34,6 +34,8 @@ import {
 } from '~/components/ui';
 
 export default function Root() {
+  // The answer page is a standalone reading view, so the mobile menu bar and top glow are hidden there.
+  const isAnswerPage = useLocation().pathname.startsWith('/answer/');
   const [showTerms, setShowTerms] = useState(false);
   const [showTestingNotice, setShowTestingNotice] = useState(false);
   const [showFarmerProfile, setShowFarmerProfile] = useState(false);
@@ -166,21 +168,25 @@ export default function Root() {
                         : undefined
                     }
                   >
-                    {/* Soft brand-green glow washing down from the very top of the app
-                        column, behind the mobile nav as well as the chat area. Decorative:
-                        `-z-10` puts it under the content and `isolate` on this column keeps
-                        that negative index from escaping behind the sidebar. Dark mode uses
-                        the lighter brand green at a lower alpha, since the dark green on a
-                        near-black page reads as a colour cast rather than light. */}
-                    <div
-                      aria-hidden="true"
-                      className={cn(
-                        'pointer-events-none absolute inset-x-0 top-0 -z-10 h-56 sm:h-72',
-                        'bg-[radial-gradient(120%_100%_at_50%_0%,rgba(25,135,84,0.13),transparent_72%)]',
-                        'dark:bg-[radial-gradient(120%_100%_at_50%_0%,rgba(117,215,178,0.09),transparent_72%)]',
-                      )}
-                    />
-                    <MobileNav navVisible={navVisible} setNavVisible={setNavVisible} />
+                    {!isAnswerPage && (
+                      <>
+                        {/* Soft brand-green glow washing down from the very top of the app
+                            column, behind the mobile nav as well as the chat area. Decorative:
+                            `-z-10` puts it under the content and `isolate` on this column keeps
+                            that negative index from escaping behind the sidebar. Dark mode uses
+                            the lighter brand green at a lower alpha, since the dark green on a
+                            near-black page reads as a colour cast rather than light. */}
+                        <div
+                          aria-hidden="true"
+                          className={cn(
+                            'pointer-events-none absolute inset-x-0 top-0 -z-10 h-56 sm:h-72',
+                            'bg-[radial-gradient(120%_100%_at_50%_0%,rgba(25,135,84,0.13),transparent_72%)]',
+                            'dark:bg-[radial-gradient(120%_100%_at_50%_0%,rgba(117,215,178,0.09),transparent_72%)]',
+                          )}
+                        />
+                        <MobileNav navVisible={navVisible} setNavVisible={setNavVisible} />
+                      </>
+                    )}
                     <Outlet context={{ navVisible, setNavVisible } satisfies ContextType} />
                   </div>
                 </div>
