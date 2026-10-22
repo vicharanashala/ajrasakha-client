@@ -129,6 +129,15 @@ export default function AnswerPage() {
     fetchData();
   }, [fetchData]);
 
+  // Stops reading aloud when the user leaves this answer, for both browser and external voices.
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis?.cancel();
+      const audio = document.getElementById(`audio-${messageId}`) as HTMLAudioElement | null;
+      audio?.pause();
+    };
+  }, [messageId]);
+
   if (loading) {
     return (
       <div
