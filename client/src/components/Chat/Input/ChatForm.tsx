@@ -1047,11 +1047,6 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
                           ? localize('com_ui_speech_converting')
                           : localize('com_ui_speech_tap_to_speak')}
                   </span>
-                  {isTranscribing && !isVoiceListening && (
-                    <div className="flex items-center justify-center gap-1.5 text-emerald-400">
-                      <Spinner size={14} />
-                    </div>
-                  )}
                 </div>
               </div>
             )}
