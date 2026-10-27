@@ -47,7 +47,6 @@ export const AJRASAKHA_TIPS: readonly TranslationKeys[] = [
   'com_ui_ajrasakha_tip_copy_icon',
   'com_ui_ajrasakha_tip_edit_message',
   'com_ui_ajrasakha_tip_new_chat',
-  'com_ui_ajrasakha_tip_location_access',
   'com_ui_ajrasakha_tip_jump_to_newest',
   // Getting the most out of it
   'com_ui_ajrasakha_tip_rate_answers',
