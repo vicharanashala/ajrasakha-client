@@ -163,7 +163,7 @@ export function CropPickerModal({
                     <div className="relative">
                       <div
                         className={cn(
-                          'flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-2 transition-colors sm:h-20 sm:w-20',
+                          'flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-2 transition-colors sm:h-14 sm:w-14',
                           isSelected
                             ? 'border-green-500'
                             : 'border-border-light hover:border-green-300',
