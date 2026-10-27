@@ -250,12 +250,14 @@ function NotificationBell({ collapsed = false }: { collapsed?: boolean }) {
         >
           {bellIcon}
           <span className="min-w-0 flex-1 truncate">{localize('com_nav_notifications')}</span>
-          {/* Green dot signals unread notifications. */}
+          {/* Green badge shows the unread notification count. */}
           {unreadCount > 0 && (
             <span
-              className="size-2 flex-shrink-0 rounded-full bg-green-500"
+              className="flex h-5 min-w-5 flex-shrink-0 items-center justify-center rounded-full bg-green-600 px-1.5 text-[11px] font-semibold leading-none text-white"
               aria-label={localize('com_nav_notifications_new_count', { 0: unreadCount })}
-            />
+            >
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
           )}
         </button>
       )}
