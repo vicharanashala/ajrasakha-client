@@ -329,11 +329,12 @@ export default function LocationEditor({
                     ) : filtered.length === 0 ? (
                       <div className="px-3 py-2 text-text-secondary">No options found</div>
                     ) : (
-                      filtered.map((name) => {
+                      filtered.map((name, index) => {
                         const selected = same(name, draft[level]);
                         return (
                           <button
-                            key={name}
+                            // Some lists contain repeated names, so the index keeps keys unique.
+                            key={`${name}-${index}`}
                             type="button"
                             onClick={() => pick(level, name)}
                             className={cn(
