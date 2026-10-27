@@ -74,10 +74,8 @@ export const useAutoSave = ({
   const restoreText = useCallback(
     (id: string) => {
       const savedDraft = getDraft(id);
-      if (!savedDraft) {
-        return;
-      }
-      setValue('text', savedDraft);
+      // Clear the input when the conversation has no draft so text does not carry over
+      setValue('text', savedDraft ?? '');
     },
     [setValue],
   );
