@@ -137,18 +137,18 @@ export default function LocationEditor({
     async () => asList(await dataService.getLocationDistricts(baseUrl, stateObj!.code)),
   );
   const districtObj = findByName(districts, draft.district);
-  const { data: blocks = [], isFetching: bLoad, isError: bErr, refetch: bRetry } = q<Option>(
+  const { data: blocks = [], isFetching: bLoad, isSuccess: bOk, isError: bErr, refetch: bRetry } = q<Option>(
     ['locationEditor', 'subdistricts', districtObj?.code, draft.district],
     districtObj?.code !== undefined,
     async () => asList(await dataService.getLocationBlocks(baseUrl, districtObj!.code)),
   );
   const blockObj = findByName(blocks, draft.blockName);
-  const { data: villages = [], isFetching: vLoad, isError: vErr, refetch: vRetry } = q<Option>(
+  const { data: villages = [], isFetching: vLoad, isSuccess: vOk, isError: vErr, refetch: vRetry } = q<Option>(
     ['locationEditor', 'villages', blockObj?.code, draft.blockName],
     blockObj?.code !== undefined,
     async () => asList(await dataService.getLocationVillages(baseUrl, blockObj!.code)),
   );
-  const { data: kvks = [], isFetching: kLoad, isError: kErr, refetch: kRetry } = q<Option>(
+  const { data: kvks = [], isFetching: kLoad, isSuccess: kOk, isError: kErr, refetch: kRetry } = q<Option>(
     ['locationEditor', 'kvks', districtObj?.code, draft.district],
     districtObj?.code !== undefined,
     async () => {
@@ -192,6 +192,17 @@ export default function LocationEditor({
     nearestKVK: () => void kRetry(),
   };
 
+  // A level whose list loaded empty is hidden and optional. An empty block list also hides village and KVK.
+  const blockEmpty = !!districtObj && bOk && blocks.length === 0;
+  const hidden: Record<Level, boolean> = {
+    state: false,
+    district: false,
+    blockName: blockEmpty,
+    villageName: blockEmpty || (!!blockObj && vOk && villages.length === 0),
+    nearestKVK: blockEmpty || (!!districtObj && kOk && kvks.length === 0),
+  };
+  const visibleLevels = LEVELS.filter((l) => !hidden[l]);
+
   const saveMutation = useSaveFarmerProfileMutation({
     onSuccess: (data: any, v: Partial<IFarmerProfile>) => {
       const lower = (s = '') => s.trim().toLowerCase();
@@ -230,7 +241,7 @@ export default function LocationEditor({
     DESCENDANTS[level].forEach((l) => (next[l] = ''));
     setDraft(next);
     setEditing(
-      LEVELS.slice(LEVELS.indexOf(level) + 1).find((l) => !next[l] && !missingAncestor(l, next)) ??
+      visibleLevels.slice(visibleLevels.indexOf(level) + 1).find((l) => !next[l] && !missingAncestor(l, next)) ??
         null,
     );
   };
@@ -240,7 +251,7 @@ export default function LocationEditor({
   const districtChanged = !same(draft.district, original.district);
   const mustComplete = requireAll || stateChanged || districtChanged;
   const missingRequired = mustComplete
-    ? LEVELS.some(
+    ? visibleLevels.some(
         (l) =>
           !draft[l] && (l === 'state' || l === 'district' || loading[l] || options[l].length > 0),
       )
@@ -256,7 +267,7 @@ export default function LocationEditor({
   return (
     <div className="text-sm text-text-primary">
       <ul className="flex flex-col gap-1">
-        {LEVELS.map((level) => {
+        {visibleLevels.map((level) => {
           const reason = missingAncestor(level, draft);
           const isEditing = editing === level;
           const LevelIcon = LEVEL_ICONS[level];

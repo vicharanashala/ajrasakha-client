@@ -88,7 +88,7 @@ const FarmerLocationModal = ({
   const [submitError, setSubmitError] = useState('');
   // Only fetch states/districts/kvks when the user opens the dropdown, not on mount.
   const [statesQueryTriggered, setStatesQueryTriggered] = useState(false);
-  const effectiveMissingFields = useMemo(
+  const serverMissingFields = useMemo(
     () => missingFields.filter((field) => field !== 'cropsCultivated'),
     [missingFields],
   );
@@ -136,13 +136,13 @@ const FarmerLocationModal = ({
       'customKVK',
     ];
 
-    const fieldsToUnregister = allFields.filter((f) => !effectiveMissingFields.includes(f as string));
+    const fieldsToUnregister = allFields.filter((f) => !serverMissingFields.includes(f as string));
 
     fieldsToUnregister.forEach((f) => {
       unregister(f);
       clearErrors(f);
     });
-  }, [effectiveMissingFields, unregister, clearErrors]);
+  }, [serverMissingFields, unregister, clearErrors]);
 
   const watchedState = watch('state') || initialData?.state;
   const selectedState = watchedState;
@@ -235,7 +235,7 @@ const FarmerLocationModal = ({
 
   const distObj = districtsList.find((d) => d.name === selectedDistrict);
 
-  const { data: blocksList = [] } = useQuery<{ code: number | string; name: string }[]>({
+  const { data: blocksList = [], isSuccess: blocksLoaded } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['subdistricts', distObj?.code, selectedDistrict],
     queryFn: async () => {
       if (distObj?.code === undefined) {
@@ -261,7 +261,7 @@ const FarmerLocationModal = ({
 
   const blockObj = blocksList.find((b) => b.name === selectedBlock);
 
-  const { data: villagesList = [] } = useQuery<{ code: number | string; name: string }[]>({
+  const { data: villagesList = [], isSuccess: villagesLoaded } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['villages', blockObj?.code, selectedBlock],
     queryFn: async () => {
       if (blockObj?.code === undefined) {
@@ -285,7 +285,7 @@ const FarmerLocationModal = ({
       ? [otherOption]
       : [...villagesList.map((v) => v.name), otherOption];
 
-  const { data: kvksList = [] } = useQuery<{ code: number | string; name: string }[]>({
+  const { data: kvksList = [], isSuccess: kvksLoaded } = useQuery<{ code: number | string; name: string }[]>({
     queryKey: ['kvks', distObj?.code, selectedDistrict],
     queryFn: async () => {
       if (distObj?.code === undefined) {
@@ -312,6 +312,22 @@ const FarmerLocationModal = ({
     }
     return [...kvksList.map((k) => k.name), otherOption];
   }, [selectedDistrict, kvksList, otherOption]);
+
+  // Levels whose option list loaded empty are hidden and optional. An empty block list also hides village and KVK.
+  const blockListEmpty = blocksLoaded && blocksList.length === 0;
+  const hiddenLocationFields = new Set<string>();
+  if (blockListEmpty) {
+    ['blockName', 'villageName', 'nearestKVK'].forEach((f) => hiddenLocationFields.add(f));
+  }
+  if (villagesLoaded && villagesList.length === 0) {
+    hiddenLocationFields.add('villageName');
+  }
+  if (kvksLoaded && kvksList.length === 0) {
+    hiddenLocationFields.add('nearestKVK');
+  }
+  const effectiveMissingFields = serverMissingFields.filter(
+    (field) => !hiddenLocationFields.has(field),
+  );
 
   const handleStateChange = (val: string) => {
     setValue('state', val, { shouldValidate: true });
