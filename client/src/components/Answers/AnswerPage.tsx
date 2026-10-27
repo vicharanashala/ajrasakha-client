@@ -267,7 +267,12 @@ export default function AnswerPage() {
                       <BookOpen className="size-5" aria-hidden="true" />
                     </span>
                     <span className="flex min-w-0 flex-1 flex-col items-start gap-1">
-                      <span className="break-words text-sm font-semibold text-text-primary sm:text-base">{name}</span>
+                      <span
+                        title={name}
+                        className="line-clamp-3 w-full [overflow-wrap:anywhere] text-sm font-semibold text-text-primary sm:text-base"
+                      >
+                        {name}
+                      </span>
                       {page && (
                         <span className="rounded-md bg-surface-tertiary px-2 py-0.5 text-xs font-medium text-text-secondary">
                           {formatPages(page)}
@@ -284,9 +289,9 @@ export default function AnswerPage() {
                 );
                 // Underline is switched off because a global link style would otherwise underline the whole card.
                 const cardClass =
-                  'group flex items-center gap-3 rounded-xl border border-border-light bg-surface-secondary p-3 no-underline transition-colors sm:p-4 [&_*]:no-underline';
+                  'group flex min-w-0 items-center gap-3 overflow-hidden rounded-xl border border-border-light bg-surface-secondary p-3 no-underline transition-colors sm:p-4 [&_*]:no-underline';
                 return (
-                  <li key={idx}>
+                  <li key={idx} className="min-w-0">
                     {url ? (
                       <a
                         href={url}
