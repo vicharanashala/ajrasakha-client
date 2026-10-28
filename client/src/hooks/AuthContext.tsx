@@ -27,6 +27,12 @@ import { useToastContext } from '@librechat/client';
 import useLocalize from './useLocalize';
 
 const AuthContext = createContext<TAuthContext | undefined>(undefined);
+let refreshInFlight: Promise<t.TRefreshTokenResponse | undefined> | null = null;
+
+const isDefinitiveAuthFailure = (err: unknown) => {
+  const status = (err as TResError)?.response?.status;
+  return status === 401 || status === 403;
+};
 
 const AuthContextProvider = ({
   authConfig,
@@ -42,6 +48,18 @@ const AuthContextProvider = ({
   const [error, setError] = useState<string | undefined>(undefined);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const logoutRedirectRef = useRef<string | undefined>(undefined);
+
+  const [isInitializing, setIsInitializing] = useState(true);
+  const [initError, setInitError] = useState<string | undefined>();
+  const initStarted = useRef(false);
+  const { mutateAsync: refreshAsync } = useRefreshTokenMutation();
+
+  const refreshOnce = useCallback(() => {
+    refreshInFlight ??= refreshAsync(undefined).finally(() => {
+      refreshInFlight = null;
+    });
+    return refreshInFlight;
+  }, [refreshAsync]);
 
   const { data: userRole = null } = useGetRole(SystemRoles.USER, {
     enabled: !!(isAuthenticated && (user?.role ?? '')),
@@ -181,9 +199,14 @@ const AuthContextProvider = ({
   useEffect(() => {
     if (userQuery.data) {
       setUser(userQuery.data);
+    // } else if (userQuery.isError) {
+    //   doSetError((userQuery.error as Error).message);
+    //   navigate('/login', { replace: true });
+    // }
+
     } else if (userQuery.isError) {
       doSetError((userQuery.error as Error).message);
-      navigate('/login', { replace: true });
+      if (isDefinitiveAuthFailure(userQuery.error)) navigate('/login', { replace: true });
     }
     if (error != null && error && isAuthenticated) {
       doSetError(undefined);
