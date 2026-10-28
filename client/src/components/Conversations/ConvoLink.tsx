@@ -24,7 +24,7 @@ const ConvoLink: React.FC<ConvoLinkProps> = ({
     <div
       className={cn(
         'flex grow items-center gap-2 overflow-hidden rounded-lg px-2',
-        isActiveConvo || isPopoverActive ? 'bg-green-600/10 font-semibold text-text-primary' : '',
+        isActiveConvo || isPopoverActive ? 'font-semibold text-text-primary' : '',
       )}
       title={title ?? undefined}
       aria-current={isActiveConvo ? 'page' : undefined}
