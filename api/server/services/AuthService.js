@@ -23,6 +23,7 @@ const {
   createSession,
   generateToken,
   deleteUserById,
+  rotateRefreshToken,
   generateRefreshToken,
 } = require('~/models');
 const { registerSchema } = require('~/strategies/validators');
@@ -363,21 +364,40 @@ const resetPassword = async (userId, token, password) => {
   return { message: 'Password reset was successful' };
 };
 
+// Issues a short-lived access token for the given user.
+const issueAccessToken = async (userId) => {
+  const user = await getUserById(userId);
+  const sessionExpiry = math(process.env.SESSION_EXPIRY, DEFAULT_SESSION_EXPIRY);
+  return await generateToken(user, sessionExpiry);
+};
+
 /**
  * Set Auth Tokens
  * @param {String | ObjectId} userId
  * @param {ServerResponse} res
  * @param {ISession | null} [session=null]
+ * @param {string} [presentedRefreshToken] - Refresh token from the request cookie. When given with
+ * a session, the token is rotated atomically and a concurrent request that already rotated it
+ * receives only a new access token, so the cookie set by the winning request is kept.
  * @returns
  */
-const setAuthTokens = async (userId, res, _session = null) => {
+const setAuthTokens = async (userId, res, _session = null, presentedRefreshToken) => {
   try {
     let session = _session;
     let refreshToken;
     let refreshTokenExpires;
     const expiresIn = math(process.env.REFRESH_TOKEN_EXPIRY, DEFAULT_REFRESH_TOKEN_EXPIRY);
 
-    if (session && session._id && session.expiration != null) {
+    if (session && session._id && session.expiration != null && presentedRefreshToken) {
+      refreshTokenExpires = session.expiration.getTime();
+      refreshToken = await rotateRefreshToken(session, presentedRefreshToken);
+      if (!refreshToken) {
+        logger.info(
+          `[setAuthTokens] Refresh token already rotated by a concurrent request; keeping existing cookie. user=${userId} session=${session._id}`,
+        );
+        return await issueAccessToken(userId);
+      }
+    } else if (session && session._id && session.expiration != null) {
       refreshTokenExpires = session.expiration.getTime();
       refreshToken = await generateRefreshToken(session);
     } else {
@@ -387,9 +407,7 @@ const setAuthTokens = async (userId, res, _session = null) => {
       refreshTokenExpires = session.expiration.getTime();
     }
 
-    const user = await getUserById(userId);
-    const sessionExpiry = math(process.env.SESSION_EXPIRY, DEFAULT_SESSION_EXPIRY);
-    const token = await generateToken(user, sessionExpiry);
+    const token = await issueAccessToken(userId);
 
     res.cookie('refreshToken', refreshToken, {
       expires: new Date(refreshTokenExpires),

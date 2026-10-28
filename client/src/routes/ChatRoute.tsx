@@ -16,7 +16,7 @@ import store from '~/store';
 
 export default function ChatRoute() {
   const { data: startupConfig } = useGetStartupConfig();
-  const { isAuthenticated, user, roles } = useAuthRedirect();
+  const { isAuthenticated, isInitializing, user, roles } = useAuthRedirect();
 
   const defaultTemporaryChat = useRecoilValue(temporaryStore.defaultTemporaryChat);
   const setIsTemporary = useRecoilCallback(
@@ -130,7 +130,7 @@ export default function ChatRoute() {
     assistantListMap,
   ]);
 
-  if (endpointsQuery.isLoading || modelsQuery.isLoading) {
+  if (endpointsQuery.isLoading || modelsQuery.isLoading || (!isAuthenticated && isInitializing)) {
     return (
       <div className="flex h-screen items-center justify-center" aria-live="polite" role="status">
         <Spinner className="text-text-primary" />

@@ -25,12 +25,20 @@ const jwtLogin = () =>
             await updateUser(user.id, { userRole: user.userRole });
           }
           if (!user.isVerified) {
+            logger.warn(`[jwtLogin] Access denied: reason=USER_NOT_VERIFIED user=${user.id}`);
             return done(null, false);
           }
+          // Expired documents can linger until the TTL monitor removes them, so check expiration too.
           const session = await Session.findOne({
             user: user._id,
-          });
+            expiration: { $gt: new Date() },
+          })
+            .select('_id')
+            .lean();
           if (!session) {
+            logger.warn(
+              `[jwtLogin] Access denied: reason=NO_ACTIVE_SESSION (expired, revoked or logged out) user=${user.id}`,
+            );
             return done(null, false);
           }
           done(null, user);
@@ -39,6 +47,8 @@ const jwtLogin = () =>
           done(null, false);
         }
       } catch (err) {
+        // Infrastructure failure: surfaces as a 5xx so the client does not treat it as a logout.
+        logger.error(`[jwtLogin] Session validation could not be completed: user=${payload?.id}`, err);
         done(err, false);
       }
     },

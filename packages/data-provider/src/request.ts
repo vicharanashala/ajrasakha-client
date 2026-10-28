@@ -139,6 +139,12 @@ if (typeof window !== 'undefined') {
           }
         } catch (err) {
           processQueue(err as AxiosError, null);
+          // Only a definitive rejection of the session logs the user out; network or 5xx errors do not.
+          const status = (err as AxiosError).response?.status;
+          if ((status === 401 || status === 403) && !window.location.href.includes('share/')) {
+            console.warn(`Session rejected during token refresh (status ${status}), redirecting to login`);
+            window.location.href = endpoints.loginPage();
+          }
           return Promise.reject(err);
         } finally {
           isRefreshing = false;

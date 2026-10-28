@@ -17,6 +17,12 @@ export const ACTIVE_SESSION_EXISTS_CODE = 'ACTIVE_SESSION_EXISTS';
 /** Default refresh token expiry: 7 days in milliseconds */
 export const DEFAULT_REFRESH_TOKEN_EXPIRY = 1000 * 60 * 60 * 24 * 7;
 
+/**
+ * How long a rotated refresh token stays valid. Covers concurrent refreshes from several tabs
+ * or requests that were sent with the same cookie before the rotated one arrived.
+ */
+export const REFRESH_TOKEN_REUSE_GRACE_MS = 1000 * 60;
+
 // Factory function that takes mongoose instance and returns the methods
 export function createSessionMethods(mongoose: typeof import('mongoose')) {
   /**
@@ -90,7 +96,14 @@ export function createSessionMethods(mongoose: typeof import('mongoose')) {
 
       if (params.refreshToken) {
         const tokenHash = await hashToken(params.refreshToken);
-        query.refreshTokenHash = tokenHash;
+        // Accept the current token, or the previous one while its grace window is open.
+        query.$or = [
+          { refreshTokenHash: tokenHash },
+          {
+            previousRefreshTokenHash: tokenHash,
+            previousRefreshTokenValidUntil: { $gt: new Date() },
+          },
+        ];
       }
 
       if (params.userId) {
@@ -283,6 +296,48 @@ export function createSessionMethods(mongoose: typeof import('mongoose')) {
   }
 
   /**
+   * Atomically rotates the refresh token of a session, but only if the presented token is still
+   * the current one. Returns null when the token was already rotated by a concurrent request,
+   * in which case the caller should keep the existing cookie instead of issuing a new one.
+   */
+  async function rotateRefreshToken(
+    session: t.ISession,
+    presentedRefreshToken: string,
+  ): Promise<string | null> {
+    if (!session?._id || !session.user || !session.expiration) {
+      throw new SessionError('Invalid session object', 'INVALID_SESSION');
+    }
+
+    try {
+      const Session = mongoose.models.Session;
+      const presentedHash = await hashToken(presentedRefreshToken);
+      const refreshToken = await signPayload({
+        payload: { id: session.user, sessionId: session._id },
+        secret: process.env.JWT_REFRESH_SECRET!,
+        expirationTime: Math.floor((session.expiration.getTime() - Date.now()) / 1000),
+      });
+      const newHash = await hashToken(refreshToken);
+
+      const updated = await Session.findOneAndUpdate(
+        { _id: session._id, refreshTokenHash: presentedHash, expiration: { $gt: new Date() } },
+        {
+          $set: {
+            refreshTokenHash: newHash,
+            previousRefreshTokenHash: presentedHash,
+            previousRefreshTokenValidUntil: new Date(Date.now() + REFRESH_TOKEN_REUSE_GRACE_MS),
+          },
+        },
+        { new: true },
+      ).lean();
+
+      return updated ? refreshToken : null;
+    } catch (error) {
+      logger.error('[rotateRefreshToken] Error rotating refresh token:', error);
+      throw new SessionError('Failed to rotate refresh token', 'ROTATE_TOKEN_FAILED');
+    }
+  }
+
+  /**
    * Counts active sessions for a user
    */
   async function countActiveSessions(userId: string): Promise<number> {
@@ -321,6 +376,7 @@ export function createSessionMethods(mongoose: typeof import('mongoose')) {
     createSession,
     updateExpiration,
     countActiveSessions,
+    rotateRefreshToken,
     generateRefreshToken,
     deleteAllUserSessions,
   };

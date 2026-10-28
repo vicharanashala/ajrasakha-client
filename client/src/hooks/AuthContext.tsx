@@ -10,7 +10,7 @@ import {
 } from 'react';
 import { debounce } from 'lodash';
 import { useRecoilState } from 'recoil';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { setTokenHeader, SystemRoles } from 'librechat-data-provider';
 import type * as t from 'librechat-data-provider';
 import {
@@ -28,6 +28,22 @@ import useLocalize from './useLocalize';
 
 const AuthContext = createContext<TAuthContext | undefined>(undefined);
 
+/** Shared in-flight refresh request, so concurrent callers reuse one call instead of racing token rotation. */
+let refreshInFlight: Promise<t.TRefreshTokenResponse | undefined> | null = null;
+
+/** Upper bound for the delay between session validation retries after temporary failures. */
+const MAX_REFRESH_RETRY_DELAY_MS = 30000;
+
+// Reads the HTTP status of a failed request, if the server responded at all.
+const getErrorStatus = (err: unknown): number | undefined =>
+  (err as TResError | undefined)?.response?.status;
+
+// True only when the server definitively rejected the session, as opposed to network or server errors.
+const isDefinitiveAuthFailure = (err: unknown) => {
+  const status = getErrorStatus(err);
+  return status === 401 || status === 403;
+};
+
 const AuthContextProvider = ({
   authConfig,
   children,
@@ -42,6 +58,24 @@ const AuthContextProvider = ({
   const [error, setError] = useState<string | undefined>(undefined);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const logoutRedirectRef = useRef<string | undefined>(undefined);
+
+  /** True until the first session validation on load has a definitive result. */
+  const [isInitializing, setIsInitializing] = useState(true);
+  const retryTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const retryAttemptRef = useRef(0);
+  const location = useLocation();
+  /** Latest pathname, read inside async refresh callbacks without re-creating them. */
+  const pathnameRef = useRef(location.pathname);
+  pathnameRef.current = location.pathname;
+  const { mutateAsync: refreshAsync } = useRefreshTokenMutation();
+
+  // Runs a token refresh, reusing the in-flight request when one is already pending.
+  const refreshOnce = useCallback(() => {
+    refreshInFlight ??= refreshAsync(undefined).finally(() => {
+      refreshInFlight = null;
+    });
+    return refreshInFlight;
+  }, [refreshAsync]);
 
   const { data: userRole = null } = useGetRole(SystemRoles.USER, {
     enabled: !!(isAuthenticated && (user?.role ?? '')),
@@ -132,7 +166,6 @@ const AuthContextProvider = ({
       localStorage.getItem('lang_selected');
     },
   });
-  const refreshToken = useRefreshTokenMutation();
 
   const logout = useCallback(
     (redirect?: string) => {
@@ -150,40 +183,71 @@ const AuthContextProvider = ({
     loginUser.mutate(data);
   };
 
+  /** Latest silentRefresh, so a scheduled retry always calls the current version. */
+  const silentRefreshRef = useRef<() => void>(() => undefined);
+  /** Shows the retry notice; kept in a ref so silentRefresh stays stable across renders. */
+  const notifyRetryRef = useRef(() => undefined as void);
+  notifyRetryRef.current = () =>
+    showToast({ message: localize('com_auth_session_check_retrying'), status: 'warning' });
+
+  // Restores the session from the refresh cookie. Logs out only when the server rejects the session.
   const silentRefresh = useCallback(() => {
     if (authConfig?.test === true) {
       console.log('Test mode. Skipping silent refresh.');
+      setIsInitializing(false);
       return;
     }
-    refreshToken.mutate(undefined, {
-      onSuccess: (data: t.TRefreshTokenResponse | undefined) => {
+    clearTimeout(retryTimerRef.current);
+
+    refreshOnce()
+      .then((data) => {
+        retryAttemptRef.current = 0;
         const { user, token = '' } = data ?? {};
         if (token) {
-          setUserContext({ token, isAuthenticated: true, user });
+          // A restored session should not leave the user sitting on the login page.
+          const redirect = pathnameRef.current === '/login' ? '/c/new' : undefined;
+          setUserContext({ token, isAuthenticated: true, user, redirect });
         } else {
           console.log('Token is not present. User is not authenticated.');
-          if (authConfig?.test === true) {
-            return;
-          }
           navigate('/login');
         }
-      },
-      onError: (error) => {
-        console.log('refreshToken mutation error:', error);
-        if (authConfig?.test === true) {
+        setIsInitializing(false);
+      })
+      .catch((error: unknown) => {
+        if (isDefinitiveAuthFailure(error)) {
+          const code = (error as TResError).response?.data?.code;
+          console.warn(`[AuthContext] Session rejected by server (${code ?? 'unknown'}), redirecting to login.`);
+          retryAttemptRef.current = 0;
+          setIsInitializing(false);
+          navigate('/login');
           return;
         }
-        navigate('/login');
-      },
-    });
-  }, []);
+
+        // Network or server failure: keep the current state and retry with capped backoff.
+        const attempt = retryAttemptRef.current++;
+        const delay = Math.min(1000 * 2 ** attempt, MAX_REFRESH_RETRY_DELAY_MS);
+        console.warn(
+          `[AuthContext] Session validation unavailable (status=${getErrorStatus(error) ?? 'network'}), retry ${attempt + 1} in ${delay}ms.`,
+        );
+        if (attempt === 0) {
+          notifyRetryRef.current();
+        }
+        retryTimerRef.current = setTimeout(() => silentRefreshRef.current(), delay);
+      });
+  }, [authConfig?.test, refreshOnce, setUserContext, navigate]);
+  silentRefreshRef.current = silentRefresh;
+
+  useEffect(() => () => clearTimeout(retryTimerRef.current), []);
 
   useEffect(() => {
     if (userQuery.data) {
       setUser(userQuery.data);
     } else if (userQuery.isError) {
       doSetError((userQuery.error as Error).message);
-      navigate('/login', { replace: true });
+      // Temporary failures (network, 5xx) must not log out a user whose session is still valid.
+      if (isDefinitiveAuthFailure(userQuery.error)) {
+        navigate('/login', { replace: true });
+      }
     }
     if (error != null && error && isAuthenticated) {
       doSetError(undefined);
@@ -236,9 +300,10 @@ const AuthContextProvider = ({
         [SystemRoles.ADMIN]: adminRole,
       },
       isAuthenticated,
+      isInitializing,
     }),
 
-    [user, error, isAuthenticated, token, userRole, adminRole],
+    [user, error, isAuthenticated, isInitializing, token, userRole, adminRole],
   );
 
   return <AuthContext.Provider value={memoedValue}>{children}</AuthContext.Provider>;
