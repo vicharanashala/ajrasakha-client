@@ -3,10 +3,10 @@ const axios = require('axios');
 async function CropController(req, res) {
   try {
     const response = await axios.get(
-      `${process.env.VITE_AJRASAKHA_SERVER_URL}/crops/get-all-crops-client`,
+      `${process.env.REVIEW_SYSTEM_URL}/crops/get-all-crops-client`,
       {
         headers: {
-          'x-internal-api-key': process.env.WEB_WEBHOOK_API_KEY,
+          'x-internal-api-key': process.env.REVIEW_SYSTEM_API_AUTH_KEY,
         },
       },
     );
