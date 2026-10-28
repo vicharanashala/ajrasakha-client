@@ -454,7 +454,7 @@ export type ToolDialogProps = {
 };
 
 export type TResError = {
-  response: { data: { message: string; errorCode?: string } };
+  response: { status?: number; data: { message: string; errorCode?: string; code?: string } };
   message: string;
 };
 
@@ -462,6 +462,8 @@ export type TAuthContext = {
   user: t.TUser | undefined;
   token: string | undefined;
   isAuthenticated: boolean;
+  /** True while the initial session validation is still in progress. */
+  isInitializing: boolean;
   error: string | undefined;
   login: (data: t.TLoginUser) => void;
   logout: (redirect?: string) => void;

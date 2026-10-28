@@ -6,6 +6,14 @@ const sessionSchema: Schema<ISession> = new Schema({
     type: String,
     required: true,
   },
+  // Hash of the refresh token replaced by the latest rotation, accepted briefly for concurrent refreshes.
+  previousRefreshTokenHash: {
+    type: String,
+  },
+  // Time until which previousRefreshTokenHash is still accepted.
+  previousRefreshTokenValidUntil: {
+    type: Date,
+  },
   expiration: {
     type: Date,
     required: true,

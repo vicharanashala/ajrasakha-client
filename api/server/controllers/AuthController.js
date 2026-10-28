@@ -65,6 +65,17 @@ const resetPasswordController = async (req, res) => {
   }
 };
 
+/**
+ * Rejects a refresh request that can never succeed and logs the reason without any token data.
+ * Uses 403 so the client's 401 refresh interceptor does not try to refresh the refresh call again.
+ */
+const rejectRefresh = (res, reason, { userId, sessionId } = {}) => {
+  logger.warn(
+    `[refreshController] Session validation failed: reason=${reason} user=${userId ?? 'unknown'} session=${sessionId ?? 'unknown'} at=${new Date().toISOString()}`,
+  );
+  return res.status(403).json({ message: 'Session is no longer valid', code: reason });
+};
+
 const refreshController = async (req, res) => {
   const refreshToken = req.headers.cookie ? cookies.parse(req.headers.cookie).refreshToken : null;
   const token_provider = req.headers.cookie
@@ -125,63 +136,65 @@ const refreshController = async (req, res) => {
       return res.status(403).send('Invalid OpenID refresh token');
     }
   }
+  let payload;
   try {
-    const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    const user = await getUserById(payload.id, '-password -__v -totpSecret -backupCodes');
+    payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+  } catch (err) {
+    const reason = err?.name === 'TokenExpiredError' ? 'REFRESH_TOKEN_EXPIRED' : 'REFRESH_TOKEN_INVALID';
+    return rejectRefresh(res, reason);
+  }
+
+  const userId = payload.id;
+  const sessionId = payload.sessionId;
+
+  try {
+    const user = await getUserById(userId, '-password -__v -totpSecret -backupCodes');
     if (!user) {
-      return res.status(401).redirect('/login');
+      return rejectRefresh(res, 'USER_NOT_FOUND', { userId, sessionId });
     }
 
     if (!user.isVerified) {
-      return res.status(401).redirect('/login');
+      return rejectRefresh(res, 'USER_NOT_VERIFIED', { userId, sessionId });
     }
-
-    const userId = payload.id;
 
     if (process.env.NODE_ENV === 'CI') {
       const token = await setAuthTokens(userId, res);
       return res.status(200).send({ token, user });
     }
 
-    /** Session with the hashed refresh token */
-    const session = await findSession(
-      {
-        userId: userId,
-        refreshToken: refreshToken,
-      },
-      { lean: false },
-    );
+    /** Active session matching the current (or just-rotated) refresh token */
+    const session = await findSession({ userId, refreshToken }, { lean: false });
 
     if (!session) {
-      return res.status(401).redirect('/login');
+      // The JWT is still valid, so the session was revoked (logout, remote logout, password reset)
+      // or the token was replaced by a rotation outside the grace window.
+      return rejectRefresh(res, 'SESSION_REVOKED_OR_TOKEN_MISMATCH', { userId, sessionId });
     }
 
-    if (session && session.expiration > new Date()) {
-      const token = await setAuthTokens(userId, res, session);
+    const token = await setAuthTokens(userId, res, session, refreshToken);
 
-      // trigger OAuth MCP server reconnection asynchronously (best effort)
-      try {
-        void getOAuthReconnectionManager()
-          .reconnectServers(userId)
-          .catch((err) => {
-            logger.error('[refreshController] Error reconnecting OAuth MCP servers:', err);
-          });
-      } catch (err) {
-        logger.warn(`[refreshController] Cannot attempt OAuth MCP servers reconnection:`, err);
-      }
-
-      res.status(200).send({ token, user });
-    } else if (req?.query?.retry) {
-      // Retrying from a refresh token request that failed (401)
-      res.status(403).send('No session found');
-    } else if (payload.exp < Date.now() / 1000) {
-      res.status(403).redirect('/login');
-    } else {
-      res.status(401).send('Refresh token expired or not found for this user');
+    // trigger OAuth MCP server reconnection asynchronously (best effort)
+    try {
+      void getOAuthReconnectionManager()
+        .reconnectServers(userId)
+        .catch((err) => {
+          logger.error('[refreshController] Error reconnecting OAuth MCP servers:', err);
+        });
+    } catch (err) {
+      logger.warn(`[refreshController] Cannot attempt OAuth MCP servers reconnection:`, err);
     }
+
+    return res.status(200).send({ token, user });
   } catch (err) {
-    logger.error(`[refreshController] Invalid refresh token:`, err);
-    res.status(403).send('Invalid refresh token');
+    // Database or infrastructure failure: the session may still be valid, so the client must not log out.
+    logger.error(
+      `[refreshController] Session validation could not be completed: reason=SESSION_VALIDATION_UNAVAILABLE user=${userId} session=${sessionId ?? 'unknown'} at=${new Date().toISOString()}`,
+      err,
+    );
+    return res.status(503).json({
+      message: 'Session validation is temporarily unavailable',
+      code: 'SESSION_VALIDATION_UNAVAILABLE',
+    });
   }
 };
 

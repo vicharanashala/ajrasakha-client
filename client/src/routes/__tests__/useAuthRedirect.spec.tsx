@@ -112,6 +112,23 @@ describe('useAuthRedirect', () => {
     expect(router.state.historyAction).toBe('REPLACE');
   });
 
+  it('should not redirect while the initial session validation is in progress', async () => {
+    (useAuthContext as jest.Mock).mockReturnValue({
+      user: null,
+      isAuthenticated: false,
+      isInitializing: true,
+    });
+
+    const router = createTestRouter();
+    const { getByTestId } = render(<RouterProvider router={router} />);
+
+    // Wait past the redirect timeout; a slow session check must not bounce the user to login
+    await new Promise((resolve) => setTimeout(resolve, 400));
+
+    expect(router.state.location.pathname).toBe('/');
+    expect(getByTestId('test-component')).toBeInTheDocument();
+  });
+
   it('should respect router basename when redirecting (subdirectory deployment)', async () => {
     (useAuthContext as jest.Mock).mockReturnValue({
       user: null,
