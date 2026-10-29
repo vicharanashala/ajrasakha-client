@@ -3,6 +3,7 @@ import { cn } from '~/utils';
 
 interface ConvoLinkProps {
   isActiveConvo: boolean;
+  isGenerating?: boolean;
   isPopoverActive: boolean;
   title: string | null;
   onRename: () => void;
@@ -13,6 +14,7 @@ interface ConvoLinkProps {
 
 const ConvoLink: React.FC<ConvoLinkProps> = ({
   isActiveConvo,
+  isGenerating = false,
   isPopoverActive,
   title,
   onRename,
@@ -30,8 +32,8 @@ const ConvoLink: React.FC<ConvoLinkProps> = ({
       aria-current={isActiveConvo ? 'page' : undefined}
       style={{ width: '100%' }}
     >
-      {/* Dot marks the open conversation. */}
-      {isActiveConvo && <span className="size-1.5 flex-shrink-0 rounded-full bg-green-500" aria-hidden="true" />}
+      {/* Dot marks the open conversation; hidden while the loading dots are shown. */}
+      {isActiveConvo && !isGenerating && <span className="size-1.5 flex-shrink-0 rounded-full bg-green-500" aria-hidden="true" />}
       {children}
       <div
         className="relative flex-1 grow overflow-hidden whitespace-nowrap text-ellipsis"
