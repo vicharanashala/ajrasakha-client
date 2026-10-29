@@ -2273,6 +2273,33 @@ html {
   --tw-shadow-colored: inset 0 0 0 0 1px var(--tw-shadow-color);
 }
 
+/* Green pulsing cursor shown at the end of text while a response streams. */
+:root {
+  --stream-cursor-color: var(--accent-green-dark);
+}
+
+.dark {
+  --stream-cursor-color: var(--accent-green-light);
+}
+
+@keyframes streamCursorPulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-streaming :after {
+    animation: none !important;
+  }
+}
+
 .result-streaming > :not(ol):not(ul):not(pre):last-child:after,
 .result-streaming > pre:last-child code:after {
   display: inline-block;
@@ -2294,6 +2321,8 @@ html {
   margin-left: 0.25rem;
   vertical-align: middle;
   font-size: 0.5rem;
+  color: var(--stream-cursor-color);
+  animation: streamCursorPulse 1.2s ease-in-out infinite;
 }
 
 @supports (selector(:has(*))) {
@@ -2314,6 +2343,8 @@ html {
     margin-left: 0.25rem;
     vertical-align: middle;
     font-size: 0.5rem;
+    color: var(--stream-cursor-color);
+    animation: streamCursorPulse 1.2s ease-in-out infinite;
     display: inline-block;
     width: 12px;
     height: 12px;
@@ -2339,6 +2370,8 @@ html {
     margin-left: 0.25rem;
     vertical-align: middle;
     font-size: 0.5rem;
+    color: var(--stream-cursor-color);
+    animation: streamCursorPulse 1.2s ease-in-out infinite;
     display: inline-block;
     width: 12px;
     height: 12px;
