@@ -142,17 +142,15 @@ function WeatherCardError({ message, retryLabel, isRetrying, onRetry }: WeatherC
 // "Kotakpura tehsil". The full name is still shown on hover.
 const getStationDisplayName = (name: string) => name.replace(/\s*\([^)]*\)\s*$/, '').trim() || name;
 
-type StationChipProps = { name: string; distanceKm: number | null };
+type StationSourceProps = { name: string; distanceKm: number | null };
 
-// Chip naming the weather station the reading came from and how far it is from the farm.
-function StationChip({ name, distanceKm }: StationChipProps) {
+// Source line naming the weather station the reading came from and how far it is from the farm.
+// Sits under the update time so both details about where the data came from read together.
+function StationSource({ name, distanceKm }: StationSourceProps) {
   const localize = useLocalize();
   const displayName = getStationDisplayName(name);
   return (
-    <span
-      title={name}
-      className="inline-flex min-w-0 max-w-full items-center gap-1.5 rounded-full bg-black/[0.04] px-2.5 py-1 text-xs font-medium text-text-secondary ring-1 ring-black/5 duration-300 animate-in fade-in-0 motion-reduce:animate-none dark:bg-white/[0.05] dark:ring-white/10"
-    >
+    <p title={name} className="flex min-w-0 items-center gap-1.5">
       <RadioTower
         className="size-3.5 shrink-0 text-green-600 dark:text-green-400"
         aria-hidden="true"
@@ -165,7 +163,7 @@ function StationChip({ name, distanceKm }: StationChipProps) {
               1: formatReading(distanceKm, '', 1),
             })}
       </span>
-    </span>
+    </p>
   );
 }
 
@@ -258,21 +256,26 @@ function WeatherCardBody({ weather, updatedAt, isRefreshing }: WeatherCardBodyPr
       </div>
 
       {updatedAt > 0 && (
-        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-xs text-text-tertiary">
-          <p className="flex items-center gap-1.5" aria-live="polite">
-            {/* Keyed on the fetch time so the label flashes softly whenever fresh data lands. */}
-            <motion.span
-              key={updatedAt}
-              initial={{ opacity: 0.3 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, ease: 'easeOut' }}
-            >
-              {/* The station's own reading time is shown when available, it is more accurate than the fetch time. */}
-              {localize('com_ui_weather_updated', {
-                0: weather.recordedAt ?? formatUpdatedTime(updatedAt),
-              })}
-            </motion.span>
-          </p>
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 text-xs text-text-tertiary">
+          <div className="flex min-w-0 flex-col gap-1">
+            <p className="flex items-center gap-1.5" aria-live="polite">
+              {/* Keyed on the fetch time so the label flashes softly whenever fresh data lands. */}
+              <motion.span
+                key={updatedAt}
+                initial={{ opacity: 0.3 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+              >
+                {/* The station's own reading time is shown when available, it is more accurate than the fetch time. */}
+                {localize('com_ui_weather_updated', {
+                  0: weather.recordedAt ?? formatUpdatedTime(updatedAt),
+                })}
+              </motion.span>
+            </p>
+            {weather.stationName && (
+              <StationSource name={weather.stationName} distanceKm={weather.stationDistanceKm} />
+            )}
+          </div>
           <ForecastButton />
         </div>
       )}
@@ -336,17 +339,9 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
     >
       <RefreshProgressBar active={isRefreshing} />
       <div className="flex items-start justify-between gap-3">
-        <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
-          <h2
-            id={titleId}
-            className="shrink-0 text-base font-semibold text-text-primary sm:text-lg"
-          >
-            {localize('com_ui_weather_today')}
-          </h2>
-          {weather?.stationName && (
-            <StationChip name={weather.stationName} distanceKm={weather.stationDistanceKm} />
-          )}
-        </div>
+        <h2 id={titleId} className="shrink-0 text-base font-semibold text-text-primary sm:text-lg">
+          {localize('com_ui_weather_today')}
+        </h2>
         <div className="flex min-w-0 items-center gap-1">
           {locationLabel && (
             <p className="flex min-w-0 items-center gap-1 text-xs capitalize text-text-secondary">
