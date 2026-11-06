@@ -176,11 +176,13 @@ function ForecastButton() {
     <button
       type="button"
       disabled
-      className="inline-flex min-h-9 shrink-0 cursor-not-allowed items-center gap-2 rounded-full bg-green-500/10 py-1 pl-3 pr-1.5 text-xs font-semibold text-green-700 ring-1 ring-green-500/30 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/30"
+      className="relative inline-flex min-h-9 shrink-0 cursor-not-allowed items-center gap-2 rounded-full bg-green-500/10 px-3 py-1 text-xs font-semibold text-green-700 ring-1 ring-green-500/30 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/30"
     >
       {localize('com_ui_weather_view_forecast')}
       <ArrowRight className="size-3.5 shrink-0" aria-hidden="true" />
-      <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:text-amber-400">
+      {/* Floats over the top right corner. A solid fill keeps it readable over the outline, and the
+          ring in the card colour separates it from the button edge. */}
+      <span className="absolute -right-2 -top-2.5 whitespace-nowrap rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold leading-none text-amber-950 shadow-sm ring-2 ring-surface-chat">
         {localize('com_ui_weather_coming_soon')}
       </span>
     </button>
