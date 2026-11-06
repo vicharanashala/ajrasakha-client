@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useRecoilValue } from 'recoil';
 import {
   ArrowRight,
+  Clock,
   CloudOff,
   CloudRain,
   CloudSun,
@@ -334,6 +335,10 @@ function WeatherCardBody({ weather, updatedAt, isRefreshing }: WeatherCardBodyPr
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 text-xs text-text-tertiary">
           <div className="flex min-w-0 flex-col gap-1">
             <p className="flex items-center gap-1.5" aria-live="polite">
+              <Clock
+                className="size-3.5 shrink-0 text-green-600 dark:text-green-400"
+                aria-hidden="true"
+              />
               {/* Keyed on the fetch time so the label flashes softly whenever fresh data lands. */}
               <motion.span
                 key={updatedAt}
