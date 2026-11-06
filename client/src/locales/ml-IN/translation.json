@@ -2276,5 +2276,6 @@
   "com_ui_weather_today": "ഇന്നത്തെ കാലാവസ്ഥ",
   "com_ui_weather_updated": "പുതുക്കിയത് {{0}}",
   "com_ui_weather_wind": "കാറ്റ്",
-  "com_ui_weather_wind_value": "{{0}} കി.മീ./മണിക്കൂർ"
+  "com_ui_weather_wind_value": "{{0}} കി.മീ./മണിക്കൂർ",
+  "com_ui_landing_faq_title": "പതിവായി ചോദിക്കുന്ന ചോദ്യങ്ങൾ"
 }

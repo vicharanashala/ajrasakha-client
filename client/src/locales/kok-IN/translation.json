@@ -2272,5 +2272,6 @@
   "com_ui_weather_today": "आयचें हवामान",
   "com_ui_weather_updated": "अपडेट {{0}}",
   "com_ui_weather_wind": "वारें",
-  "com_ui_weather_wind_value": "{{0}} किमी/वर"
+  "com_ui_weather_wind_value": "{{0}} किमी/वर",
+  "com_ui_landing_faq_title": "सदांच विचारपी प्रस्न"
 }

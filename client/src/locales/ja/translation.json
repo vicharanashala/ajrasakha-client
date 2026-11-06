@@ -1513,5 +1513,6 @@
   "com_ui_weather_today": "今日の天気",
   "com_ui_weather_updated": "更新 {{0}}",
   "com_ui_weather_wind": "風",
-  "com_ui_weather_wind_value": "{{0}} km/h"
+  "com_ui_weather_wind_value": "{{0}} km/h",
+  "com_ui_landing_faq_title": "よくある質問"
 }

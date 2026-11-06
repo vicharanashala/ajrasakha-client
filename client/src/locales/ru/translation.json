@@ -1488,5 +1488,6 @@
   "com_ui_weather_today": "Погода сегодня",
   "com_ui_weather_updated": "Обновлено {{0}}",
   "com_ui_weather_wind": "Ветер",
-  "com_ui_weather_wind_value": "{{0}} км/ч"
+  "com_ui_weather_wind_value": "{{0}} км/ч",
+  "com_ui_landing_faq_title": "Частые вопросы"
 }

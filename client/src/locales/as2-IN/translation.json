@@ -2272,5 +2272,6 @@
   "com_ui_weather_today": "আজিৰ বতৰ",
   "com_ui_weather_updated": "আপডেট {{0}}",
   "com_ui_weather_wind": "বতাহ",
-  "com_ui_weather_wind_value": "{{0}} কিমি/ঘণ্টা"
+  "com_ui_weather_wind_value": "{{0}} কিমি/ঘণ্টা",
+  "com_ui_landing_faq_title": "সঘনাই সোধা প্ৰশ্ন"
 }

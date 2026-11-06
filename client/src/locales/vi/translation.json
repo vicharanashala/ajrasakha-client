@@ -564,5 +564,6 @@
   "com_ui_weather_today": "Thời tiết hôm nay",
   "com_ui_weather_updated": "Cập nhật {{0}}",
   "com_ui_weather_wind": "Gió",
-  "com_ui_weather_wind_value": "{{0}} km/h"
+  "com_ui_weather_wind_value": "{{0}} km/h",
+  "com_ui_landing_faq_title": "Câu hỏi thường gặp"
 }

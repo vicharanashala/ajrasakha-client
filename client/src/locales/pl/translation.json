@@ -881,5 +881,6 @@
   "com_ui_weather_today": "Pogoda na dziś",
   "com_ui_weather_updated": "Zaktualizowano {{0}}",
   "com_ui_weather_wind": "Wiatr",
-  "com_ui_weather_wind_value": "{{0}} km/h"
+  "com_ui_weather_wind_value": "{{0}} km/h",
+  "com_ui_landing_faq_title": "Często zadawane pytania"
 }

@@ -1031,5 +1031,6 @@
   "com_ui_weather_today": "طقس اليوم",
   "com_ui_weather_updated": "آخر تحديث {{0}}",
   "com_ui_weather_wind": "الرياح",
-  "com_ui_weather_wind_value": "{{0}} كم/س"
+  "com_ui_weather_wind_value": "{{0}} كم/س",
+  "com_ui_landing_faq_title": "الأسئلة الشائعة"
 }

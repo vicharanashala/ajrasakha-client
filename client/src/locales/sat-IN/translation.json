@@ -2272,5 +2272,6 @@
   "com_ui_weather_today": "ᱛᱮᱦᱮᱧᱟᱜ ᱦᱚᱭ ᱫᱟᱜ",
   "com_ui_weather_updated": "ᱟᱹᱯᱰᱮᱴ {{0}}",
   "com_ui_weather_wind": "ᱦᱚᱭ",
-  "com_ui_weather_wind_value": "{{0}} ᱠᱤ.ᱢᱤ./ᱴᱟᱲᱟᱝ"
+  "com_ui_weather_wind_value": "{{0}} ᱠᱤ.ᱢᱤ./ᱴᱟᱲᱟᱝ",
+  "com_ui_landing_faq_title": "ᱡᱟᱦᱟᱸ ᱥᱟᱶᱟᱞ ᱡᱟᱣᱽ ᱠᱩᱞᱤ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ"
 }

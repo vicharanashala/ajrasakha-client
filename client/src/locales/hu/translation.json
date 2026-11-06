@@ -997,5 +997,6 @@
   "com_ui_weather_today": "Mai időjárás",
   "com_ui_weather_updated": "Frissítve {{0}}",
   "com_ui_weather_wind": "Szél",
-  "com_ui_weather_wind_value": "{{0}} km/h"
+  "com_ui_weather_wind_value": "{{0}} km/h",
+  "com_ui_landing_faq_title": "Gyakran ismételt kérdések"
 }

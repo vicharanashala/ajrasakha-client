@@ -2270,5 +2270,6 @@
   "com_ui_weather_today": "आजुक मौसम",
   "com_ui_weather_updated": "अपडेट {{0}}",
   "com_ui_weather_wind": "हवा",
-  "com_ui_weather_wind_value": "{{0}} किमी/घंटा"
+  "com_ui_weather_wind_value": "{{0}} किमी/घंटा",
+  "com_ui_landing_faq_title": "बेर-बेर पूछल जाएबला प्रश्न"
 }

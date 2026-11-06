@@ -222,5 +222,6 @@
   "com_ui_weather_today": "དེ་རིང་གི་གནམ་གཤིས",
   "com_ui_weather_updated": "གསར་བསྒྱུར {{0}}",
   "com_ui_weather_wind": "རླུང་",
-  "com_ui_weather_wind_value": "{{0}} km/h"
+  "com_ui_weather_wind_value": "{{0}} km/h",
+  "com_ui_landing_faq_title": "རྒྱུན་དུ་འདྲི་བའི་དྲི་བ།"
 }

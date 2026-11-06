@@ -2276,5 +2276,6 @@
   "com_ui_weather_today": "آج کا موسم",
   "com_ui_weather_updated": "اپ ڈیٹ {{0}}",
   "com_ui_weather_wind": "ہوا",
-  "com_ui_weather_wind_value": "{{0}} کلومیٹر/گھنٹہ"
+  "com_ui_weather_wind_value": "{{0}} کلومیٹر/گھنٹہ",
+  "com_ui_landing_faq_title": "اکثر پوچھے جانے والے سوالات"
 }

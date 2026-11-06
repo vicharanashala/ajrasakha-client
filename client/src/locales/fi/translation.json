@@ -772,5 +772,6 @@
   "com_ui_weather_today": "Päivän sää",
   "com_ui_weather_updated": "Päivitetty {{0}}",
   "com_ui_weather_wind": "Tuuli",
-  "com_ui_weather_wind_value": "{{0}} km/h"
+  "com_ui_weather_wind_value": "{{0}} km/h",
+  "com_ui_landing_faq_title": "Usein kysytyt kysymykset"
 }

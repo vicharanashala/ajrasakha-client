@@ -1132,5 +1132,6 @@
   "com_ui_weather_today": "Tänane ilm",
   "com_ui_weather_updated": "Uuendatud {{0}}",
   "com_ui_weather_wind": "Tuul",
-  "com_ui_weather_wind_value": "{{0}} km/h"
+  "com_ui_weather_wind_value": "{{0}} km/h",
+  "com_ui_landing_faq_title": "Korduma kippuvad küsimused"
 }

@@ -468,5 +468,6 @@
   "com_ui_weather_today": "Cuaca hari ini",
   "com_ui_weather_updated": "Diperbarui {{0}}",
   "com_ui_weather_wind": "Angin",
-  "com_ui_weather_wind_value": "{{0}} km/j"
+  "com_ui_weather_wind_value": "{{0}} km/j",
+  "com_ui_landing_faq_title": "Pertanyaan yang sering diajukan"
 }

@@ -1629,5 +1629,6 @@
   "com_ui_weather_today": "Šodienas laikapstākļi",
   "com_ui_weather_updated": "Atjaunināts {{0}}",
   "com_ui_weather_wind": "Vējš",
-  "com_ui_weather_wind_value": "{{0}} km/h"
+  "com_ui_weather_wind_value": "{{0}} km/h",
+  "com_ui_landing_faq_title": "Biežāk uzdotie jautājumi"
 }

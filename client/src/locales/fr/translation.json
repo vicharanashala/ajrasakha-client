@@ -1474,5 +1474,6 @@
   "com_ui_weather_today": "Météo du jour",
   "com_ui_weather_updated": "Mis à jour {{0}}",
   "com_ui_weather_wind": "Vent",
-  "com_ui_weather_wind_value": "{{0}} km/h"
+  "com_ui_weather_wind_value": "{{0}} km/h",
+  "com_ui_landing_faq_title": "Questions fréquentes"
 }

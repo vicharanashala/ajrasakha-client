@@ -1053,5 +1053,6 @@
   "com_ui_weather_today": "El temps d'avui",
   "com_ui_weather_updated": "Actualitzat {{0}}",
   "com_ui_weather_wind": "Vent",
-  "com_ui_weather_wind_value": "{{0}} km/h"
+  "com_ui_weather_wind_value": "{{0}} km/h",
+  "com_ui_landing_faq_title": "Preguntes freqüents"
 }

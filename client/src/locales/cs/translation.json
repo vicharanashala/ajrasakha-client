@@ -898,5 +898,6 @@
   "com_ui_weather_today": "Dnešní počasí",
   "com_ui_weather_updated": "Aktualizováno {{0}}",
   "com_ui_weather_wind": "Vítr",
-  "com_ui_weather_wind_value": "{{0}} km/h"
+  "com_ui_weather_wind_value": "{{0}} km/h",
+  "com_ui_landing_faq_title": "Často kladené otázky"
 }

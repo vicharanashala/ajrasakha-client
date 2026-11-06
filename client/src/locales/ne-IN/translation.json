@@ -2275,5 +2275,6 @@
   "com_ui_weather_today": "आजको मौसम",
   "com_ui_weather_updated": "अपडेट {{0}}",
   "com_ui_weather_wind": "हावा",
-  "com_ui_weather_wind_value": "{{0}} किमि/घण्टा"
+  "com_ui_weather_wind_value": "{{0}} किमि/घण्टा",
+  "com_ui_landing_faq_title": "बारम्बार सोधिने प्रश्नहरू"
 }

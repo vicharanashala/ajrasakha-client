@@ -2272,5 +2272,6 @@
   "com_ui_weather_today": "अद्यतनं वातावरणम्",
   "com_ui_weather_updated": "अद्यतितम् {{0}}",
   "com_ui_weather_wind": "वायुः",
-  "com_ui_weather_wind_value": "{{0}} कि.मी./होरा"
+  "com_ui_weather_wind_value": "{{0}} कि.मी./होरा",
+  "com_ui_landing_faq_title": "पुनः पुनः पृष्टाः प्रश्नाः"
 }

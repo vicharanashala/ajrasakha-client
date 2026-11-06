@@ -386,5 +386,6 @@
   "com_ui_weather_today": "Այսօրվա եղանակը",
   "com_ui_weather_updated": "Թարմացվել է {{0}}",
   "com_ui_weather_wind": "Քամի",
-  "com_ui_weather_wind_value": "{{0}} կմ/ժ"
+  "com_ui_weather_wind_value": "{{0}} կմ/ժ",
+  "com_ui_landing_faq_title": "Հաճախ տրվող հարցեր"
 }

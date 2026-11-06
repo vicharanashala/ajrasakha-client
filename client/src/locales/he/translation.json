@@ -1465,5 +1465,6 @@
   "com_ui_weather_today": "מזג האוויר היום",
   "com_ui_weather_updated": "עודכן {{0}}",
   "com_ui_weather_wind": "רוח",
-  "com_ui_weather_wind_value": "{{0}} קמ״ש"
+  "com_ui_weather_wind_value": "{{0}} קמ״ש",
+  "com_ui_landing_faq_title": "שאלות נפוצות"
 }

@@ -1447,5 +1447,6 @@
   "com_ui_weather_today": "Været i dag",
   "com_ui_weather_updated": "Oppdatert {{0}}",
   "com_ui_weather_wind": "Vind",
-  "com_ui_weather_wind_value": "{{0}} km/t"
+  "com_ui_weather_wind_value": "{{0}} km/t",
+  "com_ui_landing_faq_title": "Vanlige spørsmål"
 }

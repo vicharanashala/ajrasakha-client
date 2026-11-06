@@ -2148,5 +2148,6 @@
   "com_ui_weather_today": "ਅੱਜ ਦਾ ਮੌਸਮ",
   "com_ui_weather_updated": "ਅੱਪਡੇਟ {{0}}",
   "com_ui_weather_wind": "ਹਵਾ",
-  "com_ui_weather_wind_value": "{{0}} ਕਿ.ਮੀ./ਘੰਟਾ"
+  "com_ui_weather_wind_value": "{{0}} ਕਿ.ਮੀ./ਘੰਟਾ",
+  "com_ui_landing_faq_title": "ਅਕਸਰ ਪੁੱਛੇ ਜਾਣ ਵਾਲੇ ਸਵਾਲ"
 }

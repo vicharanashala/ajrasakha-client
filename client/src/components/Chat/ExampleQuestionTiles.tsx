@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useId, useMemo } from 'react';
 import {
   BadgeCheck,
   ChevronRight,
@@ -6,6 +6,7 @@ import {
   HelpCircle,
   IndianRupee,
   Languages,
+  MessageCircleQuestion,
   Mic,
   ShieldCheck,
   Sprout,
@@ -86,6 +87,8 @@ const CARD_ENTRANCE_STEP_MS = 70;
  *  the same as typing it and hitting submit — rather than just populating the input box. */
 export default function ExampleQuestionTiles() {
   const { submitMessage } = useSubmitMessage();
+  // Links the question grid to its section title for screen readers.
+  const faqTitleId = useId();
   const localize = useLocalize();
   const { user } = useAuthContext();
   // Same query useSubmitMessage.ts reads the farmer's state from — same query key, so it
@@ -165,13 +168,35 @@ export default function ExampleQuestionTiles() {
       </div>
       {/* Today's weather sits directly above the questions and rises in just before them. */}
       <WeatherCard
-        className="animate-riseIn mb-3 sm:mb-4"
+        className="animate-riseIn mb-5 sm:mb-6"
         style={{ animationDelay: `${CARD_ENTRANCE_BASE_DELAY_MS}ms` }}
       />
+      {/* Small section title with a rule so the questions read as their own group under the
+          weather card. It rises in between the weather card and the first question. */}
+      <div
+        className="animate-riseIn mb-2.5 flex w-full items-center gap-3 sm:mb-3"
+        style={{ animationDelay: `${CARD_ENTRANCE_BASE_DELAY_MS + CARD_ENTRANCE_STEP_MS / 2}ms` }}
+      >
+        <h2
+          id={faqTitleId}
+          className="flex shrink-0 items-center gap-1.5 text-xs font-semibold text-text-secondary sm:text-sm"
+        >
+          <MessageCircleQuestion
+            className="size-4 shrink-0 text-green-600 dark:text-green-400"
+            aria-hidden="true"
+          />
+          {localize('com_ui_landing_faq_title')}
+        </h2>
+        <span className="h-px flex-1 bg-border-light" aria-hidden="true" />
+      </div>
       {/* One column while the chat column is narrow, two from md up — four full-width rows
           stacked on a desktop viewport is taller than the landing area can hold. The card
           itself keeps the same row layout at both widths. */}
-      <div className="grid w-full grid-cols-1 gap-2 sm:gap-3 md:grid-cols-2">
+      <div
+        role="group"
+        aria-labelledby={faqTitleId}
+        className="grid w-full grid-cols-1 gap-2 sm:gap-3 md:grid-cols-2"
+      >
       {questions.map((question, index) => {
         const Icon = ICONS_BY_ID[question.id] ?? HelpCircle;
         const questionText = localize(question.textKey);

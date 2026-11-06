@@ -258,5 +258,6 @@
   "com_ui_weather_today": "დღევანდელი ამინდი",
   "com_ui_weather_updated": "განახლდა {{0}}",
   "com_ui_weather_wind": "ქარი",
-  "com_ui_weather_wind_value": "{{0}} კმ/სთ"
+  "com_ui_weather_wind_value": "{{0}} კმ/სთ",
+  "com_ui_landing_faq_title": "ხშირად დასმული კითხვები"
 }

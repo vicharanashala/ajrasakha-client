@@ -2276,5 +2276,6 @@
   "com_ui_weather_today": "ಇಂದಿನ ಹವಾಮಾನ",
   "com_ui_weather_updated": "ನವೀಕರಿಸಲಾಗಿದೆ {{0}}",
   "com_ui_weather_wind": "ಗಾಳಿ",
-  "com_ui_weather_wind_value": "{{0}} ಕಿ.ಮೀ./ಗಂ"
+  "com_ui_weather_wind_value": "{{0}} ಕಿ.ಮೀ./ಗಂ",
+  "com_ui_landing_faq_title": "ಪದೇ ಪದೇ ಕೇಳಲಾಗುವ ಪ್ರಶ್ನೆಗಳು"
 }

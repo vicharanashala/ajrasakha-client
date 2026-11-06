@@ -2276,5 +2276,6 @@
   "com_ui_weather_today": "आजचे हवामान",
   "com_ui_weather_updated": "अपडेट {{0}}",
   "com_ui_weather_wind": "वारा",
-  "com_ui_weather_wind_value": "{{0}} किमी/तास"
+  "com_ui_weather_wind_value": "{{0}} किमी/तास",
+  "com_ui_landing_faq_title": "वारंवार विचारले जाणारे प्रश्न"
 }

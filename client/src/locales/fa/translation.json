@@ -997,5 +997,6 @@
   "com_ui_weather_today": "آب‌وهوای امروز",
   "com_ui_weather_updated": "به‌روزرسانی {{0}}",
   "com_ui_weather_wind": "باد",
-  "com_ui_weather_wind_value": "{{0}} کیلومتر/ساعت"
+  "com_ui_weather_wind_value": "{{0}} کیلومتر/ساعت",
+  "com_ui_landing_faq_title": "پرسش‌های متداول"
 }

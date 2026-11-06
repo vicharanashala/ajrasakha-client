@@ -2276,5 +2276,6 @@
   "com_ui_weather_today": "ଆଜିର ପାଣିପାଗ",
   "com_ui_weather_updated": "ଅପଡେଟ {{0}}",
   "com_ui_weather_wind": "ପବନ",
-  "com_ui_weather_wind_value": "{{0}} କି.ମି./ଘଣ୍ଟା"
+  "com_ui_weather_wind_value": "{{0}} କି.ମି./ଘଣ୍ଟା",
+  "com_ui_landing_faq_title": "ବାରମ୍ବାର ପଚରାଯାଉଥିବା ପ୍ରଶ୍ନ"
 }

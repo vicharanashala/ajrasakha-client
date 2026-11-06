@@ -891,5 +891,6 @@
   "com_ui_weather_today": "Bugünkü hava durumu",
   "com_ui_weather_updated": "Güncellendi {{0}}",
   "com_ui_weather_wind": "Rüzgâr",
-  "com_ui_weather_wind_value": "{{0}} km/sa"
+  "com_ui_weather_wind_value": "{{0}} km/sa",
+  "com_ui_landing_faq_title": "Sıkça sorulan sorular"
 }

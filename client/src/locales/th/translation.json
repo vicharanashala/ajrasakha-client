@@ -1038,5 +1038,6 @@
   "com_ui_weather_today": "สภาพอากาศวันนี้",
   "com_ui_weather_updated": "อัปเดต {{0}}",
   "com_ui_weather_wind": "ลม",
-  "com_ui_weather_wind_value": "{{0}} กม./ชม."
+  "com_ui_weather_wind_value": "{{0}} กม./ชม.",
+  "com_ui_landing_faq_title": "คำถามที่พบบ่อย"
 }

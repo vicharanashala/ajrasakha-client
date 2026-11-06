@@ -979,5 +979,6 @@
   "com_ui_weather_today": "El tiempo de hoy",
   "com_ui_weather_updated": "Actualizado {{0}}",
   "com_ui_weather_wind": "Viento",
-  "com_ui_weather_wind_value": "{{0}} km/h"
+  "com_ui_weather_wind_value": "{{0}} km/h",
+  "com_ui_landing_faq_title": "Preguntas frecuentes"
 }

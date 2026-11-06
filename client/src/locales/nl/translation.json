@@ -899,5 +899,6 @@
   "com_ui_weather_today": "Weer vandaag",
   "com_ui_weather_updated": "Bijgewerkt {{0}}",
   "com_ui_weather_wind": "Wind",
-  "com_ui_weather_wind_value": "{{0}} km/u"
+  "com_ui_weather_wind_value": "{{0}} km/u",
+  "com_ui_landing_faq_title": "Veelgestelde vragen"
 }

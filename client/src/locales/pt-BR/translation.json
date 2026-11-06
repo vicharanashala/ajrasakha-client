@@ -1193,5 +1193,6 @@
   "com_ui_weather_today": "Clima de hoje",
   "com_ui_weather_updated": "Atualizado {{0}}",
   "com_ui_weather_wind": "Vento",
-  "com_ui_weather_wind_value": "{{0}} km/h"
+  "com_ui_weather_wind_value": "{{0}} km/h",
+  "com_ui_landing_faq_title": "Perguntas frequentes"
 }

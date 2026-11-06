@@ -1275,5 +1275,6 @@
   "com_ui_weather_today": "오늘의 날씨",
   "com_ui_weather_updated": "업데이트 {{0}}",
   "com_ui_weather_wind": "바람",
-  "com_ui_weather_wind_value": "{{0}} km/h"
+  "com_ui_weather_wind_value": "{{0}} km/h",
+  "com_ui_landing_faq_title": "자주 묻는 질문"
 }

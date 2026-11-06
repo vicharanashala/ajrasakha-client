@@ -1508,5 +1508,6 @@
   "com_ui_weather_today": "今日天气",
   "com_ui_weather_updated": "更新于 {{0}}",
   "com_ui_weather_wind": "风速",
-  "com_ui_weather_wind_value": "{{0}} 公里/小时"
+  "com_ui_weather_wind_value": "{{0}} 公里/小时",
+  "com_ui_landing_faq_title": "常见问题"
 }

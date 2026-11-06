@@ -2272,5 +2272,6 @@
   "com_ui_weather_today": "Өнөөдрийн цаг агаар",
   "com_ui_weather_updated": "Шинэчилсэн {{0}}",
   "com_ui_weather_wind": "Салхи",
-  "com_ui_weather_wind_value": "{{0}} км/ц"
+  "com_ui_weather_wind_value": "{{0}} км/ц",
+  "com_ui_landing_faq_title": "Түгээмэл асуултууд"
 }

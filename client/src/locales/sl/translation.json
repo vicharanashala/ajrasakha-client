@@ -230,5 +230,6 @@
   "com_ui_weather_today": "Današnje vreme",
   "com_ui_weather_updated": "Posodobljeno {{0}}",
   "com_ui_weather_wind": "Veter",
-  "com_ui_weather_wind_value": "{{0}} km/h"
+  "com_ui_weather_wind_value": "{{0}} km/h",
+  "com_ui_landing_faq_title": "Pogosta vprašanja"
 }

@@ -2276,5 +2276,6 @@
   "com_ui_weather_today": "నేటి వాతావరణం",
   "com_ui_weather_updated": "నవీకరించబడింది {{0}}",
   "com_ui_weather_wind": "గాలి",
-  "com_ui_weather_wind_value": "{{0}} కి.మీ./గం"
+  "com_ui_weather_wind_value": "{{0}} కి.మీ./గం",
+  "com_ui_landing_faq_title": "తరచుగా అడిగే ప్రశ్నలు"
 }

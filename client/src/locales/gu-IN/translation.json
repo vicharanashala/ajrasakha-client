@@ -2276,5 +2276,6 @@
   "com_ui_weather_today": "આજનું હવામાન",
   "com_ui_weather_updated": "અપડેટ {{0}}",
   "com_ui_weather_wind": "પવન",
-  "com_ui_weather_wind_value": "{{0}} કિમી/કલાક"
+  "com_ui_weather_wind_value": "{{0}} કિમી/કલાક",
+  "com_ui_landing_faq_title": "વારંવાર પૂછાતા પ્રશ્નો"
 }
