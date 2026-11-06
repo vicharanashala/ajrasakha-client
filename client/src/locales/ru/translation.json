@@ -1484,6 +1484,8 @@
   "com_ui_weather_rainfall": "Осадки",
   "com_ui_weather_rainfall_value": "{{0}} мм",
   "com_ui_weather_refresh": "Обновить погоду",
+  "com_ui_weather_refreshed": "Обновлено {{0}}",
+  "com_ui_weather_refreshed_just_now": "Только что обновлено",
   "com_ui_weather_station": "{{0}}, {{1}} км (от выбранного местоположения)",
   "com_ui_weather_today": "Погода сегодня",
   "com_ui_weather_updated": "Обновлено {{0}}",

@@ -1625,6 +1625,8 @@
   "com_ui_weather_rainfall": "Nokrišņi",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Atjaunināt laikapstākļus",
+  "com_ui_weather_refreshed": "Atsvaidzināts {{0}}",
+  "com_ui_weather_refreshed_just_now": "Tikko atsvaidzināts",
   "com_ui_weather_station": "{{0}}, {{1}} km attālumā (no izvēlētās atrašanās vietas)",
   "com_ui_weather_today": "Šodienas laikapstākļi",
   "com_ui_weather_updated": "Atjaunināts {{0}}",

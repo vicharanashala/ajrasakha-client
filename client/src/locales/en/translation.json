@@ -2293,6 +2293,8 @@
   "com_ui_weather_rainfall": "Rainfall",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Refresh weather",
+  "com_ui_weather_refreshed": "Refreshed {{0}}",
+  "com_ui_weather_refreshed_just_now": "Refreshed just now",
   "com_ui_weather_station": "{{0}}, {{1}} km away (from your selected location)",
   "com_ui_weather_today": "Today's weather",
   "com_ui_weather_updated": "Updated {{0}}",

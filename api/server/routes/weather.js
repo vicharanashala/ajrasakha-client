@@ -58,7 +58,6 @@ function toWeatherResponse(data) {
 }
 
 // Returns live weather for the signed in farmer's saved location from the weather service.
-// The request URL and the service's response are logged to the backend console.
 router.get('/', requireJwtAuth, async (req, res) => {
   const serviceUrl = getWeatherServiceUrl();
   if (!serviceUrl) {
@@ -71,19 +70,17 @@ router.get('/', requireJwtAuth, async (req, res) => {
     return res.status(404).json({ message: 'Farmer location is not set' });
   }
 
-  // Full request URL, logged so the call to the weather service can be traced in the console.
+  // Full request URL, included in the error log so a failed call can be traced.
   const requestUrl = `${serviceUrl}?${new URLSearchParams({
     lat: String(coordinates.lat),
     long: String(coordinates.long),
   })}`;
 
   try {
-    logger.info(`[weather] Requesting ${requestUrl}`);
     const { data } = await axios.get(requestUrl, {
       headers: { accept: 'application/json' },
       timeout: WEATHER_REQUEST_TIMEOUT_MS,
     });
-    logger.info('[weather] Response', data);
 
     const weather = toWeatherResponse(data);
     if (weather.liveTemperature === null) {

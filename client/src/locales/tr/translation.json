@@ -887,6 +887,8 @@
   "com_ui_weather_rainfall": "Yağış",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Hava durumunu yenile",
+  "com_ui_weather_refreshed": "{{0}} yenilendi",
+  "com_ui_weather_refreshed_just_now": "Az önce yenilendi",
   "com_ui_weather_station": "{{0}}, {{1}} km uzakta (seçtiğiniz konumdan)",
   "com_ui_weather_today": "Bugünkü hava durumu",
   "com_ui_weather_updated": "Güncellendi {{0}}",

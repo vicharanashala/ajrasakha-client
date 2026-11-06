@@ -1461,6 +1461,8 @@
   "com_ui_weather_rainfall": "משקעים",
   "com_ui_weather_rainfall_value": "{{0}} מ״מ",
   "com_ui_weather_refresh": "רענון מזג האוויר",
+  "com_ui_weather_refreshed": "רוענן {{0}}",
+  "com_ui_weather_refreshed_just_now": "רוענן כרגע",
   "com_ui_weather_station": "{{0}}, במרחק {{1}} ק״מ (מהמיקום שבחרתם)",
   "com_ui_weather_today": "מזג האוויר היום",
   "com_ui_weather_updated": "עודכן {{0}}",

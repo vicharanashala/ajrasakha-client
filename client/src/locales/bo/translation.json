@@ -218,6 +218,8 @@
   "com_ui_weather_rainfall": "ཆར་ཚད",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "གནམ་གཤིས་གསར་བསྐྱར",
+  "com_ui_weather_refreshed": "{{0}} གསར་བསྐྱར་བྱས།",
+  "com_ui_weather_refreshed_just_now": "ད་ལྟ་གསར་བསྐྱར་བྱས།",
   "com_ui_weather_station": "{{0}}, {{1}} km ཐག་རིང་ (ཁྱེད་ཀྱིས་འདེམས་པའི་ས་གནས་ནས)",
   "com_ui_weather_today": "དེ་རིང་གི་གནམ་གཤིས",
   "com_ui_weather_updated": "གསར་བསྒྱུར {{0}}",

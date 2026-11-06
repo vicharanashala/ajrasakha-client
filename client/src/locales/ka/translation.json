@@ -254,6 +254,8 @@
   "com_ui_weather_rainfall": "ნალექი",
   "com_ui_weather_rainfall_value": "{{0}} მმ",
   "com_ui_weather_refresh": "ამინდის განახლება",
+  "com_ui_weather_refreshed": "განახლდა {{0}}",
+  "com_ui_weather_refreshed_just_now": "ახლახან განახლდა",
   "com_ui_weather_station": "{{0}}, {{1}} კმ-ში (თქვენ მიერ არჩეული მდებარეობიდან)",
   "com_ui_weather_today": "დღევანდელი ამინდი",
   "com_ui_weather_updated": "განახლდა {{0}}",

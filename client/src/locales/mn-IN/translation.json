@@ -2268,6 +2268,8 @@
   "com_ui_weather_rainfall": "Хур тунадас",
   "com_ui_weather_rainfall_value": "{{0}} мм",
   "com_ui_weather_refresh": "Цаг агаарыг шинэчлэх",
+  "com_ui_weather_refreshed": "{{0}} шинэчилсэн",
+  "com_ui_weather_refreshed_just_now": "Саяхан шинэчилсэн",
   "com_ui_weather_station": "{{0}}, {{1}} км зайтай (таны сонгосон байршлаас)",
   "com_ui_weather_today": "Өнөөдрийн цаг агаар",
   "com_ui_weather_updated": "Шинэчилсэн {{0}}",

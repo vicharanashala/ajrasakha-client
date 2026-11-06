@@ -1088,6 +1088,8 @@
   "com_ui_weather_rainfall": "Nedbør",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Opdater vejret",
+  "com_ui_weather_refreshed": "Opdateret {{0}}",
+  "com_ui_weather_refreshed_just_now": "Opdateret lige nu",
   "com_ui_weather_station": "{{0}}, {{1}} km væk (fra din valgte placering)",
   "com_ui_weather_today": "Dagens vejr",
   "com_ui_weather_updated": "Opdateret {{0}}",

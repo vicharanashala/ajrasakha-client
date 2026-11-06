@@ -1423,6 +1423,8 @@
   "com_ui_weather_rainfall": "Precipitação",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Atualizar tempo",
+  "com_ui_weather_refreshed": "Atualizado {{0}}",
+  "com_ui_weather_refreshed_just_now": "Atualizado agora mesmo",
   "com_ui_weather_station": "{{0}}, a {{1}} km (da localização selecionada)",
   "com_ui_weather_today": "Tempo de hoje",
   "com_ui_weather_updated": "Atualizado {{0}}",

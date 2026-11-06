@@ -1509,6 +1509,8 @@
   "com_ui_weather_rainfall": "降水量",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "天気を更新",
+  "com_ui_weather_refreshed": "{{0}}に更新",
+  "com_ui_weather_refreshed_just_now": "たった今更新",
   "com_ui_weather_station": "{{0}}、{{1}} km 先（選択した場所から）",
   "com_ui_weather_today": "今日の天気",
   "com_ui_weather_updated": "更新 {{0}}",

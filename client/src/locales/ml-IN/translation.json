@@ -2272,6 +2272,8 @@
   "com_ui_weather_rainfall": "മഴയളവ്",
   "com_ui_weather_rainfall_value": "{{0}} മി.മീ.",
   "com_ui_weather_refresh": "കാലാവസ്ഥ പുതുക്കുക",
+  "com_ui_weather_refreshed": "{{0}} പുതുക്കി",
+  "com_ui_weather_refreshed_just_now": "ഇപ്പോൾ പുതുക്കി",
   "com_ui_weather_station": "{{0}}, {{1}} കി.മീ. അകലെ (നിങ്ങൾ തിരഞ്ഞെടുത്ത സ്ഥലത്തുനിന്ന്)",
   "com_ui_weather_today": "ഇന്നത്തെ കാലാവസ്ഥ",
   "com_ui_weather_updated": "പുതുക്കിയത് {{0}}",

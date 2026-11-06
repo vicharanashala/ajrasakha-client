@@ -2272,6 +2272,8 @@
   "com_ui_weather_rainfall": "بارش کی مقدار",
   "com_ui_weather_rainfall_value": "{{0}} ملی میٹر",
   "com_ui_weather_refresh": "موسم ریفریش کریں",
+  "com_ui_weather_refreshed": "{{0}} ریفریش کیا گیا",
+  "com_ui_weather_refreshed_just_now": "ابھی ریفریش کیا گیا",
   "com_ui_weather_station": "{{0}}، {{1}} کلومیٹر دور (آپ کے منتخب کردہ مقام سے)",
   "com_ui_weather_today": "آج کا موسم",
   "com_ui_weather_updated": "اپ ڈیٹ {{0}}",

@@ -2272,6 +2272,8 @@
   "com_ui_weather_rainfall": "पाऊस",
   "com_ui_weather_rainfall_value": "{{0}} मिमी",
   "com_ui_weather_refresh": "हवामान रिफ्रेश करा",
+  "com_ui_weather_refreshed": "{{0}} रिफ्रेश केले",
+  "com_ui_weather_refreshed_just_now": "आत्ताच रिफ्रेश केले",
   "com_ui_weather_station": "{{0}}, {{1}} किमी दूर (तुम्ही निवडलेल्या ठिकाणापासून)",
   "com_ui_weather_today": "आजचे हवामान",
   "com_ui_weather_updated": "अपडेट {{0}}",

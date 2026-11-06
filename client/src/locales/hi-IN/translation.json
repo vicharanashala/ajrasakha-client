@@ -2272,6 +2272,8 @@
   "com_ui_weather_rainfall": "वर्षा",
   "com_ui_weather_rainfall_value": "{{0}} मिमी",
   "com_ui_weather_refresh": "मौसम रीफ़्रेश करें",
+  "com_ui_weather_refreshed": "{{0}} रीफ़्रेश किया गया",
+  "com_ui_weather_refreshed_just_now": "अभी रीफ़्रेश किया गया",
   "com_ui_weather_station": "{{0}}, {{1}} किमी दूर (आपके चुने गए स्थान से)",
   "com_ui_weather_today": "आज का मौसम",
   "com_ui_weather_updated": "अपडेट {{0}}",

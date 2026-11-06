@@ -2272,6 +2272,8 @@
   "com_ui_weather_rainfall": "વરસાદ",
   "com_ui_weather_rainfall_value": "{{0}} મિમી",
   "com_ui_weather_refresh": "હવામાન રિફ્રેશ કરો",
+  "com_ui_weather_refreshed": "{{0}} રિફ્રેશ કર્યું",
+  "com_ui_weather_refreshed_just_now": "હમણાં જ રિફ્રેશ કર્યું",
   "com_ui_weather_station": "{{0}}, {{1}} કિમી દૂર (તમારા પસંદ કરેલા સ્થાનથી)",
   "com_ui_weather_today": "આજનું હવામાન",
   "com_ui_weather_updated": "અપડેટ {{0}}",

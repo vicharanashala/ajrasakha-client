@@ -2272,6 +2272,8 @@
   "com_ui_weather_rainfall": "বৃষ্টিপাত",
   "com_ui_weather_rainfall_value": "{{0}} মিমি",
   "com_ui_weather_refresh": "আবহাওয়া রিফ্রেশ করুন",
+  "com_ui_weather_refreshed": "{{0}} রিফ্রেশ করা হয়েছে",
+  "com_ui_weather_refreshed_just_now": "এইমাত্র রিফ্রেশ করা হয়েছে",
   "com_ui_weather_station": "{{0}}, {{1}} কিমি দূরে (আপনার নির্বাচিত অবস্থান থেকে)",
   "com_ui_weather_today": "আজকের আবহাওয়া",
   "com_ui_weather_updated": "আপডেট {{0}}",

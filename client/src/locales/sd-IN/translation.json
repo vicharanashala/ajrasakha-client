@@ -2268,6 +2268,8 @@
   "com_ui_weather_rainfall": "برسات جي مقدار",
   "com_ui_weather_rainfall_value": "{{0}} ملي ميٽر",
   "com_ui_weather_refresh": "موسم ريفريش ڪريو",
+  "com_ui_weather_refreshed": "{{0}} ريفريش ڪيو ويو",
+  "com_ui_weather_refreshed_just_now": "اڃا هاڻي ريفريش ڪيو ويو",
   "com_ui_weather_station": "{{0}}، {{1}} ڪلوميٽر پري (توهان جي چونڊيل جڳهه کان)",
   "com_ui_weather_today": "اڄ جو موسم",
   "com_ui_weather_updated": "اپڊيٽ {{0}}",

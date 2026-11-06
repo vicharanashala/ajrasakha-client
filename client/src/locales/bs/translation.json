@@ -90,6 +90,8 @@
   "com_ui_weather_rainfall": "Padavine",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Osvježi vrijeme",
+  "com_ui_weather_refreshed": "Osvježeno {{0}}",
+  "com_ui_weather_refreshed_just_now": "Upravo osvježeno",
   "com_ui_weather_station": "{{0}}, {{1}} km udaljeno (od odabrane lokacije)",
   "com_ui_weather_today": "Današnje vrijeme",
   "com_ui_weather_updated": "Ažurirano {{0}}",

@@ -1,6 +1,7 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { motion } from 'framer-motion';
+import { useRecoilValue } from 'recoil';
 import {
   ArrowRight,
   CloudOff,
@@ -17,6 +18,7 @@ import type { Weather } from '~/hooks/useWeather';
 import { useAuthContext, useLocalize } from '~/hooks';
 import type { TranslationKeys } from '~/hooks';
 import { cn } from '~/utils';
+import store from '~/store';
 import { LANDING_CARD_SURFACE } from './landingCardStyles';
 import {
   AnimatedTemperature,
@@ -191,6 +193,74 @@ function ForecastButton() {
   );
 }
 
+// How often relative labels such as "2 minutes ago" are recalculated.
+const RELATIVE_TIME_TICK_MS = 30000;
+
+// Builds a relative time formatter for the app language. Some app language codes, such as
+// as2-IN, are not valid locale tags, so it falls back to the base language and then English.
+function getRelativeTimeFormat(lang: string) {
+  const candidates = [lang, lang.split('-')[0].replace(/\d+$/, ''), 'en'];
+  for (const candidate of candidates) {
+    try {
+      return new Intl.RelativeTimeFormat(candidate, { numeric: 'auto', style: 'long' });
+    } catch {
+      // Not a valid locale tag, the next candidate is tried.
+    }
+  }
+  return new Intl.RelativeTimeFormat('en');
+}
+
+// Describes how long ago a timestamp was, e.g. "2 minutes ago", or null when under a minute.
+function formatTimeAgo(timestamp: number, now: number, formatter: Intl.RelativeTimeFormat) {
+  const minutes = Math.floor((now - timestamp) / 60000);
+  if (minutes < 1) {
+    return null;
+  }
+  if (minutes < 60) {
+    return formatter.format(-minutes, 'minute');
+  }
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) {
+    return formatter.format(-hours, 'hour');
+  }
+  return formatter.format(-Math.floor(hours / 24), 'day');
+}
+
+// Current time that updates on an interval, so relative labels stay accurate while the page is open.
+function useNow(intervalMs: number) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), intervalMs);
+    return () => window.clearInterval(timer);
+  }, [intervalMs]);
+  return now;
+}
+
+// Muted "Refreshed 2 minutes ago" label under the refresh button, faded in only while the button
+// is disabled. Its space is always kept so the header does not jump as it appears and hides.
+// It recalculates on its own every half minute and is not a live region, so screen readers are
+// not interrupted by it.
+function RefreshedAgo({ updatedAt, visible }: { updatedAt: number; visible: boolean }) {
+  const localize = useLocalize();
+  const lang = useRecoilValue(store.lang);
+  const relativeTimeFormat = useMemo(() => getRelativeTimeFormat(lang), [lang]);
+  const now = useNow(RELATIVE_TIME_TICK_MS);
+  const refreshedAgo = formatTimeAgo(updatedAt, now, relativeTimeFormat);
+  return (
+    <span
+      aria-hidden={!visible}
+      className={cn(
+        'whitespace-nowrap text-[11px] leading-none text-text-tertiary transition-opacity duration-300 motion-reduce:transition-none',
+        visible ? 'opacity-100' : 'invisible opacity-0',
+      )}
+    >
+      {refreshedAgo
+        ? localize('com_ui_weather_refreshed', { 0: refreshedAgo })
+        : localize('com_ui_weather_refreshed_just_now')}
+    </span>
+  );
+}
+
 type WeatherCardBodyProps = { weather: Weather; updatedAt: number; isRefreshing: boolean };
 
 // Loaded state: temperature, condition, stats and when the data was last refreshed.
@@ -309,12 +379,25 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
   const [isManualRefresh, setIsManualRefresh] = useState(false);
   // Covers taps on the refresh button and background refetches such as after a location change.
   const isRefreshing = !!weather && (isManualRefresh || isRefetching);
-  // True for a short while after a tap-driven refresh, while the button rests.
-  const [isCoolingDown, setIsCoolingDown] = useState(false);
-  const cooldownTimerRef = useRef<number>();
+  // When the rest after a tap-driven refresh ends, as a timestamp. Zero when the button is not resting.
+  const [cooldownUntil, setCooldownUntil] = useState(0);
+  const isCoolingDown = cooldownUntil > 0;
 
-  // Clears a pending cooldown timer when the card unmounts.
-  useEffect(() => () => window.clearTimeout(cooldownTimerRef.current), []);
+  // Ends the rest when its time is up. The timer lives in this effect and is derived from the stored
+  // end time, so if the effect is cleaned up and run again (hot reload, strict mode) the timer is
+  // simply scheduled again and the button can never stay disabled.
+  useEffect(() => {
+    if (!cooldownUntil) {
+      return;
+    }
+    const remaining = cooldownUntil - Date.now();
+    if (remaining <= 0) {
+      setCooldownUntil(0);
+      return;
+    }
+    const timer = window.setTimeout(() => setCooldownUntil(0), remaining);
+    return () => window.clearTimeout(timer);
+  }, [cooldownUntil]);
 
   // Fetches fresh weather on demand, then rests the button for a few seconds.
   // Ignores taps while a refresh is running or the button is resting.
@@ -327,11 +410,7 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
       await Promise.all([refetch(), wait(MIN_REFRESH_SPIN_MS)]);
     } finally {
       setIsManualRefresh(false);
-      setIsCoolingDown(true);
-      cooldownTimerRef.current = window.setTimeout(
-        () => setIsCoolingDown(false),
-        REFRESH_COOLDOWN_MS,
-      );
+      setCooldownUntil(Date.now() + REFRESH_COOLDOWN_MS);
     }
   };
 
@@ -358,32 +437,38 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
         <h2 id={titleId} className="shrink-0 text-base font-semibold text-text-primary sm:text-lg">
           {localize('com_ui_weather_today')}
         </h2>
-        <div className="flex min-w-0 items-center gap-1">
-          {locationLabel && (
-            <p className="flex min-w-0 items-center gap-1 text-xs capitalize text-text-secondary">
-              <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
-              <span className="truncate">{locationLabel}</span>
-            </p>
-          )}
-          {weather && (
-            <button
-              type="button"
-              onClick={handleRefresh}
-              disabled={isRefreshing || isCoolingDown}
-              aria-label={localize('com_ui_weather_refresh')}
-              title={localize('com_ui_weather_refresh')}
-              className="-my-2 -mr-2 flex size-10 shrink-0 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary disabled:cursor-default disabled:hover:bg-transparent motion-reduce:transition-none"
-            >
-              <RefreshCw
-                className={cn(
-                  'size-4 transition-[color,opacity] duration-300',
-                  isCoolingDown && !isRefreshing && 'opacity-40',
-                  isRefreshing &&
-                    'animate-spin text-green-600 motion-reduce:animate-none dark:text-green-400',
-                )}
-                aria-hidden="true"
-              />
-            </button>
+        <div className="flex min-w-0 flex-col items-end gap-1">
+          <div className="flex min-w-0 max-w-full items-center gap-1">
+            {locationLabel && (
+              <p className="flex min-w-0 items-center gap-1 text-xs capitalize text-text-secondary">
+                <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
+                <span className="truncate">{locationLabel}</span>
+              </p>
+            )}
+            {weather && (
+              <button
+                type="button"
+                onClick={handleRefresh}
+                disabled={isRefreshing || isCoolingDown}
+                aria-label={localize('com_ui_weather_refresh')}
+                title={localize('com_ui_weather_refresh')}
+                className="-my-2 -mr-2 flex size-10 shrink-0 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary disabled:cursor-default disabled:hover:bg-transparent motion-reduce:transition-none"
+              >
+                <RefreshCw
+                  className={cn(
+                    'size-4 transition-[color,opacity] duration-300',
+                    isCoolingDown && !isRefreshing && 'opacity-40',
+                    isRefreshing &&
+                      'animate-spin text-green-600 motion-reduce:animate-none dark:text-green-400',
+                  )}
+                  aria-hidden="true"
+                />
+              </button>
+            )}
+          </div>
+          {/* Shown only while the button is disabled, to explain why it cannot be tapped right now. */}
+          {weather && dataUpdatedAt > 0 && (
+            <RefreshedAgo updatedAt={dataUpdatedAt} visible={isRefreshing || isCoolingDown} />
           )}
         </div>
       </div>

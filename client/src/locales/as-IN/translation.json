@@ -2271,6 +2271,8 @@
   "com_ui_weather_rainfall": "বৰষুণ",
   "com_ui_weather_rainfall_value": "{{0}} মিমি",
   "com_ui_weather_refresh": "বতৰ ৰিফ্ৰেছ কৰক",
+  "com_ui_weather_refreshed": "{{0}} ৰিফ্ৰেছ কৰা হৈছিল",
+  "com_ui_weather_refreshed_just_now": "এইমাত্ৰ ৰিফ্ৰেছ কৰা হ'ল",
   "com_ui_weather_station": "{{0}}, {{1}} কিমি দূৰত (আপুনি বাছনি কৰা অৱস্থানৰ পৰা)",
   "com_ui_weather_today": "আজিৰ বতৰ",
   "com_ui_weather_updated": "আপডেট {{0}}",

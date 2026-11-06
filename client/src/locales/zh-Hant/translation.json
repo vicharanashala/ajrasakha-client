@@ -1085,6 +1085,8 @@
   "com_ui_weather_rainfall": "降雨量",
   "com_ui_weather_rainfall_value": "{{0}} 毫米",
   "com_ui_weather_refresh": "重新整理天氣",
+  "com_ui_weather_refreshed": "{{0}}重新整理",
+  "com_ui_weather_refreshed_just_now": "剛剛重新整理",
   "com_ui_weather_station": "{{0}}，距離 {{1}} 公里（距您所選位置）",
   "com_ui_weather_today": "今日天氣",
   "com_ui_weather_updated": "更新於 {{0}}",

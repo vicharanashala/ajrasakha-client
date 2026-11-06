@@ -560,6 +560,8 @@
   "com_ui_weather_rainfall": "Lượng mưa",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Làm mới thời tiết",
+  "com_ui_weather_refreshed": "Đã làm mới {{0}}",
+  "com_ui_weather_refreshed_just_now": "Vừa làm mới",
   "com_ui_weather_station": "{{0}}, cách {{1}} km (từ vị trí bạn đã chọn)",
   "com_ui_weather_today": "Thời tiết hôm nay",
   "com_ui_weather_updated": "Cập nhật {{0}}",

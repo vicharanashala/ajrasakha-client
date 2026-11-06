@@ -894,6 +894,8 @@
   "com_ui_weather_rainfall": "Srážky",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Obnovit počasí",
+  "com_ui_weather_refreshed": "Obnoveno {{0}}",
+  "com_ui_weather_refreshed_just_now": "Právě obnoveno",
   "com_ui_weather_station": "{{0}}, {{1}} km daleko (od zvolené polohy)",
   "com_ui_weather_today": "Dnešní počasí",
   "com_ui_weather_updated": "Aktualizováno {{0}}",

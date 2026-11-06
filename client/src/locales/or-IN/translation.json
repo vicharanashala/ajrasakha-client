@@ -2272,6 +2272,8 @@
   "com_ui_weather_rainfall": "ବର୍ଷା",
   "com_ui_weather_rainfall_value": "{{0}} ମି.ମି.",
   "com_ui_weather_refresh": "ପାଣିପାଗ ରିଫ୍ରେସ କରନ୍ତୁ",
+  "com_ui_weather_refreshed": "{{0}} ରିଫ୍ରେସ କରାଯାଇଛି",
+  "com_ui_weather_refreshed_just_now": "ଏବେ ରିଫ୍ରେସ କରାଯାଇଛି",
   "com_ui_weather_station": "{{0}}, {{1}} କି.ମି. ଦୂରରେ (ଆପଣ ବାଛିଥିବା ସ୍ଥାନରୁ)",
   "com_ui_weather_today": "ଆଜିର ପାଣିପାଗ",
   "com_ui_weather_updated": "ଅପଡେଟ {{0}}",

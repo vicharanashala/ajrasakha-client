@@ -2272,6 +2272,8 @@
   "com_ui_weather_rainfall": "ಮಳೆ ಪ್ರಮಾಣ",
   "com_ui_weather_rainfall_value": "{{0}} ಮಿ.ಮೀ.",
   "com_ui_weather_refresh": "ಹವಾಮಾನ ರಿಫ್ರೆಶ್ ಮಾಡಿ",
+  "com_ui_weather_refreshed": "{{0}} ರಿಫ್ರೆಶ್ ಮಾಡಲಾಗಿದೆ",
+  "com_ui_weather_refreshed_just_now": "ಈಗಷ್ಟೇ ರಿಫ್ರೆಶ್ ಮಾಡಲಾಗಿದೆ",
   "com_ui_weather_station": "{{0}}, {{1}} ಕಿ.ಮೀ. ದೂರ (ನೀವು ಆಯ್ಕೆ ಮಾಡಿದ ಸ್ಥಳದಿಂದ)",
   "com_ui_weather_today": "ಇಂದಿನ ಹವಾಮಾನ",
   "com_ui_weather_updated": "ನವೀಕರಿಸಲಾಗಿದೆ {{0}}",

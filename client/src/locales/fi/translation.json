@@ -768,6 +768,8 @@
   "com_ui_weather_rainfall": "Sademäärä",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Päivitä sää",
+  "com_ui_weather_refreshed": "Päivitetty {{0}}",
+  "com_ui_weather_refreshed_just_now": "Päivitetty juuri nyt",
   "com_ui_weather_station": "{{0}}, {{1}} km päässä (valitsemastasi sijainnista)",
   "com_ui_weather_today": "Päivän sää",
   "com_ui_weather_updated": "Päivitetty {{0}}",

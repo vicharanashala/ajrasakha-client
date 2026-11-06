@@ -1034,6 +1034,8 @@
   "com_ui_weather_rainfall": "ปริมาณฝน",
   "com_ui_weather_rainfall_value": "{{0}} มม.",
   "com_ui_weather_refresh": "รีเฟรชสภาพอากาศ",
+  "com_ui_weather_refreshed": "รีเฟรชเมื่อ {{0}}",
+  "com_ui_weather_refreshed_just_now": "รีเฟรชเมื่อสักครู่",
   "com_ui_weather_station": "{{0}}, ห่าง {{1}} กม. (จากตำแหน่งที่คุณเลือก)",
   "com_ui_weather_today": "สภาพอากาศวันนี้",
   "com_ui_weather_updated": "อัปเดต {{0}}",

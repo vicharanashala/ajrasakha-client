@@ -2268,6 +2268,8 @@
   "com_ui_weather_rainfall": "روٗدٕ مقدار",
   "com_ui_weather_rainfall_value": "{{0}} ملی میٹر",
   "com_ui_weather_refresh": "موسم ریفریش کٔرِو",
+  "com_ui_weather_refreshed": "{{0}} ریفریش کرنہٕ آو",
+  "com_ui_weather_refreshed_just_now": "وۄنۍ ریفریش کرنہٕ آو",
   "com_ui_weather_station": "{{0}}، {{1}} کلومیٹر دور (توٚہہِ ژارنہٕ آمتہِ جاے پیٚٹھٕ)",
   "com_ui_weather_today": "اَزُک موسم",
   "com_ui_weather_updated": "اپ ڈیٹ {{0}}",

@@ -895,6 +895,8 @@
   "com_ui_weather_rainfall": "Neerslag",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Weer vernieuwen",
+  "com_ui_weather_refreshed": "{{0}} vernieuwd",
+  "com_ui_weather_refreshed_just_now": "Zojuist vernieuwd",
   "com_ui_weather_station": "{{0}}, {{1}} km verderop (vanaf je gekozen locatie)",
   "com_ui_weather_today": "Weer vandaag",
   "com_ui_weather_updated": "Bijgewerkt {{0}}",

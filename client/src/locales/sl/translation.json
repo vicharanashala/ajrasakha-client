@@ -226,6 +226,8 @@
   "com_ui_weather_rainfall": "Padavine",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Osveži vreme",
+  "com_ui_weather_refreshed": "Osveženo {{0}}",
+  "com_ui_weather_refreshed_just_now": "Pravkar osveženo",
   "com_ui_weather_station": "{{0}}, {{1}} km stran (od izbrane lokacije)",
   "com_ui_weather_today": "Današnje vreme",
   "com_ui_weather_updated": "Posodobljeno {{0}}",
