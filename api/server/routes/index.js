@@ -33,6 +33,7 @@ const diagnostics = require('./diagnostics');
 const crops = require('./crop');
 const answers = require('./answers');
 const location = require('./location');
+const weather = require('./weather');
 
 module.exports = {
   mcp,
@@ -70,4 +71,5 @@ module.exports = {
   crops,
   answers,
   location,
+  weather,
 };

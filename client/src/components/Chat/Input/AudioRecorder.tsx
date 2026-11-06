@@ -149,7 +149,7 @@ export default function AudioRecorder({
       className={cn(
         // Solid green "ready" circle at rest. While listening the fill disappears and the
         // volume-driven orb takes over, so the button is only a transparent tap target.
-        'relative flex size-20 items-center justify-center rounded-full bg-green-500 p-2 sm:size-16 transition-all duration-300 disabled:opacity-50',
+        'relative flex size-24 items-center justify-center rounded-full bg-green-500 p-2 sm:size-16 transition-all duration-300 disabled:opacity-50',
         isListening === true
           ? 'bg-transparent hover:bg-transparent'
           : isLoading === true
@@ -174,7 +174,8 @@ export default function AudioRecorder({
         }
       `}</style>
       {isListening === true && <VoiceOrb />}
-      <span className="relative z-10 flex size-8 items-center justify-center sm:size-6">
+      {/* Larger glyph on phones, where the mic is the main way to ask. Desktop keeps the smaller size. */}
+      <span className="relative z-10 flex size-12 items-center justify-center sm:size-6">
         {renderIcon()}
       </span>
     </button>

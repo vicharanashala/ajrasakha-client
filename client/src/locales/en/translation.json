@@ -2270,5 +2270,17 @@
   "com_ui_answer_not_found_description": "This answer isn't available. It may have been removed, or the link you followed is incorrect.",
   "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
   "com_ui_failed_to_fetch_answer_description": "Something went wrong while loading this answer. Check your connection and try again.",
-  "com_ui_go_back_home": "Go back home"
+  "com_ui_go_back_home": "Go back home",
+  "com_ui_weather_close": "Close weather details",
+  "com_ui_weather_error": "We couldn't load the weather right now.",
+  "com_ui_weather_feels_like": "Feels like {{0}}",
+  "com_ui_weather_humidity": "Humidity",
+  "com_ui_weather_live": "Live",
+  "com_ui_weather_loading": "Loading weather",
+  "com_ui_weather_rainfall": "Rainfall",
+  "com_ui_weather_show_details": "Weather: {{0}}, {{1}}. Show details",
+  "com_ui_weather_today": "Today's weather",
+  "com_ui_weather_unavailable": "Weather unavailable. Show details",
+  "com_ui_weather_updated": "Updated {{0}}",
+  "com_ui_weather_wind": "Wind"
 }

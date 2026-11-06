@@ -16,6 +16,8 @@ import { useAuthContext } from '~/hooks/AuthContext';
 import { useUserTermsQuery } from '~/data-provider';
 import { cn } from '~/utils';
 import { EXAMPLE_QUESTIONS, STATE_EXAMPLE_QUESTION_OVERRIDES } from './exampleQuestions.config';
+import WeatherCard from './WeatherCard';
+import { LANDING_CARD_SURFACE } from './landingCardStyles';
 
 
 /** One capability label under the tagline. A small tinted icon dot plus a short caption,
@@ -69,7 +71,7 @@ const ICONS_BY_ID: Record<string, React.ComponentType<{ className?: string }>> =
  * saturated instead of a soft tint.
  */
 const ICON_ACCENT = {
-  tile: 'bg-green-500/15 text-green-600 dark:text-green-400',
+  tile: 'bg-gradient-to-br from-green-500/25 to-green-500/5 text-green-600 dark:from-green-400/25 dark:to-green-400/5 dark:text-green-400',
   hover: 'hover:border-green-500/40 dark:hover:border-green-400/40',
 };
 
@@ -161,6 +163,11 @@ export default function ExampleQuestionTiles() {
           />
         </ul>
       </div>
+      {/* Today's weather sits directly above the questions and rises in just before them. */}
+      <WeatherCard
+        className="animate-riseIn mb-3 sm:mb-4"
+        style={{ animationDelay: `${CARD_ENTRANCE_BASE_DELAY_MS}ms` }}
+      />
       {/* One column while the chat column is narrow, two from md up — four full-width rows
           stacked on a desktop viewport is taller than the landing area can hold. The card
           itself keeps the same row layout at both widths. */}
@@ -175,7 +182,7 @@ export default function ExampleQuestionTiles() {
             onClick={() => handleSelect(questionText)}
             // Cards rise in one after another, picking up where the tagline leaves off.
             style={{
-              animationDelay: `${CARD_ENTRANCE_BASE_DELAY_MS + index * CARD_ENTRANCE_STEP_MS}ms`,
+              animationDelay: `${CARD_ENTRANCE_BASE_DELAY_MS + (index + 1) * CARD_ENTRANCE_STEP_MS}ms`,
             }}
             className={cn(
               'animate-riseIn',
@@ -187,16 +194,13 @@ export default function ExampleQuestionTiles() {
               // smaller card than a neighbour that wraps to three, and that gap shifts by
               // locale (some of the 59 translations run much longer than others).
               'min-h-[72px] sm:min-h-[88px]',
-              // No resting border — the card reads from its shadow alone. Kept as a
-              // transparent 1px border (rather than dropping border entirely) so the hover
-              // accent colour below still has a border to reveal instead of shifting layout.
-              'border border-transparent bg-surface-chat',
-              // `surface-chat` (#0d0d0d) is barely distinguishable from the page background
-              // (#0a0a0a) in dark mode, so a shadow alone can't read as elevation there — it
-              // just looks like a stray glow. `surface-secondary` (#171717) gives the card an
-              // actual lift, and the shadow underneath it can stay a normal neutral dark
-              // shadow instead of a white-tinted one.
-              'dark:bg-surface-secondary',
+              // Shared with the weather card. In dark mode the card stays near black like the
+              // page and gets its shape from a hairline light edge rather than a grey fill.
+              // The 1px border is also what the hover accent colour below reveals.
+              LANDING_CARD_SURFACE,
+              // The sheen brightens a little on hover. Dark mode keeps the near black fill
+              // instead of the grey hover surface used in light mode.
+              'hover:from-white dark:hover:bg-surface-chat dark:hover:from-white/[0.08]',
               'shadow-[0_2px_6px_0_rgba(0,0,0,0.09)] dark:shadow-[0_2px_8px_0_rgba(0,0,0,0.45)]',
               'transition-[background-color,border-color,box-shadow,transform] duration-200 ease-out',
               'hover:bg-surface-tertiary hover:shadow-md active:scale-[0.99]',

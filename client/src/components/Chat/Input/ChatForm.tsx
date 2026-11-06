@@ -117,7 +117,10 @@ const InputModeToggle = memo(
         aria-label="Input mode"
         aria-hidden={isScrollButtonVisible}
         className={cn(
-          'flex shrink-0 items-center gap-0.5 rounded-full bg-surface-secondary p-1',
+          // Almost transparent glass track so content behind it shows through. The blur and hairline
+          // ring keep the labels readable over cards, and the active tab stays solid.
+          'flex shrink-0 items-center gap-0.5 rounded-full p-1 backdrop-blur-md',
+          'bg-black/[0.03] ring-1 ring-black/5 dark:bg-white/[0.04] dark:ring-white/10',
           'transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none',
           isScrollButtonVisible
             ? 'pointer-events-none scale-95 opacity-0'

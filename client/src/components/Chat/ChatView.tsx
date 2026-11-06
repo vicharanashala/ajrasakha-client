@@ -164,10 +164,12 @@ function ChatView({ index = 0 }: { index?: number }) {
                         // Unlike a live conversation, the composer isn't fixed to the viewport
                         // on phones here — the notice has to sit below it, not behind it — so
                         // this applies at every width.
-                        // On phones the greeting and cards scroll inside their own box
-                        // that ends where the composer begins, so the last card can never
-                        // sit behind the Voice/Text switch on a short screen. From `sm` up the
-                        // box is `contents`, so this keeps the layout described above.
+                        // On phones the greeting and cards scroll inside their own box that
+                        // runs a little way under the top of the composer, so the cards fade
+                        // out behind the see-through Voice/Text switch instead of stopping
+                        // above it. Its bottom padding still lets the last card scroll fully
+                        // clear of that fade. From `sm` up the box is `contents`, so this
+                        // keeps the layout described above.
                         'relative flex min-h-0 flex-1 flex-col sm:items-center sm:justify-center sm:overflow-y-auto sm:pb-[var(--composer-pad,11rem)]'
                       : // `relative` anchors the composer, which is pulled out of flow below
                         // so the message list can run its full height underneath it.
@@ -185,10 +187,11 @@ function ChatView({ index = 0 }: { index?: number }) {
                       isLandingPage
                         ? // `safe center` centres the content when it fits and, when it is taller than
                           // the space available, grows downward and scrolls instead of spilling upward.
-                          // The bottom edge fades out instead of cutting off, so cards dissolve above the
-                          // composer and it is clear there is more to scroll. The bottom padding lets the
-                          // last card scroll fully clear of the fade.
-                          'flex min-h-0 w-full flex-1 flex-col items-center justify-center [justify-content:safe_center] overflow-y-auto pb-7 pt-14 [-webkit-mask-image:linear-gradient(to_bottom,black_calc(100%_-_28px),transparent)] [mask-image:linear-gradient(to_bottom,black_calc(100%_-_28px),transparent)] sm:contents'
+                          // The bottom edge fades out instead of cutting off. The box overlaps the top of the
+                          // composer by 3.5rem (the negative margin) and the fade is 96px tall, so cards
+                          // dissolve gradually behind the Voice/Text switch and it is clear there is more to
+                          // scroll. The bottom padding matches the fade so the last card can scroll fully clear.
+                          '-mb-14 flex min-h-0 w-full flex-1 flex-col items-center justify-center [justify-content:safe_center] overflow-y-auto pb-24 pt-14 [-webkit-mask-image:linear-gradient(to_bottom,black_calc(100%_-_96px),transparent)] [mask-image:linear-gradient(to_bottom,black_calc(100%_-_96px),transparent)] sm:contents'
                         : 'contents'
                     }
                   >
@@ -205,7 +208,7 @@ function ChatView({ index = 0 }: { index?: number }) {
                     className={cn(
                       'w-full',
                       isLandingPage
-                        ? 'relative mx-auto max-w-3xl shrink-0 transition-all duration-200 sm:absolute sm:inset-x-0 sm:bottom-0 xl:max-w-4xl'
+                        ? 'relative z-10 mx-auto max-w-3xl shrink-0 transition-all duration-200 sm:absolute sm:inset-x-0 sm:bottom-0 xl:max-w-4xl'
                         : // The composer floats over the message list rather than sitting in
                           // normal flow, so messages can scroll a full screen's worth behind
                           // it instead of stopping at a hard edge above it. Its own backdrop
