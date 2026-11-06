@@ -2250,6 +2250,7 @@
   "com_ui_go_back_home": "होमवर परत जा",
   "com_ui_answer_not_found_description": "हे उत्तर उपलब्ध नाही. ते काढून टाकले असावे, किंवा तुम्ही उघडलेली लिंक चुकीची आहे.",
   "com_ui_failed_to_fetch_answer_description": "हे उत्तर लोड करताना काहीतरी चूक झाली. तुमचे इंटरनेट कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.",
+  "com_ui_weather_coming_soon": "लवकरच येत आहे",
   "com_ui_weather_condition_clear": "निरभ्र",
   "com_ui_weather_condition_cloudy": "ढगाळ",
   "com_ui_weather_condition_drizzle": "रिमझिम",
@@ -2266,7 +2267,6 @@
   "com_ui_weather_error": "सध्या हवामान लोड करता आले नाही.",
   "com_ui_weather_feels_like": "जाणवते {{0}}",
   "com_ui_weather_humidity": "आर्द्रता",
-  "com_ui_weather_live": "लाइव्ह",
   "com_ui_weather_loading": "हवामान लोड होत आहे",
   "com_ui_weather_no_location": "येथे हवामान पाहण्यासाठी तुमच्या शेताचे ठिकाण सेट करा.",
   "com_ui_weather_rainfall": "पाऊस",
@@ -2275,6 +2275,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} किमी दूर",
   "com_ui_weather_today": "आजचे हवामान",
   "com_ui_weather_updated": "अपडेट {{0}}",
+  "com_ui_weather_view_forecast": "अंदाज पहा",
   "com_ui_weather_wind": "वारा",
   "com_ui_weather_wind_value": "{{0}} किमी/तास",
   "com_ui_landing_faq_title": "वारंवार विचारले जाणारे प्रश्न"

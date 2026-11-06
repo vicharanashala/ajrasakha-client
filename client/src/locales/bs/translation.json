@@ -68,6 +68,7 @@
   "com_ui_failed_to_fetch_answer_description": "Došlo je do greške pri učitavanju ovog odgovora. Provjerite vezu i pokušajte ponovo.",
   "com_ui_retry": "Pokušaj ponovo",
   "com_ui_back_to_chat": "Nazad na razgovor",
+  "com_ui_weather_coming_soon": "Uskoro",
   "com_ui_weather_condition_clear": "Vedro",
   "com_ui_weather_condition_cloudy": "Oblačno",
   "com_ui_weather_condition_drizzle": "Rominjanje",
@@ -84,7 +85,6 @@
   "com_ui_weather_error": "Vrijeme trenutno nije moguće učitati.",
   "com_ui_weather_feels_like": "Osjećaj {{0}}",
   "com_ui_weather_humidity": "Vlažnost",
-  "com_ui_weather_live": "Uživo",
   "com_ui_weather_loading": "Učitavanje vremena",
   "com_ui_weather_no_location": "Postavite lokaciju svoje farme da biste ovdje vidjeli vrijeme.",
   "com_ui_weather_rainfall": "Padavine",
@@ -93,6 +93,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} km udaljeno",
   "com_ui_weather_today": "Današnje vrijeme",
   "com_ui_weather_updated": "Ažurirano {{0}}",
+  "com_ui_weather_view_forecast": "Pogledaj prognozu",
   "com_ui_weather_wind": "Vjetar",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Često postavljana pitanja"

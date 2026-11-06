@@ -196,6 +196,7 @@
   "com_ui_failed_to_fetch_answer_description": "ལན་འདེབས་འདི་སྣོན་སྐབས་ནོར་འཁྲུལ་བྱུང་། ཁྱེད་ཀྱི་དྲ་སྦྲེལ་ལ་ཞིབ་བཤེར་བྱས་ནས་ཡང་བསྐྱར་ཚོད་ལྟ་གནང་།",
   "com_ui_retry": "ཡང་བསྐྱར་ཚོད་ལྟ།",
   "com_ui_back_to_chat": "ཁ་བརྡར་ཕྱིར་ལོག",
+  "com_ui_weather_coming_soon": "མྱུར་དུ་ཡོང་གི་རེད།",
   "com_ui_weather_condition_clear": "གསལ་པོ",
   "com_ui_weather_condition_cloudy": "སྤྲིན་ཅན",
   "com_ui_weather_condition_drizzle": "ཆར་ཟིམ",
@@ -212,7 +213,6 @@
   "com_ui_weather_error": "ད་ལྟ་གནམ་གཤིས་ནང་འཇུག་བྱེད་མ་ཐུབ།",
   "com_ui_weather_feels_like": "ཚོར་བ {{0}}",
   "com_ui_weather_humidity": "རླན་ཚད",
-  "com_ui_weather_live": "ཐད་གཏོང་",
   "com_ui_weather_loading": "གནམ་གཤིས་ནང་འཇུག་བྱེད་བཞིན་པ",
   "com_ui_weather_no_location": "འདིར་གནམ་གཤིས་ལྟ་བར་ཁྱེད་ཀྱི་ཞིང་ཁའི་ས་གནས་གཏན་འཁེལ་གནང་།",
   "com_ui_weather_rainfall": "ཆར་ཚད",
@@ -221,6 +221,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} km ཐག་རིང་",
   "com_ui_weather_today": "དེ་རིང་གི་གནམ་གཤིས",
   "com_ui_weather_updated": "གསར་བསྒྱུར {{0}}",
+  "com_ui_weather_view_forecast": "སྔོན་བརྡ་ལ་ལྟ།",
   "com_ui_weather_wind": "རླུང་",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "རྒྱུན་དུ་འདྲི་བའི་དྲི་བ།"

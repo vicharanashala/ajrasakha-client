@@ -1106,6 +1106,7 @@
   "com_ui_answer_not_found_description": "See vastus pole saadaval. Võimalik, et see on eemaldatud või avatud link on vale.",
   "com_ui_failed_to_fetch_answer_description": "Selle vastuse laadimisel tekkis viga. Kontrollige ühendust ja proovige uuesti.",
   "com_ui_retry": "Proovi uuesti",
+  "com_ui_weather_coming_soon": "Varsti tulekul",
   "com_ui_weather_condition_clear": "Selge",
   "com_ui_weather_condition_cloudy": "Pilvine",
   "com_ui_weather_condition_drizzle": "Uduvihm",
@@ -1122,7 +1123,6 @@
   "com_ui_weather_error": "Ilma ei õnnestunud praegu laadida.",
   "com_ui_weather_feels_like": "Tundub nagu {{0}}",
   "com_ui_weather_humidity": "Õhuniiskus",
-  "com_ui_weather_live": "Otse",
   "com_ui_weather_loading": "Ilma laadimine",
   "com_ui_weather_no_location": "Ilma siin nägemiseks määra oma talu asukoht.",
   "com_ui_weather_rainfall": "Sademed",
@@ -1131,6 +1131,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} km kaugusel",
   "com_ui_weather_today": "Tänane ilm",
   "com_ui_weather_updated": "Uuendatud {{0}}",
+  "com_ui_weather_view_forecast": "Vaata prognoosi",
   "com_ui_weather_wind": "Tuul",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Korduma kippuvad küsimused"

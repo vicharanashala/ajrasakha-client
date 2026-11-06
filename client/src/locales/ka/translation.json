@@ -232,6 +232,7 @@
   "com_ui_failed_to_fetch_answer_description": "ამ პასუხის ჩატვირთვისას მოხდა შეცდომა. შეამოწმეთ კავშირი და სცადეთ ხელახლა.",
   "com_ui_retry": "ხელახლა ცდა",
   "com_ui_back_to_chat": "ჩატში დაბრუნება",
+  "com_ui_weather_coming_soon": "მალე",
   "com_ui_weather_condition_clear": "მოწმენდილი",
   "com_ui_weather_condition_cloudy": "მოღრუბლული",
   "com_ui_weather_condition_drizzle": "ჟინჟღლი",
@@ -248,7 +249,6 @@
   "com_ui_weather_error": "ამინდის ჩატვირთვა ახლა ვერ მოხერხდა.",
   "com_ui_weather_feels_like": "იგრძნობა {{0}}",
   "com_ui_weather_humidity": "ტენიანობა",
-  "com_ui_weather_live": "პირდაპირ",
   "com_ui_weather_loading": "ამინდი იტვირთება",
   "com_ui_weather_no_location": "ამინდის აქ სანახავად მიუთითეთ თქვენი მეურნეობის მდებარეობა.",
   "com_ui_weather_rainfall": "ნალექი",
@@ -257,6 +257,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} კმ-ში",
   "com_ui_weather_today": "დღევანდელი ამინდი",
   "com_ui_weather_updated": "განახლდა {{0}}",
+  "com_ui_weather_view_forecast": "პროგნოზის ნახვა",
   "com_ui_weather_wind": "ქარი",
   "com_ui_weather_wind_value": "{{0}} კმ/სთ",
   "com_ui_landing_faq_title": "ხშირად დასმული კითხვები"

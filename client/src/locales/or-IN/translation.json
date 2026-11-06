@@ -2250,6 +2250,7 @@
   "com_ui_go_back_home": "ହୋମ୍‌କୁ ଫେରନ୍ତୁ",
   "com_ui_answer_not_found_description": "ଏହି ଉତ୍ତର ଉପଲବ୍ଧ ନାହିଁ। ଏହା ହଟାଇ ଦିଆଯାଇଥାଇପାରେ, କିମ୍ବା ଆପଣ ଖୋଲିଥିବା ଲିଙ୍କ୍ ଭୁଲ ଅଟେ।",
   "com_ui_failed_to_fetch_answer_description": "ଏହି ଉତ୍ତର ଲୋଡ୍ କରିବା ସମୟରେ କିଛି ଭୁଲ ହେଲା। ଆପଣଙ୍କ ଇଣ୍ଟରନେଟ୍ ସଂଯୋଗ ଯାଞ୍ଚ କରନ୍ତୁ ଏବଂ ପୁନର୍ବାର ଚେଷ୍ଟା କରନ୍ତୁ।",
+  "com_ui_weather_coming_soon": "ଶୀଘ୍ର ଆସୁଛି",
   "com_ui_weather_condition_clear": "ପରିଷ୍କାର",
   "com_ui_weather_condition_cloudy": "ମେଘୁଆ",
   "com_ui_weather_condition_drizzle": "ଝିପିଝିପି ବର୍ଷା",
@@ -2266,7 +2267,6 @@
   "com_ui_weather_error": "ବର୍ତ୍ତମାନ ପାଣିପାଗ ଲୋଡ ହୋଇପାରିଲା ନାହିଁ।",
   "com_ui_weather_feels_like": "ଅନୁଭବ ହୁଏ {{0}}",
   "com_ui_weather_humidity": "ଆର୍ଦ୍ରତା",
-  "com_ui_weather_live": "ଲାଇଭ",
   "com_ui_weather_loading": "ପାଣିପାଗ ଲୋଡ ହେଉଛି",
   "com_ui_weather_no_location": "ଏଠାରେ ପାଣିପାଗ ଦେଖିବାକୁ ଆପଣଙ୍କ ଚାଷଜମିର ସ୍ଥାନ ସେଟ କରନ୍ତୁ।",
   "com_ui_weather_rainfall": "ବର୍ଷା",
@@ -2275,6 +2275,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} କି.ମି. ଦୂରରେ",
   "com_ui_weather_today": "ଆଜିର ପାଣିପାଗ",
   "com_ui_weather_updated": "ଅପଡେଟ {{0}}",
+  "com_ui_weather_view_forecast": "ପୂର୍ବାନୁମାନ ଦେଖନ୍ତୁ",
   "com_ui_weather_wind": "ପବନ",
   "com_ui_weather_wind_value": "{{0}} କି.ମି./ଘଣ୍ଟା",
   "com_ui_landing_faq_title": "ବାରମ୍ବାର ପଚରାଯାଉଥିବା ପ୍ରଶ୍ନ"

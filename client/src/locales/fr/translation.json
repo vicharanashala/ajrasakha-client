@@ -1448,6 +1448,7 @@
   "com_ui_answer_not_found_description": "Cette réponse n'est pas disponible. Elle a peut-être été supprimée ou le lien que vous avez ouvert est incorrect.",
   "com_ui_failed_to_fetch_answer_description": "Une erreur s'est produite lors du chargement de cette réponse. Vérifiez votre connexion et réessayez.",
   "com_ui_retry": "Réessayer",
+  "com_ui_weather_coming_soon": "Bientôt disponible",
   "com_ui_weather_condition_clear": "Dégagé",
   "com_ui_weather_condition_cloudy": "Nuageux",
   "com_ui_weather_condition_drizzle": "Bruine",
@@ -1464,7 +1465,6 @@
   "com_ui_weather_error": "Impossible de charger la météo pour le moment.",
   "com_ui_weather_feels_like": "Ressenti {{0}}",
   "com_ui_weather_humidity": "Humidité",
-  "com_ui_weather_live": "En direct",
   "com_ui_weather_loading": "Chargement de la météo",
   "com_ui_weather_no_location": "Définissez l'emplacement de votre exploitation pour voir la météo ici.",
   "com_ui_weather_rainfall": "Précipitations",
@@ -1473,6 +1473,7 @@
   "com_ui_weather_station": "{{0}}, à {{1}} km",
   "com_ui_weather_today": "Météo du jour",
   "com_ui_weather_updated": "Mis à jour {{0}}",
+  "com_ui_weather_view_forecast": "Voir les prévisions",
   "com_ui_weather_wind": "Vent",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Questions fréquentes"

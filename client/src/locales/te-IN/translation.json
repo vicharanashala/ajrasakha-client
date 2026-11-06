@@ -2250,6 +2250,7 @@
   "com_ui_go_back_home": "హోమ్‌కి తిరిగి వెళ్లండి",
   "com_ui_answer_not_found_description": "ఈ సమాధానం అందుబాటులో లేదు. దీన్ని తీసివేసి ఉండవచ్చు, లేదా మీరు తెరిచిన లింక్ తప్పు.",
   "com_ui_failed_to_fetch_answer_description": "ఈ సమాధానాన్ని లోడ్ చేసేటప్పుడు ఏదో తప్పు జరిగింది. మీ ఇంటర్నెట్ కనెక్షన్‌ని తనిఖీ చేసి మళ్లీ ప్రయత్నించండి.",
+  "com_ui_weather_coming_soon": "త్వరలో వస్తోంది",
   "com_ui_weather_condition_clear": "నిర్మలం",
   "com_ui_weather_condition_cloudy": "మేఘావృతం",
   "com_ui_weather_condition_drizzle": "జల్లులు",
@@ -2266,7 +2267,6 @@
   "com_ui_weather_error": "ప్రస్తుతం వాతావరణాన్ని లోడ్ చేయలేకపోయాం.",
   "com_ui_weather_feels_like": "అనిపించేది {{0}}",
   "com_ui_weather_humidity": "తేమ",
-  "com_ui_weather_live": "లైవ్",
   "com_ui_weather_loading": "వాతావరణం లోడ్ అవుతోంది",
   "com_ui_weather_no_location": "ఇక్కడ వాతావరణం చూడటానికి మీ పొలం స్థానాన్ని సెట్ చేయండి.",
   "com_ui_weather_rainfall": "వర్షపాతం",
@@ -2275,6 +2275,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} కి.మీ. దూరంలో",
   "com_ui_weather_today": "నేటి వాతావరణం",
   "com_ui_weather_updated": "నవీకరించబడింది {{0}}",
+  "com_ui_weather_view_forecast": "సూచన చూడండి",
   "com_ui_weather_wind": "గాలి",
   "com_ui_weather_wind_value": "{{0}} కి.మీ./గం",
   "com_ui_landing_faq_title": "తరచుగా అడిగే ప్రశ్నలు"

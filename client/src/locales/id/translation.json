@@ -442,6 +442,7 @@
   "com_ui_failed_to_fetch_answer_description": "Terjadi kesalahan saat memuat jawaban ini. Periksa koneksi Anda dan coba lagi.",
   "com_ui_retry": "Coba lagi",
   "com_ui_back_to_chat": "Kembali ke obrolan",
+  "com_ui_weather_coming_soon": "Segera hadir",
   "com_ui_weather_condition_clear": "Cerah",
   "com_ui_weather_condition_cloudy": "Berawan",
   "com_ui_weather_condition_drizzle": "Gerimis",
@@ -458,7 +459,6 @@
   "com_ui_weather_error": "Cuaca tidak dapat dimuat saat ini.",
   "com_ui_weather_feels_like": "Terasa seperti {{0}}",
   "com_ui_weather_humidity": "Kelembapan",
-  "com_ui_weather_live": "Langsung",
   "com_ui_weather_loading": "Memuat cuaca",
   "com_ui_weather_no_location": "Atur lokasi lahan Anda untuk melihat cuaca di sini.",
   "com_ui_weather_rainfall": "Curah hujan",
@@ -467,6 +467,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} km jauhnya",
   "com_ui_weather_today": "Cuaca hari ini",
   "com_ui_weather_updated": "Diperbarui {{0}}",
+  "com_ui_weather_view_forecast": "Lihat prakiraan",
   "com_ui_weather_wind": "Angin",
   "com_ui_weather_wind_value": "{{0}} km/j",
   "com_ui_landing_faq_title": "Pertanyaan yang sering diajukan"

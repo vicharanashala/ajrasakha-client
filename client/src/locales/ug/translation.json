@@ -68,6 +68,7 @@
   "com_ui_failed_to_fetch_answer_description": "بۇ جاۋابنى يۈكلەۋاتقاندا خاتالىق كۆرۈلدى. ئۇلىنىشىڭىزنى تەكشۈرۈپ قايتا سىناڭ.",
   "com_ui_retry": "قايتا سىناش",
   "com_ui_back_to_chat": "پاراڭغا قايتىش",
+  "com_ui_weather_coming_soon": "پات ئارىدا",
   "com_ui_weather_condition_clear": "ئوچۇق",
   "com_ui_weather_condition_cloudy": "بۇلۇتلۇق",
   "com_ui_weather_condition_drizzle": "سىم-سىم يامغۇر",
@@ -84,7 +85,6 @@
   "com_ui_weather_error": "ھازىر ھاۋا رايىنى يۈكلىگىلى بولمىدى.",
   "com_ui_weather_feels_like": "ھېس قىلىنىشى {{0}}",
   "com_ui_weather_humidity": "نەملىك",
-  "com_ui_weather_live": "بىۋاسىتە",
   "com_ui_weather_loading": "ھاۋا رايى يۈكلىنىۋاتىدۇ",
   "com_ui_weather_no_location": "بۇ يەردە ھاۋا رايىنى كۆرۈش ئۈچۈن ئېتىزىڭىزنىڭ ئورنىنى بەلگىلەڭ.",
   "com_ui_weather_rainfall": "يېغىن مىقدارى",
@@ -93,6 +93,7 @@
   "com_ui_weather_station": "{{0}}، {{1}} كم يىراقلىقتا",
   "com_ui_weather_today": "بۈگۈنكى ھاۋا رايى",
   "com_ui_weather_updated": "يېڭىلانغان {{0}}",
+  "com_ui_weather_view_forecast": "ھاۋا رايى مەلۇماتىنى كۆرۈش",
   "com_ui_weather_wind": "شامال",
   "com_ui_weather_wind_value": "{{0}} كم/سائەت",
   "com_ui_landing_faq_title": "دائىم سورىلىدىغان سوئاللار"

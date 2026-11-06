@@ -2250,6 +2250,7 @@
   "com_ui_go_back_home": "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ",
   "com_ui_answer_not_found_description": "ಈ ಉತ್ತರ ಲಭ್ಯವಿಲ್ಲ. ಅದನ್ನು ತೆಗೆದುಹಾಕಿರಬಹುದು ಅಥವಾ ನೀವು ತೆರೆದ ಲಿಂಕ್ ತಪ್ಪಾಗಿದೆ.",
   "com_ui_failed_to_fetch_answer_description": "ಈ ಉತ್ತರವನ್ನು ಲೋಡ್ ಮಾಡುವಾಗ ಏನೋ ತಪ್ಪಾಗಿದೆ. ನಿಮ್ಮ ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+  "com_ui_weather_coming_soon": "ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ",
   "com_ui_weather_condition_clear": "ನಿರ್ಮಲ",
   "com_ui_weather_condition_cloudy": "ಮೋಡ ಕವಿದ",
   "com_ui_weather_condition_drizzle": "ತುಂತುರು ಮಳೆ",
@@ -2266,7 +2267,6 @@
   "com_ui_weather_error": "ಈಗ ಹವಾಮಾನವನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.",
   "com_ui_weather_feels_like": "ಅನುಭವ {{0}}",
   "com_ui_weather_humidity": "ಆರ್ದ್ರತೆ",
-  "com_ui_weather_live": "ಲೈವ್",
   "com_ui_weather_loading": "ಹವಾಮಾನ ಲೋಡ್ ಆಗುತ್ತಿದೆ",
   "com_ui_weather_no_location": "ಇಲ್ಲಿ ಹವಾಮಾನ ನೋಡಲು ನಿಮ್ಮ ಜಮೀನಿನ ಸ್ಥಳವನ್ನು ಹೊಂದಿಸಿ.",
   "com_ui_weather_rainfall": "ಮಳೆ ಪ್ರಮಾಣ",
@@ -2275,6 +2275,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} ಕಿ.ಮೀ. ದೂರ",
   "com_ui_weather_today": "ಇಂದಿನ ಹವಾಮಾನ",
   "com_ui_weather_updated": "ನವೀಕರಿಸಲಾಗಿದೆ {{0}}",
+  "com_ui_weather_view_forecast": "ಮುನ್ಸೂಚನೆ ನೋಡಿ",
   "com_ui_weather_wind": "ಗಾಳಿ",
   "com_ui_weather_wind_value": "{{0}} ಕಿ.ಮೀ./ಗಂ",
   "com_ui_landing_faq_title": "ಪದೇ ಪದೇ ಕೇಳಲಾಗುವ ಪ್ರಶ್ನೆಗಳು"

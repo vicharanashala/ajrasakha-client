@@ -872,6 +872,7 @@
   "com_ui_answer_not_found_description": "Tato odpověď není k dispozici. Mohla být odstraněna nebo je odkaz, který jste otevřeli, nesprávný.",
   "com_ui_failed_to_fetch_answer_description": "Při načítání této odpovědi došlo k chybě. Zkontrolujte připojení a zkuste to znovu.",
   "com_ui_retry": "Zkusit znovu",
+  "com_ui_weather_coming_soon": "Již brzy",
   "com_ui_weather_condition_clear": "Jasno",
   "com_ui_weather_condition_cloudy": "Oblačno",
   "com_ui_weather_condition_drizzle": "Mrholení",
@@ -888,7 +889,6 @@
   "com_ui_weather_error": "Počasí se teď nepodařilo načíst.",
   "com_ui_weather_feels_like": "Pocitově {{0}}",
   "com_ui_weather_humidity": "Vlhkost",
-  "com_ui_weather_live": "Živě",
   "com_ui_weather_loading": "Načítání počasí",
   "com_ui_weather_no_location": "Nastavte polohu svého hospodářství, abyste zde viděli počasí.",
   "com_ui_weather_rainfall": "Srážky",
@@ -897,6 +897,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} km daleko",
   "com_ui_weather_today": "Dnešní počasí",
   "com_ui_weather_updated": "Aktualizováno {{0}}",
+  "com_ui_weather_view_forecast": "Zobrazit předpověď",
   "com_ui_weather_wind": "Vítr",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Často kladené otázky"

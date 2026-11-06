@@ -855,6 +855,7 @@
   "com_ui_answer_not_found_description": "Ta odpowiedź jest niedostępna. Mogła zostać usunięta lub otwarty link jest nieprawidłowy.",
   "com_ui_failed_to_fetch_answer_description": "Podczas wczytywania tej odpowiedzi wystąpił błąd. Sprawdź połączenie i spróbuj ponownie.",
   "com_ui_retry": "Spróbuj ponownie",
+  "com_ui_weather_coming_soon": "Wkrótce",
   "com_ui_weather_condition_clear": "Bezchmurnie",
   "com_ui_weather_condition_cloudy": "Pochmurno",
   "com_ui_weather_condition_drizzle": "Mżawka",
@@ -871,7 +872,6 @@
   "com_ui_weather_error": "Nie udało się teraz wczytać pogody.",
   "com_ui_weather_feels_like": "Odczuwalna {{0}}",
   "com_ui_weather_humidity": "Wilgotność",
-  "com_ui_weather_live": "Na żywo",
   "com_ui_weather_loading": "Wczytywanie pogody",
   "com_ui_weather_no_location": "Ustaw lokalizację swojego gospodarstwa, aby zobaczyć tutaj pogodę.",
   "com_ui_weather_rainfall": "Opady",
@@ -880,6 +880,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} km stąd",
   "com_ui_weather_today": "Pogoda na dziś",
   "com_ui_weather_updated": "Zaktualizowano {{0}}",
+  "com_ui_weather_view_forecast": "Zobacz prognozę",
   "com_ui_weather_wind": "Wiatr",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Często zadawane pytania"

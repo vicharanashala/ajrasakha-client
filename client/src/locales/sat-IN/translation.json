@@ -2246,6 +2246,7 @@
   "com_ui_go_back_home": "ᱚᱲᱟᱜ ᱨᱮ ᱨᱩᱣᱟᱹᱲ ᱢᱮ",
   "com_ui_answer_not_found_description": "ᱱᱚᱶᱟ ᱚᱛᱚᱨ ᱵᱟᱝ ᱧᱟᱢᱚᱜ ᱠᱟᱱᱟ᱾ ᱱᱚᱶᱟ ᱚᱪᱚᱜ ᱟᱠᱟᱱᱟ ᱠᱷᱟᱱ, ᱵᱟᱝ ᱠᱷᱟᱱ ᱟᱢ ᱡᱷᱤᱡ ᱟᱠᱟᱫ ᱞᱤᱸᱠ ᱵᱷᱩᱞ ᱠᱟᱱᱟ᱾",
   "com_ui_failed_to_fetch_answer_description": "ᱱᱚᱶᱟ ᱚᱛᱚᱨ ᱞᱚᱰ ᱡᱚᱦᱚᱜ ᱪᱮᱫ ᱦᱚᱸ ᱵᱷᱩᱞ ᱦᱩᱭ ᱮᱱᱟ᱾ ᱟᱢᱟᱜ ᱤᱱᱴᱟᱨᱱᱮᱴ ᱡᱚᱲᱟᱣ ᱧᱮᱞ ᱢᱮ ᱟᱨ ᱟᱨᱦᱚᱸ ᱪᱮᱥᱴᱟ ᱢᱮ᱾",
+  "com_ui_weather_coming_soon": "ᱡᱚᱞᱫᱤ ᱦᱤᱡᱩᱜ ᱠᱟᱱᱟ",
   "com_ui_weather_condition_clear": "ᱥᱟᱯᱷᱟ",
   "com_ui_weather_condition_cloudy": "ᱨᱤᱢᱤᱞ",
   "com_ui_weather_condition_drizzle": "ᱫᱟᱜ ᱪᱤᱨᱤ",
@@ -2262,7 +2263,6 @@
   "com_ui_weather_error": "ᱱᱤᱛ ᱦᱚᱭ ᱫᱟᱜ ᱞᱚᱰ ᱵᱟᱝ ᱦᱩᱭ ᱫᱟᱲᱮᱭᱟᱫ ᱠᱟᱱᱟ᱾",
   "com_ui_weather_feels_like": "ᱟᱹᱭᱟᱹᱨ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ {{0}}",
   "com_ui_weather_humidity": "ᱞᱤᱫᱤ",
-  "com_ui_weather_live": "ᱞᱟᱭᱤᱵᱽ",
   "com_ui_weather_loading": "ᱦᱚᱭ ᱫᱟᱜ ᱞᱚᱰ ᱦᱩᱭ ᱠᱟᱱᱟ",
   "com_ui_weather_no_location": "ᱱᱚᱸᱰᱮ ᱦᱚᱭ ᱫᱟᱜ ᱧᱮᱞ ᱞᱟᱹᱜᱤᱫ ᱟᱢᱟᱜ ᱪᱟᱥ ᱡᱟᱭᱜᱟ ᱥᱮᱴ ᱢᱮ᱾",
   "com_ui_weather_rainfall": "ᱫᱟᱜ ᱞᱮᱠᱷᱟ",
@@ -2271,6 +2271,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} ᱠᱤ.ᱢᱤ. ᱥᱟᱸᱡᱮ",
   "com_ui_weather_today": "ᱛᱮᱦᱮᱧᱟᱜ ᱦᱚᱭ ᱫᱟᱜ",
   "com_ui_weather_updated": "ᱟᱹᱯᱰᱮᱴ {{0}}",
+  "com_ui_weather_view_forecast": "ᱟᱜᱟᱢ ᱠᱷᱚᱵᱚᱨ ᱧᱮᱞ ᱢᱮ",
   "com_ui_weather_wind": "ᱦᱚᱭ",
   "com_ui_weather_wind_value": "{{0}} ᱠᱤ.ᱢᱤ./ᱴᱟᱲᱟᱝ",
   "com_ui_landing_faq_title": "ᱡᱟᱦᱟᱸ ᱥᱟᱶᱟᱞ ᱡᱟᱣᱽ ᱠᱩᱞᱤ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ"

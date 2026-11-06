@@ -865,6 +865,7 @@
   "com_ui_answer_not_found_description": "Bu yanıt kullanılamıyor. Kaldırılmış olabilir veya açtığınız bağlantı hatalı olabilir.",
   "com_ui_failed_to_fetch_answer_description": "Bu yanıt yüklenirken bir hata oluştu. Bağlantınızı kontrol edip tekrar deneyin.",
   "com_ui_retry": "Yeniden dene",
+  "com_ui_weather_coming_soon": "Yakında",
   "com_ui_weather_condition_clear": "Açık",
   "com_ui_weather_condition_cloudy": "Bulutlu",
   "com_ui_weather_condition_drizzle": "Çisenti",
@@ -881,7 +882,6 @@
   "com_ui_weather_error": "Hava durumu şu anda yüklenemedi.",
   "com_ui_weather_feels_like": "Hissedilen {{0}}",
   "com_ui_weather_humidity": "Nem",
-  "com_ui_weather_live": "Canlı",
   "com_ui_weather_loading": "Hava durumu yükleniyor",
   "com_ui_weather_no_location": "Hava durumunu burada görmek için çiftliğinizin konumunu ayarlayın.",
   "com_ui_weather_rainfall": "Yağış",
@@ -890,6 +890,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} km uzakta",
   "com_ui_weather_today": "Bugünkü hava durumu",
   "com_ui_weather_updated": "Güncellendi {{0}}",
+  "com_ui_weather_view_forecast": "Tahmini görüntüle",
   "com_ui_weather_wind": "Rüzgâr",
   "com_ui_weather_wind_value": "{{0}} km/sa",
   "com_ui_landing_faq_title": "Sıkça sorulan sorular"

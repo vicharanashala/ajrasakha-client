@@ -1462,6 +1462,7 @@
   "com_ui_answer_not_found_description": "Этот ответ недоступен. Возможно, он был удалён или открытая ссылка неверна.",
   "com_ui_failed_to_fetch_answer_description": "При загрузке ответа произошла ошибка. Проверьте подключение и повторите попытку.",
   "com_ui_retry": "Повторить",
+  "com_ui_weather_coming_soon": "Скоро",
   "com_ui_weather_condition_clear": "Ясно",
   "com_ui_weather_condition_cloudy": "Облачно",
   "com_ui_weather_condition_drizzle": "Морось",
@@ -1478,7 +1479,6 @@
   "com_ui_weather_error": "Не удалось загрузить погоду.",
   "com_ui_weather_feels_like": "Ощущается как {{0}}",
   "com_ui_weather_humidity": "Влажность",
-  "com_ui_weather_live": "Онлайн",
   "com_ui_weather_loading": "Загрузка погоды",
   "com_ui_weather_no_location": "Укажите местоположение хозяйства, чтобы видеть здесь погоду.",
   "com_ui_weather_rainfall": "Осадки",
@@ -1487,6 +1487,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} км отсюда",
   "com_ui_weather_today": "Погода сегодня",
   "com_ui_weather_updated": "Обновлено {{0}}",
+  "com_ui_weather_view_forecast": "Смотреть прогноз",
   "com_ui_weather_wind": "Ветер",
   "com_ui_weather_wind_value": "{{0}} км/ч",
   "com_ui_landing_faq_title": "Частые вопросы"

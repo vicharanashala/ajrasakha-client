@@ -2250,6 +2250,7 @@
   "com_ui_go_back_home": "হোমে ফিরে যান",
   "com_ui_answer_not_found_description": "এই উত্তরটি উপলব্ধ নেই। এটি সরিয়ে ফেলা হয়ে থাকতে পারে, অথবা আপনি যে লিঙ্কটি খুলেছেন সেটি ভুল।",
   "com_ui_failed_to_fetch_answer_description": "এই উত্তরটি লোড করার সময় কিছু ভুল হয়েছে। আপনার ইন্টারনেট সংযোগ চেক করুন এবং আবার চেষ্টা করুন।",
+  "com_ui_weather_coming_soon": "শীঘ্রই আসছে",
   "com_ui_weather_condition_clear": "পরিষ্কার",
   "com_ui_weather_condition_cloudy": "মেঘলা",
   "com_ui_weather_condition_drizzle": "গুঁড়ি গুঁড়ি বৃষ্টি",
@@ -2266,7 +2267,6 @@
   "com_ui_weather_error": "এখন আবহাওয়া লোড করা যায়নি।",
   "com_ui_weather_feels_like": "অনুভূত হয় {{0}}",
   "com_ui_weather_humidity": "আর্দ্রতা",
-  "com_ui_weather_live": "লাইভ",
   "com_ui_weather_loading": "আবহাওয়া লোড হচ্ছে",
   "com_ui_weather_no_location": "এখানে আবহাওয়া দেখতে আপনার খামারের অবস্থান সেট করুন।",
   "com_ui_weather_rainfall": "বৃষ্টিপাত",
@@ -2275,6 +2275,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} কিমি দূরে",
   "com_ui_weather_today": "আজকের আবহাওয়া",
   "com_ui_weather_updated": "আপডেট {{0}}",
+  "com_ui_weather_view_forecast": "পূর্বাভাস দেখুন",
   "com_ui_weather_wind": "বাতাস",
   "com_ui_weather_wind_value": "{{0}} কিমি/ঘণ্টা",
   "com_ui_landing_faq_title": "প্রায়শই জিজ্ঞাসিত প্রশ্ন"

@@ -204,6 +204,7 @@
   "com_ui_failed_to_fetch_answer_description": "Pri nalaganju tega odgovora je prišlo do napake. Preverite povezavo in poskusite znova.",
   "com_ui_retry": "Poskusi znova",
   "com_ui_back_to_chat": "Nazaj na klepet",
+  "com_ui_weather_coming_soon": "Kmalu",
   "com_ui_weather_condition_clear": "Jasno",
   "com_ui_weather_condition_cloudy": "Oblačno",
   "com_ui_weather_condition_drizzle": "Rosenje",
@@ -220,7 +221,6 @@
   "com_ui_weather_error": "Vremena trenutno ni bilo mogoče naložiti.",
   "com_ui_weather_feels_like": "Občutek {{0}}",
   "com_ui_weather_humidity": "Vlažnost",
-  "com_ui_weather_live": "V živo",
   "com_ui_weather_loading": "Nalaganje vremena",
   "com_ui_weather_no_location": "Nastavite lokacijo svoje kmetije, da tukaj vidite vreme.",
   "com_ui_weather_rainfall": "Padavine",
@@ -229,6 +229,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} km stran",
   "com_ui_weather_today": "Današnje vreme",
   "com_ui_weather_updated": "Posodobljeno {{0}}",
+  "com_ui_weather_view_forecast": "Ogled napovedi",
   "com_ui_weather_wind": "Veter",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Pogosta vprašanja"

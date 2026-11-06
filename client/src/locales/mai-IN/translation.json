@@ -2244,6 +2244,7 @@
   "com_ui_go_back_home": "घर घुरि जाउ",
   "com_ui_answer_not_found_description": "ई उत्तर उपलब्ध नै अछि। संभव अछि जे एकरा हटा देल गेल होअए, वा अहाँ जे लिंक खोललहुँ से गलत अछि।",
   "com_ui_failed_to_fetch_answer_description": "ई उत्तर लोड करैत काल किछु गड़बड़ भेल। अपन इंटरनेट कनेक्शन जाँचू आ पुनः प्रयास करू।",
+  "com_ui_weather_coming_soon": "जल्दिए आबि रहल अछि",
   "com_ui_weather_condition_clear": "साफ",
   "com_ui_weather_condition_cloudy": "मेघ",
   "com_ui_weather_condition_drizzle": "झिसी",
@@ -2260,7 +2261,6 @@
   "com_ui_weather_error": "एखन मौसम लोड नहि भ' सकल।",
   "com_ui_weather_feels_like": "अनुभव होइत अछि {{0}}",
   "com_ui_weather_humidity": "नमी",
-  "com_ui_weather_live": "लाइव",
   "com_ui_weather_loading": "मौसम लोड भ' रहल अछि",
   "com_ui_weather_no_location": "एतय मौसम देखबाक लेल अपन खेतक स्थान सेट करू।",
   "com_ui_weather_rainfall": "वर्षा",
@@ -2269,6 +2269,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} किमी दूर",
   "com_ui_weather_today": "आजुक मौसम",
   "com_ui_weather_updated": "अपडेट {{0}}",
+  "com_ui_weather_view_forecast": "पूर्वानुमान देखू",
   "com_ui_weather_wind": "हवा",
   "com_ui_weather_wind_value": "{{0}} किमी/घंटा",
   "com_ui_landing_faq_title": "बेर-बेर पूछल जाएबला प्रश्न"

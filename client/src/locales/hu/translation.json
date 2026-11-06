@@ -971,6 +971,7 @@
   "com_ui_answer_not_found_description": "Ez a válasz nem érhető el. Lehet, hogy eltávolították, vagy a megnyitott hivatkozás hibás.",
   "com_ui_failed_to_fetch_answer_description": "Hiba történt a válasz betöltése közben. Ellenőrizze a kapcsolatot, és próbálja újra.",
   "com_ui_retry": "Újrapróbálkozás",
+  "com_ui_weather_coming_soon": "Hamarosan",
   "com_ui_weather_condition_clear": "Derült",
   "com_ui_weather_condition_cloudy": "Felhős",
   "com_ui_weather_condition_drizzle": "Szitálás",
@@ -987,7 +988,6 @@
   "com_ui_weather_error": "Az időjárást most nem sikerült betölteni.",
   "com_ui_weather_feels_like": "Hőérzet {{0}}",
   "com_ui_weather_humidity": "Páratartalom",
-  "com_ui_weather_live": "Élő",
   "com_ui_weather_loading": "Időjárás betöltése",
   "com_ui_weather_no_location": "Állítsa be a gazdasága helyét, hogy itt lássa az időjárást.",
   "com_ui_weather_rainfall": "Csapadék",
@@ -996,6 +996,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} km-re",
   "com_ui_weather_today": "Mai időjárás",
   "com_ui_weather_updated": "Frissítve {{0}}",
+  "com_ui_weather_view_forecast": "Előrejelzés megtekintése",
   "com_ui_weather_wind": "Szél",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Gyakran ismételt kérdések"

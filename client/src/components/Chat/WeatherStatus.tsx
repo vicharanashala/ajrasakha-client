@@ -90,16 +90,6 @@ export function WeatherConditionIcon({ condition, className }: WeatherConditionI
   );
 }
 
-// Small pulsing dot that signals the shown weather is current.
-export function LiveIndicator({ className }: { className?: string }) {
-  return (
-    <span className={cn('relative flex size-2 shrink-0', className)} aria-hidden="true">
-      <span className="absolute inline-flex size-full animate-ping rounded-full bg-green-500 opacity-75 motion-reduce:hidden" />
-      <span className="relative inline-flex size-2 rounded-full bg-green-500 ring-2 ring-surface-primary" />
-    </span>
-  );
-}
-
 type AnimatedTemperatureProps = {
   value: number;
   suffix?: string;

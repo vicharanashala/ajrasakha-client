@@ -2249,6 +2249,7 @@
   "com_ui_go_back_home": "गृहपृष्ठमा फर्कनुहोस्",
   "com_ui_answer_not_found_description": "यो जवाफ उपलब्ध छैन। यो हटाइएको हुन सक्छ, वा तपाईंले खोल्नुभएको लिङ्क गलत छ।",
   "com_ui_failed_to_fetch_answer_description": "यो जवाफ लोड गर्दा केही गडबड भयो। आफ्नो इन्टरनेट जडान जाँच गर्नुहोस् र फेरि प्रयास गर्नुहोस्।",
+  "com_ui_weather_coming_soon": "छिट्टै आउँदैछ",
   "com_ui_weather_condition_clear": "सफा",
   "com_ui_weather_condition_cloudy": "बदली",
   "com_ui_weather_condition_drizzle": "सिमसिमे पानी",
@@ -2265,7 +2266,6 @@
   "com_ui_weather_error": "अहिले मौसम लोड गर्न सकिएन।",
   "com_ui_weather_feels_like": "महसुस हुन्छ {{0}}",
   "com_ui_weather_humidity": "आर्द्रता",
-  "com_ui_weather_live": "लाइभ",
   "com_ui_weather_loading": "मौसम लोड हुँदैछ",
   "com_ui_weather_no_location": "यहाँ मौसम हेर्न आफ्नो खेतको स्थान सेट गर्नुहोस्।",
   "com_ui_weather_rainfall": "वर्षा",
@@ -2274,6 +2274,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} किमि टाढा",
   "com_ui_weather_today": "आजको मौसम",
   "com_ui_weather_updated": "अपडेट {{0}}",
+  "com_ui_weather_view_forecast": "पूर्वानुमान हेर्नुहोस्",
   "com_ui_weather_wind": "हावा",
   "com_ui_weather_wind_value": "{{0}} किमि/घण्टा",
   "com_ui_landing_faq_title": "बारम्बार सोधिने प्रश्नहरू"

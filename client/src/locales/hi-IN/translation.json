@@ -2250,6 +2250,7 @@
   "com_ui_go_back_home": "होम पर वापस जाएं",
   "com_ui_answer_not_found_description": "यह उत्तर उपलब्ध नहीं है। हो सकता है इसे हटा दिया गया हो, या आपने जो लिंक खोला है वह गलत है।",
   "com_ui_failed_to_fetch_answer_description": "इस उत्तर को लोड करते समय कुछ गलत हो गया। अपना इंटरनेट कनेक्शन जांचें और पुनः प्रयास करें।",
+  "com_ui_weather_coming_soon": "जल्द आ रहा है",
   "com_ui_weather_condition_clear": "साफ़",
   "com_ui_weather_condition_cloudy": "बादल छाए",
   "com_ui_weather_condition_drizzle": "बूंदाबांदी",
@@ -2266,7 +2267,6 @@
   "com_ui_weather_error": "अभी मौसम लोड नहीं हो सका।",
   "com_ui_weather_feels_like": "महसूस होता है {{0}}",
   "com_ui_weather_humidity": "नमी",
-  "com_ui_weather_live": "लाइव",
   "com_ui_weather_loading": "मौसम लोड हो रहा है",
   "com_ui_weather_no_location": "यहाँ मौसम देखने के लिए अपने खेत का स्थान सेट करें।",
   "com_ui_weather_rainfall": "वर्षा",
@@ -2275,6 +2275,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} किमी दूर",
   "com_ui_weather_today": "आज का मौसम",
   "com_ui_weather_updated": "अपडेट {{0}}",
+  "com_ui_weather_view_forecast": "पूर्वानुमान देखें",
   "com_ui_weather_wind": "हवा",
   "com_ui_weather_wind_value": "{{0}} किमी/घंटा",
   "com_ui_landing_faq_title": "अक्सर पूछे जाने वाले प्रश्न"

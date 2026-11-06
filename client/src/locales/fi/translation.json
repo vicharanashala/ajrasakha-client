@@ -746,6 +746,7 @@
   "com_ui_answer_not_found_description": "Tämä vastaus ei ole käytettävissä. Se on voitu poistaa tai avaamasi linkki on virheellinen.",
   "com_ui_failed_to_fetch_answer_description": "Vastauksen lataamisessa tapahtui virhe. Tarkista yhteytesi ja yritä uudelleen.",
   "com_ui_retry": "Yritä uudelleen",
+  "com_ui_weather_coming_soon": "Tulossa pian",
   "com_ui_weather_condition_clear": "Selkeää",
   "com_ui_weather_condition_cloudy": "Pilvistä",
   "com_ui_weather_condition_drizzle": "Tihkusadetta",
@@ -762,7 +763,6 @@
   "com_ui_weather_error": "Säätä ei voitu ladata juuri nyt.",
   "com_ui_weather_feels_like": "Tuntuu kuin {{0}}",
   "com_ui_weather_humidity": "Ilmankosteus",
-  "com_ui_weather_live": "Live",
   "com_ui_weather_loading": "Ladataan säätä",
   "com_ui_weather_no_location": "Aseta tilasi sijainti nähdäksesi sään tässä.",
   "com_ui_weather_rainfall": "Sademäärä",
@@ -771,6 +771,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} km päässä",
   "com_ui_weather_today": "Päivän sää",
   "com_ui_weather_updated": "Päivitetty {{0}}",
+  "com_ui_weather_view_forecast": "Näytä ennuste",
   "com_ui_weather_wind": "Tuuli",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Usein kysytyt kysymykset"

@@ -1063,6 +1063,7 @@
   "com_ui_answer_not_found_description": "此答案無法使用。可能已被移除，或您開啟的連結有誤。",
   "com_ui_failed_to_fetch_answer_description": "載入此答案時發生錯誤。請檢查連線後再試一次。",
   "com_ui_retry": "重試",
+  "com_ui_weather_coming_soon": "即將推出",
   "com_ui_weather_condition_clear": "晴朗",
   "com_ui_weather_condition_cloudy": "多雲",
   "com_ui_weather_condition_drizzle": "毛毛雨",
@@ -1079,7 +1080,6 @@
   "com_ui_weather_error": "目前無法載入天氣。",
   "com_ui_weather_feels_like": "體感 {{0}}",
   "com_ui_weather_humidity": "濕度",
-  "com_ui_weather_live": "即時",
   "com_ui_weather_loading": "正在載入天氣",
   "com_ui_weather_no_location": "設定農場位置即可在此查看天氣。",
   "com_ui_weather_rainfall": "降雨量",
@@ -1088,6 +1088,7 @@
   "com_ui_weather_station": "{{0}}，距離 {{1}} 公里",
   "com_ui_weather_today": "今日天氣",
   "com_ui_weather_updated": "更新於 {{0}}",
+  "com_ui_weather_view_forecast": "查看預報",
   "com_ui_weather_wind": "風速",
   "com_ui_weather_wind_value": "{{0}} 公里/小時",
   "com_ui_landing_faq_title": "常見問題"

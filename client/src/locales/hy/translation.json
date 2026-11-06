@@ -360,6 +360,7 @@
   "com_ui_failed_to_fetch_answer_description": "Այս պատասխանը բեռնելիս սխալ տեղի ունեցավ։ Ստուգեք կապը և կրկին փորձեք։",
   "com_ui_retry": "Կրկին փորձել",
   "com_ui_back_to_chat": "Վերադառնալ զրույցին",
+  "com_ui_weather_coming_soon": "Շուտով",
   "com_ui_weather_condition_clear": "Պարզ",
   "com_ui_weather_condition_cloudy": "Ամպամած",
   "com_ui_weather_condition_drizzle": "Մանրամաղ անձրև",
@@ -376,7 +377,6 @@
   "com_ui_weather_error": "Այս պահին չհաջողվեց բեռնել եղանակը։",
   "com_ui_weather_feels_like": "Զգացվում է {{0}}",
   "com_ui_weather_humidity": "Խոնավություն",
-  "com_ui_weather_live": "Ուղիղ",
   "com_ui_weather_loading": "Եղանակը բեռնվում է",
   "com_ui_weather_no_location": "Սահմանեք ձեր ագարակի գտնվելու վայրը՝ եղանակն այստեղ տեսնելու համար։",
   "com_ui_weather_rainfall": "Տեղումներ",
@@ -385,6 +385,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} կմ հեռավորության վրա",
   "com_ui_weather_today": "Այսօրվա եղանակը",
   "com_ui_weather_updated": "Թարմացվել է {{0}}",
+  "com_ui_weather_view_forecast": "Դիտել կանխատեսումը",
   "com_ui_weather_wind": "Քամի",
   "com_ui_weather_wind_value": "{{0}} կմ/ժ",
   "com_ui_landing_faq_title": "Հաճախ տրվող հարցեր"

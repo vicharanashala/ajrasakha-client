@@ -1439,6 +1439,7 @@
   "com_ui_answer_not_found_description": "התשובה הזו אינה זמינה. ייתכן שהוסרה או שהקישור שפתחת שגוי.",
   "com_ui_failed_to_fetch_answer_description": "אירעה שגיאה בטעינת התשובה. בדקו את החיבור ונסו שוב.",
   "com_ui_retry": "נסה שוב",
+  "com_ui_weather_coming_soon": "בקרוב",
   "com_ui_weather_condition_clear": "בהיר",
   "com_ui_weather_condition_cloudy": "מעונן",
   "com_ui_weather_condition_drizzle": "טפטוף",
@@ -1455,7 +1456,6 @@
   "com_ui_weather_error": "לא ניתן לטעון את מזג האוויר כרגע.",
   "com_ui_weather_feels_like": "מורגש כמו {{0}}",
   "com_ui_weather_humidity": "לחות",
-  "com_ui_weather_live": "חי",
   "com_ui_weather_loading": "טוען מזג אוויר",
   "com_ui_weather_no_location": "הגדירו את מיקום החווה כדי לראות כאן את מזג האוויר.",
   "com_ui_weather_rainfall": "משקעים",
@@ -1464,6 +1464,7 @@
   "com_ui_weather_station": "{{0}}, במרחק {{1}} ק״מ",
   "com_ui_weather_today": "מזג האוויר היום",
   "com_ui_weather_updated": "עודכן {{0}}",
+  "com_ui_weather_view_forecast": "הצגת תחזית",
   "com_ui_weather_wind": "רוח",
   "com_ui_weather_wind_value": "{{0}} קמ״ש",
   "com_ui_landing_faq_title": "שאלות נפוצות"

@@ -1422,6 +1422,7 @@
   "com_ui_answer_not_found_description": "Ця відповідь недоступна. Можливо, її видалено або відкрите посилання хибне.",
   "com_ui_failed_to_fetch_answer_description": "Під час завантаження відповіді сталася помилка. Перевірте підключення та повторіть спробу.",
   "com_ui_retry": "Повторити",
+  "com_ui_weather_coming_soon": "Незабаром",
   "com_ui_weather_condition_clear": "Ясно",
   "com_ui_weather_condition_cloudy": "Хмарно",
   "com_ui_weather_condition_drizzle": "Мряка",
@@ -1438,7 +1439,6 @@
   "com_ui_weather_error": "Не вдалося завантажити погоду зараз.",
   "com_ui_weather_feels_like": "Відчувається як {{0}}",
   "com_ui_weather_humidity": "Вологість",
-  "com_ui_weather_live": "Наживо",
   "com_ui_weather_loading": "Завантаження погоди",
   "com_ui_weather_no_location": "Укажіть розташування господарства, щоб бачити тут погоду.",
   "com_ui_weather_rainfall": "Опади",
@@ -1447,6 +1447,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} км звідси",
   "com_ui_weather_today": "Погода сьогодні",
   "com_ui_weather_updated": "Оновлено {{0}}",
+  "com_ui_weather_view_forecast": "Переглянути прогноз",
   "com_ui_weather_wind": "Вітер",
   "com_ui_weather_wind_value": "{{0}} км/год",
   "com_ui_landing_faq_title": "Часті запитання"

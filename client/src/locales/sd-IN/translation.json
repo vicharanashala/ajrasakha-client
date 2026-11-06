@@ -2246,6 +2246,7 @@
   "com_ui_go_back_home": "هوم تي واپس وڃو",
   "com_ui_answer_not_found_description": "هي جواب موجود ناهي. ٿي سگهي ٿو ته ان کي هٽايو ويو هجي، يا توهان کوليل لنڪ غلط آهي.",
   "com_ui_failed_to_fetch_answer_description": "هي جواب لوڊ ڪرڻ دوران ڪجهه غلط ٿي ويو. پنهنجو انٽرنيٽ ڪنيڪشن چيڪ ڪريو ۽ ٻيهر ڪوشش ڪريو.",
+  "com_ui_weather_coming_soon": "جلد اچي رهيو آهي",
   "com_ui_weather_condition_clear": "صاف",
   "com_ui_weather_condition_cloudy": "ڪڪر",
   "com_ui_weather_condition_drizzle": "ڦڙ ڦڙ",
@@ -2262,7 +2263,6 @@
   "com_ui_weather_error": "هن وقت موسم لوڊ نه ٿي سگهيو.",
   "com_ui_weather_feels_like": "محسوس ٿئي ٿو {{0}}",
   "com_ui_weather_humidity": "نمي",
-  "com_ui_weather_live": "لائيو",
   "com_ui_weather_loading": "موسم لوڊ ٿي رهيو آهي",
   "com_ui_weather_no_location": "هتي موسم ڏسڻ لاءِ پنهنجي فارم جي جڳهه سيٽ ڪريو.",
   "com_ui_weather_rainfall": "برسات جي مقدار",
@@ -2271,6 +2271,7 @@
   "com_ui_weather_station": "{{0}}، {{1}} ڪلوميٽر پري",
   "com_ui_weather_today": "اڄ جو موسم",
   "com_ui_weather_updated": "اپڊيٽ {{0}}",
+  "com_ui_weather_view_forecast": "اڳڪٿي ڏسو",
   "com_ui_weather_wind": "هوا",
   "com_ui_weather_wind_value": "{{0}} ڪلوميٽر/ڪلاڪ",
   "com_ui_landing_faq_title": "اڪثر پڇيا ويندڙ سوال"

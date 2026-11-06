@@ -1167,6 +1167,7 @@
   "com_ui_answer_not_found_description": "Esta resposta não está disponível. Ela pode ter sido removida ou o link que você abriu está incorreto.",
   "com_ui_failed_to_fetch_answer_description": "Ocorreu um erro ao carregar esta resposta. Verifique sua conexão e tente novamente.",
   "com_ui_retry": "Tentar novamente",
+  "com_ui_weather_coming_soon": "Em breve",
   "com_ui_weather_condition_clear": "Céu limpo",
   "com_ui_weather_condition_cloudy": "Nublado",
   "com_ui_weather_condition_drizzle": "Garoa",
@@ -1183,7 +1184,6 @@
   "com_ui_weather_error": "Não foi possível carregar o clima agora.",
   "com_ui_weather_feels_like": "Sensação de {{0}}",
   "com_ui_weather_humidity": "Umidade",
-  "com_ui_weather_live": "Ao vivo",
   "com_ui_weather_loading": "Carregando o clima",
   "com_ui_weather_no_location": "Defina a localização da sua propriedade para ver o clima aqui.",
   "com_ui_weather_rainfall": "Precipitação",
@@ -1192,6 +1192,7 @@
   "com_ui_weather_station": "{{0}}, a {{1}} km",
   "com_ui_weather_today": "Clima de hoje",
   "com_ui_weather_updated": "Atualizado {{0}}",
+  "com_ui_weather_view_forecast": "Ver previsão",
   "com_ui_weather_wind": "Vento",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Perguntas frequentes"

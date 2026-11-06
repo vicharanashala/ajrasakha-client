@@ -873,6 +873,7 @@
   "com_ui_failed_to_fetch_answer_description": "Er is iets misgegaan bij het laden van dit antwoord. Controleer je verbinding en probeer het opnieuw.",
   "com_ui_retry": "Opnieuw proberen",
   "com_ui_back_to_chat": "Terug naar chat",
+  "com_ui_weather_coming_soon": "Binnenkort",
   "com_ui_weather_condition_clear": "Helder",
   "com_ui_weather_condition_cloudy": "Bewolkt",
   "com_ui_weather_condition_drizzle": "Motregen",
@@ -889,7 +890,6 @@
   "com_ui_weather_error": "Het weer kon nu niet worden geladen.",
   "com_ui_weather_feels_like": "Voelt als {{0}}",
   "com_ui_weather_humidity": "Luchtvochtigheid",
-  "com_ui_weather_live": "Live",
   "com_ui_weather_loading": "Weer laden",
   "com_ui_weather_no_location": "Stel de locatie van je boerderij in om hier het weer te zien.",
   "com_ui_weather_rainfall": "Neerslag",
@@ -898,6 +898,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} km verderop",
   "com_ui_weather_today": "Weer vandaag",
   "com_ui_weather_updated": "Bijgewerkt {{0}}",
+  "com_ui_weather_view_forecast": "Verwachting bekijken",
   "com_ui_weather_wind": "Wind",
   "com_ui_weather_wind_value": "{{0}} km/u",
   "com_ui_landing_faq_title": "Veelgestelde vragen"

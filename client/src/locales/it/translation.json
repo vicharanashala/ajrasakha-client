@@ -1046,6 +1046,7 @@
   "com_ui_answer_not_found_description": "Questa risposta non è disponibile. Potrebbe essere stata rimossa oppure il link che hai aperto non è corretto.",
   "com_ui_failed_to_fetch_answer_description": "Si è verificato un errore durante il caricamento di questa risposta. Controlla la connessione e riprova.",
   "com_ui_retry": "Riprova",
+  "com_ui_weather_coming_soon": "Prossimamente",
   "com_ui_weather_condition_clear": "Sereno",
   "com_ui_weather_condition_cloudy": "Nuvoloso",
   "com_ui_weather_condition_drizzle": "Pioviggine",
@@ -1062,7 +1063,6 @@
   "com_ui_weather_error": "Impossibile caricare il meteo in questo momento.",
   "com_ui_weather_feels_like": "Percepita {{0}}",
   "com_ui_weather_humidity": "Umidità",
-  "com_ui_weather_live": "In diretta",
   "com_ui_weather_loading": "Caricamento meteo",
   "com_ui_weather_no_location": "Imposta la posizione della tua azienda agricola per vedere qui il meteo.",
   "com_ui_weather_rainfall": "Precipitazioni",
@@ -1071,6 +1071,7 @@
   "com_ui_weather_station": "{{0}}, a {{1}} km",
   "com_ui_weather_today": "Meteo di oggi",
   "com_ui_weather_updated": "Aggiornato {{0}}",
+  "com_ui_weather_view_forecast": "Vedi previsioni",
   "com_ui_weather_wind": "Vento",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Domande frequenti"

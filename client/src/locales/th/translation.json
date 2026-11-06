@@ -1012,6 +1012,7 @@
   "com_ui_answer_not_found_description": "คำตอบนี้ไม่พร้อมใช้งาน อาจถูกลบไปแล้ว หรือลิงก์ที่คุณเปิดไม่ถูกต้อง",
   "com_ui_failed_to_fetch_answer_description": "เกิดข้อผิดพลาดขณะโหลดคำตอบนี้ โปรดตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง",
   "com_ui_retry": "ลองอีกครั้ง",
+  "com_ui_weather_coming_soon": "เร็วๆ นี้",
   "com_ui_weather_condition_clear": "ท้องฟ้าแจ่มใส",
   "com_ui_weather_condition_cloudy": "มีเมฆมาก",
   "com_ui_weather_condition_drizzle": "ฝนปรอย",
@@ -1028,7 +1029,6 @@
   "com_ui_weather_error": "ไม่สามารถโหลดสภาพอากาศได้ในขณะนี้",
   "com_ui_weather_feels_like": "รู้สึกเหมือน {{0}}",
   "com_ui_weather_humidity": "ความชื้น",
-  "com_ui_weather_live": "สด",
   "com_ui_weather_loading": "กำลังโหลดสภาพอากาศ",
   "com_ui_weather_no_location": "ตั้งค่าตำแหน่งฟาร์มของคุณเพื่อดูสภาพอากาศที่นี่",
   "com_ui_weather_rainfall": "ปริมาณฝน",
@@ -1037,6 +1037,7 @@
   "com_ui_weather_station": "{{0}}, ห่าง {{1}} กม.",
   "com_ui_weather_today": "สภาพอากาศวันนี้",
   "com_ui_weather_updated": "อัปเดต {{0}}",
+  "com_ui_weather_view_forecast": "ดูพยากรณ์อากาศ",
   "com_ui_weather_wind": "ลม",
   "com_ui_weather_wind_value": "{{0}} กม./ชม.",
   "com_ui_landing_faq_title": "คำถามที่พบบ่อย"

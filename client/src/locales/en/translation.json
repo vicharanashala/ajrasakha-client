@@ -2271,6 +2271,7 @@
   "com_ui_failed_to_fetch_answer": "Failed to fetch answer",
   "com_ui_failed_to_fetch_answer_description": "Something went wrong while loading this answer. Check your connection and try again.",
   "com_ui_go_back_home": "Go back home",
+  "com_ui_weather_coming_soon": "Coming soon",
   "com_ui_weather_condition_clear": "Clear",
   "com_ui_weather_condition_cloudy": "Cloudy",
   "com_ui_weather_condition_drizzle": "Drizzle",
@@ -2287,7 +2288,6 @@
   "com_ui_weather_error": "We couldn't load the weather right now.",
   "com_ui_weather_feels_like": "Feels like {{0}}",
   "com_ui_weather_humidity": "Humidity",
-  "com_ui_weather_live": "Live",
   "com_ui_weather_loading": "Loading weather",
   "com_ui_weather_no_location": "Set your farm location to see the weather here.",
   "com_ui_weather_rainfall": "Rainfall",
@@ -2296,6 +2296,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} km away",
   "com_ui_weather_today": "Today's weather",
   "com_ui_weather_updated": "Updated {{0}}",
+  "com_ui_weather_view_forecast": "View forecast",
   "com_ui_weather_wind": "Wind",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Frequently asked questions"

@@ -1027,6 +1027,7 @@
   "com_ui_answer_not_found_description": "Aquesta resposta no està disponible. Pot ser que s'hagi eliminat o que l'enllaç que has obert no sigui correcte.",
   "com_ui_failed_to_fetch_answer_description": "S'ha produït un error en carregar aquesta resposta. Comprova la connexió i torna-ho a provar.",
   "com_ui_retry": "Torna-ho a provar",
+  "com_ui_weather_coming_soon": "Properament",
   "com_ui_weather_condition_clear": "Serè",
   "com_ui_weather_condition_cloudy": "Ennuvolat",
   "com_ui_weather_condition_drizzle": "Plugim",
@@ -1043,7 +1044,6 @@
   "com_ui_weather_error": "Ara mateix no s'ha pogut carregar el temps.",
   "com_ui_weather_feels_like": "Sensació tèrmica {{0}}",
   "com_ui_weather_humidity": "Humitat",
-  "com_ui_weather_live": "En directe",
   "com_ui_weather_loading": "Carregant el temps",
   "com_ui_weather_no_location": "Configura la ubicació de la teva finca per veure el temps aquí.",
   "com_ui_weather_rainfall": "Precipitació",
@@ -1052,6 +1052,7 @@
   "com_ui_weather_station": "{{0}}, a {{1}} km",
   "com_ui_weather_today": "El temps d'avui",
   "com_ui_weather_updated": "Actualitzat {{0}}",
+  "com_ui_weather_view_forecast": "Mostra la previsió",
   "com_ui_weather_wind": "Vent",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Preguntes freqüents"

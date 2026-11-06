@@ -1603,6 +1603,7 @@
   "com_ui_answer_not_found_description": "Šī atbilde nav pieejama. Iespējams, tā ir noņemta vai atvērtā saite ir nepareiza.",
   "com_ui_failed_to_fetch_answer_description": "Ielādējot šo atbildi, radās kļūda. Pārbaudiet savienojumu un mēģiniet vēlreiz.",
   "com_ui_retry": "Mēģināt vēlreiz",
+  "com_ui_weather_coming_soon": "Drīzumā",
   "com_ui_weather_condition_clear": "Skaidrs",
   "com_ui_weather_condition_cloudy": "Mākoņains",
   "com_ui_weather_condition_drizzle": "Smidzinošs lietus",
@@ -1619,7 +1620,6 @@
   "com_ui_weather_error": "Pašlaik neizdevās ielādēt laikapstākļus.",
   "com_ui_weather_feels_like": "Jūtas kā {{0}}",
   "com_ui_weather_humidity": "Mitrums",
-  "com_ui_weather_live": "Tiešraide",
   "com_ui_weather_loading": "Ielādē laikapstākļus",
   "com_ui_weather_no_location": "Iestatiet savas saimniecības atrašanās vietu, lai šeit redzētu laikapstākļus.",
   "com_ui_weather_rainfall": "Nokrišņi",
@@ -1628,6 +1628,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} km attālumā",
   "com_ui_weather_today": "Šodienas laikapstākļi",
   "com_ui_weather_updated": "Atjaunināts {{0}}",
+  "com_ui_weather_view_forecast": "Skatīt prognozi",
   "com_ui_weather_wind": "Vējš",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Biežāk uzdotie jautājumi"

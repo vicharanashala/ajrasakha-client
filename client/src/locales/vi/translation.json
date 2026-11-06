@@ -538,6 +538,7 @@
   "com_ui_failed_to_fetch_answer_description": "Đã xảy ra lỗi khi tải câu trả lời này. Hãy kiểm tra kết nối và thử lại.",
   "com_ui_retry": "Thử lại",
   "com_ui_back_to_chat": "Quay lại trò chuyện",
+  "com_ui_weather_coming_soon": "Sắp ra mắt",
   "com_ui_weather_condition_clear": "Quang đãng",
   "com_ui_weather_condition_cloudy": "Nhiều mây",
   "com_ui_weather_condition_drizzle": "Mưa phùn",
@@ -554,7 +555,6 @@
   "com_ui_weather_error": "Hiện không thể tải thời tiết.",
   "com_ui_weather_feels_like": "Cảm giác như {{0}}",
   "com_ui_weather_humidity": "Độ ẩm",
-  "com_ui_weather_live": "Trực tiếp",
   "com_ui_weather_loading": "Đang tải thời tiết",
   "com_ui_weather_no_location": "Đặt vị trí trang trại của bạn để xem thời tiết tại đây.",
   "com_ui_weather_rainfall": "Lượng mưa",
@@ -563,6 +563,7 @@
   "com_ui_weather_station": "{{0}}, cách {{1}} km",
   "com_ui_weather_today": "Thời tiết hôm nay",
   "com_ui_weather_updated": "Cập nhật {{0}}",
+  "com_ui_weather_view_forecast": "Xem dự báo",
   "com_ui_weather_wind": "Gió",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Câu hỏi thường gặp"

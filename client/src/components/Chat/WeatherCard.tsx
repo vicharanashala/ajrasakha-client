@@ -1,7 +1,16 @@
 import { useId, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { CloudOff, CloudRain, Droplets, MapPin, RadioTower, RefreshCw, Wind } from 'lucide-react';
+import {
+  ArrowRight,
+  CloudOff,
+  CloudRain,
+  Droplets,
+  MapPin,
+  RadioTower,
+  RefreshCw,
+  Wind,
+} from 'lucide-react';
 import type { IFarmerProfile } from 'librechat-data-provider';
 import { isMissingLocationError, useWeather } from '~/hooks/useWeather';
 import type { Weather } from '~/hooks/useWeather';
@@ -11,7 +20,6 @@ import { cn } from '~/utils';
 import { LANDING_CARD_SURFACE } from './landingCardStyles';
 import {
   AnimatedTemperature,
-  LiveIndicator,
   RefreshProgressBar,
   ShakeOnMount,
   Shimmer,
@@ -130,6 +138,55 @@ function WeatherCardError({ message, retryLabel, isRetrying, onRetry }: WeatherC
   );
 }
 
+// Drops the station id the service appends, e.g. "Kotakpura tehsil (Annam AWS: #67)" becomes
+// "Kotakpura tehsil". The full name is still shown on hover.
+const getStationDisplayName = (name: string) => name.replace(/\s*\([^)]*\)\s*$/, '').trim() || name;
+
+type StationChipProps = { name: string; distanceKm: number | null };
+
+// Chip naming the weather station the reading came from and how far it is from the farm.
+function StationChip({ name, distanceKm }: StationChipProps) {
+  const localize = useLocalize();
+  const displayName = getStationDisplayName(name);
+  return (
+    <span
+      title={name}
+      className="inline-flex min-w-0 max-w-full items-center gap-1.5 rounded-full bg-black/[0.04] px-2.5 py-1 text-xs font-medium text-text-secondary ring-1 ring-black/5 duration-300 animate-in fade-in-0 motion-reduce:animate-none dark:bg-white/[0.05] dark:ring-white/10"
+    >
+      <RadioTower
+        className="size-3.5 shrink-0 text-green-600 dark:text-green-400"
+        aria-hidden="true"
+      />
+      <span className="truncate">
+        {distanceKm === null
+          ? displayName
+          : localize('com_ui_weather_station', {
+              0: displayName,
+              1: formatReading(distanceKm, '', 1),
+            })}
+      </span>
+    </span>
+  );
+}
+
+// Forecast link placeholder. Disabled until the forecast page exists, with a coming soon badge.
+function ForecastButton() {
+  const localize = useLocalize();
+  return (
+    <button
+      type="button"
+      disabled
+      className="inline-flex min-h-9 shrink-0 cursor-not-allowed items-center gap-2 rounded-full py-1 pl-3 pr-1.5 text-xs font-semibold text-text-tertiary ring-1 ring-black/5 dark:ring-white/10"
+    >
+      {localize('com_ui_weather_view_forecast')}
+      <ArrowRight className="size-3.5 shrink-0" aria-hidden="true" />
+      <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:text-amber-400">
+        {localize('com_ui_weather_coming_soon')}
+      </span>
+    </button>
+  );
+}
+
 type WeatherCardBodyProps = { weather: Weather; updatedAt: number; isRefreshing: boolean };
 
 // Loaded state: temperature, condition, stats and when the data was last refreshed.
@@ -199,7 +256,7 @@ function WeatherCardBody({ weather, updatedAt, isRefreshing }: WeatherCardBodyPr
       </div>
 
       {updatedAt > 0 && (
-        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs text-text-tertiary">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-xs text-text-tertiary">
           <p className="flex items-center gap-1.5" aria-live="polite">
             {/* Keyed on the fetch time so the label flashes softly whenever fresh data lands. */}
             <motion.span
@@ -214,19 +271,7 @@ function WeatherCardBody({ weather, updatedAt, isRefreshing }: WeatherCardBodyPr
               })}
             </motion.span>
           </p>
-          {weather.stationName && (
-            <p className="flex min-w-0 items-center gap-1" title={weather.stationName}>
-              <RadioTower className="size-3 shrink-0" aria-hidden="true" />
-              <span className="truncate">
-                {weather.stationDistanceKm === null
-                  ? weather.stationName
-                  : localize('com_ui_weather_station', {
-                      0: weather.stationName,
-                      1: formatReading(weather.stationDistanceKm, '', 1),
-                    })}
-              </span>
-            </p>
-          )}
+          <ForecastButton />
         </div>
       )}
     </div>
@@ -289,15 +334,15 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
     >
       <RefreshProgressBar active={isRefreshing} />
       <div className="flex items-start justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-2">
-          <h2 id={titleId} className="text-base font-semibold text-text-primary sm:text-lg">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
+          <h2
+            id={titleId}
+            className="shrink-0 text-base font-semibold text-text-primary sm:text-lg"
+          >
             {localize('com_ui_weather_today')}
           </h2>
-          {weather && !isError && (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-700 duration-300 animate-in fade-in-0 motion-reduce:animate-none dark:text-green-400">
-              <LiveIndicator />
-              {localize('com_ui_weather_live')}
-            </span>
+          {weather?.stationName && (
+            <StationChip name={weather.stationName} distanceKm={weather.stationDistanceKm} />
           )}
         </div>
         <div className="flex min-w-0 items-center gap-1">

@@ -2246,6 +2246,7 @@
   "com_ui_go_back_home": "ہوم پؠٹھ واپَس گٔژھِو",
   "com_ui_answer_not_found_description": "یہِ جواب چھُ نہٕ دستِیاب۔ ممکن چھُ زِ یہِ آو ہٹاونہٕ، یا تُہیہِ کھولمُت لِنٛک چھُ غلط۔",
   "com_ui_failed_to_fetch_answer_description": "یہِ جواب لوڈ کَران وَقتہٕ گَو کینٛہہ غلط۔ پَنُن اِنٛٹَرنیٚٹ کَنیکشَن چیٚک کٔرِو تہٕ دُبارٕ کوٗشِش کٔرِو۔",
+  "com_ui_weather_coming_soon": "جلد یِوان",
   "com_ui_weather_condition_clear": "صاف",
   "com_ui_weather_condition_cloudy": "اَبرٕ",
   "com_ui_weather_condition_drizzle": "بوندا باندی",
@@ -2262,7 +2263,6 @@
   "com_ui_weather_error": "وۄنۍ ہیوٚک نہٕ موسم لوڈ گژھتھ۔",
   "com_ui_weather_feels_like": "محسوس گژھان {{0}}",
   "com_ui_weather_humidity": "نمی",
-  "com_ui_weather_live": "لائیو",
   "com_ui_weather_loading": "موسم چھُ لوڈ گژھان",
   "com_ui_weather_no_location": "یتھ جاے موسم وُچھنہٕ خٲطرٕ کٔرِو پننہِ زمینہِ ہُند جاے سیٹ۔",
   "com_ui_weather_rainfall": "روٗدٕ مقدار",
@@ -2271,6 +2271,7 @@
   "com_ui_weather_station": "{{0}}، {{1}} کلومیٹر دور",
   "com_ui_weather_today": "اَزُک موسم",
   "com_ui_weather_updated": "اپ ڈیٹ {{0}}",
+  "com_ui_weather_view_forecast": "پیش گوئی وُچھِو",
   "com_ui_weather_wind": "واو",
   "com_ui_weather_wind_value": "{{0}} کلومیٹر/گھنٹہ",
   "com_ui_landing_faq_title": "اکثر پرٛژھنہٕ یِنہٕ وٲلۍ سوال"

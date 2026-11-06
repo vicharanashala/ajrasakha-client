@@ -2250,6 +2250,7 @@
   "com_ui_go_back_home": "ഹോമിലേക്ക് മടങ്ങുക",
   "com_ui_answer_not_found_description": "ഈ ഉത്തരം ലഭ്യമല്ല. അത് നീക്കം ചെയ്തിരിക്കാം, അല്ലെങ്കിൽ നിങ്ങൾ തുറന്ന ലിങ്ക് തെറ്റാണ്.",
   "com_ui_failed_to_fetch_answer_description": "ഈ ഉത്തരം ലോഡ് ചെയ്യുന്നതിൽ പിശക് സംഭവിച്ചു. നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.",
+  "com_ui_weather_coming_soon": "ഉടൻ വരുന്നു",
   "com_ui_weather_condition_clear": "തെളിഞ്ഞ",
   "com_ui_weather_condition_cloudy": "മേഘാവൃതം",
   "com_ui_weather_condition_drizzle": "ചാറ്റൽമഴ",
@@ -2266,7 +2267,6 @@
   "com_ui_weather_error": "ഇപ്പോൾ കാലാവസ്ഥ ലോഡ് ചെയ്യാനായില്ല.",
   "com_ui_weather_feels_like": "അനുഭവപ്പെടുന്നത് {{0}}",
   "com_ui_weather_humidity": "ഈർപ്പം",
-  "com_ui_weather_live": "ലൈവ്",
   "com_ui_weather_loading": "കാലാവസ്ഥ ലോഡ് ചെയ്യുന്നു",
   "com_ui_weather_no_location": "ഇവിടെ കാലാവസ്ഥ കാണാൻ നിങ്ങളുടെ കൃഷിയിടത്തിന്റെ സ്ഥലം സജ്ജമാക്കുക.",
   "com_ui_weather_rainfall": "മഴയളവ്",
@@ -2275,6 +2275,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} കി.മീ. അകലെ",
   "com_ui_weather_today": "ഇന്നത്തെ കാലാവസ്ഥ",
   "com_ui_weather_updated": "പുതുക്കിയത് {{0}}",
+  "com_ui_weather_view_forecast": "പ്രവചനം കാണുക",
   "com_ui_weather_wind": "കാറ്റ്",
   "com_ui_weather_wind_value": "{{0}} കി.മീ./മണിക്കൂർ",
   "com_ui_landing_faq_title": "പതിവായി ചോദിക്കുന്ന ചോദ്യങ്ങൾ"

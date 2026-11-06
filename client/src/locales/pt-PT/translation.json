@@ -1401,6 +1401,7 @@
   "com_ui_answer_not_found_description": "Esta resposta não está disponível. Pode ter sido removida ou a ligação que abriu está incorreta.",
   "com_ui_failed_to_fetch_answer_description": "Ocorreu um erro ao carregar esta resposta. Verifique a sua ligação e tente novamente.",
   "com_ui_retry": "Tentar novamente",
+  "com_ui_weather_coming_soon": "Brevemente",
   "com_ui_weather_condition_clear": "Céu limpo",
   "com_ui_weather_condition_cloudy": "Nublado",
   "com_ui_weather_condition_drizzle": "Chuvisco",
@@ -1417,7 +1418,6 @@
   "com_ui_weather_error": "Não foi possível carregar o tempo agora.",
   "com_ui_weather_feels_like": "Sensação de {{0}}",
   "com_ui_weather_humidity": "Humidade",
-  "com_ui_weather_live": "Em direto",
   "com_ui_weather_loading": "A carregar o tempo",
   "com_ui_weather_no_location": "Defina a localização da sua exploração para ver o tempo aqui.",
   "com_ui_weather_rainfall": "Precipitação",
@@ -1426,6 +1426,7 @@
   "com_ui_weather_station": "{{0}}, a {{1}} km",
   "com_ui_weather_today": "Tempo de hoje",
   "com_ui_weather_updated": "Atualizado {{0}}",
+  "com_ui_weather_view_forecast": "Ver previsão",
   "com_ui_weather_wind": "Vento",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Perguntas frequentes"

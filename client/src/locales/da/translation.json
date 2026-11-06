@@ -1066,6 +1066,7 @@
   "com_ui_answer_not_found_description": "Dette svar er ikke tilgængeligt. Det kan være fjernet, eller linket, du åbnede, er forkert.",
   "com_ui_failed_to_fetch_answer_description": "Der opstod en fejl under indlæsningen af dette svar. Tjek din forbindelse, og prøv igen.",
   "com_ui_retry": "Prøv igen",
+  "com_ui_weather_coming_soon": "Kommer snart",
   "com_ui_weather_condition_clear": "Klart",
   "com_ui_weather_condition_cloudy": "Skyet",
   "com_ui_weather_condition_drizzle": "Støvregn",
@@ -1082,7 +1083,6 @@
   "com_ui_weather_error": "Vejret kunne ikke indlæses lige nu.",
   "com_ui_weather_feels_like": "Føles som {{0}}",
   "com_ui_weather_humidity": "Luftfugtighed",
-  "com_ui_weather_live": "Live",
   "com_ui_weather_loading": "Indlæser vejret",
   "com_ui_weather_no_location": "Angiv din gårds placering for at se vejret her.",
   "com_ui_weather_rainfall": "Nedbør",
@@ -1091,6 +1091,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} km væk",
   "com_ui_weather_today": "Dagens vejr",
   "com_ui_weather_updated": "Opdateret {{0}}",
+  "com_ui_weather_view_forecast": "Se vejrudsigt",
   "com_ui_weather_wind": "Vind",
   "com_ui_weather_wind_value": "{{0}} km/t",
   "com_ui_landing_faq_title": "Ofte stillede spørgsmål"

@@ -1601,6 +1601,7 @@
   "com_ui_answer_not_found_description": "Diese Antwort ist nicht verfügbar. Möglicherweise wurde sie entfernt oder der geöffnete Link ist falsch.",
   "com_ui_failed_to_fetch_answer_description": "Beim Laden dieser Antwort ist ein Fehler aufgetreten. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
   "com_ui_retry": "Erneut versuchen",
+  "com_ui_weather_coming_soon": "Demnächst",
   "com_ui_weather_condition_clear": "Klar",
   "com_ui_weather_condition_cloudy": "Bewölkt",
   "com_ui_weather_condition_drizzle": "Nieselregen",
@@ -1617,7 +1618,6 @@
   "com_ui_weather_error": "Das Wetter konnte gerade nicht geladen werden.",
   "com_ui_weather_feels_like": "Gefühlt {{0}}",
   "com_ui_weather_humidity": "Luftfeuchtigkeit",
-  "com_ui_weather_live": "Live",
   "com_ui_weather_loading": "Wetter wird geladen",
   "com_ui_weather_no_location": "Standort des Hofs festlegen, um hier das Wetter zu sehen.",
   "com_ui_weather_rainfall": "Niederschlag",
@@ -1626,6 +1626,7 @@
   "com_ui_weather_station": "{{0}}, {{1}} km entfernt",
   "com_ui_weather_today": "Wetter heute",
   "com_ui_weather_updated": "Aktualisiert {{0}}",
+  "com_ui_weather_view_forecast": "Vorhersage ansehen",
   "com_ui_weather_wind": "Wind",
   "com_ui_weather_wind_value": "{{0}} km/h",
   "com_ui_landing_faq_title": "Häufig gestellte Fragen"

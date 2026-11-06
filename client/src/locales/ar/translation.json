@@ -1005,6 +1005,7 @@
   "com_ui_answer_not_found_description": "هذه الإجابة غير متاحة. ربما تم حذفها أو أن الرابط الذي فتحته غير صحيح.",
   "com_ui_failed_to_fetch_answer_description": "حدث خطأ أثناء تحميل هذه الإجابة. تحقق من اتصالك وحاول مرة أخرى.",
   "com_ui_retry": "إعادة المحاولة",
+  "com_ui_weather_coming_soon": "قريبًا",
   "com_ui_weather_condition_clear": "صافٍ",
   "com_ui_weather_condition_cloudy": "غائم",
   "com_ui_weather_condition_drizzle": "رذاذ",
@@ -1021,7 +1022,6 @@
   "com_ui_weather_error": "تعذّر تحميل الطقس الآن.",
   "com_ui_weather_feels_like": "الإحساس {{0}}",
   "com_ui_weather_humidity": "الرطوبة",
-  "com_ui_weather_live": "مباشر",
   "com_ui_weather_loading": "جارٍ تحميل الطقس",
   "com_ui_weather_no_location": "حدّد موقع مزرعتك لعرض الطقس هنا.",
   "com_ui_weather_rainfall": "هطول الأمطار",
@@ -1030,6 +1030,7 @@
   "com_ui_weather_station": "{{0}}، على بُعد {{1}} كم",
   "com_ui_weather_today": "طقس اليوم",
   "com_ui_weather_updated": "آخر تحديث {{0}}",
+  "com_ui_weather_view_forecast": "عرض التوقعات",
   "com_ui_weather_wind": "الرياح",
   "com_ui_weather_wind_value": "{{0}} كم/س",
   "com_ui_landing_faq_title": "الأسئلة الشائعة"
