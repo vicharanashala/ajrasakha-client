@@ -1,21 +1,98 @@
 const express = require('express');
+const axios = require('axios');
+const { logger } = require('@librechat/data-schemas');
 const { requireJwtAuth } = require('~/server/middleware');
 
 const router = express.Router();
 
-// Placeholder weather payload returned until a real weather provider is connected.
-const DUMMY_WEATHER = Object.freeze({
-  liveTemperature: 32.5,
-  humidity: 65,
-  rainfall: 0,
-  windSpeed: 12.4,
-  weatherCondition: 'Partly Cloudy',
-  feelsLikeTemperature: 35.2,
-});
+// How long to wait for the weather service before giving up.
+const WEATHER_REQUEST_TIMEOUT_MS = 10000;
+// Matches the weather service's own cache lifetime so browsers do not refetch sooner.
+const WEATHER_CACHE_SECONDS = 300;
 
-// Returns the current weather for the signed in farmer. Always responds with dummy data for now.
-router.get('/', requireJwtAuth, (req, res) => {
-  res.status(200).json(DUMMY_WEATHER);
+// Removes surrounding quotes some .env files keep around values.
+const cleanEnvValue = (value) => (value || '').trim().replace(/^["']|["']$/g, '');
+
+// Builds the weather service URL from AGENT_HOST_IP and AGENT_HOST_PORT, or null when either is missing.
+function getWeatherServiceUrl() {
+  const host = cleanEnvValue(process.env.AGENT_HOST_IP).replace(/\/+$/, '');
+  const port = cleanEnvValue(process.env.AGENT_HOST_PORT);
+  if (!host || !port) {
+    return null;
+  }
+  const base = /^https?:\/\//.test(host) ? host : `http://${host}`;
+  return `${base}:${port}/live`;
+}
+
+// Reads the farmer's saved coordinates. The database stores latitude and longitude, and the
+// geo_ prefixed names are accepted too because the shared client type uses them.
+function getFarmerCoordinates(user) {
+  const location = user?.farmerProfile?.location ?? {};
+  const lat = Number(location.latitude ?? location.geo_latitude);
+  const long = Number(location.longitude ?? location.geo_longitude);
+  const isValid =
+    Number.isFinite(lat) && Number.isFinite(long) && Math.abs(lat) <= 90 && Math.abs(long) <= 180;
+  return isValid ? { lat, long } : null;
+}
+
+// Converts a value to a number, or null when the service sent nothing usable.
+const toNumberOrNull = (value) => {
+  const number = Number(value);
+  return value === null || value === undefined || !Number.isFinite(number) ? null : number;
+};
+
+// Keeps only the fields the app shows, so unexpected upstream data never reaches the browser.
+function toWeatherResponse(data) {
+  return {
+    liveTemperature: toNumberOrNull(data?.liveTemperature),
+    humidity: toNumberOrNull(data?.humidity),
+    rainfall: toNumberOrNull(data?.rainfall),
+    windSpeed: toNumberOrNull(data?.windSpeed),
+    weatherCondition: typeof data?.weatherCondition === 'string' ? data.weatherCondition : '',
+    feelsLikeTemperature: toNumberOrNull(data?.feelsLikeTemperature),
+    source: typeof data?.source === 'string' ? data.source : null,
+    stationName: typeof data?.station_name === 'string' ? data.station_name : null,
+    stationDistanceKm: toNumberOrNull(data?.station_distance_km),
+    recordedAt: typeof data?.recorded_at === 'string' ? data.recorded_at : null,
+  };
+}
+
+// Returns live weather for the signed in farmer's saved location from the weather service.
+router.get('/', requireJwtAuth, async (req, res) => {
+  const serviceUrl = getWeatherServiceUrl();
+  if (!serviceUrl) {
+    logger.error('[weather] AGENT_HOST_IP or AGENT_HOST_PORT is not set');
+    return res.status(500).json({ message: 'Weather service is not configured' });
+  }
+
+  const coordinates = getFarmerCoordinates(req.user);
+  if (!coordinates) {
+    return res.status(404).json({ message: 'Farmer location is not set' });
+  }
+
+  try {
+    const { data } = await axios.get(serviceUrl, {
+      params: coordinates,
+      headers: { accept: 'application/json' },
+      timeout: WEATHER_REQUEST_TIMEOUT_MS,
+    });
+
+    const weather = toWeatherResponse(data);
+    if (weather.liveTemperature === null) {
+      logger.error('[weather] Weather service returned no live temperature');
+      return res.status(502).json({ message: 'Weather is unavailable right now' });
+    }
+
+    res.set('Cache-Control', `private, max-age=${WEATHER_CACHE_SECONDS}`);
+    return res.status(200).json(weather);
+  } catch (error) {
+    // Upstream details stay in the server log only.
+    logger.error('[weather] Failed to fetch live weather', {
+      status: error.response?.status,
+      message: error.message,
+    });
+    return res.status(502).json({ message: 'Weather is unavailable right now' });
+  }
 });
 
 module.exports = router;

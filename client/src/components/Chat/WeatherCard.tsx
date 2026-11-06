@@ -1,9 +1,9 @@
 import { useId } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { CloudOff, CloudRain, Droplets, MapPin, RefreshCw, Wind } from 'lucide-react';
+import { CloudOff, CloudRain, Droplets, MapPin, RadioTower, RefreshCw, Wind } from 'lucide-react';
 import type { IFarmerProfile } from 'librechat-data-provider';
-import { useWeather } from '~/hooks/useWeather';
+import { isMissingLocationError, useWeather } from '~/hooks/useWeather';
 import type { Weather } from '~/hooks/useWeather';
 import { useAuthContext, useLocalize } from '~/hooks';
 import { cn } from '~/utils';
@@ -18,6 +18,10 @@ import {
 
 // Rounds a Celsius temperature for display, e.g. 32.5 becomes 33°.
 const formatTemperature = (value: number) => `${Math.round(value)}°`;
+
+// Formats a station reading with its unit, or a dash when the station did not report it.
+const formatReading = (value: number | null, unit: string, decimals = 0) =>
+  value === null ? '--' : `${Number(value.toFixed(decimals))}${unit}`;
 
 // Formats when the weather was last fetched, e.g. 10:30 AM.
 const formatUpdatedTime = (timestamp: number) =>
@@ -62,10 +66,11 @@ type WeatherCardErrorProps = {
   message: string;
   retryLabel: string;
   isRetrying: boolean;
-  onRetry: () => void;
+  // Left out when retrying cannot help, such as when the farmer has no saved location.
+  onRetry?: () => void;
 };
 
-// Inline error with a retry action. Shakes once when it appears.
+// Inline error with an optional retry action. Shakes once when it appears.
 function WeatherCardError({ message, retryLabel, isRetrying, onRetry }: WeatherCardErrorProps) {
   return (
     <ShakeOnMount
@@ -74,18 +79,20 @@ function WeatherCardError({ message, retryLabel, isRetrying, onRetry }: WeatherC
     >
       <CloudOff className="size-6 shrink-0 text-text-secondary" aria-hidden="true" />
       <p className="flex-1 text-sm text-text-secondary">{message}</p>
-      <button
-        type="button"
-        onClick={onRetry}
-        disabled={isRetrying}
-        className="flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-border-medium px-4 text-sm font-semibold text-text-primary transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary disabled:opacity-60 motion-reduce:transition-none"
-      >
-        <RefreshCw
-          className={cn('size-4', isRetrying && 'animate-spin motion-reduce:animate-none')}
-          aria-hidden="true"
-        />
-        {retryLabel}
-      </button>
+      {onRetry && (
+        <button
+          type="button"
+          onClick={onRetry}
+          disabled={isRetrying}
+          className="flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-border-medium px-4 text-sm font-semibold text-text-primary transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary disabled:opacity-60 motion-reduce:transition-none"
+        >
+          <RefreshCw
+            className={cn('size-4', isRetrying && 'animate-spin motion-reduce:animate-none')}
+            aria-hidden="true"
+          />
+          {retryLabel}
+        </button>
+      )}
     </ShakeOnMount>
   );
 }
@@ -111,11 +118,13 @@ function WeatherCardBody({ weather, updatedAt, isRefetching }: WeatherCardBodyPr
           />
           <div className="min-w-0">
             <p className="truncate font-semibold text-text-primary">{weather.weatherCondition}</p>
-            <p className="text-xs text-text-secondary">
-              {localize('com_ui_weather_feels_like', {
-                0: `${formatTemperature(weather.feelsLikeTemperature)}C`,
-              })}
-            </p>
+            {weather.feelsLikeTemperature !== null && (
+              <p className="text-xs text-text-secondary">
+                {localize('com_ui_weather_feels_like', {
+                  0: `${formatTemperature(weather.feelsLikeTemperature)}C`,
+                })}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -124,38 +133,56 @@ function WeatherCardBody({ weather, updatedAt, isRefetching }: WeatherCardBodyPr
         <WeatherCardStat
           icon={<Droplets className="size-4" aria-hidden="true" />}
           label={localize('com_ui_weather_humidity')}
-          value={`${weather.humidity}%`}
+          value={formatReading(weather.humidity, '%')}
         />
         <WeatherCardStat
           icon={<CloudRain className="size-4" aria-hidden="true" />}
           label={localize('com_ui_weather_rainfall')}
-          value={`${weather.rainfall} mm`}
+          value={formatReading(weather.rainfall, ' mm', 1)}
         />
         <WeatherCardStat
           icon={<Wind className="size-4" aria-hidden="true" />}
           label={localize('com_ui_weather_wind')}
-          value={`${weather.windSpeed} km/h`}
+          value={formatReading(weather.windSpeed, ' km/h', 1)}
         />
       </div>
 
       {updatedAt > 0 && (
-        <p className="flex items-center gap-1.5 text-xs text-text-tertiary" aria-live="polite">
-          {isRefetching && (
-            <RefreshCw
-              className="size-3 animate-spin motion-reduce:animate-none"
-              aria-hidden="true"
-            />
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs text-text-tertiary">
+          <p className="flex items-center gap-1.5" aria-live="polite">
+            {isRefetching && (
+              <RefreshCw
+                className="size-3 animate-spin motion-reduce:animate-none"
+                aria-hidden="true"
+              />
+            )}
+            {/* Keyed on the fetch time so the label flashes softly whenever fresh data lands. */}
+            <motion.span
+              key={updatedAt}
+              initial={{ opacity: 0.3 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+            >
+              {/* The station's own reading time is shown when available, it is more accurate than the fetch time. */}
+              {localize('com_ui_weather_updated', {
+                0: weather.recordedAt ?? formatUpdatedTime(updatedAt),
+              })}
+            </motion.span>
+          </p>
+          {weather.stationName && (
+            <p className="flex min-w-0 items-center gap-1" title={weather.stationName}>
+              <RadioTower className="size-3 shrink-0" aria-hidden="true" />
+              <span className="truncate">
+                {weather.stationDistanceKm === null
+                  ? weather.stationName
+                  : localize('com_ui_weather_station', {
+                      0: weather.stationName,
+                      1: formatReading(weather.stationDistanceKm, '', 1),
+                    })}
+              </span>
+            </p>
           )}
-          {/* Keyed on the fetch time so the label flashes softly whenever fresh data lands. */}
-          <motion.span
-            key={updatedAt}
-            initial={{ opacity: 0.3 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-          >
-            {localize('com_ui_weather_updated', { 0: formatUpdatedTime(updatedAt) })}
-          </motion.span>
-        </p>
+        </div>
       )}
     </div>
   );
@@ -173,10 +200,12 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
     data: weather,
     isLoading,
     isError,
+    error,
     isRefetching,
     dataUpdatedAt,
     refetch,
   } = useWeather(isAuthenticated);
+  const isLocationMissing = isMissingLocationError(error);
 
   if (!isAuthenticated) {
     return null;
@@ -219,10 +248,12 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
       {isLoading && !weather && <WeatherCardSkeleton label={localize('com_ui_weather_loading')} />}
       {isError && !weather && (
         <WeatherCardError
-          message={localize('com_ui_weather_error')}
+          message={localize(
+            isLocationMissing ? 'com_ui_weather_no_location' : 'com_ui_weather_error',
+          )}
           retryLabel={localize('com_ui_retry')}
           isRetrying={isRefetching}
-          onRetry={() => refetch()}
+          onRetry={isLocationMissing ? undefined : () => refetch()}
         />
       )}
       {weather && (

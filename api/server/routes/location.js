@@ -35,8 +35,6 @@ const proxyLocation = (path, queryKeys = []) => async (req, res) => {
       headers: { 'x-internal-api-key': apiKey },
       timeout: 15000,
     });
-    console.log(`Successfully fetched location/${path} with params:`, params);
-    console.log(`Response data:`, response.data);
     return res.status(200).json(response.data);
   } catch (error) {
     console.error(`Error fetching location/${path} with params:`, params);
