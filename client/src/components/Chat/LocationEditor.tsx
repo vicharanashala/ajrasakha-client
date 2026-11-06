@@ -14,6 +14,7 @@ import {
 import { dataService, QueryKeys } from 'librechat-data-provider';
 import type { IFarmerProfile } from 'librechat-data-provider';
 import { useSaveFarmerProfileMutation } from '~/data-provider';
+import { WEATHER_QUERY_KEY } from '~/hooks/useWeather';
 import { cn } from '~/utils';
 
 type Level = 'state' | 'district' | 'blockName' | 'villageName' | 'nearestKVK';
@@ -226,6 +227,8 @@ export default function LocationEditor({
       );
       queryClient.invalidateQueries([QueryKeys.user]);
       queryClient.invalidateQueries([QueryKeys.userTerms]);
+      // The server has saved the new coordinates by now, so fetch weather for the new place.
+      queryClient.invalidateQueries(WEATHER_QUERY_KEY);
       onSaved();
     },
     onError: () => setError('Could not save your location. Please try again.'),

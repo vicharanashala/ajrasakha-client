@@ -16,6 +16,9 @@ export interface Weather {
   recordedAt: string | null;
 }
 
+// Cache key for the current weather. Exported so other features can refresh it, e.g. after a location change.
+export const WEATHER_QUERY_KEY = ['weather', 'current'] as const;
+
 // How long weather data is treated as fresh before it is fetched again.
 const WEATHER_STALE_TIME = 10 * 60 * 1000;
 // Attempts made after a failed request before showing the error state.
@@ -34,7 +37,7 @@ const fetchWeather = async (): Promise<Weather> => {
 // Provides the current weather with caching so the page does not refetch on every render.
 export const useWeather = (enabled = true) => {
   return useQuery({
-    queryKey: ['weather', 'current'],
+    queryKey: WEATHER_QUERY_KEY,
     queryFn: fetchWeather,
     staleTime: WEATHER_STALE_TIME,
     refetchOnWindowFocus: false,

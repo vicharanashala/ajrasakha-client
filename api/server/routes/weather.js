@@ -7,8 +7,6 @@ const router = express.Router();
 
 // How long to wait for the weather service before giving up.
 const WEATHER_REQUEST_TIMEOUT_MS = 10000;
-// Matches the weather service's own cache lifetime so browsers do not refetch sooner.
-const WEATHER_CACHE_SECONDS = 300;
 
 // Removes surrounding quotes some .env files keep around values.
 const cleanEnvValue = (value) => (value || '').trim().replace(/^["']|["']$/g, '');
@@ -91,7 +89,9 @@ router.get('/', requireJwtAuth, async (req, res) => {
       return res.status(502).json({ message: 'Weather is unavailable right now' });
     }
 
-    res.set('Cache-Control', `private, max-age=${WEATHER_CACHE_SECONDS}`);
+    // No browser caching: the app caches weather itself and must get fresh data right after the
+    // farmer changes location, which a cached response for the same URL would block.
+    res.set('Cache-Control', 'no-store');
     return res.status(200).json(weather);
   } catch (error) {
     // Upstream details stay in the server log only, they are never sent to the browser.
