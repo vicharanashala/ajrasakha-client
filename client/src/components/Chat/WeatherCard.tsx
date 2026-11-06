@@ -75,15 +75,28 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const formatUpdatedTime = (timestamp: number) =>
   new Date(timestamp).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
+// Soft brand-tinted circle behind an icon. Shared by every icon in the card so they match.
+function IconBadge({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        'flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-500/20 to-green-500/5 text-green-600 dark:from-green-400/25 dark:to-green-400/5 dark:text-green-400',
+        className,
+      )}
+    >
+      {children}
+    </span>
+  );
+}
+
 type WeatherCardStatProps = { icon: ReactNode; label: string; value: string };
 
 // One metric in the stats row, such as humidity or wind speed.
 function WeatherCardStat({ icon, label, value }: WeatherCardStatProps) {
   return (
     <div className="flex min-w-0 flex-col gap-1.5 px-3 first:pl-0 last:pr-0 sm:flex-row sm:items-center sm:gap-3">
-      <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-500/20 to-green-500/5 text-green-600 dark:from-green-400/25 dark:to-green-400/5 dark:text-green-400">
-        {icon}
-      </span>
+      <IconBadge className="size-8">{icon}</IconBadge>
       <div className="min-w-0">
         <p className="truncate text-xs text-text-secondary">{label}</p>
         <p className="truncate text-sm font-semibold text-text-primary sm:text-base">{value}</p>
@@ -157,13 +170,13 @@ function StationSource({ name, distanceKm }: StationSourceProps) {
   const localize = useLocalize();
   const displayName = getStationDisplayName(name);
   return (
-    <p title={name} className="flex min-w-0 items-start gap-1.5">
-      {/* The line wraps on narrow screens, so the icon is pinned to the first line. */}
-      <RadioTower
-        className="mt-px size-3.5 shrink-0 text-green-600 dark:text-green-400"
-        aria-hidden="true"
-      />
-      <span className="min-w-0 break-words">
+    <p title={name} className="flex min-w-0 items-start gap-2">
+      {/* The line wraps on narrow screens, so the icon is pinned to the first line and the text is
+          nudged down to centre its first line on the circle. */}
+      <IconBadge className="size-6">
+        <RadioTower className="size-3.5" aria-hidden="true" />
+      </IconBadge>
+      <span className="mt-1 min-w-0 break-words">
         {distanceKm === null
           ? displayName
           : localize('com_ui_weather_station', {
@@ -334,11 +347,10 @@ function WeatherCardBody({ weather, updatedAt, isRefreshing }: WeatherCardBodyPr
       {updatedAt > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 text-xs text-text-tertiary">
           <div className="flex min-w-0 flex-col gap-1">
-            <p className="flex items-center gap-1.5" aria-live="polite">
-              <Clock
-                className="size-3.5 shrink-0 text-green-600 dark:text-green-400"
-                aria-hidden="true"
-              />
+            <p className="flex items-center gap-2" aria-live="polite">
+              <IconBadge className="size-6">
+                <Clock className="size-3.5" aria-hidden="true" />
+              </IconBadge>
               {/* Keyed on the fetch time so the label flashes softly whenever fresh data lands. */}
               <motion.span
                 key={updatedAt}
@@ -444,10 +456,9 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
           id={titleId}
           className="flex shrink-0 items-center gap-2 text-base font-semibold text-text-primary sm:text-lg"
         >
-          <CloudSun
-            className="size-5 shrink-0 text-green-600 dark:text-green-400"
-            aria-hidden="true"
-          />
+          <IconBadge className="size-8">
+            <CloudSun className="size-[18px]" aria-hidden="true" />
+          </IconBadge>
           {localize('com_ui_weather_today')}
         </h2>
         <div className="flex min-w-0 flex-col items-end gap-1">
