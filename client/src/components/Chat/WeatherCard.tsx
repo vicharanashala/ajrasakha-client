@@ -266,7 +266,8 @@ function useNow(intervalMs: number) {
 }
 
 // Muted "Refreshed 2 minutes ago" label under the refresh button, faded in only while the button
-// is disabled. Its space is always kept so the header does not jump as it appears and hides.
+// is disabled. It hangs below the button out of the layout flow, so it takes no width (a long
+// translation cannot squeeze the title) and no height (the header does not jump as it appears).
 // It recalculates on its own every half minute and is not a live region, so screen readers are
 // not interrupted by it.
 function RefreshedAgo({ updatedAt, visible }: { updatedAt: number; visible: boolean }) {
@@ -279,7 +280,7 @@ function RefreshedAgo({ updatedAt, visible }: { updatedAt: number; visible: bool
     <span
       aria-hidden={!visible}
       className={cn(
-        'whitespace-nowrap text-[11px] leading-none text-text-tertiary transition-opacity duration-300 motion-reduce:transition-none',
+        'pointer-events-none absolute right-0 top-full mt-1.5 whitespace-nowrap text-[11px] leading-none text-text-tertiary transition-opacity duration-300 motion-reduce:transition-none',
         visible ? 'opacity-100' : 'invisible opacity-0',
       )}
     >
@@ -481,7 +482,7 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
             <LocationLabel label={locationLabel} className="flex pl-10 sm:hidden" />
           )}
         </div>
-        <div className="flex min-w-0 flex-col items-end gap-1">
+        <div className="relative flex min-w-0 flex-col items-end">
           <div className="flex min-w-0 max-w-full items-center gap-1">
             {/* Wider screens: beside the refresh button. */}
             {locationLabel && <LocationLabel label={locationLabel} className="hidden sm:flex" />}

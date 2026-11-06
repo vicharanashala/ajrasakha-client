@@ -11,6 +11,11 @@ import { getIconEndpoint, getEntity } from '~/utils';
 const containerClassName =
   'shadow-stroke relative flex h-full items-center justify-center rounded-full bg-white dark:bg-presentation dark:text-white text-black dark:after:shadow-none ';
 
+// Line height for the greeting. Tailwind's large text sizes use a line height of 1, and the greeting's
+// SplitText clips its overflow, which cut off the vowel signs above and below letters in Indian scripts
+// (e.g. the "ु" in "शुभ"). Set for both breakpoints, since `sm:text-*` sets its own line height.
+const GREETING_LINE_HEIGHT = 'leading-[1.35] sm:leading-[1.35]';
+
 function getTextSizeClass(text: string | undefined | null) {
   if (!text) {
     return 'text-xl sm:text-2xl';
@@ -180,7 +185,7 @@ export default function Landing({
               <SplitText
                 key={`split-text-${name}`}
                 text={name}
-                className={`${getTextSizeClass(name)} font-medium text-text-primary`}
+                className={`${getTextSizeClass(name)} ${GREETING_LINE_HEIGHT} font-medium text-text-primary`}
                 delay={50}
                 textAlign="center"
                 animationFrom={{ opacity: 0, transform: 'translate3d(0,50px,0)' }}
@@ -195,7 +200,7 @@ export default function Landing({
             <SplitText
               key={`split-text-${greetingText}${user?.name ? '-user' : ''}`}
               text={greetingText}
-              className={`${getTextSizeClass(greetingText)} font-medium text-text-primary`}
+              className={`${getTextSizeClass(greetingText)} ${GREETING_LINE_HEIGHT} font-medium text-text-primary`}
               delay={50}
               textAlign="center"
               animationFrom={{ opacity: 0, transform: 'translate3d(0,50px,0)' }}
