@@ -188,14 +188,15 @@ function StationSource({ name, distanceKm }: StationSourceProps) {
   );
 }
 
-// Forecast link placeholder in the brand colour. Disabled until the forecast page exists, with a coming soon badge.
+// Forecast link placeholder in the brand colour. `ml-auto` keeps it on the right, also when it wraps
+// onto its own line on narrow screens. Disabled until the forecast page exists, with a coming soon badge.
 function ForecastButton() {
   const localize = useLocalize();
   return (
     <button
       type="button"
       disabled
-      className="relative inline-flex min-h-9 shrink-0 cursor-not-allowed items-center gap-2 rounded-full bg-green-500/10 px-3 py-1 text-xs font-semibold text-green-700 ring-1 ring-green-500/30 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/30"
+      className="relative ml-auto inline-flex min-h-9 shrink-0 cursor-not-allowed items-center gap-2 rounded-full bg-green-500/10 px-3 py-1 text-xs font-semibold text-green-700 ring-1 ring-green-500/30 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/30"
     >
       {localize('com_ui_weather_view_forecast')}
       <ArrowRight className="size-3.5 shrink-0" aria-hidden="true" />
