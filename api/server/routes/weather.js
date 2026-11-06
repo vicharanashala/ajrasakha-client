@@ -58,6 +58,7 @@ function toWeatherResponse(data) {
 }
 
 // Returns live weather for the signed in farmer's saved location from the weather service.
+// The request URL and the service's response are logged to the backend console.
 router.get('/', requireJwtAuth, async (req, res) => {
   const serviceUrl = getWeatherServiceUrl();
   if (!serviceUrl) {
@@ -70,12 +71,19 @@ router.get('/', requireJwtAuth, async (req, res) => {
     return res.status(404).json({ message: 'Farmer location is not set' });
   }
 
+  // Full request URL, logged so the call to the weather service can be traced in the console.
+  const requestUrl = `${serviceUrl}?${new URLSearchParams({
+    lat: String(coordinates.lat),
+    long: String(coordinates.long),
+  })}`;
+
   try {
-    const { data } = await axios.get(serviceUrl, {
-      params: coordinates,
+    logger.info(`[weather] Requesting ${requestUrl}`);
+    const { data } = await axios.get(requestUrl, {
       headers: { accept: 'application/json' },
       timeout: WEATHER_REQUEST_TIMEOUT_MS,
     });
+    logger.info('[weather] Response', data);
 
     const weather = toWeatherResponse(data);
     if (weather.liveTemperature === null) {
@@ -86,9 +94,10 @@ router.get('/', requireJwtAuth, async (req, res) => {
     res.set('Cache-Control', `private, max-age=${WEATHER_CACHE_SECONDS}`);
     return res.status(200).json(weather);
   } catch (error) {
-    // Upstream details stay in the server log only.
-    logger.error('[weather] Failed to fetch live weather', {
+    // Upstream details stay in the server log only, they are never sent to the browser.
+    logger.error(`[weather] Failed to fetch live weather from ${requestUrl}`, {
       status: error.response?.status,
+      data: error.response?.data,
       message: error.message,
     });
     return res.status(502).json({ message: 'Weather is unavailable right now' });
