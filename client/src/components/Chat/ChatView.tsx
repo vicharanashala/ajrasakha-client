@@ -157,20 +157,16 @@ function ChatView({ index = 0 }: { index?: number }) {
                     isLandingPage
                       ? // The composer is pinned to the bottom of this box, just above the
                         // in-development notice that renders outside it, while the greeting,
-                        // tagline and question cards centre in the space left above. The
-                        // bottom padding is what reserves that space, so the two can't
-                        // overlap — driven by the composer's measured height below, since a
+                        // tagline and question cards centre in the space left above. From `sm`
+                        // up the inner scroll box's bottom margin reserves that space, so the two
+                        // can't overlap — driven by the composer's measured height below, since a
                         // fixed value is wrong for Voice mode, which is far taller than Text.
                         // Unlike a live conversation, the composer isn't fixed to the viewport
                         // on phones here — the notice has to sit below it, not behind it — so
                         // this applies at every width.
-                        // On phones the greeting and cards scroll inside their own box that
-                        // runs a little way under the top of the composer, so the cards fade
-                        // out behind the see-through Voice/Text switch instead of stopping
-                        // above it. Its bottom padding still lets the last card scroll fully
-                        // clear of that fade. From `sm` up the box is `contents`, so this
-                        // keeps the layout described above.
-                        'relative flex min-h-0 flex-1 flex-col sm:items-center sm:justify-center sm:overflow-y-auto sm:pb-[var(--composer-pad,11rem)]'
+                        // The greeting and cards scroll inside their own box below, never this
+                        // one, so the composer pinned here stays put while the cards scroll.
+                        'relative flex min-h-0 flex-1 flex-col'
                       : // `relative` anchors the composer, which is pulled out of flow below
                         // so the message list can run its full height underneath it.
                         'relative min-h-0 flex-1 overflow-hidden',
@@ -187,11 +183,16 @@ function ChatView({ index = 0 }: { index?: number }) {
                       isLandingPage
                         ? // `safe center` centres the content when it fits and, when it is taller than
                           // the space available, grows downward and scrolls instead of spilling upward.
-                          // The bottom edge fades out instead of cutting off. The box overlaps the top of the
-                          // composer by 3.5rem (the negative margin) and the fade is 96px tall, so cards
-                          // dissolve gradually behind the Voice/Text switch and it is clear there is more to
-                          // scroll. The bottom padding matches the fade so the last card can scroll fully clear.
-                          '-mb-14 flex min-h-0 w-full flex-1 flex-col items-center justify-center [justify-content:safe_center] overflow-y-auto pb-24 pt-14 [-webkit-mask-image:linear-gradient(to_bottom,black_calc(100%_-_96px),transparent)] [mask-image:linear-gradient(to_bottom,black_calc(100%_-_96px),transparent)] sm:contents'
+                          // The bottom edge fades out instead of cutting off.
+                          // Phones: the box overlaps the top of the composer by 3.5rem (the negative
+                          // margin) and the fade is 96px tall, so cards dissolve gradually behind the
+                          // see-through Voice/Text switch. The bottom padding matches the fade so the last
+                          // card can scroll fully clear.
+                          // From `sm` up: the composer is absolutely positioned at the bottom, so the box
+                          // ends just above it (the margin is the composer's measured height) and uses a
+                          // short fade. The top padding keeps the greeting clear of the floating header
+                          // and location pill.
+                          '-mb-14 flex min-h-0 w-full flex-1 flex-col items-center justify-center [justify-content:safe_center] overflow-y-auto pb-24 pt-14 [-webkit-mask-image:linear-gradient(to_bottom,black_calc(100%_-_96px),transparent)] [mask-image:linear-gradient(to_bottom,black_calc(100%_-_96px),transparent)] sm:mb-[var(--composer-pad,11rem)] sm:pb-7 sm:pt-16 sm:[-webkit-mask-image:linear-gradient(to_bottom,black_calc(100%_-_28px),transparent)] sm:[mask-image:linear-gradient(to_bottom,black_calc(100%_-_28px),transparent)]'
                         : 'contents'
                     }
                   >
