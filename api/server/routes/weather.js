@@ -8,18 +8,20 @@ const router = express.Router();
 // How long to wait for the weather service before giving up.
 const WEATHER_REQUEST_TIMEOUT_MS = 10000;
 
+// Port the weather service listens on. Fixed in code, only the host comes from the environment.
+const WEATHER_SERVICE_PORT = 8085;
+
 // Removes surrounding quotes some .env files keep around values.
 const cleanEnvValue = (value) => (value || '').trim().replace(/^["']|["']$/g, '');
 
-// Builds the weather service URL from AGENT_HOST_IP and AGENT_HOST_PORT, or null when either is missing.
+// Builds the weather service URL from AGENT_HOST_IP and the fixed port, or null when the host is missing.
 function getWeatherServiceUrl() {
   const host = cleanEnvValue(process.env.AGENT_HOST_IP).replace(/\/+$/, '');
-  const port = cleanEnvValue(process.env.AGENT_HOST_PORT);
-  if (!host || !port) {
+  if (!host) {
     return null;
   }
   const base = /^https?:\/\//.test(host) ? host : `http://${host}`;
-  return `${base}:${port}/live`;
+  return `${base}:${WEATHER_SERVICE_PORT}/live`;
 }
 
 // Reads the farmer's saved coordinates. The database stores latitude and longitude, and the
@@ -60,7 +62,7 @@ function toWeatherResponse(data) {
 router.get('/', requireJwtAuth, async (req, res) => {
   const serviceUrl = getWeatherServiceUrl();
   if (!serviceUrl) {
-    logger.error('[weather] AGENT_HOST_IP or AGENT_HOST_PORT is not set');
+    logger.error('[weather] AGENT_HOST_IP is not set');
     return res.status(500).json({ message: 'Weather service is not configured' });
   }
 
