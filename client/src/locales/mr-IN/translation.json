@@ -2272,7 +2272,7 @@
   "com_ui_weather_rainfall": "पाऊस",
   "com_ui_weather_rainfall_value": "{{0}} मिमी",
   "com_ui_weather_refresh": "हवामान रिफ्रेश करा",
-  "com_ui_weather_station": "{{0}}, {{1}} किमी दूर",
+  "com_ui_weather_station": "{{0}}, {{1}} किमी दूर (तुम्ही निवडलेल्या ठिकाणापासून)",
   "com_ui_weather_today": "आजचे हवामान",
   "com_ui_weather_updated": "अपडेट {{0}}",
   "com_ui_weather_view_forecast": "अंदाज पहा",

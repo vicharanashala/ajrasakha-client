@@ -1027,7 +1027,7 @@
   "com_ui_weather_rainfall": "هطول الأمطار",
   "com_ui_weather_rainfall_value": "{{0}} مم",
   "com_ui_weather_refresh": "تحديث الطقس",
-  "com_ui_weather_station": "{{0}}، على بُعد {{1}} كم",
+  "com_ui_weather_station": "{{0}}، على بُعد {{1}} كم (من موقعك المحدد)",
   "com_ui_weather_today": "طقس اليوم",
   "com_ui_weather_updated": "آخر تحديث {{0}}",
   "com_ui_weather_view_forecast": "عرض التوقعات",

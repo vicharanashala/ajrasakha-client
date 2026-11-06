@@ -1470,7 +1470,7 @@
   "com_ui_weather_rainfall": "Précipitations",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Actualiser la météo",
-  "com_ui_weather_station": "{{0}}, à {{1}} km",
+  "com_ui_weather_station": "{{0}}, à {{1}} km (de l'emplacement choisi)",
   "com_ui_weather_today": "Météo du jour",
   "com_ui_weather_updated": "Mis à jour {{0}}",
   "com_ui_weather_view_forecast": "Voir les prévisions",

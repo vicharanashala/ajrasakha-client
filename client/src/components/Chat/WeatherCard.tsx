@@ -150,12 +150,13 @@ function StationSource({ name, distanceKm }: StationSourceProps) {
   const localize = useLocalize();
   const displayName = getStationDisplayName(name);
   return (
-    <p title={name} className="flex min-w-0 items-center gap-1.5">
+    <p title={name} className="flex min-w-0 items-start gap-1.5">
+      {/* The line wraps on narrow screens, so the icon is pinned to the first line. */}
       <RadioTower
-        className="size-3.5 shrink-0 text-green-600 dark:text-green-400"
+        className="mt-px size-3.5 shrink-0 text-green-600 dark:text-green-400"
         aria-hidden="true"
       />
-      <span className="truncate">
+      <span className="min-w-0 break-words">
         {distanceKm === null
           ? displayName
           : localize('com_ui_weather_station', {

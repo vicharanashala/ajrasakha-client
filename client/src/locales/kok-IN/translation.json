@@ -2268,7 +2268,7 @@
   "com_ui_weather_rainfall": "पावस",
   "com_ui_weather_rainfall_value": "{{0}} मिमी",
   "com_ui_weather_refresh": "हवामान रिफ्रेश करात",
-  "com_ui_weather_station": "{{0}}, {{1}} किमी पयस",
+  "com_ui_weather_station": "{{0}}, {{1}} किमी पयस (तुमी वेंचिल्ल्या सुवातेसावन)",
   "com_ui_weather_today": "आयचें हवामान",
   "com_ui_weather_updated": "अपडेट {{0}}",
   "com_ui_weather_view_forecast": "अदमास पळयात",

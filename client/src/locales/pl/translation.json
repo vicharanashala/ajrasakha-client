@@ -877,7 +877,7 @@
   "com_ui_weather_rainfall": "Opady",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Odśwież pogodę",
-  "com_ui_weather_station": "{{0}}, {{1}} km stąd",
+  "com_ui_weather_station": "{{0}}, {{1}} km stąd (od wybranej lokalizacji)",
   "com_ui_weather_today": "Pogoda na dziś",
   "com_ui_weather_updated": "Zaktualizowano {{0}}",
   "com_ui_weather_view_forecast": "Zobacz prognozę",

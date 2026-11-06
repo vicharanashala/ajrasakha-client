@@ -2272,7 +2272,7 @@
   "com_ui_weather_rainfall": "மழையளவு",
   "com_ui_weather_rainfall_value": "{{0}} மி.மீ.",
   "com_ui_weather_refresh": "வானிலையைப் புதுப்பிக்கவும்",
-  "com_ui_weather_station": "{{0}}, {{1}} கி.மீ. தொலைவில்",
+  "com_ui_weather_station": "{{0}}, {{1}} கி.மீ. தொலைவில் (நீங்கள் தேர்ந்தெடுத்த இடத்திலிருந்து)",
   "com_ui_weather_today": "இன்றைய வானிலை",
   "com_ui_weather_updated": "புதுப்பிக்கப்பட்டது {{0}}",
   "com_ui_weather_view_forecast": "முன்னறிவிப்பைக் காண்க",

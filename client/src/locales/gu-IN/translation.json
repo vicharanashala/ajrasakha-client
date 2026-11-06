@@ -2272,7 +2272,7 @@
   "com_ui_weather_rainfall": "વરસાદ",
   "com_ui_weather_rainfall_value": "{{0}} મિમી",
   "com_ui_weather_refresh": "હવામાન રિફ્રેશ કરો",
-  "com_ui_weather_station": "{{0}}, {{1}} કિમી દૂર",
+  "com_ui_weather_station": "{{0}}, {{1}} કિમી દૂર (તમારા પસંદ કરેલા સ્થાનથી)",
   "com_ui_weather_today": "આજનું હવામાન",
   "com_ui_weather_updated": "અપડેટ {{0}}",
   "com_ui_weather_view_forecast": "આગાહી જુઓ",

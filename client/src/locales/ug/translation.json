@@ -90,7 +90,7 @@
   "com_ui_weather_rainfall": "يېغىن مىقدارى",
   "com_ui_weather_rainfall_value": "{{0}} مىللىمېتىر",
   "com_ui_weather_refresh": "ھاۋا رايىنى يېڭىلاش",
-  "com_ui_weather_station": "{{0}}، {{1}} كم يىراقلىقتا",
+  "com_ui_weather_station": "{{0}}، {{1}} كم يىراقلىقتا (سىز تاللىغان ئورۇندىن)",
   "com_ui_weather_today": "بۈگۈنكى ھاۋا رايى",
   "com_ui_weather_updated": "يېڭىلانغان {{0}}",
   "com_ui_weather_view_forecast": "ھاۋا رايى مەلۇماتىنى كۆرۈش",

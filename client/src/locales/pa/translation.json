@@ -2144,7 +2144,7 @@
   "com_ui_weather_rainfall": "ਵਰਖਾ",
   "com_ui_weather_rainfall_value": "{{0}} ਮਿ.ਮੀ.",
   "com_ui_weather_refresh": "ਮੌਸਮ ਰਿਫ੍ਰੈਸ਼ ਕਰੋ",
-  "com_ui_weather_station": "{{0}}, {{1}} ਕਿ.ਮੀ. ਦੂਰ",
+  "com_ui_weather_station": "{{0}}, {{1}} ਕਿ.ਮੀ. ਦੂਰ (ਤੁਹਾਡੀ ਚੁਣੀ ਥਾਂ ਤੋਂ)",
   "com_ui_weather_today": "ਅੱਜ ਦਾ ਮੌਸਮ",
   "com_ui_weather_updated": "ਅੱਪਡੇਟ {{0}}",
   "com_ui_weather_view_forecast": "ਪੂਰਵ-ਅਨੁਮਾਨ ਦੇਖੋ",

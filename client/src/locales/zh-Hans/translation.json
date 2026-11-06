@@ -1504,7 +1504,7 @@
   "com_ui_weather_rainfall": "降雨量",
   "com_ui_weather_rainfall_value": "{{0}} 毫米",
   "com_ui_weather_refresh": "刷新天气",
-  "com_ui_weather_station": "{{0}}，距离 {{1}} 公里",
+  "com_ui_weather_station": "{{0}}，距离 {{1}} 公里（距您所选位置）",
   "com_ui_weather_today": "今日天气",
   "com_ui_weather_updated": "更新于 {{0}}",
   "com_ui_weather_view_forecast": "查看预报",

@@ -2272,7 +2272,7 @@
   "com_ui_weather_rainfall": "বৃষ্টিপাত",
   "com_ui_weather_rainfall_value": "{{0}} মিমি",
   "com_ui_weather_refresh": "আবহাওয়া রিফ্রেশ করুন",
-  "com_ui_weather_station": "{{0}}, {{1}} কিমি দূরে",
+  "com_ui_weather_station": "{{0}}, {{1}} কিমি দূরে (আপনার নির্বাচিত অবস্থান থেকে)",
   "com_ui_weather_today": "আজকের আবহাওয়া",
   "com_ui_weather_updated": "আপডেট {{0}}",
   "com_ui_weather_view_forecast": "পূর্বাভাস দেখুন",

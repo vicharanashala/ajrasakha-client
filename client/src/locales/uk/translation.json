@@ -1444,7 +1444,7 @@
   "com_ui_weather_rainfall": "Опади",
   "com_ui_weather_rainfall_value": "{{0}} мм",
   "com_ui_weather_refresh": "Оновити погоду",
-  "com_ui_weather_station": "{{0}}, {{1}} км звідси",
+  "com_ui_weather_station": "{{0}}, {{1}} км (від вибраного розташування)",
   "com_ui_weather_today": "Погода сьогодні",
   "com_ui_weather_updated": "Оновлено {{0}}",
   "com_ui_weather_view_forecast": "Переглянути прогноз",

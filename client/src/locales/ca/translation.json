@@ -1049,7 +1049,7 @@
   "com_ui_weather_rainfall": "Precipitació",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Actualitza el temps",
-  "com_ui_weather_station": "{{0}}, a {{1}} km",
+  "com_ui_weather_station": "{{0}}, a {{1}} km (de la ubicació seleccionada)",
   "com_ui_weather_today": "El temps d'avui",
   "com_ui_weather_updated": "Actualitzat {{0}}",
   "com_ui_weather_view_forecast": "Mostra la previsió",

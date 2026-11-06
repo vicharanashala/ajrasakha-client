@@ -1128,7 +1128,7 @@
   "com_ui_weather_rainfall": "Sademed",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Värskenda ilma",
-  "com_ui_weather_station": "{{0}}, {{1}} km kaugusel",
+  "com_ui_weather_station": "{{0}}, {{1}} km kaugusel (valitud asukohast)",
   "com_ui_weather_today": "Tänane ilm",
   "com_ui_weather_updated": "Uuendatud {{0}}",
   "com_ui_weather_view_forecast": "Vaata prognoosi",

@@ -1623,7 +1623,7 @@
   "com_ui_weather_rainfall": "Niederschlag",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Wetter aktualisieren",
-  "com_ui_weather_station": "{{0}}, {{1}} km entfernt",
+  "com_ui_weather_station": "{{0}}, {{1}} km entfernt (vom gewählten Standort)",
   "com_ui_weather_today": "Wetter heute",
   "com_ui_weather_updated": "Aktualisiert {{0}}",
   "com_ui_weather_view_forecast": "Vorhersage ansehen",

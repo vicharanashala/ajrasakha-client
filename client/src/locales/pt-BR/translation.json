@@ -1189,7 +1189,7 @@
   "com_ui_weather_rainfall": "Precipitação",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Atualizar clima",
-  "com_ui_weather_station": "{{0}}, a {{1}} km",
+  "com_ui_weather_station": "{{0}}, a {{1}} km (da localização selecionada)",
   "com_ui_weather_today": "Clima de hoje",
   "com_ui_weather_updated": "Atualizado {{0}}",
   "com_ui_weather_view_forecast": "Ver previsão",

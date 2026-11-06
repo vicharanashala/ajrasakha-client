@@ -464,7 +464,7 @@
   "com_ui_weather_rainfall": "Curah hujan",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Muat ulang cuaca",
-  "com_ui_weather_station": "{{0}}, {{1}} km jauhnya",
+  "com_ui_weather_station": "{{0}}, {{1}} km jauhnya (dari lokasi yang Anda pilih)",
   "com_ui_weather_today": "Cuaca hari ini",
   "com_ui_weather_updated": "Diperbarui {{0}}",
   "com_ui_weather_view_forecast": "Lihat prakiraan",

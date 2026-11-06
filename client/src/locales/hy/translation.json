@@ -382,7 +382,7 @@
   "com_ui_weather_rainfall": "Տեղումներ",
   "com_ui_weather_rainfall_value": "{{0}} մմ",
   "com_ui_weather_refresh": "Թարմացնել եղանակը",
-  "com_ui_weather_station": "{{0}}, {{1}} կմ հեռավորության վրա",
+  "com_ui_weather_station": "{{0}}, {{1}} կմ հեռավորության վրա (ձեր ընտրած վայրից)",
   "com_ui_weather_today": "Այսօրվա եղանակը",
   "com_ui_weather_updated": "Թարմացվել է {{0}}",
   "com_ui_weather_view_forecast": "Դիտել կանխատեսումը",

@@ -2272,7 +2272,7 @@
   "com_ui_weather_rainfall": "వర్షపాతం",
   "com_ui_weather_rainfall_value": "{{0}} మి.మీ.",
   "com_ui_weather_refresh": "వాతావరణాన్ని రిఫ్రెష్ చేయండి",
-  "com_ui_weather_station": "{{0}}, {{1}} కి.మీ. దూరంలో",
+  "com_ui_weather_station": "{{0}}, {{1}} కి.మీ. దూరంలో (మీరు ఎంచుకున్న స్థానం నుండి)",
   "com_ui_weather_today": "నేటి వాతావరణం",
   "com_ui_weather_updated": "నవీకరించబడింది {{0}}",
   "com_ui_weather_view_forecast": "సూచన చూడండి",

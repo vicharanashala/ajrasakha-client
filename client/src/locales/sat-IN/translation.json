@@ -2268,7 +2268,7 @@
   "com_ui_weather_rainfall": "ᱫᱟᱜ ᱞᱮᱠᱷᱟ",
   "com_ui_weather_rainfall_value": "{{0}} ᱢᱤ.ᱢᱤ.",
   "com_ui_weather_refresh": "ᱦᱚᱭ ᱫᱟᱜ ᱨᱤᱯᱷᱨᱮᱥ ᱢᱮ",
-  "com_ui_weather_station": "{{0}}, {{1}} ᱠᱤ.ᱢᱤ. ᱥᱟᱸᱡᱮ",
+  "com_ui_weather_station": "{{0}}, {{1}} ᱠᱤ.ᱢᱤ. ᱥᱟᱸᱡᱮ (ᱟᱢ ᱵᱟᱪᱷᱟᱣ ᱟᱠᱟᱫ ᱡᱟᱭᱜᱟ ᱠᱷᱚᱱ)",
   "com_ui_weather_today": "ᱛᱮᱦᱮᱧᱟᱜ ᱦᱚᱭ ᱫᱟᱜ",
   "com_ui_weather_updated": "ᱟᱹᱯᱰᱮᱴ {{0}}",
   "com_ui_weather_view_forecast": "ᱟᱜᱟᱢ ᱠᱷᱚᱵᱚᱨ ᱧᱮᱞ ᱢᱮ",

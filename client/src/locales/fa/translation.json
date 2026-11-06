@@ -993,7 +993,7 @@
   "com_ui_weather_rainfall": "بارش",
   "com_ui_weather_rainfall_value": "{{0}} میلی‌متر",
   "com_ui_weather_refresh": "تازه‌سازی آب‌وهوا",
-  "com_ui_weather_station": "{{0}}، {{1}} کیلومتر فاصله",
+  "com_ui_weather_station": "{{0}}، {{1}} کیلومتر فاصله (از موقعیت انتخابی شما)",
   "com_ui_weather_today": "آب‌وهوای امروز",
   "com_ui_weather_updated": "به‌روزرسانی {{0}}",
   "com_ui_weather_view_forecast": "مشاهده پیش‌بینی",

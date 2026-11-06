@@ -717,7 +717,7 @@
   "com_ui_weather_rainfall": "Nederbörd",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Uppdatera väder",
-  "com_ui_weather_station": "{{0}}, {{1}} km bort",
+  "com_ui_weather_station": "{{0}}, {{1}} km bort (från din valda plats)",
   "com_ui_weather_today": "Dagens väder",
   "com_ui_weather_updated": "Uppdaterad {{0}}",
   "com_ui_weather_view_forecast": "Visa prognos",

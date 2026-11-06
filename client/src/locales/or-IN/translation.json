@@ -2272,7 +2272,7 @@
   "com_ui_weather_rainfall": "ବର୍ଷା",
   "com_ui_weather_rainfall_value": "{{0}} ମି.ମି.",
   "com_ui_weather_refresh": "ପାଣିପାଗ ରିଫ୍ରେସ କରନ୍ତୁ",
-  "com_ui_weather_station": "{{0}}, {{1}} କି.ମି. ଦୂରରେ",
+  "com_ui_weather_station": "{{0}}, {{1}} କି.ମି. ଦୂରରେ (ଆପଣ ବାଛିଥିବା ସ୍ଥାନରୁ)",
   "com_ui_weather_today": "ଆଜିର ପାଣିପାଗ",
   "com_ui_weather_updated": "ଅପଡେଟ {{0}}",
   "com_ui_weather_view_forecast": "ପୂର୍ବାନୁମାନ ଦେଖନ୍ତୁ",

@@ -975,7 +975,7 @@
   "com_ui_weather_rainfall": "Precipitación",
   "com_ui_weather_rainfall_value": "{{0}} mm",
   "com_ui_weather_refresh": "Actualizar el tiempo",
-  "com_ui_weather_station": "{{0}}, a {{1}} km",
+  "com_ui_weather_station": "{{0}}, a {{1}} km (de tu ubicación seleccionada)",
   "com_ui_weather_today": "El tiempo de hoy",
   "com_ui_weather_updated": "Actualizado {{0}}",
   "com_ui_weather_view_forecast": "Ver pronóstico",
