@@ -6,6 +6,7 @@ import {
   ArrowRight,
   CloudOff,
   CloudRain,
+  CloudSun,
   Droplets,
   MapPin,
   RadioTower,
@@ -434,7 +435,14 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
     >
       <RefreshProgressBar active={isRefreshing} />
       <div className="flex items-start justify-between gap-3">
-        <h2 id={titleId} className="shrink-0 text-base font-semibold text-text-primary sm:text-lg">
+        <h2
+          id={titleId}
+          className="flex shrink-0 items-center gap-2 text-base font-semibold text-text-primary sm:text-lg"
+        >
+          <CloudSun
+            className="size-5 shrink-0 text-green-600 dark:text-green-400"
+            aria-hidden="true"
+          />
           {localize('com_ui_weather_today')}
         </h2>
         <div className="flex min-w-0 flex-col items-end gap-1">
