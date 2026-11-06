@@ -6,6 +6,7 @@ import type { IFarmerProfile } from 'librechat-data-provider';
 import { isMissingLocationError, useWeather } from '~/hooks/useWeather';
 import type { Weather } from '~/hooks/useWeather';
 import { useAuthContext, useLocalize } from '~/hooks';
+import type { TranslationKeys } from '~/hooks';
 import { cn } from '~/utils';
 import { LANDING_CARD_SURFACE } from './landingCardStyles';
 import {
@@ -20,9 +21,33 @@ import {
 // Rounds a Celsius temperature for display, e.g. 32.5 becomes 33°.
 const formatTemperature = (value: number) => `${Math.round(value)}°`;
 
+// Shown in place of a reading the station did not report.
+const MISSING_READING = '--';
+
+// Rounds a reading and drops trailing zeros, e.g. 12.40 becomes 12.4.
+const formatNumber = (value: number, decimals = 0) => String(Number(value.toFixed(decimals)));
+
 // Formats a station reading with its unit, or a dash when the station did not report it.
 const formatReading = (value: number | null, unit: string, decimals = 0) =>
-  value === null ? '--' : `${Number(value.toFixed(decimals))}${unit}`;
+  value === null ? MISSING_READING : `${formatNumber(value, decimals)}${unit}`;
+
+// Condition labels the weather service sends, mapped to translation keys. Matching ignores case.
+// A label not listed here is shown exactly as the service sent it.
+const CONDITION_LABEL_KEYS: Record<string, TranslationKeys> = {
+  clear: 'com_ui_weather_condition_clear',
+  sunny: 'com_ui_weather_condition_sunny',
+  'partly cloudy': 'com_ui_weather_condition_partly_cloudy',
+  cloudy: 'com_ui_weather_condition_cloudy',
+  overcast: 'com_ui_weather_condition_overcast',
+  mist: 'com_ui_weather_condition_mist',
+  fog: 'com_ui_weather_condition_fog',
+  haze: 'com_ui_weather_condition_haze',
+  drizzle: 'com_ui_weather_condition_drizzle',
+  'light rain': 'com_ui_weather_condition_light_rain',
+  rain: 'com_ui_weather_condition_rain',
+  'heavy rain': 'com_ui_weather_condition_heavy_rain',
+  thunderstorm: 'com_ui_weather_condition_thunderstorm',
+};
 
 // Shortest time the refresh icon spins after a tap, so a fast reply still reads as a refresh
 // instead of a flicker.
@@ -111,6 +136,9 @@ type WeatherCardBodyProps = { weather: Weather; updatedAt: number; isRefreshing:
 // The values dim slightly while a refresh is in flight so it is clear they are about to change.
 function WeatherCardBody({ weather, updatedAt, isRefreshing }: WeatherCardBodyProps) {
   const localize = useLocalize();
+  // The icon still matches on the service's English label, only the text shown is translated.
+  const conditionKey = CONDITION_LABEL_KEYS[weather.weatherCondition.trim().toLowerCase()];
+  const conditionLabel = conditionKey ? localize(conditionKey) : weather.weatherCondition;
   return (
     <div
       className={cn(
@@ -132,7 +160,7 @@ function WeatherCardBody({ weather, updatedAt, isRefreshing }: WeatherCardBodyPr
             className="size-10 shrink-0 text-green-600 dark:text-green-400 sm:size-12"
           />
           <div className="min-w-0">
-            <p className="truncate font-semibold text-text-primary">{weather.weatherCondition}</p>
+            <p className="truncate font-semibold text-text-primary">{conditionLabel}</p>
             {weather.feelsLikeTemperature !== null && (
               <p className="text-xs text-text-secondary">
                 {localize('com_ui_weather_feels_like', {
@@ -153,12 +181,20 @@ function WeatherCardBody({ weather, updatedAt, isRefreshing }: WeatherCardBodyPr
         <WeatherCardStat
           icon={<CloudRain className="size-4" aria-hidden="true" />}
           label={localize('com_ui_weather_rainfall')}
-          value={formatReading(weather.rainfall, ' mm', 1)}
+          value={
+            weather.rainfall === null
+              ? MISSING_READING
+              : localize('com_ui_weather_rainfall_value', { 0: formatNumber(weather.rainfall, 1) })
+          }
         />
         <WeatherCardStat
           icon={<Wind className="size-4" aria-hidden="true" />}
           label={localize('com_ui_weather_wind')}
-          value={formatReading(weather.windSpeed, ' km/h', 1)}
+          value={
+            weather.windSpeed === null
+              ? MISSING_READING
+              : localize('com_ui_weather_wind_value', { 0: formatNumber(weather.windSpeed, 1) })
+          }
         />
       </div>
 
