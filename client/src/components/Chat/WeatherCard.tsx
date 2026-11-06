@@ -169,14 +169,14 @@ function StationChip({ name, distanceKm }: StationChipProps) {
   );
 }
 
-// Forecast link placeholder. Disabled until the forecast page exists, with a coming soon badge.
+// Forecast link placeholder in the brand colour. Disabled until the forecast page exists, with a coming soon badge.
 function ForecastButton() {
   const localize = useLocalize();
   return (
     <button
       type="button"
       disabled
-      className="inline-flex min-h-9 shrink-0 cursor-not-allowed items-center gap-2 rounded-full py-1 pl-3 pr-1.5 text-xs font-semibold text-text-tertiary ring-1 ring-black/5 dark:ring-white/10"
+      className="inline-flex min-h-9 shrink-0 cursor-not-allowed items-center gap-2 rounded-full bg-green-500/10 py-1 pl-3 pr-1.5 text-xs font-semibold text-green-700 ring-1 ring-green-500/30 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/30"
     >
       {localize('com_ui_weather_view_forecast')}
       <ArrowRight className="size-3.5 shrink-0" aria-hidden="true" />
