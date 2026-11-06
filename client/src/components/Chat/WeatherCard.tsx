@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -60,6 +60,9 @@ const CONDITION_LABEL_KEYS: Record<string, TranslationKeys> = {
 // Shortest time the refresh icon spins after a tap, so a fast reply still reads as a refresh
 // instead of a flicker.
 const MIN_REFRESH_SPIN_MS = 700;
+// How long the refresh button stays disabled after a tap-driven refresh finishes, so repeated
+// taps cannot flood the weather service.
+const REFRESH_COOLDOWN_MS = 10000;
 
 // Resolves after the given number of milliseconds.
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -306,10 +309,17 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
   const [isManualRefresh, setIsManualRefresh] = useState(false);
   // Covers taps on the refresh button and background refetches such as after a location change.
   const isRefreshing = !!weather && (isManualRefresh || isRefetching);
+  // True for a short while after a tap-driven refresh, while the button rests.
+  const [isCoolingDown, setIsCoolingDown] = useState(false);
+  const cooldownTimerRef = useRef<number>();
 
-  // Fetches fresh weather on demand. Ignores taps while a refresh is already running.
+  // Clears a pending cooldown timer when the card unmounts.
+  useEffect(() => () => window.clearTimeout(cooldownTimerRef.current), []);
+
+  // Fetches fresh weather on demand, then rests the button for a few seconds.
+  // Ignores taps while a refresh is running or the button is resting.
   const handleRefresh = async () => {
-    if (isRefreshing) {
+    if (isRefreshing || isCoolingDown) {
       return;
     }
     setIsManualRefresh(true);
@@ -317,6 +327,11 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
       await Promise.all([refetch(), wait(MIN_REFRESH_SPIN_MS)]);
     } finally {
       setIsManualRefresh(false);
+      setIsCoolingDown(true);
+      cooldownTimerRef.current = window.setTimeout(
+        () => setIsCoolingDown(false),
+        REFRESH_COOLDOWN_MS,
+      );
     }
   };
 
@@ -354,14 +369,15 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
             <button
               type="button"
               onClick={handleRefresh}
-              disabled={isRefreshing}
+              disabled={isRefreshing || isCoolingDown}
               aria-label={localize('com_ui_weather_refresh')}
               title={localize('com_ui_weather_refresh')}
               className="-my-2 -mr-2 flex size-10 shrink-0 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary disabled:cursor-default disabled:hover:bg-transparent motion-reduce:transition-none"
             >
               <RefreshCw
                 className={cn(
-                  'size-4 transition-colors',
+                  'size-4 transition-[color,opacity] duration-300',
+                  isCoolingDown && !isRefreshing && 'opacity-40',
                   isRefreshing &&
                     'animate-spin text-green-600 motion-reduce:animate-none dark:text-green-400',
                 )}
