@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { animate, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, animate, motion, useReducedMotion } from 'framer-motion';
 import type { TargetAndTransition } from 'framer-motion';
 import {
   Cloud,
@@ -182,5 +182,38 @@ export function ShakeOnMount({ children, className, inline = false, role }: Shak
     <motion.div className={className} animate={shake} transition={transition} role={role}>
       {children}
     </motion.div>
+  );
+}
+
+// Slim bar that sweeps along the top edge of a card while its data refreshes.
+// The parent needs `relative overflow-hidden` so the bar sits on its edge and follows its corners.
+export function RefreshProgressBar({ active }: { active: boolean }) {
+  const prefersReducedMotion = useReducedMotion();
+  return (
+    <AnimatePresence>
+      {active && (
+        <motion.div
+          key="refresh-progress"
+          className="pointer-events-none absolute inset-x-0 top-0 h-0.5 overflow-hidden bg-green-500/15"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          aria-hidden="true"
+        >
+          {/* The segment is 40% wide, so moving it from -100% to 250% of its own width crosses the card. */}
+          <motion.span
+            className="absolute inset-y-0 left-0 w-2/5 rounded-full bg-green-500 dark:bg-green-400"
+            initial={{ x: prefersReducedMotion ? '75%' : '-100%' }}
+            animate={{ x: prefersReducedMotion ? '75%' : '250%' }}
+            transition={
+              prefersReducedMotion
+                ? { duration: 0 }
+                : { duration: 1.1, ease: 'easeInOut', repeat: Infinity }
+            }
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

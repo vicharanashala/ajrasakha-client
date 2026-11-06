@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { CloudOff, CloudRain, Droplets, MapPin, RadioTower, RefreshCw, Wind } from 'lucide-react';
@@ -11,6 +11,7 @@ import { LANDING_CARD_SURFACE } from './landingCardStyles';
 import {
   AnimatedTemperature,
   LiveIndicator,
+  RefreshProgressBar,
   ShakeOnMount,
   Shimmer,
   WeatherConditionIcon,
@@ -22,6 +23,13 @@ const formatTemperature = (value: number) => `${Math.round(value)}°`;
 // Formats a station reading with its unit, or a dash when the station did not report it.
 const formatReading = (value: number | null, unit: string, decimals = 0) =>
   value === null ? '--' : `${Number(value.toFixed(decimals))}${unit}`;
+
+// Shortest time the refresh icon spins after a tap, so a fast reply still reads as a refresh
+// instead of a flicker.
+const MIN_REFRESH_SPIN_MS = 700;
+
+// Resolves after the given number of milliseconds.
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Formats when the weather was last fetched, e.g. 10:30 AM.
 const formatUpdatedTime = (timestamp: number) =>
@@ -97,13 +105,20 @@ function WeatherCardError({ message, retryLabel, isRetrying, onRetry }: WeatherC
   );
 }
 
-type WeatherCardBodyProps = { weather: Weather; updatedAt: number; isRefetching: boolean };
+type WeatherCardBodyProps = { weather: Weather; updatedAt: number; isRefreshing: boolean };
 
 // Loaded state: temperature, condition, stats and when the data was last refreshed.
-function WeatherCardBody({ weather, updatedAt, isRefetching }: WeatherCardBodyProps) {
+// The values dim slightly while a refresh is in flight so it is clear they are about to change.
+function WeatherCardBody({ weather, updatedAt, isRefreshing }: WeatherCardBodyProps) {
   const localize = useLocalize();
   return (
-    <div className="flex flex-col gap-4 duration-300 animate-in fade-in-0 motion-reduce:animate-none">
+    <div
+      className={cn(
+        'flex flex-col gap-4 transition-opacity duration-300 animate-in fade-in-0 motion-reduce:animate-none motion-reduce:transition-none',
+        isRefreshing && 'opacity-60',
+      )}
+      aria-busy={isRefreshing}
+    >
       <div className="flex items-center justify-between gap-4">
         <p className="text-5xl font-bold leading-none tracking-tight text-text-primary sm:text-6xl">
           <span aria-hidden="true">
@@ -150,12 +165,6 @@ function WeatherCardBody({ weather, updatedAt, isRefetching }: WeatherCardBodyPr
       {updatedAt > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs text-text-tertiary">
           <p className="flex items-center gap-1.5" aria-live="polite">
-            {isRefetching && (
-              <RefreshCw
-                className="size-3 animate-spin motion-reduce:animate-none"
-                aria-hidden="true"
-              />
-            )}
             {/* Keyed on the fetch time so the label flashes softly whenever fresh data lands. */}
             <motion.span
               key={updatedAt}
@@ -206,6 +215,23 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
     refetch,
   } = useWeather(isAuthenticated);
   const isLocationMissing = isMissingLocationError(error);
+  // True from a refresh tap until the new reading is in and the minimum spin has played.
+  const [isManualRefresh, setIsManualRefresh] = useState(false);
+  // Covers taps on the refresh button and background refetches such as after a location change.
+  const isRefreshing = !!weather && (isManualRefresh || isRefetching);
+
+  // Fetches fresh weather on demand. Ignores taps while a refresh is already running.
+  const handleRefresh = async () => {
+    if (isRefreshing) {
+      return;
+    }
+    setIsManualRefresh(true);
+    try {
+      await Promise.all([refetch(), wait(MIN_REFRESH_SPIN_MS)]);
+    } finally {
+      setIsManualRefresh(false);
+    }
+  };
 
   if (!isAuthenticated) {
     return null;
@@ -218,13 +244,14 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
       aria-labelledby={titleId}
       style={style}
       className={cn(
-        'flex w-full flex-col gap-4 rounded-2xl p-4 text-start sm:p-5',
+        'relative flex w-full flex-col gap-4 overflow-hidden rounded-2xl p-4 text-start sm:p-5',
         // Same border, surface, gradient and shadow as the question cards so they read as one set.
         LANDING_CARD_SURFACE,
         'shadow-[0_2px_6px_0_rgba(0,0,0,0.09)] dark:shadow-[0_2px_8px_0_rgba(0,0,0,0.45)]',
         className,
       )}
     >
+      <RefreshProgressBar active={isRefreshing} />
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
           <h2 id={titleId} className="text-base font-semibold text-text-primary sm:text-lg">
@@ -237,12 +264,33 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
             </span>
           )}
         </div>
-        {locationLabel && (
-          <p className="flex min-w-0 items-center gap-1 pt-0.5 text-xs capitalize text-text-secondary">
-            <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
-            <span className="truncate">{locationLabel}</span>
-          </p>
-        )}
+        <div className="flex min-w-0 items-center gap-1">
+          {locationLabel && (
+            <p className="flex min-w-0 items-center gap-1 text-xs capitalize text-text-secondary">
+              <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
+              <span className="truncate">{locationLabel}</span>
+            </p>
+          )}
+          {weather && (
+            <button
+              type="button"
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              aria-label={localize('com_ui_weather_refresh')}
+              title={localize('com_ui_weather_refresh')}
+              className="-my-2 -mr-2 flex size-10 shrink-0 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-surface-hover hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring-primary disabled:cursor-default disabled:hover:bg-transparent motion-reduce:transition-none"
+            >
+              <RefreshCw
+                className={cn(
+                  'size-4 transition-colors',
+                  isRefreshing &&
+                    'animate-spin text-green-600 motion-reduce:animate-none dark:text-green-400',
+                )}
+                aria-hidden="true"
+              />
+            </button>
+          )}
+        </div>
       </div>
 
       {isLoading && !weather && <WeatherCardSkeleton label={localize('com_ui_weather_loading')} />}
@@ -257,7 +305,7 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
         />
       )}
       {weather && (
-        <WeatherCardBody weather={weather} updatedAt={dataUpdatedAt} isRefetching={isRefetching} />
+        <WeatherCardBody weather={weather} updatedAt={dataUpdatedAt} isRefreshing={isRefreshing} />
       )}
     </section>
   );
