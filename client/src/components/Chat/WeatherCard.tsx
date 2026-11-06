@@ -90,6 +90,19 @@ function IconBadge({ children, className }: { children: ReactNode; className?: s
   );
 }
 
+// The farmer's selected location with a pin, e.g. "Thrissur, Kerala". The caller sets its display
+// so it can sit under the title on phones and beside the refresh button on wider screens.
+function LocationLabel({ label, className }: { label: string; className?: string }) {
+  return (
+    <p
+      className={cn('min-w-0 items-center gap-1 text-xs capitalize text-text-secondary', className)}
+    >
+      <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
+      <span className="truncate">{label}</span>
+    </p>
+  );
+}
+
 type WeatherCardStatProps = { icon: ReactNode; label: string; value: string };
 
 // One metric in the stats row, such as humidity or wind speed.
@@ -453,23 +466,25 @@ export default function WeatherCard({ className, style }: WeatherCardProps) {
     >
       <RefreshProgressBar active={isRefreshing} />
       <div className="flex items-start justify-between gap-3">
-        <h2
-          id={titleId}
-          className="flex shrink-0 items-center gap-2 text-base font-semibold text-text-primary sm:text-lg"
-        >
-          <IconBadge className="size-8">
-            <CloudSun className="size-[18px]" aria-hidden="true" />
-          </IconBadge>
-          {localize('com_ui_weather_today')}
-        </h2>
+        <div className="flex min-w-0 flex-col gap-0.5">
+          <h2
+            id={titleId}
+            className="flex min-w-0 items-center gap-2 text-base font-semibold text-text-primary sm:text-lg"
+          >
+            <IconBadge className="size-8">
+              <CloudSun className="size-[18px]" aria-hidden="true" />
+            </IconBadge>
+            {localize('com_ui_weather_today')}
+          </h2>
+          {/* Phones: under the title, lined up with its text, where it has the full width. */}
+          {locationLabel && (
+            <LocationLabel label={locationLabel} className="flex pl-10 sm:hidden" />
+          )}
+        </div>
         <div className="flex min-w-0 flex-col items-end gap-1">
           <div className="flex min-w-0 max-w-full items-center gap-1">
-            {locationLabel && (
-              <p className="flex min-w-0 items-center gap-1 text-xs capitalize text-text-secondary">
-                <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
-                <span className="truncate">{locationLabel}</span>
-              </p>
-            )}
+            {/* Wider screens: beside the refresh button. */}
+            {locationLabel && <LocationLabel label={locationLabel} className="hidden sm:flex" />}
             {weather && (
               <button
                 type="button"
