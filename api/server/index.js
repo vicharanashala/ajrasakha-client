@@ -177,13 +177,7 @@ globalThis.fetch = async (url, options = {}) => {
 console.log('[PROXY] Tailscale HTTP proxy routing active. PROXY=' + (process.env.PROXY || '<unset>') + '. Replaces the SOCKS interceptor (now commented out above).');
 
 require('dotenv').config();
-const dns = require("dns");
 
-// Force stable DNS servers
-dns.setServers(["8.8.8.8", "1.1.1.1"]);
-
-// Force IPv4 priority
-dns.setDefaultResultOrder("ipv4first");
 const fs = require('fs');
 const path = require('path');
 require('module-alias')({ base: path.resolve(__dirname, '..') });

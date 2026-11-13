@@ -1,11 +1,5 @@
 const path = require('path');
-const dns = require("dns");
 
-// Force stable DNS servers
-dns.setServers(["8.8.8.8", "1.1.1.1"]);
-
-// Force IPv4 priority
-dns.setDefaultResultOrder("ipv4first");
 const mongoose = require('mongoose');
 const { User } = require('@librechat/data-schemas').createModels(mongoose);
 require('module-alias')({ base: path.resolve(__dirname, '..', 'api') });
