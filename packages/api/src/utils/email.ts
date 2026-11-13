@@ -1,3 +1,13 @@
+import { isEnabled } from './common';
+
+/**
+ * Check if email verification is enabled via .env
+ * @returns Returns `true` if emailVerified or EMAIL_VERIFIED is true
+ */
+export function isEmailVerificationEnabled(): boolean {
+  return isEnabled(process.env.emailVerified ?? process.env.EMAIL_VERIFIED);
+}
+
 /**
  * Check if email configuration is set
  * @returns Returns `true` if either Mailgun or SMTP is properly configured
