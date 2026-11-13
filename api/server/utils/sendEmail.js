@@ -49,6 +49,47 @@ const sendEmailViaMailgun = async ({ to, from, subject, html }) => {
 };
 
 /**
+ * Builds Nodemailer transporter options based on environment variables.
+ * @returns {Object} transporter configuration options
+ */
+const getTransporterOptions = () => {
+  const port = Number(process.env.EMAIL_PORT) || 25;
+  const isSecure = process.env.EMAIL_ENCRYPTION === 'tls' || port === 465;
+
+  const transporterOptions = {
+    // Use STARTTLS by default unless TLS/465 is specified
+    secure: isSecure,
+    requireTls: process.env.EMAIL_ENCRYPTION === 'starttls',
+    tls: {
+      // Whether to accept unsigned certificates
+      rejectUnauthorized: !isEnabled(process.env.EMAIL_ALLOW_SELFSIGNED),
+    },
+  };
+
+  if (process.env.EMAIL_USERNAME && process.env.EMAIL_PASSWORD) {
+    transporterOptions.auth = {
+      user: process.env.EMAIL_USERNAME,
+      pass: process.env.EMAIL_PASSWORD,
+    };
+  }
+
+  if (process.env.EMAIL_ENCRYPTION_HOSTNAME) {
+    // Check the certificate against this name explicitly
+    transporterOptions.tls.servername = process.env.EMAIL_ENCRYPTION_HOSTNAME;
+  }
+
+  // Mailer service definition has precedence (e.g., 'gmail')
+  if (process.env.EMAIL_SERVICE) {
+    transporterOptions.service = process.env.EMAIL_SERVICE;
+  } else {
+    transporterOptions.host = process.env.EMAIL_HOST;
+    transporterOptions.port = port;
+  }
+
+  return transporterOptions;
+};
+
+/**
  * Sends an email using SMTP via Nodemailer.
  *
  * @async
@@ -64,6 +105,25 @@ const sendEmailViaSMTP = async ({ transporterOptions, mailOptions }) => {
 };
 
 /**
+ * Verifies the Nodemailer SMTP connection.
+ * @async
+ * @function verifyMailConnection
+ * @returns {Promise<{ success: boolean, message?: string, error?: any }>}
+ */
+const verifyMailConnection = async () => {
+  try {
+    const transporterOptions = getTransporterOptions();
+    const transporter = nodemailer.createTransport(transporterOptions);
+    await transporter.verify();
+    logger.info('[Nodemailer] SMTP connection verified successfully');
+    return { success: true };
+  } catch (error) {
+    logger.error('[Nodemailer] SMTP connection verification failed:', error);
+    return { success: false, error };
+  }
+};
+
+/**
  * Sends an email using the specified template, subject, and payload.
  *
  * @async
@@ -75,20 +135,6 @@ const sendEmailViaSMTP = async ({ transporterOptions, mailOptions }) => {
  * @param {string} params.template - The filename of the email template.
  * @param {boolean} [throwError=true] - Whether to throw an error if the email sending process fails.
  * @returns {Promise<Object>} - A promise that resolves to the info object of the sent email or the error if sending the email fails.
- *
- * @example
- * const emailData = {
- *   email: 'recipient@example.com',
- *   subject: 'Welcome!',
- *   payload: { name: 'Recipient' },
- *   template: 'welcome.html'
- * };
- *
- * sendEmail(emailData)
- *   .then(info => console.log('Email sent:', info))
- *   .catch(error => console.error('Error sending email:', error));
- *
- * @throws Will throw an error if the email sending process fails and throwError is `true`.
  */
 const sendEmail = async ({ email, subject, payload, template, throwError = true }) => {
   try {
@@ -97,10 +143,10 @@ const sendEmail = async ({ email, subject, payload, template, throwError = true 
     const html = compiledTemplate(payload);
 
     // Prepare common email data
-    const fromName = process.env.EMAIL_FROM_NAME || process.env.APP_TITLE;
-    const fromEmail = process.env.EMAIL_FROM;
+    const fromName = process.env.EMAIL_FROM_NAME || process.env.APP_TITLE || 'Ajrasakha';
+    const fromEmail = process.env.EMAIL_FROM || 'noreply@ajrasakha.ai';
     const fromAddress = `"${fromName}" <${fromEmail}>`;
-    const toAddress = `"${payload.name}" <${email}>`;
+    const toAddress = `"${payload.name || email}" <${email}>`;
 
     // Check if Mailgun is configured
     if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN) {
@@ -113,43 +159,14 @@ const sendEmail = async ({ email, subject, payload, template, throwError = true 
       });
     }
 
-    // Default to SMTP
-    logger.debug('[sendEmail] Using SMTP provider');
-    const transporterOptions = {
-      // Use STARTTLS by default instead of obligatory TLS
-      secure: process.env.EMAIL_ENCRYPTION === 'tls',
-      // If explicit STARTTLS is set, require it when connecting
-      requireTls: process.env.EMAIL_ENCRYPTION === 'starttls',
-      tls: {
-        // Whether to accept unsigned certificates
-        rejectUnauthorized: !isEnabled(process.env.EMAIL_ALLOW_SELFSIGNED),
-      },
-      auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-    };
-
-    if (process.env.EMAIL_ENCRYPTION_HOSTNAME) {
-      // Check the certificate against this name explicitly
-      transporterOptions.tls.servername = process.env.EMAIL_ENCRYPTION_HOSTNAME;
-    }
-
-    // Mailer service definition has precedence
-    if (process.env.EMAIL_SERVICE) {
-      transporterOptions.service = process.env.EMAIL_SERVICE;
-    } else {
-      transporterOptions.host = process.env.EMAIL_HOST;
-      transporterOptions.port = process.env.EMAIL_PORT ?? 25;
-    }
+    // Default to SMTP via Nodemailer
+    logger.debug('[sendEmail] Using SMTP provider via Nodemailer');
+    const transporterOptions = getTransporterOptions();
 
     const mailOptions = {
-      // Header address should contain name-addr
       from: fromAddress,
       to: toAddress,
       envelope: {
-        // Envelope from should contain addr-spec
-        // Mistake in the Nodemailer documentation?
         from: fromEmail,
         to: email,
       },
@@ -166,5 +183,9 @@ const sendEmail = async ({ email, subject, payload, template, throwError = true 
     return error;
   }
 };
+
+sendEmail.getTransporterOptions = getTransporterOptions;
+sendEmail.sendEmailViaSMTP = sendEmailViaSMTP;
+sendEmail.verifyMailConnection = verifyMailConnection;
 
 module.exports = sendEmail;

@@ -8,7 +8,14 @@ const {
   DEFAULT_REFRESH_TOKEN_EXPIRY,
 } = require('@librechat/data-schemas');
 const { ErrorTypes, SystemRoles, UserRoles, errorsToString } = require('librechat-data-provider');
-const { isEnabled, checkEmailConfig, isEmailDomainAllowed, math } = require('@librechat/api');
+const { isEnabled, checkEmailConfig, isEmailVerificationEnabled: checkEmailVerification, isEmailDomainAllowed, math } = require('@librechat/api');
+
+const isEmailVerificationEnabled = () => {
+  if (typeof checkEmailVerification === 'function') {
+    return checkEmailVerification();
+  }
+  return isEnabled(process.env.emailVerified ?? process.env.EMAIL_VERIFIED);
+};
 const {
   findUser,
   findToken,
@@ -31,11 +38,12 @@ const { getAppConfig } = require('~/server/services/Config');
 const { sendEmail } = require('~/server/utils');
 
 const domains = {
-  client: process.env.DOMAIN_CLIENT,
-  server: process.env.DOMAIN_SERVER,
+  client: (process.env.DOMAIN_CLIENT || process.env.DOMAIN_SERVER || 'http://localhost:3080').replace(/\/+$/, ''),
+  server: (process.env.DOMAIN_SERVER || 'http://localhost:3080').replace(/\/+$/, ''),
 };
 
 const isProduction = process.env.NODE_ENV === 'production';
+const EMAIL_VERIFICATION_EXPIRY = parseInt(process.env.EMAIL_VERIFICATION_EXPIRY, 10) || 86400; // 24 hours in seconds
 const genericVerificationMessage = 'Please check your email to verify your email address.';
 const activeSessionMessage =
   'You are already logged in on one device. Logout to access in this device.';
@@ -101,6 +109,7 @@ const sendVerificationEmail = async (user) => {
       appName: process.env.APP_TITLE || 'LibreChat',
       name: user.name || user.username || user.email,
       verificationLink: verificationLink,
+      logoUrl: `${domains.client}/assets/annam.png`,
       year: new Date().getFullYear(),
     },
     template: 'verifyEmail.handlebars',
@@ -111,7 +120,7 @@ const sendVerificationEmail = async (user) => {
     email: user.email,
     token: hash,
     createdAt: Date.now(),
-    expiresIn: 900,
+    expiresIn: EMAIL_VERIFICATION_EXPIRY,
   });
 
   logger.info(`[sendVerificationEmail] Verification link issued. [Email: ${user.email}]`);
@@ -141,7 +150,7 @@ const verifyEmail = async (req) => {
 
   if (!emailVerificationData) {
     logger.warn(`[verifyEmail] [No email verification data found] [Email: ${decodedEmail}]`);
-    return new Error('Invalid or expired password reset token');
+    return new Error('Invalid or expired email verification token');
   }
 
   const isValid = bcrypt.compareSync(token, emailVerificationData.token);
@@ -224,22 +233,29 @@ const registerUser = async (user, additionalData = {}) => {
       ...additionalData,
     };
 
-    const emailEnabled = checkEmailConfig();
-    const disableTTL = isEnabled(process.env.ALLOW_UNVERIFIED_EMAIL_LOGIN);
+    const verificationRequired = isEmailVerificationEnabled();
+    const emailConfigured = checkEmailConfig();
+    const disableTTL = !verificationRequired || isEnabled(process.env.ALLOW_UNVERIFIED_EMAIL_LOGIN);
 
     const newUser = await createUser(newUserData, appConfig.balance, disableTTL, true);
     newUserId = newUser._id;
-    if (emailEnabled && !newUser.emailVerified) {
-      await sendVerificationEmail({
-        _id: newUserId,
-        email,
-        name,
-      });
+
+    if (verificationRequired) {
+      if (!emailConfigured) {
+        logger.warn('[registerUser] emailVerified is enabled but SMTP email configuration is missing.');
+      }
+      if (!newUser.emailVerified) {
+        await sendVerificationEmail({
+          _id: newUserId,
+          email,
+          name,
+        });
+      }
+      return { status: 200, message: genericVerificationMessage };
     } else {
       await updateUser(newUserId, { emailVerified: true });
+      return { status: 200, message: 'Registration successful' };
     }
-
-    return { status: 200, message: genericVerificationMessage };
   } catch (err) {
     logger.error('[registerUser] Error in registering user:', err);
     if (newUserId) {
@@ -512,13 +528,22 @@ const setOpenIDAuthTokens = (tokenset, res, userId, existingRefreshToken) => {
 const resendVerificationEmail = async (req) => {
   try {
     const { email } = req.body;
-    await deleteTokens({ email });
-    const user = await findUser({ email }, 'email _id name');
+    if (!isEmailVerificationEnabled()) {
+      return { status: 200, message: 'Email verification is not enabled.' };
+    }
+
+    const user = await findUser({ email }, 'email _id name emailVerified');
 
     if (!user) {
       logger.warn(`[resendVerificationEmail] [No user found] [Email: ${email}]`);
       return { status: 200, message: genericVerificationMessage };
     }
+
+    if (user.emailVerified) {
+      return { status: 200, message: 'Email already verified.' };
+    }
+
+    await deleteTokens({ email });
 
     const [verifyToken, hash] = createTokenHash();
 
@@ -533,6 +558,7 @@ const resendVerificationEmail = async (req) => {
         appName: process.env.APP_TITLE || 'LibreChat',
         name: user.name || user.username || user.email,
         verificationLink: verificationLink,
+        logoUrl: `${domains.client}/assets/annam.png`,
         year: new Date().getFullYear(),
       },
       template: 'verifyEmail.handlebars',
@@ -543,7 +569,7 @@ const resendVerificationEmail = async (req) => {
       email: user.email,
       token: hash,
       createdAt: Date.now(),
-      expiresIn: 900,
+      expiresIn: EMAIL_VERIFICATION_EXPIRY,
     });
 
     logger.info(`[resendVerificationEmail] Verification link issued. [Email: ${user.email}]`);
