@@ -43,6 +43,7 @@ const domains = {
 };
 
 const isProduction = process.env.NODE_ENV === 'production';
+const EMAIL_VERIFICATION_EXPIRY = parseInt(process.env.EMAIL_VERIFICATION_EXPIRY, 10) || 86400; // 24 hours in seconds
 const genericVerificationMessage = 'Please check your email to verify your email address.';
 const activeSessionMessage =
   'You are already logged in on one device. Logout to access in this device.';
@@ -119,7 +120,7 @@ const sendVerificationEmail = async (user) => {
     email: user.email,
     token: hash,
     createdAt: Date.now(),
-    expiresIn: 900,
+    expiresIn: EMAIL_VERIFICATION_EXPIRY,
   });
 
   logger.info(`[sendVerificationEmail] Verification link issued. [Email: ${user.email}]`);
@@ -568,7 +569,7 @@ const resendVerificationEmail = async (req) => {
       email: user.email,
       token: hash,
       createdAt: Date.now(),
-      expiresIn: 900,
+      expiresIn: EMAIL_VERIFICATION_EXPIRY,
     });
 
     logger.info(`[resendVerificationEmail] Verification link issued. [Email: ${user.email}]`);

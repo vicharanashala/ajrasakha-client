@@ -119,7 +119,7 @@ describe('Email Verification & Nodemailer Setup', () => {
       }));
     });
 
-    it('should reject login with "Email not verified." when emailVerified=true and user.emailVerified is false', async () => {
+    it('should reject login with "Email not verified. Please check your inbox for the verification link." when emailVerified=true and user.emailVerified is false', async () => {
       process.env.emailVerified = 'true';
       const localStrategy = require('../strategies/localStrategy')();
 
@@ -143,8 +143,75 @@ describe('Email Verification & Nodemailer Setup', () => {
         localStrategy._verify(req, 'test@example.com', 'validPassword123', (err, resultUser, info) => {
           expect(err).toBeNull();
           expect(resultUser).toEqual(user);
-          expect(info).toEqual({ message: 'Email not verified.' });
+          expect(info).toEqual({
+            message: 'Email not verified. Please check your inbox for the verification link.',
+          });
           expect(mockUpdateUser).not.toHaveBeenCalled();
+          resolve();
+        });
+      });
+    });
+
+    it('should prioritize email verification message over admin verification when both emailVerified=false and isVerified=false', async () => {
+      process.env.emailVerified = 'true';
+      const localStrategy = require('../strategies/localStrategy')();
+
+      const user = {
+        _id: 'user123',
+        email: 'test@example.com',
+        password: 'hashed-password',
+        emailVerified: false,
+        isVerified: false,
+      };
+
+      mockFindUser.mockResolvedValue(user);
+      mockComparePassword.mockResolvedValue(true);
+
+      const req = {
+        body: { email: 'test@example.com', password: 'validPassword123' },
+        ip: '127.0.0.1',
+      };
+
+      await new Promise((resolve) => {
+        localStrategy._verify(req, 'test@example.com', 'validPassword123', (err, resultUser, info) => {
+          expect(err).toBeNull();
+          expect(resultUser).toEqual(user);
+          expect(info).toEqual({
+            message: 'Email not verified. Please check your inbox for the verification link.',
+          });
+          resolve();
+        });
+      });
+    });
+
+    it('should reject with admin verification message only after email is verified (emailVerified=true and isVerified=false)', async () => {
+      process.env.emailVerified = 'true';
+      const localStrategy = require('../strategies/localStrategy')();
+
+      const user = {
+        _id: 'user123',
+        email: 'test@example.com',
+        password: 'hashed-password',
+        emailVerified: true,
+        isVerified: false,
+      };
+
+      mockFindUser.mockResolvedValue(user);
+      mockComparePassword.mockResolvedValue(true);
+
+      const req = {
+        body: { email: 'test@example.com', password: 'validPassword123' },
+        ip: '127.0.0.1',
+      };
+
+      await new Promise((resolve) => {
+        localStrategy._verify(req, 'test@example.com', 'validPassword123', (err, resultUser, info) => {
+          expect(err).toBeNull();
+          expect(resultUser).toEqual(user);
+          expect(info).toEqual({
+            message:
+              'Your account is currently under verification by the administrator. Please contact the admin for approval.',
+          });
           resolve();
         });
       });
