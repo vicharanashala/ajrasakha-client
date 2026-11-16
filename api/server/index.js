@@ -399,7 +399,13 @@ const startServer = async () => {
   await updateInterfacePermissions(appConfig);
 
   const indexPath = path.join(appConfig.paths.dist, 'index.html');
-  let indexHTML = fs.readFileSync(indexPath, 'utf8');
+  const fallbackIndexPath = path.join(__dirname, '../../client/index.html');
+  let indexHTML = '';
+  if (fs.existsSync(indexPath)) {
+    indexHTML = fs.readFileSync(indexPath, 'utf8');
+  } else if (fs.existsSync(fallbackIndexPath)) {
+    indexHTML = fs.readFileSync(fallbackIndexPath, 'utf8');
+  }
 
   // In order to provide support to serving the application in a sub-directory
   // We need to update the base href if the DOMAIN_CLIENT is specified and not the root path

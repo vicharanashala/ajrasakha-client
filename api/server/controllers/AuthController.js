@@ -9,6 +9,8 @@ const {
   resetPassword,
   setAuthTokens,
   registerUser,
+  requestSessionReset,
+  verifySessionReset,
 } = require('~/server/services/AuthService');
 const {
   deleteAllUserSessions,
@@ -242,10 +244,435 @@ const graphTokenController = async (req, res) => {
   }
 };
 
+const requestSessionResetController = async (req, res) => {
+  try {
+    const result = await requestSessionReset(req);
+    if (result instanceof Error) {
+      return res.status(400).json({ message: result.message });
+    }
+    return res.status(result.status || 200).json(result);
+  } catch (e) {
+    logger.error('[requestSessionResetController]', e);
+    return res.status(500).json({ message: 'Something went wrong.' });
+  }
+};
+
+const getSessionResetClientUrl = (req) => {
+  const custom = req.body?.client_url || req.query?.client_url;
+  if (custom) {
+    return custom;
+  }
+  if (process.env.DOMAIN_CLIENT) {
+    return process.env.DOMAIN_CLIENT;
+  }
+  const reqHost = req?.get ? req.get('host') : req?.headers?.host;
+  if (reqHost && (reqHost.includes('localhost') || reqHost.includes('127.0.0.1'))) {
+    return 'http://localhost:3090';
+  }
+  return 'http://localhost:3080';
+};
+
+const renderSuccessHtml = (email, loginUrl) => {
+  const safeEmail = (email || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const safeLoginUrl = (loginUrl || '/login').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sessions Terminated - Ajrasakha</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #0d0d0d;
+      color: #f3f4f6;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .card {
+      background-color: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 1rem;
+      padding: 2.25rem;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+    }
+    .brand {
+      color: #10b981;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.01em;
+    }
+    .icon-container {
+      width: 56px;
+      height: 56px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      color: #10b981;
+    }
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+    p {
+      color: #a1a1aa;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+    }
+    .email-highlight {
+      color: #ffffff;
+      font-weight: 600;
+      word-break: break-all;
+    }
+    .hint-box {
+      background: rgba(24, 24, 27, 0.8);
+      border: 1px solid #27272a;
+      border-radius: 0.5rem;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.5rem;
+      color: #d4d4d8;
+      font-size: 0.85rem;
+      line-height: 1.45;
+    }
+    .btn-submit {
+      display: inline-block;
+      width: 100%;
+      background-color: #16a34a;
+      color: #ffffff;
+      padding: 0.75rem 1.25rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s ease, transform 0.05s ease;
+      text-decoration: none;
+    }
+    .btn-submit:hover {
+      background-color: #15803d;
+    }
+    .btn-submit:active {
+      transform: scale(0.99);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">annam.ai / Ajrasakha</div>
+    <div class="icon-container">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
+    <h1>Sessions Terminated!</h1>
+    <p>
+      All active sessions for <span class="email-highlight">${safeEmail}</span> have been successfully logged out, and your account is verified.
+    </p>
+    <div class="hint-box">
+      You can now return to your open login window to sign in, or click below to proceed.
+    </div>
+    <a href="${safeLoginUrl}" class="btn-submit">Proceed to Login</a>
+  </div>
+</body>
+</html>`;
+};
+
+const renderErrorHtml = (message, loginUrl) => {
+  const safeMessage = (message || 'The verification link is invalid or has expired.').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const safeLoginUrl = (loginUrl || '/login').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verification Error - Ajrasakha</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #0d0d0d;
+      color: #f3f4f6;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .card {
+      background-color: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 1rem;
+      padding: 2.25rem;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+    }
+    .brand {
+      color: #10b981;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.01em;
+    }
+    .icon-container {
+      width: 56px;
+      height: 56px;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      color: #ef4444;
+    }
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+    p {
+      color: #a1a1aa;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+    .btn-submit {
+      display: inline-block;
+      width: 100%;
+      background-color: #27272a;
+      color: #ffffff;
+      padding: 0.75rem 1.25rem;
+      border: 1px solid #3f3f46;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+      text-decoration: none;
+    }
+    .btn-submit:hover {
+      background-color: #3f3f46;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">annam.ai / Ajrasakha</div>
+    <div class="icon-container">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+    </div>
+    <h1>Unable to Terminate Sessions</h1>
+    <p>${safeMessage}</p>
+    <a href="${safeLoginUrl}" class="btn-submit">Return to Login</a>
+  </div>
+</body>
+</html>`;
+};
+
+const confirmSessionResetController = async (req, res) => {
+  const clientUrl = getSessionResetClientUrl(req);
+  const email = (req.query?.email || req.body?.email || '').trim();
+  const token = (req.query?.token || req.body?.token || '').trim();
+
+  if (!email || !token) {
+    return res.type('html').send(renderErrorHtml('Missing email or token.', `${clientUrl}/login`));
+  }
+
+  const safeEmail = email.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const safeToken = token.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const safeClientUrl = clientUrl.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const loginUrl = `${clientUrl}/login`;
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terminate Active Sessions - Ajrasakha</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #0d0d0d;
+      color: #f3f4f6;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .card {
+      background-color: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 1rem;
+      padding: 2.25rem;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+    }
+    .brand {
+      color: #10b981;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.01em;
+    }
+    .icon-container {
+      width: 56px;
+      height: 56px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      color: #f59e0b;
+    }
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+    p {
+      color: #a1a1aa;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+    .email-highlight {
+      color: #ffffff;
+      font-weight: 600;
+      word-break: break-all;
+    }
+    .btn-submit {
+      display: inline-block;
+      width: 100%;
+      background-color: #16a34a;
+      color: #ffffff;
+      padding: 0.75rem 1.25rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s ease, transform 0.05s ease;
+      text-decoration: none;
+    }
+    .btn-submit:hover {
+      background-color: #15803d;
+    }
+    .btn-submit:active {
+      transform: scale(0.99);
+    }
+    .cancel-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: #71717a;
+      font-size: 0.8rem;
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    .cancel-link:hover {
+      color: #a1a1aa;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">annam.ai / Ajrasakha</div>
+    <div class="icon-container">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+      </svg>
+    </div>
+    <h1>Terminate Active Sessions</h1>
+    <p>
+      You requested to log out from other active devices for <span class="email-highlight">${safeEmail}</span> so you can sign in on this device.
+    </p>
+    <form method="POST" action="/api/auth/session-reset/verify">
+      <input type="hidden" name="email" value="${safeEmail}" />
+      <input type="hidden" name="token" value="${safeToken}" />
+      <input type="hidden" name="client_url" value="${safeClientUrl}" />
+      <button type="submit" class="btn-submit">Terminate Other Sessions &amp; Continue</button>
+    </form>
+    <a href="${loginUrl}" class="cancel-link">Cancel and return to Login</a>
+  </div>
+</body>
+</html>`;
+
+  res.type('html').send(html);
+};
+
+const verifySessionResetController = async (req, res) => {
+  const clientUrl = getSessionResetClientUrl(req);
+  const email = (req.body?.email || req.query?.email || '').trim();
+  const loginUrl = `${clientUrl}/login?session_cleared=true`;
+  const isFormSubmission =
+    req.headers['content-type']?.includes('application/x-www-form-urlencoded') ||
+    req.method === 'GET';
+
+  try {
+    const result = await verifySessionReset(req);
+    if (result instanceof Error) {
+      if (isFormSubmission) {
+        return res.type('html').send(renderErrorHtml(result.message, `${clientUrl}/login?error=session_reset_failed`));
+      }
+      return res.status(400).json({ message: result.message });
+    }
+
+    if (isFormSubmission) {
+      return res.type('html').send(renderSuccessHtml(email, loginUrl));
+    }
+
+    return res.status(result.status || 200).json(result);
+  } catch (e) {
+    logger.error('[verifySessionResetController]', e);
+    if (isFormSubmission) {
+      return res.type('html').send(renderErrorHtml('Something went wrong.', `${clientUrl}/login?error=session_reset_failed`));
+    }
+    return res.status(500).json({ message: 'Something went wrong.' });
+  }
+};
+
 module.exports = {
   refreshController,
   registrationController,
   resetPasswordController,
   resetPasswordRequestController,
   graphTokenController,
+  requestSessionResetController,
+  confirmSessionResetController,
+  verifySessionResetController,
 };

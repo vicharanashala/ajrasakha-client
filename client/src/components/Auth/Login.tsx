@@ -34,6 +34,28 @@ function Login() {
       newParams.delete('error');
       setSearchParams(newParams, { replace: true });
     }
+
+    const sessionCleared = searchParams?.get('session_cleared');
+    if (sessionCleared === 'true') {
+      showToast({
+        message: 'Previous session cleared. Please log in with your credentials.',
+        status: 'success',
+      });
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('session_cleared');
+      setSearchParams(newParams, { replace: true });
+    }
+
+    const sessionResetError = searchParams?.get('error');
+    if (sessionResetError === 'session_reset_failed') {
+      showToast({
+        message: 'Session termination link is invalid or expired. Please request a new one.',
+        status: 'error',
+      });
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('error');
+      setSearchParams(newParams, { replace: true });
+    }
   }, [searchParams, setSearchParams, showToast, localize]);
 
   // Once the disable flag is detected, update local state and remove the parameter from the URL.
