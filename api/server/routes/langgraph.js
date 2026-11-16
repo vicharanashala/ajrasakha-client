@@ -3,6 +3,9 @@ const axios = require('axios');
 
 const router = express.Router();
 
+// New: Support full URL directly (takes precedence)
+// Falls back to HOST:PORT if URL is not set
+const LANGGRAPH_API_URL = process.env.LANGGRAPH_API_URL;
 const LANGGRAPH_API_HOST = process.env.LANGGRAPH_API_HOST ?? '100.100.108.44';
 const LANGGRAPH_API_PORT = Number(process.env.LANGGRAPH_API_PORT ?? 2026);
 
@@ -40,20 +43,26 @@ router.get('/requires-feedback/:conversationId', async (req, res) => {
     return res.json({ requiresFeedback: false, enabled: false });
   }
 
-  if (!LANGGRAPH_API_HOST || !LANGGRAPH_API_PORT) {
-    return res.status(500).json({
-      error: 'LangGraph API is not configured',
-      detail: `LANGGRAPH_API_HOST=${LANGGRAPH_API_HOST}, LANGGRAPH_API_PORT=${LANGGRAPH_API_PORT}`,
-    });
+  // Build API URL - use direct URL if provided, otherwise fall back to HOST:PORT
+  let apiUrl;
+  if (LANGGRAPH_API_URL) {
+    apiUrl = `${LANGGRAPH_API_URL}/threads/${conversationId}/state`;
+  } else {
+    if (!LANGGRAPH_API_HOST || !LANGGRAPH_API_PORT) {
+      return res.status(500).json({
+        error: 'LangGraph API is not configured',
+        detail: `LANGGRAPH_API_HOST=${LANGGRAPH_API_HOST}, LANGGRAPH_API_PORT=${LANGGRAPH_API_PORT}`,
+      });
+    }
+    apiUrl = `http://${LANGGRAPH_API_HOST}:${LANGGRAPH_API_PORT}/threads/${conversationId}/state`;
   }
 
-  const apiUrl = `http://${LANGGRAPH_API_HOST}:${LANGGRAPH_API_PORT}/threads/${conversationId}/state`;
-
   try {
-    const options = { timeout: 10000 };
+    const options = { timeout: 10000, httpsAgent: undefined };
 
-    // Use proxy if configured (same pattern as STTService/TTSService)
-    if (process.env.PROXY) {
+    // Skip proxy for public HTTPS URLs (LANGGRAPH_API_URL)
+    // Use proxy only for internal HOST:PORT connections (Tailscale, etc.)
+    if (process.env.PROXY && !LANGGRAPH_API_URL) {
       const proxyUrl = new URL(process.env.PROXY);
       options.proxy = {
         protocol: proxyUrl.protocol.replace(':', ''),
