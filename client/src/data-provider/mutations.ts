@@ -1059,6 +1059,42 @@ export const useRequestVerificationMutation = (
   });
 };
 
+/**
+ * Hook for requesting a session reset verification email
+ */
+export const useRequestSessionResetMutation = (
+  options?: t.MutationOptions<{ message: string }, { email: string }, unknown, unknown>,
+): UseMutationResult<{ message: string }, unknown, { email: string }, unknown> => {
+  return useMutation({
+    mutationFn: (variables: { email: string }) =>
+      request.post('/api/auth/session-reset/request', variables),
+    ...(options || {}),
+  });
+};
+
+/**
+ * Hook for verifying session reset token and deleting user sessions
+ */
+export const useVerifySessionResetMutation = (
+  options?: t.MutationOptions<
+    { message: string; status: number; success: boolean },
+    { email: string; token: string },
+    unknown,
+    unknown
+  >,
+): UseMutationResult<
+  { message: string; status: number; success: boolean },
+  unknown,
+  { email: string; token: string },
+  unknown
+> => {
+  return useMutation({
+    mutationFn: (variables: { email: string; token: string }) =>
+      request.post('/api/auth/session-reset/verify', variables),
+    ...(options || {}),
+  });
+};
+
 export const useAcceptTermsMutation = (
   options?: t.AcceptTermsMutationOptions,
 ): UseMutationResult<t.TAcceptTermsResponse, unknown, void, unknown> => {

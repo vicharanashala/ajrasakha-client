@@ -137,7 +137,10 @@ const AuthContextProvider = ({
       else if (errorData && typeof errorData === 'object') {
         errorCode = errorData?.errorCode;
       }
-      let errorMsg = errorCode === 'ERR_ADMIN_VERIFICATION_PENDING' ? errorCode : resError.message
+      let errorMsg =
+        errorCode === 'ERR_ADMIN_VERIFICATION_PENDING' || errorCode === 'ACTIVE_SESSION_EXISTS'
+          ? errorCode
+          : resError.message;
       if(errorCode === 'ERR_ADMIN_VERIFICATION_PENDING'){
         showToast({ message:localize('com_auth_error_login_admin_verfication') , status: 'error' });
       }

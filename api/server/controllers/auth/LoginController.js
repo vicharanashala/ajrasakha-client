@@ -25,7 +25,7 @@ const loginController = async (req, res) => {
     return res.status(200).send({ token, user });
   } catch (err) {
     if (err?.code === ACTIVE_SESSION_EXISTS_CODE) {
-      return res.status(409).json({ message: activeSessionMessage });
+      return res.status(409).json({ message: activeSessionMessage, errorCode: ACTIVE_SESSION_EXISTS_CODE });
     }
     logger.error('[loginController]', err);
     return res.status(500).json({ message: 'Something went wrong' });

@@ -6,6 +6,9 @@ const {
   registrationController,
   graphTokenController,
   refreshController,
+  requestSessionResetController,
+  confirmSessionResetController,
+  verifySessionResetController,
 } = require('~/server/controllers/AuthController');
 const {
   regenerateBackupCodes,
@@ -61,6 +64,27 @@ router.post(
   middleware.checkBan,
   middleware.validatePasswordReset,
   resetPasswordController,
+);
+router.post(
+  '/session-reset/request',
+  middleware.resetPasswordLimiter,
+  middleware.checkBan,
+  requestSessionResetController,
+);
+router.get(
+  '/session-reset/confirm',
+  middleware.checkBan,
+  confirmSessionResetController,
+);
+router.get(
+  '/session-reset/verify',
+  middleware.checkBan,
+  confirmSessionResetController,
+);
+router.post(
+  '/session-reset/verify',
+  middleware.checkBan,
+  verifySessionResetController,
 );
 
 router.get('/2fa/enable', middleware.requireJwtAuth, enable2FA);

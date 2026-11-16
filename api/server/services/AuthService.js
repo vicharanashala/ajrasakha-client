@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { webcrypto } = require('node:crypto');
@@ -21,6 +22,7 @@ const {
   deleteTokens,
   deleteSession,
   createSession,
+  deleteAllUserSessions,
   generateToken,
   deleteUserById,
   rotateRefreshToken,
@@ -184,7 +186,9 @@ const registerUser = async (user, additionalData = {}) => {
     return { status: 404, message: errorMessage };
   }
 
-  const { email, password, name, username, provider } = user;
+  const normalizedEmail = user.email ? user.email.trim().toLowerCase() : user.email;
+  const { password, name, username, provider } = user;
+  const email = normalizedEmail;
 
   let newUserId;
   try {
@@ -241,6 +245,13 @@ const registerUser = async (user, additionalData = {}) => {
 
     return { status: 200, message: genericVerificationMessage };
   } catch (err) {
+    if (
+      err?.code === 11000 ||
+      (err?.name === 'MongoServerError' && err?.message?.includes('duplicate key'))
+    ) {
+      logger.warn(`[registerUser] Duplicate key error in MongoDB for email: ${email}`);
+      return { status: 400, message: 'Email already in use' };
+    }
     logger.error('[registerUser] Error in registering user:', err);
     if (newUserId) {
       const result = await deleteUserById(newUserId);
@@ -561,6 +572,200 @@ const resendVerificationEmail = async (req) => {
   }
 };
 
+/**
+ * Request Session Reset (terminate existing active sessions via email verification)
+ * @param {ServerRequest} req
+ * @returns {Promise<{status: number, message: string}>}
+ */
+const requestSessionReset = async (req) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return { status: 400, message: 'Email is required' };
+    }
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const user = await findUser({ email: normalizedEmail }, 'email _id name username');
+
+    // Anti-enumeration: Return generic success message even if user is not found
+    if (!user) {
+      logger.warn(`[requestSessionReset] [No user found] [Email: ${normalizedEmail}]`);
+      return {
+        status: 200,
+        message: 'If an account with this email exists, a verification link has been sent.',
+      };
+    }
+
+    const [verifyToken, hash] = createTokenHash();
+
+    // Use confirmation page endpoint for email CTA link (Approach B: immune to email scanners/prefetchers)
+    let serverUrl = domains.server || 'http://localhost:3080';
+    const reqHost = req?.get ? req.get('host') : req?.headers?.host;
+    const isLocal = (domains.server && (domains.server.includes('localhost') || domains.server.includes('127.0.0.1'))) ||
+      (reqHost && (reqHost.includes('localhost') || reqHost.includes('127.0.0.1')));
+    if (isLocal) {
+      serverUrl = 'http://localhost:3080';
+    }
+
+    const clientOrigin = req?.headers?.origin || process.env.DOMAIN_CLIENT || (reqHost ? `${req.protocol || 'http'}://${reqHost}` : null);
+    const clientParam = clientOrigin ? `&client_url=${encodeURIComponent(clientOrigin)}` : '';
+    const verificationLink = `${serverUrl}/api/auth/session-reset/confirm?token=${verifyToken}&email=${encodeURIComponent(user.email)}${clientParam}`;
+
+    await sendEmail({
+      email: user.email,
+      subject: 'Terminate active session & verify account',
+      payload: {
+        appName: process.env.APP_TITLE || 'Ajrasakha',
+        name: user.name || user.username || user.email,
+        verificationLink: verificationLink,
+        year: new Date().getFullYear(),
+      },
+      template: 'sessionReset.handlebars',
+    });
+
+    await createToken({
+      userId: user._id,
+      email: user.email,
+      token: hash,
+      identifier: 'session_reset',
+      createdAt: Date.now(),
+      expiresIn: 900, // 15 minutes
+    });
+
+    logger.info(`[requestSessionReset] Session reset verification link issued. [Email: ${user.email}]`);
+
+    return {
+      status: 200,
+      message: 'If an account with this email exists, a verification link has been sent.',
+    };
+  } catch (error) {
+    logger.error(`[requestSessionReset] Error requesting session reset: ${error.message}`);
+    return {
+      status: 500,
+      message: 'Something went wrong.',
+    };
+  }
+};
+
+/**
+ * Verify Session Reset Token and terminate all user sessions
+ * Supports both GET (direct click from email) and POST (from frontend VerifyEmail component)
+ * @param {ServerRequest} req
+ * @returns {Promise<{status: number, message: string, success: boolean} | Error>}
+ */
+const verifySessionReset = async (req) => {
+  const email = req.body?.email || req.query?.email;
+  const token = req.body?.token || req.query?.token;
+  if (!email || !token) {
+    return new Error('Email and token are required');
+  }
+
+  const decodedEmail = decodeURIComponent(email).trim().toLowerCase();
+  const user = await findUser({ email: decodedEmail }, 'email _id');
+
+  if (!user) {
+    logger.warn(`[verifySessionReset] [User not found] [Email: ${decodedEmail}]`);
+    return new Error('User not found');
+  }
+
+  const Token = mongoose.models.Token;
+  let matchingTokenDoc = null;
+
+  // Search candidate session_reset tokens for this email
+  if (Token) {
+    const candidateTokens = await Token.find({
+      email: decodedEmail,
+      identifier: 'session_reset',
+    }).sort({ createdAt: -1 });
+
+    for (const candidate of candidateTokens) {
+      if (candidate.token && bcrypt.compareSync(token, candidate.token)) {
+        matchingTokenDoc = candidate;
+        break;
+      }
+    }
+  }
+
+  // Fallback to findToken if not resolved via candidate search
+  if (!matchingTokenDoc) {
+    let sessionResetData = await findToken(
+      { email: decodedEmail, identifier: 'session_reset' },
+      { sort: { createdAt: -1 } },
+    );
+    if (!sessionResetData) {
+      sessionResetData = await findToken({ email: decodedEmail }, { sort: { createdAt: -1 } });
+    }
+    if (sessionResetData && sessionResetData.token && bcrypt.compareSync(token, sessionResetData.token)) {
+      matchingTokenDoc = sessionResetData;
+    }
+  }
+
+  if (!matchingTokenDoc) {
+    logger.warn(`[verifySessionReset] [Invalid or expired token] [Email: ${decodedEmail}]`);
+    return new Error('Invalid or expired verification token');
+  }
+
+  // 1. Terminate all existing sessions for this user via session methods
+  try {
+    await deleteAllUserSessions({ userId: user._id });
+  } catch (err) {
+    logger.error('[verifySessionReset] deleteAllUserSessions error:', err);
+  }
+
+  // 2. Direct Session model deletion to ensure all sessions are removed from MongoDB
+  if (mongoose.models.Session) {
+    try {
+      const delRes = await mongoose.models.Session.deleteMany({ user: user._id });
+      logger.info(`[verifySessionReset] Direct Session.deleteMany removed ${delRes.deletedCount} sessions for user ${user._id}`);
+    } catch (err) {
+      logger.error('[verifySessionReset] Direct Session.deleteMany error:', err);
+    }
+  }
+
+  // 3. Mark email as verified and unset activeSession fields on User document
+  if (mongoose.models.User) {
+    try {
+      await mongoose.models.User.updateOne(
+        { _id: user._id },
+        {
+          $unset: {
+            activeSessionId: '',
+            activeSessionExpiresAt: '',
+          },
+          $set: {
+            emailVerified: true,
+          },
+        },
+      );
+    } catch (err) {
+      logger.error('[verifySessionReset] User update error:', err);
+    }
+  } else {
+    await updateUser(user._id, { emailVerified: true });
+  }
+
+  // 4. Invalidate the used token and all session reset tokens for this email
+  if (mongoose.models.Token) {
+    try {
+      if (matchingTokenDoc._id) {
+        await mongoose.models.Token.deleteOne({ _id: matchingTokenDoc._id });
+      }
+      await mongoose.models.Token.deleteMany({
+        email: decodedEmail,
+        identifier: 'session_reset',
+      });
+      logger.info(`[verifySessionReset] Token(s) deleted for [Email: ${decodedEmail}]`);
+    } catch (err) {
+      logger.error('[verifySessionReset] Token deletion error:', err);
+    }
+  } else {
+    await deleteTokens({ token: matchingTokenDoc.token });
+  }
+
+  logger.info(`[verifySessionReset] Active sessions cleared successfully [Email: ${decodedEmail}]`);
+  return { message: 'Active sessions cleared successfully. You can now log in.', status: 200, success: true };
+};
+
 module.exports = {
   logoutUser,
   verifyEmail,
@@ -570,6 +775,8 @@ module.exports = {
   setOpenIDAuthTokens,
   requestPasswordReset,
   resendVerificationEmail,
+  requestSessionReset,
+  verifySessionReset,
   activeSessionMessage,
   ACTIVE_SESSION_EXISTS_CODE,
 };
