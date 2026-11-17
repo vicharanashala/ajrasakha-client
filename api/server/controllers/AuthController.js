@@ -36,7 +36,7 @@ const resetPasswordRequestController = async (req, res) => {
   try {
     const resetService = await requestPasswordReset(req);
     if (resetService instanceof Error) {
-      return res.status(400).json(resetService);
+      return res.status(400).json({ message: resetService.message });
     } else {
       return res.status(200).json(resetService);
     }
@@ -54,7 +54,7 @@ const resetPasswordController = async (req, res) => {
       req.body.password,
     );
     if (resetPasswordService instanceof Error) {
-      return res.status(400).json(resetPasswordService);
+      return res.status(400).json({ message: resetPasswordService.message });
     } else {
       await deleteAllUserSessions({ userId: req.body.userId });
       return res.status(200).json(resetPasswordService);

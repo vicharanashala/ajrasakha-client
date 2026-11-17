@@ -31,8 +31,8 @@ const { getAppConfig } = require('~/server/services/Config');
 const { sendEmail } = require('~/server/utils');
 
 const domains = {
-  client: process.env.DOMAIN_CLIENT,
-  server: process.env.DOMAIN_SERVER,
+  client: process.env.DOMAIN_CLIENT || process.env.DOMAIN_SERVER || 'http://localhost:3080',
+  server: process.env.DOMAIN_SERVER || 'http://localhost:3080',
 };
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -291,25 +291,33 @@ const requestPasswordReset = async (req) => {
   const link = `${domains.client}/reset-password?token=${resetToken}&userId=${user._id}`;
 
   if (emailEnabled) {
-    await sendEmail({
-      email: user.email,
-      subject: 'Password Reset Request',
-      payload: {
-        appName: process.env.APP_TITLE || 'LibreChat',
-        name: user.name || user.username || user.email,
-        link: link,
-        year: new Date().getFullYear(),
-      },
-      template: 'requestPasswordReset.handlebars',
-    });
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'Password Reset Request',
+        payload: {
+          appName: process.env.APP_TITLE || 'LibreChat',
+          name: user.name || user.username || user.email,
+          link: link,
+          year: new Date().getFullYear(),
+        },
+        template: 'requestPasswordReset.handlebars',
+      });
+      logger.info(
+        `[requestPasswordReset] Link emailed. [Email: ${email}] [ID: ${user._id}] [IP: ${req.ip}]`,
+      );
+    } catch (emailErr) {
+      logger.error(`[requestPasswordReset] Error sending password reset email to ${email}:`, emailErr);
+    }
+  } else if (!isProduction) {
     logger.info(
-      `[requestPasswordReset] Link emailed. [Email: ${email}] [ID: ${user._id}] [IP: ${req.ip}]`,
-    );
-  } else {
-    logger.info(
-      `[requestPasswordReset] Link issued. [Email: ${email}] [ID: ${user._id}] [IP: ${req.ip}]`,
+      `[requestPasswordReset] Link issued (dev only). [Email: ${email}] [ID: ${user._id}] [IP: ${req.ip}]`,
     );
     return { link };
+  } else {
+    logger.error(
+      `[requestPasswordReset] Email is disabled or misconfigured in production! Reset link was generated for [Email: ${email}] but cannot be sent.`,
+    );
   }
 
   return {
@@ -347,19 +355,23 @@ const resetPassword = async (userId, token, password) => {
   const user = await updateUser(userId, { password: hash });
 
   if (checkEmailConfig()) {
-    await sendEmail({
-      email: user.email,
-      subject: 'Password Reset Successfully',
-      payload: {
-        appName: process.env.APP_TITLE || 'LibreChat',
-        name: user.name || user.username || user.email,
-        year: new Date().getFullYear(),
-      },
-      template: 'passwordReset.handlebars',
-    });
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'Password Reset Successfully',
+        payload: {
+          appName: process.env.APP_TITLE || 'LibreChat',
+          name: user.name || user.username || user.email,
+          year: new Date().getFullYear(),
+        },
+        template: 'passwordReset.handlebars',
+      });
+    } catch (emailErr) {
+      logger.error('[resetPassword] Error sending password reset confirmation email:', emailErr);
+    }
   }
 
-  await deleteTokens({ token: passwordResetToken.token });
+  await deleteTokens({ userId });
   logger.info(`[resetPassword] Password reset successful. [Email: ${user.email}]`);
   return { message: 'Password reset was successful' };
 };
