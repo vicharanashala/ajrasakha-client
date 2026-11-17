@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Spinner, Button } from '@librechat/client';
 import { useOutletContext } from 'react-router-dom';
@@ -6,9 +7,12 @@ import { useResetPasswordMutation } from 'librechat-data-provider/react-query';
 import type { TResetPassword } from 'librechat-data-provider';
 import type { TLoginLayoutContext } from '~/common';
 import { useLocalize } from '~/hooks';
+import PasswordToggleButton from './PasswordToggleButton';
 
 function ResetPassword() {
   const localize = useLocalize();
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -76,7 +80,7 @@ function ResetPassword() {
             {...register('userId', { required: 'Unable to process: No valid user id' })}
           />
           <input
-            type="password"
+            type={isPasswordVisible ? 'text' : 'password'}
             id="password"
             autoComplete="current-password"
             aria-label={localize('com_auth_password')}
@@ -92,7 +96,7 @@ function ResetPassword() {
               },
             })}
             aria-invalid={!!errors.password}
-            className="webkit-dark-styles transition-color peer w-full rounded-2xl border border-border-light bg-transparent px-3.5 pb-2.5 pt-3 text-text-primary duration-200 focus:border-green-500 focus:outline-none"
+            className="webkit-dark-styles transition-color peer w-full rounded-2xl border border-border-light bg-transparent pe-11 ps-3.5 pb-2.5 pt-3 text-text-primary duration-200 focus:border-green-500 focus:outline-none"
             placeholder=" "
           />
           <label
@@ -101,6 +105,10 @@ function ResetPassword() {
           >
             {localize('com_auth_password')}
           </label>
+          <PasswordToggleButton
+            isVisible={isPasswordVisible}
+            onToggle={() => setIsPasswordVisible((prev) => !prev)}
+          />
         </div>
 
         {errors.password && (
@@ -112,14 +120,14 @@ function ResetPassword() {
       <div className="mb-2">
         <div className="relative">
           <input
-            type="password"
+            type={isConfirmPasswordVisible ? 'text' : 'password'}
             id="confirm_password"
             aria-label={localize('com_auth_password_confirm')}
             {...register('confirm_password', {
               validate: (value) => value === password || localize('com_auth_password_not_match'),
             })}
             aria-invalid={!!errors.confirm_password}
-            className="webkit-dark-styles transition-color peer w-full rounded-2xl border border-border-light bg-transparent px-3.5 pb-2.5 pt-3 text-text-primary duration-200 focus:border-green-500 focus:outline-none"
+            className="webkit-dark-styles transition-color peer w-full rounded-2xl border border-border-light bg-transparent pe-11 ps-3.5 pb-2.5 pt-3 text-text-primary duration-200 focus:border-green-500 focus:outline-none"
             placeholder=" "
           />
           <label
@@ -128,6 +136,10 @@ function ResetPassword() {
           >
             {localize('com_auth_password_confirm')}
           </label>
+          <PasswordToggleButton
+            isVisible={isConfirmPasswordVisible}
+            onToggle={() => setIsConfirmPasswordVisible((prev) => !prev)}
+          />
         </div>
         {errors.confirm_password && (
           <span role="alert" className="mt-1 text-sm text-red-500 dark:text-red-900">
