@@ -16,6 +16,49 @@ const isEmailVerificationEnabled = () => {
   }
   return isEnabled(process.env.emailVerified ?? process.env.EMAIL_VERIFIED);
 };
+
+const EXTERNAL_USER_ROLES = [
+  'farmer',
+  'district_coordinator',
+  'block_coordinator',
+  'village_volunteer',
+];
+
+/**
+ * Determines whether a user is exempt from email verification.
+ * RUP accounts and external users (FARMER / Coordinators) are exempt.
+ * Does NOT check email domains.
+ *
+ * @param {string | Partial<IUser>} userOrEmail
+ * @param {string} [userRole]
+ * @param {string} [role]
+ * @returns {boolean}
+ */
+const isEmailVerificationExempt = (userOrEmail, userRole, role) => {
+  const email = (typeof userOrEmail === 'string' ? userOrEmail : userOrEmail?.email || '')
+    .toLowerCase()
+    .trim();
+  const uRole = (userRole || (typeof userOrEmail === 'object' ? userOrEmail?.userRole : undefined) || '')
+    .toLowerCase()
+    .trim();
+
+  // 1. RUP pilot / synthetic accounts are ALWAYS exempt regardless of role
+  if (email.startsWith('rup')) {
+    return true;
+  }
+
+  // 2. Internal users are NOT exempt
+  if (uRole === 'internal') {
+    return false;
+  }
+
+  // 3. External roles (FARMER, coordinators) are exempt
+  if (EXTERNAL_USER_ROLES.includes(uRole)) {
+    return true;
+  }
+
+  return false;
+};
 const {
   findUser,
   findToken,
@@ -233,9 +276,19 @@ const registerUser = async (user, additionalData = {}) => {
       ...additionalData,
     };
 
-    const verificationRequired = isEmailVerificationEnabled();
+    const isExempt = isEmailVerificationExempt({
+      email,
+      userRole: newUserData.userRole,
+      role: newUserData.role,
+    });
+
+    const verificationRequired = !isExempt && isEmailVerificationEnabled();
     const emailConfigured = checkEmailConfig();
     const disableTTL = !verificationRequired || isEnabled(process.env.ALLOW_UNVERIFIED_EMAIL_LOGIN);
+
+    if (isExempt) {
+      newUserData.emailVerified = true;
+    }
 
     const newUser = await createUser(newUserData, appConfig.balance, disableTTL, true);
     newUserId = newUser._id;
@@ -598,4 +651,5 @@ module.exports = {
   resendVerificationEmail,
   activeSessionMessage,
   ACTIVE_SESSION_EXISTS_CODE,
+  isEmailVerificationExempt,
 };

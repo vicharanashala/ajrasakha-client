@@ -10,6 +10,7 @@ const isEmailVerificationEnabled = () => {
 };
 const { Strategy: PassportLocalStrategy } = require('passport-local');
 const { findUser, comparePassword, updateUser } = require('~/models');
+const { isEmailVerificationExempt } = require('~/server/services/AuthService');
 const { loginSchema } = require('./validators');
 
 // Unix timestamp for 2024-06-07 15:20:18 Eastern Time
@@ -49,7 +50,8 @@ async function passportLogin(req, email, password, done) {
       return done(null, false, { message: 'Incorrect password.' });
     }
 
-    const verificationRequired = isEmailVerificationEnabled();
+    const isExempt = isEmailVerificationExempt(user);
+    const verificationRequired = !isExempt && isEmailVerificationEnabled();
 
     if (verificationRequired) {
       if (!user.emailVerified) {

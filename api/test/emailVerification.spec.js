@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const { isEmailVerificationEnabled } = require('@librechat/api');
+const { isEmailVerificationExempt } = require('../server/services/AuthService');
 const sendEmail = require('../server/utils/sendEmail');
 
 describe('Email Verification & Nodemailer Setup', () => {
@@ -278,6 +279,135 @@ describe('Email Verification & Nodemailer Setup', () => {
           resolve();
         });
       });
+    });
+
+    it('should exempt and auto-heal RUP accounts when email starts with "rup" even if emailVerified=false', async () => {
+      process.env.emailVerified = 'true';
+      const localStrategy = require('../strategies/localStrategy')();
+
+      const user = {
+        _id: 'rup_user_1',
+        email: 'rup123@example.com',
+        password: 'hashed-password',
+        emailVerified: false,
+        isVerified: true,
+      };
+
+      mockFindUser.mockResolvedValue(user);
+      mockComparePassword.mockResolvedValue(true);
+      mockUpdateUser.mockResolvedValue({ ...user, emailVerified: true });
+
+      const req = {
+        body: { email: 'rup123@example.com', password: 'validPassword123' },
+        ip: '127.0.0.1',
+      };
+
+      await new Promise((resolve) => {
+        localStrategy._verify(req, 'rup123@example.com', 'validPassword123', (err, resultUser, info) => {
+          expect(err).toBeNull();
+          expect(resultUser.emailVerified).toBe(true);
+          expect(info).toBeUndefined();
+          expect(mockUpdateUser).toHaveBeenCalledWith('rup_user_1', { emailVerified: true });
+          resolve();
+        });
+      });
+    });
+
+    it('should exempt and auto-heal external FARMER users even if emailVerified=false', async () => {
+      process.env.emailVerified = 'true';
+      const localStrategy = require('../strategies/localStrategy')();
+
+      const user = {
+        _id: 'farmer_user_1',
+        email: 'farmer@gmail.com',
+        userRole: 'FARMER',
+        password: 'hashed-password',
+        emailVerified: false,
+        isVerified: true,
+      };
+
+      mockFindUser.mockResolvedValue(user);
+      mockComparePassword.mockResolvedValue(true);
+      mockUpdateUser.mockResolvedValue({ ...user, emailVerified: true });
+
+      const req = {
+        body: { email: 'farmer@gmail.com', password: 'validPassword123' },
+        ip: '127.0.0.1',
+      };
+
+      await new Promise((resolve) => {
+        localStrategy._verify(req, 'farmer@gmail.com', 'validPassword123', (err, resultUser, info) => {
+          expect(err).toBeNull();
+          expect(resultUser.emailVerified).toBe(true);
+          expect(info).toBeUndefined();
+          expect(mockUpdateUser).toHaveBeenCalledWith('farmer_user_1', { emailVerified: true });
+          resolve();
+        });
+      });
+    });
+
+    it('should reject internal users (userRole=INTERNAL) when emailVerified=false', async () => {
+      process.env.emailVerified = 'true';
+      const localStrategy = require('../strategies/localStrategy')();
+
+      const user = {
+        _id: 'internal_user_1',
+        email: 'internal_staff@example.com',
+        userRole: 'INTERNAL',
+        password: 'hashed-password',
+        emailVerified: false,
+        isVerified: true,
+      };
+
+      mockFindUser.mockResolvedValue(user);
+      mockComparePassword.mockResolvedValue(true);
+
+      const req = {
+        body: { email: 'internal_staff@example.com', password: 'validPassword123' },
+        ip: '127.0.0.1',
+      };
+
+      await new Promise((resolve) => {
+        localStrategy._verify(req, 'internal_staff@example.com', 'validPassword123', (err, resultUser, info) => {
+          expect(err).toBeNull();
+          expect(info).toEqual({
+            message: 'Email not verified. Please check your inbox for the verification link.',
+          });
+          expect(mockUpdateUser).not.toHaveBeenCalled();
+          resolve();
+        });
+      });
+    });
+  });
+
+  describe('isEmailVerificationExempt (Role & Pattern Based, No Domain Check)', () => {
+    it('should return true for any email starting with "rup" (case-insensitive)', () => {
+      expect(isEmailVerificationExempt('rup123@example.com')).toBe(true);
+      expect(isEmailVerificationExempt('RUP_pilot@customdomain.org')).toBe(true);
+      expect(isEmailVerificationExempt('rup.farmer@anything.io')).toBe(true);
+      expect(isEmailVerificationExempt({ email: 'rup99@test.com', userRole: 'INTERNAL' })).toBe(true);
+    });
+
+    it('should return true for external roles (FARMER, coordinators) regardless of email domain', () => {
+      expect(isEmailVerificationExempt('someone@gmail.com', 'FARMER')).toBe(true);
+      expect(isEmailVerificationExempt('someone@customcorp.com', 'farmer')).toBe(true);
+      expect(isEmailVerificationExempt('lead@anydomain.net', 'district_coordinator')).toBe(true);
+      expect(isEmailVerificationExempt('field@domain.org', 'block_coordinator')).toBe(true);
+      expect(isEmailVerificationExempt('helper@domain.com', 'village_volunteer')).toBe(true);
+    });
+
+    it('should return false for INTERNAL users unless email starts with rup', () => {
+      expect(isEmailVerificationExempt('tester@gmail.com', 'INTERNAL')).toBe(false);
+      expect(isEmailVerificationExempt({ email: 'staff@anydomain.com', userRole: 'internal' })).toBe(false);
+      expect(isEmailVerificationExempt('rup_internal@domain.com', 'INTERNAL')).toBe(true);
+    });
+
+    it('should not inspect or depend on email domains', () => {
+      // Different domains with the same role yield identical exemption status
+      expect(isEmailVerificationExempt('farmer@gmail.com', 'FARMER')).toBe(true);
+      expect(isEmailVerificationExempt('farmer@annam.ai', 'FARMER')).toBe(true);
+      expect(isEmailVerificationExempt('staff@gmail.com', 'INTERNAL')).toBe(false);
+      expect(isEmailVerificationExempt('staff@annam.ai', 'INTERNAL')).toBe(false);
     });
   });
 });
