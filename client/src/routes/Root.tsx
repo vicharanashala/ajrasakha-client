@@ -24,6 +24,7 @@ import {
   useUpdateFarmerPlatformMutation,
 } from '~/data-provider';
 import { Nav, MobileNav, NAV_WIDTH } from '~/components/Nav';
+import { VerifyEmailBanner } from '~/components/Banners';
 import { cn } from '~/utils';
 import {
   TermsAndConditionsModal,
@@ -205,6 +206,7 @@ export default function Root() {
                         : undefined
                     }
                   >
+                    <VerifyEmailBanner />
                     {!isAnswerPage && (
                       <>
                         {/* Soft brand-green glow washing down from the very top of the app

@@ -95,7 +95,10 @@ export default function Header() {
       {/* Temporary chat + share/export menu, portaled to body so fixed positioning
          works even when parent panels apply CSS transforms */}
       {createPortal(
-        <div className="fixed right-3 top-3 z-40 flex items-center gap-1.5">
+        <div
+          className="fixed right-3 z-40 flex items-center gap-1.5 transition-[top] duration-150"
+          style={{ top: 'calc(0.75rem + var(--email-banner-height, 0px))' }}
+        >
           {/* Sits where the temporary chat button used to be, left of the share menu. */}
           {/* Hidden while the sidebar covers the screen on phones. */}
           {!(navVisible && isSmallScreen) && <LocationMenu isSmallScreen={isSmallScreen} />}
