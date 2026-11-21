@@ -76,7 +76,7 @@ const formatUpdatedTime = (timestamp: number) =>
   new Date(timestamp).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
 // Soft brand-tinted circle behind an icon. Shared by every icon in the card so they match.
-function IconBadge({ children, className }: { children: ReactNode; className?: string }) {
+export function IconBadge({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <span
       aria-hidden="true"

@@ -543,6 +543,7 @@ const startServer = async () => {
   app.use('/api/crops', routes.crops);
   app.use('/api/location', routes.location);
   app.use('/api/weather', routes.weather);
+  app.use('/api/mandi', routes.mandi);
 
   app.use(ErrorController);
 

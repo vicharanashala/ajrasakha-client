@@ -20,6 +20,7 @@ import ShareRoute from './ShareRoute';
 import ChatRoute from './ChatRoute';
 import Search from './Search';
 import AnswerPage from '~/components/Answers/AnswerPage';
+import MandiPricesPage from '~/components/Mandi/MandiPricesPage';
 import Root from './Root';
 
 const AuthLayout = () => (
@@ -115,6 +116,10 @@ export const router = createBrowserRouter(
             {
               path: 'search',
               element: <Search />,
+            },
+            {
+              path: 'mandi',
+              element: <MandiPricesPage />,
             },
             {
               path: 'agents',

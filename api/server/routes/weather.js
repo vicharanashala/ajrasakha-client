@@ -1,8 +1,14 @@
 const express = require('express');
 const axios = require('axios');
-const { HttpsProxyAgent } = require('https-proxy-agent');
 const { logger } = require('@librechat/data-schemas');
 const { requireJwtAuth } = require('~/server/middleware');
+const {
+  getProxyOptions,
+  isUsingProxy,
+  getAgentServiceBaseUrl,
+  getFarmerCoordinates,
+  toNumberOrNull,
+} = require('~/server/utils/agentService');
 
 const router = express.Router();
 
@@ -12,54 +18,11 @@ const WEATHER_REQUEST_TIMEOUT_MS = 10000;
 // Port the weather service listens on. Fixed in code, only the host comes from the environment.
 const WEATHER_SERVICE_PORT = 8085;
 
-// Removes surrounding quotes some .env files keep around values.
-const cleanEnvValue = (value) => (value || '').trim().replace(/^["']|["']$/g, '');
-
-// Proxy agent built once from PROXY. Undefined while not created, null when PROXY is empty.
-let cachedProxyAgent;
-
-// Returns the axios options that send the request through PROXY when it is set. On Cloud Run the
-// weather service is only reachable over the Tailscale network, and the container reaches it
-// through Tailscale's proxy that PROXY points to. Locally PROXY is usually empty and the machine
-// is on the tailnet itself, so the request goes direct.
-function getProxyOptions() {
-  if (cachedProxyAgent === undefined) {
-    const proxyUrl = cleanEnvValue(process.env.PROXY);
-    cachedProxyAgent = proxyUrl ? new HttpsProxyAgent(proxyUrl) : null;
-  }
-  if (!cachedProxyAgent) {
-    return {};
-  }
-  // proxy: false stops axios applying its own env proxy handling on top of the agent.
-  return { httpAgent: cachedProxyAgent, httpsAgent: cachedProxyAgent, proxy: false };
-}
-
 // Builds the weather service URL from AGENT_HOST_IP and the fixed port, or null when the host is missing.
 function getWeatherServiceUrl() {
-  const host = cleanEnvValue(process.env.AGENT_HOST_IP).replace(/\/+$/, '');
-  if (!host) {
-    return null;
-  }
-  const base = /^https?:\/\//.test(host) ? host : `http://${host}`;
-  return `${base}:${WEATHER_SERVICE_PORT}/live`;
+  const base = getAgentServiceBaseUrl(WEATHER_SERVICE_PORT);
+  return base ? `${base}/live` : null;
 }
-
-// Reads the farmer's saved coordinates. The database stores latitude and longitude, and the
-// geo_ prefixed names are accepted too because the shared client type uses them.
-function getFarmerCoordinates(user) {
-  const location = user?.farmerProfile?.location ?? {};
-  const lat = Number(location.latitude ?? location.geo_latitude);
-  const long = Number(location.longitude ?? location.geo_longitude);
-  const isValid =
-    Number.isFinite(lat) && Number.isFinite(long) && Math.abs(lat) <= 90 && Math.abs(long) <= 180;
-  return isValid ? { lat, long } : null;
-}
-
-// Converts a value to a number, or null when the service sent nothing usable.
-const toNumberOrNull = (value) => {
-  const number = Number(value);
-  return value === null || value === undefined || !Number.isFinite(number) ? null : number;
-};
 
 // Keeps only the fields the app shows, so unexpected upstream data never reaches the browser.
 function toWeatherResponse(data) {
@@ -116,7 +79,7 @@ router.get('/', requireJwtAuth, async (req, res) => {
   } catch (error) {
     // Upstream details stay in the server log only, they are never sent to the browser.
     logger.error(`[weather] Failed to fetch live weather from ${requestUrl}`, {
-      viaProxy: !!cachedProxyAgent,
+      viaProxy: isUsingProxy(),
       code: error.code,
       status: error.response?.status,
       data: error.response?.data,

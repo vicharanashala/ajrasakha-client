@@ -34,6 +34,7 @@ const crops = require('./crop');
 const answers = require('./answers');
 const location = require('./location');
 const weather = require('./weather');
+const mandi = require('./mandi');
 
 module.exports = {
   mcp,
@@ -72,4 +73,5 @@ module.exports = {
   answers,
   location,
   weather,
+  mandi,
 };

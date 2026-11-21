@@ -18,6 +18,7 @@ import { useUserTermsQuery } from '~/data-provider';
 import { cn } from '~/utils';
 import { EXAMPLE_QUESTIONS, STATE_EXAMPLE_QUESTION_OVERRIDES } from './exampleQuestions.config';
 import WeatherCard from './WeatherCard';
+import MandiCard from './MandiCard';
 import { LANDING_CARD_SURFACE } from './landingCardStyles';
 
 
@@ -170,6 +171,11 @@ export default function ExampleQuestionTiles() {
       <WeatherCard
         className="animate-riseIn mb-5 sm:mb-6"
         style={{ animationDelay: `${CARD_ENTRANCE_BASE_DELAY_MS}ms` }}
+      />
+      {/* Mandi prices sit under the weather card and rise in just after it. */}
+      <MandiCard
+        className="animate-riseIn mb-5 sm:mb-6"
+        style={{ animationDelay: `${CARD_ENTRANCE_BASE_DELAY_MS + CARD_ENTRANCE_STEP_MS / 4}ms` }}
       />
       {/* Small section title with a rule so the questions read as their own group under the
           weather card. It rises in between the weather card and the first question. */}
