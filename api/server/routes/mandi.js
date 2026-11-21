@@ -38,6 +38,22 @@ function getMandiServiceBaseUrl() {
   return explicitUrl || getAgentServiceBaseUrl(MANDI_SERVICE_PORT);
 }
 
+// Returns the mandi service base URL and API key, or null after logging what is missing.
+// The key is read from INTERNAL_API_KEY and is only ever sent to the mandi service, never logged.
+function getMandiServiceConfig() {
+  const baseUrl = getMandiServiceBaseUrl();
+  const apiKey = cleanEnvValue(process.env.INTERNAL_API_KEY);
+  if (!baseUrl) {
+    logger.error('[mandi] MANDI_SERVICE_URL and AGENT_HOST_IP are not set');
+    return null;
+  }
+  if (!apiKey) {
+    logger.error('[mandi] INTERNAL_API_KEY is not set');
+    return null;
+  }
+  return { baseUrl, apiKey };
+}
+
 // Parses a whole number query value within the given range, or returns the fallback when it is missing.
 // Returns null when the value is present but invalid.
 function parseIntegerParam(value, { min, max, fallback }) {
@@ -121,11 +137,11 @@ function toListResponse(data, idField, mapItem, paging) {
   };
 }
 
-// Calls the mandi service and returns its JSON body. Errors are thrown to the caller.
-async function fetchFromMandiService(url, params) {
+// Calls the mandi service with its API key and returns the JSON body. Errors are thrown to the caller.
+async function fetchFromMandiService(url, params, apiKey) {
   const { data } = await axios.get(url, {
     params,
-    headers: { accept: 'application/json' },
+    headers: { accept: 'application/json', 'X-API-Key': apiKey },
     timeout: MANDI_REQUEST_TIMEOUT_MS,
     ...getProxyOptions(),
   });
@@ -146,9 +162,8 @@ function logUpstreamError(label, url, params, error) {
 
 // Lists mandis near the signed in farmer's saved location, nearest first.
 router.get('/nearby', requireJwtAuth, async (req, res) => {
-  const baseUrl = getMandiServiceBaseUrl();
-  if (!baseUrl) {
-    logger.error('[mandi] MANDI_SERVICE_URL and AGENT_HOST_IP are not set');
+  const config = getMandiServiceConfig();
+  if (!config) {
     return res.status(500).json({ message: 'Mandi service is not configured' });
   }
 
@@ -172,10 +187,10 @@ router.get('/nearby', requireJwtAuth, async (req, res) => {
     limit: paging.limit,
     ...(search ? { search } : {}),
   };
-  const url = `${baseUrl}/v1/mandis/nearby`;
+  const url = `${config.baseUrl}/v1/mandis/nearby`;
 
   try {
-    const data = await fetchFromMandiService(url, params);
+    const data = await fetchFromMandiService(url, params, config.apiKey);
     // No browser caching: the app caches this itself and must refetch right after a location change.
     res.set('Cache-Control', 'no-store');
     return res.status(200).json(toListResponse(data, 'id', toMandi, paging));
@@ -187,9 +202,8 @@ router.get('/nearby', requireJwtAuth, async (req, res) => {
 
 // Lists the latest crop prices reported by one mandi.
 router.get('/:mandiId/prices', requireJwtAuth, async (req, res) => {
-  const baseUrl = getMandiServiceBaseUrl();
-  if (!baseUrl) {
-    logger.error('[mandi] MANDI_SERVICE_URL and AGENT_HOST_IP are not set');
+  const config = getMandiServiceConfig();
+  if (!config) {
     return res.status(500).json({ message: 'Mandi service is not configured' });
   }
 
@@ -207,10 +221,10 @@ router.get('/:mandiId/prices', requireJwtAuth, async (req, res) => {
     limit: paging.limit,
     ...(search ? { search } : {}),
   };
-  const url = `${baseUrl}/v1/mandi/${mandiId}/prices/nearby`;
+  const url = `${config.baseUrl}/v1/mandi/${mandiId}/prices/nearby`;
 
   try {
-    const data = await fetchFromMandiService(url, params);
+    const data = await fetchFromMandiService(url, params, config.apiKey);
     res.set('Cache-Control', 'no-store');
     return res.status(200).json(toListResponse(data, 'product_id', toMandiPrice, paging));
   } catch (error) {

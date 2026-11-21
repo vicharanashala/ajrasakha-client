@@ -26,6 +26,7 @@ const createApp = () => {
 describe('mandi routes', () => {
   beforeEach(() => {
     process.env.AGENT_HOST_IP = '10.0.0.5';
+    process.env.INTERNAL_API_KEY = 'test-key';
     delete process.env.MANDI_SERVICE_URL;
     delete process.env.PROXY;
     mockUser = { farmerProfile: { location: { latitude: 30.4811, longitude: 75.0932 } } };
@@ -46,6 +47,7 @@ describe('mandi routes', () => {
       'http://10.0.0.5:8000/v1/mandis/nearby',
       expect.objectContaining({
         params: { lat: 30.4811, lng: 75.0932, radius_km: 40, page: 1, limit: 20, search: 'jai' },
+        headers: expect.objectContaining({ 'X-API-Key': 'test-key' }),
       }),
     );
     expect(res.body).toEqual({
@@ -61,6 +63,13 @@ describe('mandi routes', () => {
     await request(createApp()).get('/api/mandi/nearby');
 
     expect(axios.get.mock.calls[0][0]).toBe('http://mandi.internal/v1/mandis/nearby');
+  });
+
+  it('returns 500 without calling the service when INTERNAL_API_KEY is missing', async () => {
+    delete process.env.INTERNAL_API_KEY;
+    const res = await request(createApp()).get('/api/mandi/nearby');
+    expect(res.status).toBe(500);
+    expect(axios.get).not.toHaveBeenCalled();
   });
 
   it('returns 404 when the farmer has no saved location', async () => {
@@ -103,7 +112,10 @@ describe('mandi routes', () => {
     expect(res.status).toBe(200);
     expect(axios.get).toHaveBeenCalledWith(
       `http://10.0.0.5:8000/v1/mandi/${MANDI_ID}/prices/nearby`,
-      expect.objectContaining({ params: { sort: 'crop', page: 1, limit: 20 } }),
+      expect.objectContaining({
+        params: { sort: 'crop', page: 1, limit: 20 },
+        headers: expect.objectContaining({ 'X-API-Key': 'test-key' }),
+      }),
     );
     expect(res.body.data[0]).toEqual({
       productId: 'p1',
