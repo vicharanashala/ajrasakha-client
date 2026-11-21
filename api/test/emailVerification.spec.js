@@ -8,7 +8,7 @@ describe('Email Verification & Nodemailer Setup', () => {
 
   beforeEach(() => {
     jest.resetModules();
-    process.env = { ...originalEnv };
+    process.env = { ...originalEnv, NODE_ENV: 'production' };
   });
 
   afterAll(() => {
@@ -41,6 +41,18 @@ describe('Email Verification & Nodemailer Setup', () => {
       delete process.env.emailVerified;
       process.env.EMAIL_VERIFIED = 'true';
       expect(isEmailVerificationEnabled()).toBe(true);
+    });
+
+    it('should return false when NODE_ENV is development even if emailVerified is "true"', () => {
+      process.env.NODE_ENV = 'development';
+      process.env.emailVerified = 'true';
+      expect(isEmailVerificationEnabled()).toBe(false);
+    });
+
+    it('should return false when NODE_ENV is staging even if emailVerified is "true"', () => {
+      process.env.NODE_ENV = 'staging';
+      process.env.emailVerified = 'true';
+      expect(isEmailVerificationEnabled()).toBe(false);
     });
   });
 
@@ -245,6 +257,70 @@ describe('Email Verification & Nodemailer Setup', () => {
           expect(resultUser.emailVerified).toBe(true);
           expect(info).toBeUndefined();
           expect(mockUpdateUser).toHaveBeenCalledWith('user123', { emailVerified: true });
+          resolve();
+        });
+      });
+    });
+
+    it('should permit login without email verification in development environment (NODE_ENV=development)', async () => {
+      process.env.NODE_ENV = 'development';
+      process.env.emailVerified = 'true';
+      const localStrategy = require('../strategies/localStrategy')();
+
+      const user = {
+        _id: 'dev_user_1',
+        email: 'dev_user@example.com',
+        password: 'hashed-password',
+        emailVerified: false,
+        isVerified: true,
+      };
+
+      mockFindUser.mockResolvedValue(user);
+      mockComparePassword.mockResolvedValue(true);
+      mockUpdateUser.mockResolvedValue({ ...user, emailVerified: true });
+
+      const req = {
+        body: { email: 'dev_user@example.com', password: 'validPassword123' },
+        ip: '127.0.0.1',
+      };
+
+      await new Promise((resolve) => {
+        localStrategy._verify(req, 'dev_user@example.com', 'validPassword123', (err, resultUser, info) => {
+          expect(err).toBeNull();
+          expect(resultUser).toBeDefined();
+          expect(info).toBeUndefined();
+          resolve();
+        });
+      });
+    });
+
+    it('should permit login without email verification in staging environment (NODE_ENV=staging)', async () => {
+      process.env.NODE_ENV = 'staging';
+      process.env.emailVerified = 'true';
+      const localStrategy = require('../strategies/localStrategy')();
+
+      const user = {
+        _id: 'staging_user_1',
+        email: 'staging_user@example.com',
+        password: 'hashed-password',
+        emailVerified: false,
+        isVerified: true,
+      };
+
+      mockFindUser.mockResolvedValue(user);
+      mockComparePassword.mockResolvedValue(true);
+      mockUpdateUser.mockResolvedValue({ ...user, emailVerified: true });
+
+      const req = {
+        body: { email: 'staging_user@example.com', password: 'validPassword123' },
+        ip: '127.0.0.1',
+      };
+
+      await new Promise((resolve) => {
+        localStrategy._verify(req, 'staging_user@example.com', 'validPassword123', (err, resultUser, info) => {
+          expect(err).toBeNull();
+          expect(resultUser).toBeDefined();
+          expect(info).toBeUndefined();
           resolve();
         });
       });

@@ -3,6 +3,9 @@ const { errorsToString } = require('librechat-data-provider');
 const { isEnabled, checkEmailConfig, isEmailVerificationEnabled: checkEmailVerification } = require('@librechat/api');
 
 const isEmailVerificationEnabled = () => {
+  if (process.env.NODE_ENV !== 'production') {
+    return false;
+  }
   if (typeof checkEmailVerification === 'function') {
     return checkEmailVerification();
   }

@@ -13,7 +13,7 @@ import { Mail, CheckCircle2, RefreshCw } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { QueryKeys } from 'librechat-data-provider';
 import { useAuthContext, useLocalize } from '~/hooks';
-import { useResendVerificationEmail, useGetUserQuery } from '~/data-provider';
+import { useResendVerificationEmail, useGetUserQuery, useGetStartupConfig } from '~/data-provider';
 import { cn } from '~/utils';
 
 const ACTION_BUTTON_BASE = cn(
@@ -30,6 +30,7 @@ interface VerifyEmailModalProps {
 }
 
 export default function VerifyEmailModal({ open, onOpenChange }: VerifyEmailModalProps) {
+  const { data: startupConfig } = useGetStartupConfig();
   const localize = useLocalize();
   const queryClient = useQueryClient();
   const { user } = useAuthContext();
@@ -90,6 +91,10 @@ export default function VerifyEmailModal({ open, onOpenChange }: VerifyEmailModa
       setIsChecking(false);
     }
   };
+
+  if (startupConfig?.emailVerificationEnabled !== true) {
+    return null;
+  }
 
   return (
     <OGDialog open={open} onOpenChange={onOpenChange}>

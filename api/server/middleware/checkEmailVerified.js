@@ -2,6 +2,9 @@ const { isEnabled, isEmailVerificationEnabled: checkEmailVerification } = requir
 const { isEmailVerificationExempt } = require('~/server/services/AuthService');
 
 const isEmailVerificationEnabled = () => {
+  if (process.env.NODE_ENV !== 'production') {
+    return false;
+  }
   if (typeof checkEmailVerification === 'function') {
     return checkEmailVerification();
   }

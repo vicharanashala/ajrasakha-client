@@ -99,7 +99,7 @@ export const VerifyEmailBanner = () => {
     return null;
   }
 
-  if (startupConfig && startupConfig.emailVerificationEnabled === false) {
+  if (startupConfig?.emailVerificationEnabled !== true) {
     return null;
   }
 

@@ -63,10 +63,23 @@ describe('VerifyEmailModal', () => {
       isLoading: false,
     });
 
+    (DataProvider.useGetStartupConfig as jest.Mock).mockReturnValue({
+      data: { emailVerificationEnabled: true },
+    });
+
     (useQueryClient as jest.Mock).mockReturnValue({
       invalidateQueries: mockInvalidateQueries,
       fetchQuery: mockFetchQuery,
     });
+  });
+
+  it('does not render modal when emailVerificationEnabled is false (e.g. dev/staging)', () => {
+    (DataProvider.useGetStartupConfig as jest.Mock).mockReturnValue({
+      data: { emailVerificationEnabled: false },
+    });
+
+    const { container } = render(<VerifyEmailModal open={true} onOpenChange={mockOnOpenChange} />);
+    expect(container).toBeEmptyDOMElement();
   });
 
   it('renders modal content when open', () => {
