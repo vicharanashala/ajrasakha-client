@@ -6,4 +6,5 @@ export { default as AdminSettingsDialog } from './AdminSettingsDialog';
 export { default as SearchableSelect } from './SearchableSelect';
 export { default as SearchableMultiSelect } from './SearchableMultiSelect';
 export { default as FarmerPlaceModal } from './FarmerPlaceModal';
+export { default as VerifyEmailModal } from './VerifyEmailModal';
 export type { PermissionConfig, AdminSettingsDialogProps } from './AdminSettingsDialog';

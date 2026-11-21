@@ -1,8 +1,19 @@
 const { logger } = require('@librechat/data-schemas');
 const { errorsToString } = require('librechat-data-provider');
-const { isEnabled, checkEmailConfig } = require('@librechat/api');
+const { isEnabled, checkEmailConfig, isEmailVerificationEnabled: checkEmailVerification } = require('@librechat/api');
+
+const isEmailVerificationEnabled = () => {
+  if (process.env.NODE_ENV !== 'production') {
+    return false;
+  }
+  if (typeof checkEmailVerification === 'function') {
+    return checkEmailVerification();
+  }
+  return isEnabled(process.env.emailVerified ?? process.env.EMAIL_VERIFIED);
+};
 const { Strategy: PassportLocalStrategy } = require('passport-local');
 const { findUser, comparePassword, updateUser } = require('~/models');
+const { isEmailVerificationExempt } = require('~/server/services/AuthService');
 const { loginSchema } = require('./validators');
 
 // Unix timestamp for 2024-06-07 15:20:18 Eastern Time
@@ -42,21 +53,25 @@ async function passportLogin(req, email, password, done) {
       return done(null, false, { message: 'Incorrect password.' });
     }
 
-    const emailEnabled = checkEmailConfig();
-    const userCreatedAtTimestamp = Math.floor(new Date(user.createdAt).getTime() / 1000);
+    const isExempt = isEmailVerificationExempt(user);
+    const verificationRequired = !isExempt && isEmailVerificationEnabled();
 
-    if (
-      !emailEnabled &&
-      !user.emailVerified &&
-      userCreatedAtTimestamp < verificationEnabledTimestamp
-    ) {
-      await updateUser(user._id, { emailVerified: true });
-      user.emailVerified = true;
-    }
-
-    const unverifiedAllowed = isEnabled(process.env.ALLOW_UNVERIFIED_EMAIL_LOGIN);
-    if (user.expiresAt && unverifiedAllowed) {
-      await updateUser(user._id, {});
+    if (verificationRequired) {
+      if (!user.emailVerified) {
+        logError('Passport Local Strategy - Email not verified', { email });
+        logger.error(`[Login] [Login failed] [Username: ${email}] [Request-IP: ${req.ip}]`);
+        return done(null, user, {
+          message: 'Email not verified. Please check your inbox for the verification link.',
+        });
+      }
+    } else {
+      if (!user.emailVerified) {
+        await updateUser(user._id, { emailVerified: true });
+        user.emailVerified = true;
+      }
+      if (user.expiresAt) {
+        await updateUser(user._id, {});
+      }
     }
 
     if (user.isVerified === false) {
@@ -65,14 +80,9 @@ async function passportLogin(req, email, password, done) {
         `[Login] [Login failed] [Username: ${email}] [Request-IP: ${req.ip}] [Pending admin verification]`,
       );
       return done(null, user, {
-        message:'Your account is currently under verification by the administrator. Please contact the admin for approval.',
+        message:
+          'Your account is currently under verification by the administrator. Please contact the admin for approval.',
       });
-    }
-
-    if (!user.emailVerified && !unverifiedAllowed) {
-      logError('Passport Local Strategy - Email not verified', { email });
-      logger.error(`[Login] [Login failed] [Username: ${email}] [Request-IP: ${req.ip}]`);
-      return done(null, user, { message: 'Email not verified.' });
     }
 
     logger.info(`[Login] [Login successful] [Username: ${email}] [Request-IP: ${req.ip}]`);

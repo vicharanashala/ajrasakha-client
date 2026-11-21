@@ -17,6 +17,10 @@ const staticAtoms = {
     key: 'showFeedbackReminder',
     default: false,
   }),
+  showVerifyEmailModal: atom<boolean>({
+    key: 'showVerifyEmailModal',
+    default: false,
+  }),
   pendingNewConversation: atom<boolean>({
     key: 'pendingNewConversation',
     default: false,

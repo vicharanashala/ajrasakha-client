@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 import { useMediaQuery } from '@librechat/client';
 import type { ContextType } from '~/common';
 import {
@@ -24,6 +25,8 @@ import {
   useUpdateFarmerPlatformMutation,
 } from '~/data-provider';
 import { Nav, MobileNav, NAV_WIDTH } from '~/components/Nav';
+import { VerifyEmailBanner } from '~/components/Banners';
+import store from '~/store';
 import { cn } from '~/utils';
 import {
   TermsAndConditionsModal,
@@ -31,6 +34,7 @@ import {
   FarmerProfileModal,
   FarmerLocationModal,
   FarmerPlaceModal,
+  VerifyEmailModal,
 } from '~/components/ui';
 
 export default function Root() {
@@ -42,6 +46,9 @@ export default function Root() {
   const [showFarmerProfile, setShowFarmerProfile] = useState(false);
   const [showFarmerLocation, setShowFarmerLocation] = useState(false);
   const [showFarmerPlace, setShowFarmerPlace] = useState(false);
+  const [showVerifyEmailModal, setShowVerifyEmailModal] = useRecoilState(
+    store.showVerifyEmailModal,
+  );
   // On mobile the sidebar always starts closed. The closed state is saved so the sidebar's own
   // first-visit logic does not toggle it open again.
   const [navVisible, setNavVisible] = useState(() => {
@@ -205,6 +212,7 @@ export default function Root() {
                         : undefined
                     }
                   >
+                    <VerifyEmailBanner />
                     {!isAnswerPage && (
                       <>
                         {/* Soft brand-green glow washing down from the very top of the app
@@ -260,6 +268,10 @@ export default function Root() {
             initialData={termsData?.farmerProfile}
           />
           <FarmerPlaceModal open={showFarmerPlace} onClose={handleFarmerPlaceClose} />
+          <VerifyEmailModal
+            open={showVerifyEmailModal}
+            onOpenChange={setShowVerifyEmailModal}
+          />
         </AssistantsMapContext.Provider>
       </FileMapContext.Provider>
     </SetConvoProvider>

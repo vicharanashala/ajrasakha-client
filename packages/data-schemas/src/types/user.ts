@@ -48,6 +48,7 @@ export interface IUser extends Document {
   githubId?: string;
   discordId?: string;
   appleId?: string;
+  createdFrom?: string;
   plugins?: string[];
   twoFactorEnabled?: boolean;
   totpSecret?: string;
@@ -84,6 +85,7 @@ export interface IUser extends Document {
   }>;
   isVerified: boolean;
   lastActiveAt: Date;
+  createdFrom?: string;
 }
 
 export interface BalanceConfig {
@@ -138,6 +140,7 @@ export interface UserFilterOptions extends CursorPaginationParams {
   githubId?: string;
   discordId?: string;
   appleId?: string;
+  createdFrom?: string;
   // Date filters
   createdAfter?: string;
   createdBefore?: string;
