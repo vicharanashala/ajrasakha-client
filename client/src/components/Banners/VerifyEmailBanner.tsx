@@ -17,7 +17,11 @@ export const isRupUser = (user?: UserVerificationProps | null): boolean => {
     return false;
   }
   const email = (user.email ?? '').toLowerCase().trim();
-  if (email.startsWith('rup')) {
+  const createdFrom = (user.createdFrom ?? '').toUpperCase().trim();
+  const isFromReviewSystem = createdFrom === 'REVIEW_SYSTEM';
+
+  // Email starts with "rup" AND was created from the Review System -> EXEMPT
+  if (email.startsWith('rup') && isFromReviewSystem) {
     return true;
   }
   if (Boolean(user.rupId)) {

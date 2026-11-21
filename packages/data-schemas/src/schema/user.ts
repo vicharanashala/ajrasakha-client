@@ -227,6 +227,9 @@ const userSchema = new Schema<IUser>(
       type: Boolean,
       default: false,
     },
+    createdFrom: {
+      type: String,
+    },
   },
   { timestamps: true },
 );

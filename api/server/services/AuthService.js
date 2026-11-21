@@ -26,24 +26,30 @@ const EXTERNAL_USER_ROLES = [
 
 /**
  * Determines whether a user is exempt from email verification.
- * RUP accounts and external users (FARMER / Coordinators) are exempt.
+ * RUP accounts created from the Review System and external users (FARMER / Coordinators) are exempt.
  * Does NOT check email domains.
  *
  * @param {string | Partial<IUser>} userOrEmail
  * @param {string} [userRole]
  * @param {string} [role]
+ * @param {string} [createdFrom]
  * @returns {boolean}
  */
-const isEmailVerificationExempt = (userOrEmail, userRole, role) => {
+const isEmailVerificationExempt = (userOrEmail, userRole, role, createdFrom) => {
   const email = (typeof userOrEmail === 'string' ? userOrEmail : userOrEmail?.email || '')
     .toLowerCase()
     .trim();
   const uRole = (userRole || (typeof userOrEmail === 'object' ? userOrEmail?.userRole : undefined) || '')
     .toLowerCase()
     .trim();
+  const cFrom = (createdFrom || (typeof userOrEmail === 'object' ? userOrEmail?.createdFrom : undefined) || '')
+    .toUpperCase()
+    .trim();
 
-  // 1. RUP pilot / synthetic accounts are ALWAYS exempt regardless of role
-  if (email.startsWith('rup')) {
+  const isFromReviewSystem = cFrom === 'REVIEW_SYSTEM';
+
+  // 1. User email starts with "rup" AND was created from the Review System -> EXEMPT
+  if (email.startsWith('rup') && isFromReviewSystem) {
     return true;
   }
 
@@ -280,6 +286,7 @@ const registerUser = async (user, additionalData = {}) => {
       email,
       userRole: newUserData.userRole,
       role: newUserData.role,
+      createdFrom: newUserData.createdFrom,
     });
 
     const verificationRequired = !isExempt && isEmailVerificationEnabled();

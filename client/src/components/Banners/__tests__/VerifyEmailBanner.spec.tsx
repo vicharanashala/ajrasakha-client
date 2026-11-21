@@ -55,10 +55,16 @@ describe('VerifyEmailBanner & isRupUser helper', () => {
       expect(isRupUser(undefined)).toBe(false);
     });
 
-    it('returns true when user email starts with "rup" case-insensitively', () => {
-      expect(isRupUser({ email: 'rup12345@domain.com' })).toBe(true);
-      expect(isRupUser({ email: 'RUP_TEST@domain.com' })).toBe(true);
-      expect(isRupUser({ email: '  rupFarmer@domain.com  ' })).toBe(true);
+    it('returns true when user email starts with "rup" AND createdFrom is REVIEW_SYSTEM', () => {
+      expect(isRupUser({ email: 'rup12345@domain.com', createdFrom: 'REVIEW_SYSTEM' })).toBe(true);
+      expect(isRupUser({ email: 'RUP_TEST@domain.com', createdFrom: 'review_system' })).toBe(true);
+      expect(isRupUser({ email: '  rupFarmer@domain.com  ', createdFrom: 'REVIEW_SYSTEM' })).toBe(true);
+    });
+
+    it('returns false when user email starts with "rup" but createdFrom is NOT REVIEW_SYSTEM', () => {
+      expect(isRupUser({ email: 'rupesh@domain.com', userRole: 'INTERNAL' })).toBe(false);
+      expect(isRupUser({ email: 'rup123@domain.com', userRole: 'INTERNAL', createdFrom: undefined })).toBe(false);
+      expect(isRupUser({ email: 'rupa@domain.com', userRole: 'INTERNAL', createdFrom: 'WEB_APP' })).toBe(false);
     });
 
     it('returns false for normal non-rup email', () => {
@@ -113,14 +119,25 @@ describe('VerifyEmailBanner & isRupUser helper', () => {
       expect(container.firstChild).toBeNull();
     });
 
-    it('does not render for RUP email accounts', () => {
+    it('does not render for RUP email accounts createdFrom REVIEW_SYSTEM', () => {
       (AuthHooks.useAuthContext as jest.Mock).mockReturnValue({
         isAuthenticated: true,
-        user: { email: 'rup999@example.com', emailVerified: false },
+        user: { email: 'rup999@example.com', createdFrom: 'REVIEW_SYSTEM', emailVerified: false },
       });
 
       const { container } = render(<VerifyEmailBanner />);
       expect(container.firstChild).toBeNull();
+    });
+
+    it('renders banner for users whose email starts with rup (e.g. rupesh) when NOT createdFrom REVIEW_SYSTEM', () => {
+      (AuthHooks.useAuthContext as jest.Mock).mockReturnValue({
+        isAuthenticated: true,
+        user: { email: 'rupesh@example.com', userRole: 'INTERNAL', emailVerified: false },
+      });
+
+      render(<VerifyEmailBanner />);
+      expect(screen.getByTestId('verify-email-banner')).toBeInTheDocument();
+      expect(screen.getByText(/rupesh@example\.com/)).toBeInTheDocument();
     });
 
     it('does not render for users with a RUP ID', () => {

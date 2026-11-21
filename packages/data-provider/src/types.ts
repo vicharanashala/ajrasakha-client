@@ -212,6 +212,7 @@ export type TUser = {
   emailVerified?: boolean;
   rupId?: string;
   idOnTheSource?: string;
+  createdFrom?: string;
   plugins?: string[];
   twoFactorEnabled?: boolean;
   backupCodes?: TBackupCode[];
