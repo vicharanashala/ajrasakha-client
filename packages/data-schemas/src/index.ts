@@ -9,6 +9,8 @@ export {
   ACTIVE_SESSION_EXISTS_CODE,
   DEFAULT_REFRESH_TOKEN_EXPIRY,
   DEFAULT_SESSION_EXPIRY,
+  EXTERNAL_USER_ROLES,
+  isSessionResetExempt,
 } from './methods';
 export type * from './types';
 export type * from './methods';

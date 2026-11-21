@@ -7,6 +7,7 @@ const {
   ACTIVE_SESSION_EXISTS_CODE,
   DEFAULT_SESSION_EXPIRY,
   DEFAULT_REFRESH_TOKEN_EXPIRY,
+  isSessionResetExempt,
 } = require('@librechat/data-schemas');
 const { ErrorTypes, SystemRoles, UserRoles, errorsToString } = require('librechat-data-provider');
 const { isEnabled, checkEmailConfig, isEmailDomainAllowed, math } = require('@librechat/api');
@@ -392,7 +393,7 @@ const issueAccessToken = async (userId) => {
  * receives only a new access token, so the cookie set by the winning request is kept.
  * @returns
  */
-const setAuthTokens = async (userId, res, _session = null, presentedRefreshToken) => {
+const setAuthTokens = async (userId, res, _session = null, presentedRefreshToken, userContext = null) => {
   try {
     let session = _session;
     let refreshToken;
@@ -412,7 +413,7 @@ const setAuthTokens = async (userId, res, _session = null, presentedRefreshToken
       refreshTokenExpires = session.expiration.getTime();
       refreshToken = await generateRefreshToken(session);
     } else {
-      const result = await createSession(userId, { expiresIn });
+      const result = await createSession(userId, { expiresIn, user: userContext });
       session = result.session;
       refreshToken = result.refreshToken;
       refreshTokenExpires = session.expiration.getTime();
@@ -585,7 +586,7 @@ const requestSessionReset = async (req) => {
     }
     const normalizedEmail = email.trim().toLowerCase();
 
-    const user = await findUser({ email: normalizedEmail }, 'email _id name username');
+    const user = await findUser({ email: normalizedEmail }, 'email _id name username userRole createdFrom');
 
     // Anti-enumeration: Return generic success message even if user is not found
     if (!user) {
@@ -593,6 +594,22 @@ const requestSessionReset = async (req) => {
       return {
         status: 200,
         message: 'If an account with this email exists, a verification link has been sent.',
+      };
+    }
+
+    // Exemption: RUP accounts & external roles (FARMER, coordinators) never require email verification
+    if (isSessionResetExempt(user)) {
+      await deleteAllUserSessions({ userId: user._id });
+      if (mongoose.models.Session) {
+        await mongoose.models.Session.deleteMany({ user: user._id });
+      }
+      logger.info(
+        `[requestSessionReset] Exempt account (${user.email}): active sessions cleared directly without email verification.`,
+      );
+      return {
+        status: 200,
+        message: 'Active sessions have been reset. You can now log in.',
+        exempt: true,
       };
     }
 
@@ -779,4 +796,5 @@ module.exports = {
   verifySessionReset,
   activeSessionMessage,
   ACTIVE_SESSION_EXISTS_CODE,
+  isSessionResetExempt,
 };

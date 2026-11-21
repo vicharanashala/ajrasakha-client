@@ -35,6 +35,7 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
   const [verificationRequestSent, setVerificationRequestSent] = useState<boolean>(false);
   const [showSessionResetPrompt, setShowSessionResetPrompt] = useState<boolean>(false);
   const [sessionResetSent, setSessionResetSent] = useState<boolean>(false);
+  const [isExemptSessionReset, setIsExemptSessionReset] = useState<boolean>(false);
   // Controls whether the password field is shown as plain text
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
@@ -62,12 +63,15 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
       setError(undefined);
       setShowSessionResetPrompt(false);
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
+      if (data?.exempt) {
+        setIsExemptSessionReset(true);
+      }
       setSessionResetSent(true);
     },
     onError: (error) => {
       console.error('Failed to send session reset request:', error);
-      setError('Failed to send session reset verification email. Please try again.');
+      setError('Failed to send session reset request. Please try again.');
     },
   });
 
@@ -190,10 +194,12 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
       {sessionResetSent && (
         <div className="mt-3 rounded-lg border border-green-500/50 bg-green-500/10 p-3 text-sm text-green-700 dark:text-green-300">
           <p className="font-semibold text-green-600 dark:text-green-400">
-            Verification link sent! 📧
+            {isExemptSessionReset ? 'Active sessions reset! 🚀' : 'Verification link sent! 📧'}
           </p>
           <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-300">
-            Please check your inbox and click the link to terminate your active sessions.
+            {isExemptSessionReset
+              ? 'Your previous session was terminated. You can now log in.'
+              : 'Please check your inbox and click the link to terminate your active sessions.'}
           </p>
         </div>
       )}

@@ -12,6 +12,8 @@ export interface CreateSessionOptions {
   expiration?: Date;
   /** Duration in milliseconds for session expiry. Default: 7 days */
   expiresIn?: number;
+  user?: Record<string, unknown> | null;
+  isExempt?: boolean;
 }
 
 export interface UpdateExpirationOptions {

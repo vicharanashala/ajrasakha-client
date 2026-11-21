@@ -54,7 +54,7 @@ const verify2FAWithTempToken = async (req, res) => {
     delete userData.backupCodes;
     userData.id = user._id.toString();
 
-    const authToken = await setAuthTokens(user._id, res);
+    const authToken = await setAuthTokens(user._id, res, null, null, user);
     return res.status(200).json({ token: authToken, user: userData });
   } catch (err) {
     if (err?.code === ACTIVE_SESSION_EXISTS_CODE) {

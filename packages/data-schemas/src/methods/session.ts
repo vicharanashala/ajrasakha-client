@@ -23,6 +23,69 @@ export const DEFAULT_REFRESH_TOKEN_EXPIRY = 1000 * 60 * 60 * 24 * 7;
  */
 export const REFRESH_TOKEN_REUSE_GRACE_MS = 1000 * 60;
 
+export const EXTERNAL_USER_ROLES = [
+  'farmer',
+  'district_coordinator',
+  'block_coordinator',
+  'village_volunteer',
+];
+
+/**
+ * Determines whether an account is exempt from session reset functionality with email verification.
+ * - RUP Pattern: Email starts with rup (case-insensitive: ^rup) and createdFrom: REVIEW_SYSTEM— guarantees all RUP test/pilot accounts never require email verification.
+ * - External Roles: userRole is FARMER or a coordinator role (district_coordinator, block_coordinator, village_volunteer).
+ *
+ * @param userOrEmail User object or email string
+ * @param userRole Optional user role
+ * @param role Optional system role
+ * @param createdFrom Optional createdFrom origin
+ * @returns boolean true if account is exempt
+ */
+export const isSessionResetExempt = (
+  userOrEmail?: unknown,
+  userRole?: string,
+  role?: string,
+  createdFrom?: string,
+): boolean => {
+  if (!userOrEmail) {
+    return false;
+  }
+  const email = (
+    typeof userOrEmail === 'string' ? userOrEmail : (userOrEmail as any)?.email || ''
+  )
+    .toLowerCase()
+    .trim();
+  const uRole = (
+    userRole || (typeof userOrEmail === 'object' ? (userOrEmail as any)?.userRole : undefined) || ''
+  )
+    .toLowerCase()
+    .trim();
+  const cFrom = (
+    createdFrom || (typeof userOrEmail === 'object' ? (userOrEmail as any)?.createdFrom : undefined) || ''
+  )
+    .toUpperCase()
+    .trim();
+
+  const isFromReviewSystem = cFrom === 'REVIEW_SYSTEM';
+
+  // 1. RUP Pattern: Email starts with "rup" (case-insensitive: ^rup) AND was created from REVIEW_SYSTEM
+  if (email.startsWith('rup') && isFromReviewSystem) {
+    return true;
+  }
+
+  // 2. Internal users are NOT exempt
+  if (uRole === 'internal') {
+    return false;
+  }
+
+  // 3. External roles (FARMER, coordinator roles) are exempt
+  if (EXTERNAL_USER_ROLES.includes(uRole)) {
+    return true;
+  }
+
+  return false;
+};
+
 // Factory function that takes mongoose instance and returns the methods
 export function createSessionMethods(mongoose: typeof import('mongoose')) {
   /**
@@ -40,17 +103,30 @@ export function createSessionMethods(mongoose: typeof import('mongoose')) {
 
     try {
       const Session = mongoose.models.Session;
-      // const User = mongoose.models.User;
+      const User = mongoose.models.User;
       const existingSession = await Session.findOne({
         user: userId,
         expiration: { $gt: new Date() },
       }).lean();
 
       if (existingSession) {
-        throw new SessionError(
-          'You are already logged in on one device. Logout to access in this device.',
-          ACTIVE_SESSION_EXISTS_CODE,
-        );
+        let isExempt = options.isExempt;
+        if (isExempt === undefined) {
+          const userObj =
+            options.user ||
+            (User ? await User.findById(userId, 'email userRole createdFrom').lean() : null);
+          isExempt = isSessionResetExempt(userObj);
+        }
+
+        if (isExempt) {
+          await Session.deleteMany({ user: userId });
+          logger.info(`[createSession] Auto-terminated prior session(s) for exempt user: ${userId}`);
+        } else {
+          throw new SessionError(
+            'You are already logged in on one device. Logout to access in this device.',
+            ACTIVE_SESSION_EXISTS_CODE,
+          );
+        }
       }
       const currentSession = new Session({
         user: userId,

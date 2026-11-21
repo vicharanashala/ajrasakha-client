@@ -208,6 +208,7 @@ export type TUser = {
   avatar: string;
   role: string;
   userRole?: UserRoles;
+  createdFrom?: string;
   provider: string;
   plugins?: string[];
   twoFactorEnabled?: boolean;

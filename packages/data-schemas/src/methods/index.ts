@@ -2,13 +2,21 @@ import {
   createSessionMethods,
   ACTIVE_SESSION_EXISTS_CODE,
   DEFAULT_REFRESH_TOKEN_EXPIRY,
+  EXTERNAL_USER_ROLES,
+  isSessionResetExempt,
   type SessionMethods,
 } from './session';
 import { createTokenMethods, type TokenMethods } from './token';
 import { createRoleMethods, type RoleMethods } from './role';
 import { createUserMethods, DEFAULT_SESSION_EXPIRY, type UserMethods } from './user';
 
-export { ACTIVE_SESSION_EXISTS_CODE, DEFAULT_REFRESH_TOKEN_EXPIRY, DEFAULT_SESSION_EXPIRY };
+export {
+  ACTIVE_SESSION_EXISTS_CODE,
+  DEFAULT_REFRESH_TOKEN_EXPIRY,
+  DEFAULT_SESSION_EXPIRY,
+  EXTERNAL_USER_ROLES,
+  isSessionResetExempt,
+};
 import { createKeyMethods, type KeyMethods } from './key';
 import { createFileMethods, type FileMethods } from './file';
 /* Memories */
