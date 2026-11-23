@@ -393,7 +393,7 @@ const issueAccessToken = async (userId) => {
  * receives only a new access token, so the cookie set by the winning request is kept.
  * @returns
  */
-const setAuthTokens = async (userId, res, _session = null, presentedRefreshToken, userContext = null) => {
+const setAuthTokens = async (userId, res, _session = null, presentedRefreshToken) => {
   try {
     let session = _session;
     let refreshToken;
@@ -413,7 +413,7 @@ const setAuthTokens = async (userId, res, _session = null, presentedRefreshToken
       refreshTokenExpires = session.expiration.getTime();
       refreshToken = await generateRefreshToken(session);
     } else {
-      const result = await createSession(userId, { expiresIn, user: userContext });
+      const result = await createSession(userId, { expiresIn });
       session = result.session;
       refreshToken = result.refreshToken;
       refreshTokenExpires = session.expiration.getTime();
@@ -597,19 +597,14 @@ const requestSessionReset = async (req) => {
       };
     }
 
-    // Exemption: RUP accounts & external roles (FARMER, coordinators) never require email verification
+    // Session reset with email verification is strictly implemented only for non-exempt accounts
     if (isSessionResetExempt(user)) {
-      await deleteAllUserSessions({ userId: user._id });
-      if (mongoose.models.Session) {
-        await mongoose.models.Session.deleteMany({ user: user._id });
-      }
-      logger.info(
-        `[requestSessionReset] Exempt account (${user.email}): active sessions cleared directly without email verification.`,
+      logger.warn(
+        `[requestSessionReset] Session reset requested for exempt account [Email: ${normalizedEmail}]. Excluded from email verification reset.`,
       );
       return {
         status: 200,
-        message: 'Active sessions have been reset. You can now log in.',
-        exempt: true,
+        message: 'If an account with this email exists, a verification link has been sent.',
       };
     }
 
@@ -678,11 +673,19 @@ const verifySessionReset = async (req) => {
   }
 
   const decodedEmail = decodeURIComponent(email).trim().toLowerCase();
-  const user = await findUser({ email: decodedEmail }, 'email _id');
+  const user = await findUser({ email: decodedEmail }, 'email _id userRole createdFrom');
 
   if (!user) {
     logger.warn(`[verifySessionReset] [User not found] [Email: ${decodedEmail}]`);
     return new Error('User not found');
+  }
+
+  // Session reset with email verification is strictly implemented only for non-exempt accounts
+  if (isSessionResetExempt(user)) {
+    logger.warn(
+      `[verifySessionReset] Session reset attempted for exempt account [Email: ${decodedEmail}]. Rejected.`,
+    );
+    return new Error('Session reset via email verification is not available for this account');
   }
 
   const Token = mongoose.models.Token;

@@ -103,30 +103,16 @@ export function createSessionMethods(mongoose: typeof import('mongoose')) {
 
     try {
       const Session = mongoose.models.Session;
-      const User = mongoose.models.User;
       const existingSession = await Session.findOne({
         user: userId,
         expiration: { $gt: new Date() },
       }).lean();
 
       if (existingSession) {
-        let isExempt = options.isExempt;
-        if (isExempt === undefined) {
-          const userObj =
-            options.user ||
-            (User ? await User.findById(userId, 'email userRole createdFrom').lean() : null);
-          isExempt = isSessionResetExempt(userObj);
-        }
-
-        if (isExempt) {
-          await Session.deleteMany({ user: userId });
-          logger.info(`[createSession] Auto-terminated prior session(s) for exempt user: ${userId}`);
-        } else {
-          throw new SessionError(
-            'You are already logged in on one device. Logout to access in this device.',
-            ACTIVE_SESSION_EXISTS_CODE,
-          );
-        }
+        throw new SessionError(
+          'You are already logged in on one device. Logout to access in this device.',
+          ACTIVE_SESSION_EXISTS_CODE,
+        );
       }
       const currentSession = new Session({
         user: userId,

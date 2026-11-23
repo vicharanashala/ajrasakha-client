@@ -1,4 +1,4 @@
-const { logger } = require('@librechat/data-schemas');
+const { logger, isSessionResetExempt } = require('@librechat/data-schemas');
 const { generate2FATempToken } = require('~/server/services/twoFactorService');
 const {
   setAuthTokens,
@@ -20,12 +20,17 @@ const loginController = async (req, res) => {
     const { password: _p, totpSecret: _t, __v, ...user } = req.user;
     user.id = user._id.toString();
 
-    const token = await setAuthTokens(req.user._id, res, null, null, req.user);
+    const token = await setAuthTokens(req.user._id, res);
 
     return res.status(200).send({ token, user });
   } catch (err) {
     if (err?.code === ACTIVE_SESSION_EXISTS_CODE) {
-      return res.status(409).json({ message: activeSessionMessage, errorCode: ACTIVE_SESSION_EXISTS_CODE });
+      const isExempt = isSessionResetExempt(req.user);
+      return res.status(409).json({
+        message: activeSessionMessage,
+        errorCode: isExempt ? 'ACTIVE_SESSION_EXISTS_EXEMPT' : ACTIVE_SESSION_EXISTS_CODE,
+        isExempt,
+      });
     }
     logger.error('[loginController]', err);
     return res.status(500).json({ message: 'Something went wrong' });

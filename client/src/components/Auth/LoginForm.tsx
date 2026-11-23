@@ -35,7 +35,6 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
   const [verificationRequestSent, setVerificationRequestSent] = useState<boolean>(false);
   const [showSessionResetPrompt, setShowSessionResetPrompt] = useState<boolean>(false);
   const [sessionResetSent, setSessionResetSent] = useState<boolean>(false);
-  const [isExemptSessionReset, setIsExemptSessionReset] = useState<boolean>(false);
   // Controls whether the password field is shown as plain text
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
@@ -63,15 +62,12 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
       setError(undefined);
       setShowSessionResetPrompt(false);
     },
-    onSuccess: (data: any) => {
-      if (data?.exempt) {
-        setIsExemptSessionReset(true);
-      }
+    onSuccess: () => {
       setSessionResetSent(true);
     },
     onError: (error) => {
       console.error('Failed to send session reset request:', error);
-      setError('Failed to send session reset request. Please try again.');
+      setError('Failed to send session reset verification email. Please try again.');
     },
   });
 
@@ -82,13 +78,16 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
     if (error && error === 'ERR_ADMIN_VERIFICATION_PENDING' && !showRequestVerification && !verificationRequestSent) {
       setShowRequestVerification(true);
     }
+    const isExempt =
+      typeof error === 'string' &&
+      (error === 'ACTIVE_SESSION_EXISTS_EXEMPT' || error.includes('EXEMPT'));
     const isAlreadyLoggedIn =
       typeof error === 'string' &&
       (error.includes('409') ||
         error.includes('already logged in') ||
         error.includes('ACTIVE_SESSION_EXISTS') ||
         error === 'You are already logged in on one device. Logout to access in this device.');
-    if (isAlreadyLoggedIn && !showSessionResetPrompt && !sessionResetSent) {
+    if (isAlreadyLoggedIn && !isExempt && !showSessionResetPrompt && !sessionResetSent) {
       setShowSessionResetPrompt(true);
     }
   }, [error, showResendLink, showRequestVerification, verificationRequestSent, showSessionResetPrompt, sessionResetSent]);
@@ -194,12 +193,10 @@ const LoginForm: React.FC<TLoginFormProps> = ({ onSubmit, startupConfig, error, 
       {sessionResetSent && (
         <div className="mt-3 rounded-lg border border-green-500/50 bg-green-500/10 p-3 text-sm text-green-700 dark:text-green-300">
           <p className="font-semibold text-green-600 dark:text-green-400">
-            {isExemptSessionReset ? 'Active sessions reset! 🚀' : 'Verification link sent! 📧'}
+            Verification link sent! 📧
           </p>
           <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-300">
-            {isExemptSessionReset
-              ? 'Your previous session was terminated. You can now log in.'
-              : 'Please check your inbox and click the link to terminate your active sessions.'}
+            Please check your inbox and click the link to terminate your active sessions.
           </p>
         </div>
       )}

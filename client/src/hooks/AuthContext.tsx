@@ -138,7 +138,9 @@ const AuthContextProvider = ({
         errorCode = errorData?.errorCode;
       }
       let errorMsg =
-        errorCode === 'ERR_ADMIN_VERIFICATION_PENDING' || errorCode === 'ACTIVE_SESSION_EXISTS'
+        errorCode === 'ERR_ADMIN_VERIFICATION_PENDING' ||
+        errorCode === 'ACTIVE_SESSION_EXISTS' ||
+        errorCode === 'ACTIVE_SESSION_EXISTS_EXEMPT'
           ? errorCode
           : resError.message;
       if(errorCode === 'ERR_ADMIN_VERIFICATION_PENDING'){

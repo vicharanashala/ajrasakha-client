@@ -61,9 +61,8 @@ describe('isSessionResetExempt unit tests', () => {
     });
   });
 
-  describe('createSession exemption handling on conflict', () => {
+  describe('createSession conflict handling (no auto-reset, preserves existing session logic)', () => {
     let mockSessionModel: any;
-    let mockUserModel: any;
     let mockMongoose: any;
     let sessionMethods: ReturnType<typeof createSessionMethods>;
 
@@ -76,79 +75,39 @@ describe('isSessionResetExempt unit tests', () => {
         };
       };
       mockSessionModel.findOne = jest.fn();
-      mockSessionModel.deleteMany = jest.fn().mockResolvedValue({ deletedCount: 1 });
-
-      mockUserModel = {
-        findById: jest.fn(),
-      };
+      mockSessionModel.deleteMany = jest.fn();
 
       mockMongoose = {
         models: {
           Session: mockSessionModel,
-          User: mockUserModel,
         },
       } as any;
 
       sessionMethods = createSessionMethods(mockMongoose);
     });
 
-    it('should auto-terminate existing session and succeed for RUP account createdFrom REVIEW_SYSTEM', async () => {
+    it('should throw ACTIVE_SESSION_EXISTS SessionError when active session exists (without auto-reset)', async () => {
       mockSessionModel.findOne.mockReturnValue({
         lean: jest.fn().mockResolvedValue({ _id: 'old-session-id', user: 'user-1' }),
       });
 
-      const result = await sessionMethods.createSession('user-1', {
-        user: { email: 'rup_test@example.com', createdFrom: 'REVIEW_SYSTEM' },
+      await expect(sessionMethods.createSession('user-1')).rejects.toThrow(SessionError);
+      await expect(sessionMethods.createSession('user-1')).rejects.toMatchObject({
+        code: ACTIVE_SESSION_EXISTS_CODE,
       });
 
-      expect(mockSessionModel.deleteMany).toHaveBeenCalledWith({ user: 'user-1' });
+      // Does not delete sessions on login conflict
+      expect(mockSessionModel.deleteMany).not.toHaveBeenCalled();
+    });
+
+    it('should create session when no active session exists', async () => {
+      mockSessionModel.findOne.mockReturnValue({
+        lean: jest.fn().mockResolvedValue(null),
+      });
+
+      const result = await sessionMethods.createSession('user-new');
       expect(result.refreshToken).toBeDefined();
       expect(result.session).toBeDefined();
-    });
-
-    it('should auto-terminate existing session and succeed for FARMER userRole', async () => {
-      mockSessionModel.findOne.mockReturnValue({
-        lean: jest.fn().mockResolvedValue({ _id: 'old-session-id', user: 'user-2' }),
-      });
-
-      const result = await sessionMethods.createSession('user-2', {
-        user: { email: 'farmer@example.com', userRole: 'FARMER' },
-      });
-
-      expect(mockSessionModel.deleteMany).toHaveBeenCalledWith({ user: 'user-2' });
-      expect(result.refreshToken).toBeDefined();
-    });
-
-    it('should auto-terminate existing session and succeed for coordinator role fetched via User model', async () => {
-      mockSessionModel.findOne.mockReturnValue({
-        lean: jest.fn().mockResolvedValue({ _id: 'old-session-id', user: 'user-3' }),
-      });
-      mockUserModel.findById.mockReturnValue({
-        lean: jest.fn().mockResolvedValue({
-          email: 'dc@example.com',
-          userRole: 'district_coordinator',
-        }),
-      });
-
-      const result = await sessionMethods.createSession('user-3');
-
-      expect(mockUserModel.findById).toHaveBeenCalledWith('user-3', 'email userRole createdFrom');
-      expect(mockSessionModel.deleteMany).toHaveBeenCalledWith({ user: 'user-3' });
-      expect(result.refreshToken).toBeDefined();
-    });
-
-    it('should throw ACTIVE_SESSION_EXISTS SessionError for non-exempt INTERNAL user', async () => {
-      mockSessionModel.findOne.mockReturnValue({
-        lean: jest.fn().mockResolvedValue({ _id: 'old-session-id', user: 'user-4' }),
-      });
-
-      await expect(
-        sessionMethods.createSession('user-4', {
-          user: { email: 'internal@example.com', userRole: 'INTERNAL' },
-        }),
-      ).rejects.toThrow(SessionError);
-
-      expect(mockSessionModel.deleteMany).not.toHaveBeenCalled();
     });
   });
 });

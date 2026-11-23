@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { logger } = require('@librechat/data-schemas');
+const { logger, isSessionResetExempt } = require('@librechat/data-schemas');
 const {
   verifyTOTP,
   getTOTPSecret,
@@ -54,11 +54,16 @@ const verify2FAWithTempToken = async (req, res) => {
     delete userData.backupCodes;
     userData.id = user._id.toString();
 
-    const authToken = await setAuthTokens(user._id, res, null, null, user);
+    const authToken = await setAuthTokens(user._id, res);
     return res.status(200).json({ token: authToken, user: userData });
   } catch (err) {
     if (err?.code === ACTIVE_SESSION_EXISTS_CODE) {
-      return res.status(409).json({ message: activeSessionMessage });
+      const isExempt = isSessionResetExempt(user);
+      return res.status(409).json({
+        message: activeSessionMessage,
+        errorCode: isExempt ? 'ACTIVE_SESSION_EXISTS_EXEMPT' : ACTIVE_SESSION_EXISTS_CODE,
+        isExempt,
+      });
     }
     logger.error('[verify2FAWithTempToken]', err);
     return res.status(500).json({ message: 'Something went wrong' });
