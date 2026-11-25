@@ -45,9 +45,9 @@ export default function useSubmitMessage() {
         return console.warn('No data provided to submitMessage');
       }
 
-      // Block submission if user is unverified and not exempt (non-RUP) - only in production when email verification is enabled
+      // Block submission if user is unverified and not exempt (non-RUP)
       const isExempt = isRupUser(user);
-      const isVerificationRequired = !isExempt && startupConfig?.emailVerificationEnabled === true;
+      const isVerificationRequired = !isExempt && startupConfig?.emailVerificationEnabled !== false;
       if (user && !user.emailVerified && isVerificationRequired) {
         setShowVerifyEmailModal(true);
         return;

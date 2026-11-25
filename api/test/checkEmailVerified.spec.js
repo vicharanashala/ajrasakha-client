@@ -8,7 +8,7 @@ describe('checkEmailVerified middleware', () => {
 
   beforeEach(() => {
     jest.resetModules();
-    process.env = { ...originalEnv, NODE_ENV: 'production' };
+    process.env = { ...originalEnv };
     req = {
       user: {
         email: 'user@example.com',
@@ -30,24 +30,6 @@ describe('checkEmailVerified middleware', () => {
   it('should call next() if email verification is disabled', () => {
     delete process.env.emailVerified;
     delete process.env.EMAIL_VERIFIED;
-
-    checkEmailVerified(req, res, next);
-    expect(next).toHaveBeenCalled();
-    expect(res.status).not.toHaveBeenCalled();
-  });
-
-  it('should call next() in development environment (NODE_ENV=development) without blocking', () => {
-    process.env.NODE_ENV = 'development';
-    process.env.emailVerified = 'true';
-
-    checkEmailVerified(req, res, next);
-    expect(next).toHaveBeenCalled();
-    expect(res.status).not.toHaveBeenCalled();
-  });
-
-  it('should call next() in staging environment (NODE_ENV=staging) without blocking', () => {
-    process.env.NODE_ENV = 'staging';
-    process.env.emailVerified = 'true';
 
     checkEmailVerified(req, res, next);
     expect(next).toHaveBeenCalled();

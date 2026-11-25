@@ -11,9 +11,6 @@ const { ErrorTypes, SystemRoles, UserRoles, errorsToString } = require('librecha
 const { isEnabled, checkEmailConfig, isEmailVerificationEnabled: checkEmailVerification, isEmailDomainAllowed, math } = require('@librechat/api');
 
 const isEmailVerificationEnabled = () => {
-  if (process.env.NODE_ENV !== 'production') {
-    return false;
-  }
   if (typeof checkEmailVerification === 'function') {
     return checkEmailVerification();
   }
