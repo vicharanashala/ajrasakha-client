@@ -26,7 +26,9 @@ const EXTERNAL_USER_ROLES = [
 
 /**
  * Determines whether a user is exempt from email verification.
- * RUP accounts created from the Review System and external users (FARMER / Coordinators) are exempt.
+ * Only farmers and coordinators require email verification, UNLESS their email
+ * starts with "rup" AND they were created from the Review System (in which case they are exempt).
+ * All other user roles (e.g. INTERNAL) do not require email verification and are exempt.
  * Does NOT check email domains.
  *
  * @param {string | Partial<IUser>} userOrEmail
@@ -39,31 +41,41 @@ const isEmailVerificationExempt = (userOrEmail, userRole, role, createdFrom) => 
   const email = (typeof userOrEmail === 'string' ? userOrEmail : userOrEmail?.email || '')
     .toLowerCase()
     .trim();
-  const uRole = (userRole || (typeof userOrEmail === 'object' ? userOrEmail?.userRole : undefined) || '')
-    .toLowerCase()
-    .trim();
-  const cFrom = (createdFrom || (typeof userOrEmail === 'object' ? userOrEmail?.createdFrom : undefined) || '')
+  let rawRole =
+    userRole ||
+    (typeof userOrEmail === 'object'
+      ? userOrEmail?.userRole || userOrEmail?.role
+      : undefined) ||
+    role;
+
+  if (!rawRole || rawRole.toUpperCase() === 'USER') {
+    rawRole = 'farmer';
+  }
+
+  const uRole = rawRole.toLowerCase().trim();
+  const cFrom = (
+    createdFrom ||
+    (typeof userOrEmail === 'object' ? userOrEmail?.createdFrom : undefined) ||
+    ''
+  )
     .toUpperCase()
     .trim();
 
   const isFromReviewSystem = cFrom === 'REVIEW_SYSTEM';
 
   // 1. User email starts with "rup" AND was created from the Review System -> EXEMPT
+  // (applies even if the user is a farmer or coordinator)
   if (email.startsWith('rup') && isFromReviewSystem) {
     return true;
   }
 
-  // 2. Internal users are NOT exempt
-  if (uRole === 'internal') {
+  // 2. Only farmers and coordinators require email verification -> NOT exempt
+  if (EXTERNAL_USER_ROLES.includes(uRole)) {
     return false;
   }
 
-  // 3. External roles (FARMER, coordinators) are exempt
-  if (EXTERNAL_USER_ROLES.includes(uRole)) {
-    return true;
-  }
-
-  return false;
+  // 3. All other users (e.g. INTERNAL) do not require email verification -> EXEMPT
+  return true;
 };
 const {
   findUser,
@@ -659,4 +671,5 @@ module.exports = {
   activeSessionMessage,
   ACTIVE_SESSION_EXISTS_CODE,
   isEmailVerificationExempt,
+  isEmailVerificationEnabled,
 };

@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
-const { isEmailVerificationEnabled } = require('@librechat/api');
-const { isEmailVerificationExempt } = require('../server/services/AuthService');
+const { isEmailVerificationExempt, isEmailVerificationEnabled } = require('../server/services/AuthService');
 const sendEmail = require('../server/utils/sendEmail');
 
 describe('Email Verification & Nodemailer Setup', () => {
@@ -8,7 +7,7 @@ describe('Email Verification & Nodemailer Setup', () => {
 
   beforeEach(() => {
     jest.resetModules();
-    process.env = { ...originalEnv };
+    process.env = { ...originalEnv, NODE_ENV: 'production' };
   });
 
   afterAll(() => {
@@ -314,7 +313,7 @@ describe('Email Verification & Nodemailer Setup', () => {
       });
     });
 
-    it('should exempt and auto-heal external FARMER users even if emailVerified=false', async () => {
+    it('should reject external FARMER users when emailVerified=false', async () => {
       process.env.emailVerified = 'true';
       const localStrategy = require('../strategies/localStrategy')();
 
@@ -329,7 +328,6 @@ describe('Email Verification & Nodemailer Setup', () => {
 
       mockFindUser.mockResolvedValue(user);
       mockComparePassword.mockResolvedValue(true);
-      mockUpdateUser.mockResolvedValue({ ...user, emailVerified: true });
 
       const req = {
         body: { email: 'farmer@gmail.com', password: 'validPassword123' },
@@ -339,15 +337,50 @@ describe('Email Verification & Nodemailer Setup', () => {
       await new Promise((resolve) => {
         localStrategy._verify(req, 'farmer@gmail.com', 'validPassword123', (err, resultUser, info) => {
           expect(err).toBeNull();
-          expect(resultUser.emailVerified).toBe(true);
-          expect(info).toBeUndefined();
-          expect(mockUpdateUser).toHaveBeenCalledWith('farmer_user_1', { emailVerified: true });
+          expect(info).toEqual({
+            message: 'Email not verified. Please check your inbox for the verification link.',
+          });
+          expect(mockUpdateUser).not.toHaveBeenCalled();
           resolve();
         });
       });
     });
 
-    it('should reject internal users (userRole=INTERNAL) when emailVerified=false', async () => {
+    it('should exempt and auto-heal external FARMER users when email starts with "rup" and createdFrom is REVIEW_SYSTEM', async () => {
+      process.env.emailVerified = 'true';
+      const localStrategy = require('../strategies/localStrategy')();
+
+      const user = {
+        _id: 'rup_farmer_1',
+        email: 'rup_farmer@example.com',
+        userRole: 'FARMER',
+        createdFrom: 'REVIEW_SYSTEM',
+        password: 'hashed-password',
+        emailVerified: false,
+        isVerified: true,
+      };
+
+      mockFindUser.mockResolvedValue(user);
+      mockComparePassword.mockResolvedValue(true);
+      mockUpdateUser.mockResolvedValue({ ...user, emailVerified: true });
+
+      const req = {
+        body: { email: 'rup_farmer@example.com', password: 'validPassword123' },
+        ip: '127.0.0.1',
+      };
+
+      await new Promise((resolve) => {
+        localStrategy._verify(req, 'rup_farmer@example.com', 'validPassword123', (err, resultUser, info) => {
+          expect(err).toBeNull();
+          expect(resultUser.emailVerified).toBe(true);
+          expect(info).toBeUndefined();
+          expect(mockUpdateUser).toHaveBeenCalledWith('rup_farmer_1', { emailVerified: true });
+          resolve();
+        });
+      });
+    });
+
+    it('should exempt and auto-heal internal users (userRole=INTERNAL) even if emailVerified=false', async () => {
       process.env.emailVerified = 'true';
       const localStrategy = require('../strategies/localStrategy')();
 
@@ -362,6 +395,7 @@ describe('Email Verification & Nodemailer Setup', () => {
 
       mockFindUser.mockResolvedValue(user);
       mockComparePassword.mockResolvedValue(true);
+      mockUpdateUser.mockResolvedValue({ ...user, emailVerified: true });
 
       const req = {
         body: { email: 'internal_staff@example.com', password: 'validPassword123' },
@@ -371,50 +405,48 @@ describe('Email Verification & Nodemailer Setup', () => {
       await new Promise((resolve) => {
         localStrategy._verify(req, 'internal_staff@example.com', 'validPassword123', (err, resultUser, info) => {
           expect(err).toBeNull();
-          expect(info).toEqual({
-            message: 'Email not verified. Please check your inbox for the verification link.',
-          });
-          expect(mockUpdateUser).not.toHaveBeenCalled();
+          expect(resultUser.emailVerified).toBe(true);
+          expect(info).toBeUndefined();
+          expect(mockUpdateUser).toHaveBeenCalledWith('internal_user_1', { emailVerified: true });
           resolve();
         });
       });
     });
   });
 
-  describe('isEmailVerificationExempt (Role & Pattern Based, No Domain Check)', () => {
-    it('should return true when email starts with "rup" AND createdFrom is REVIEW_SYSTEM', () => {
-      expect(isEmailVerificationExempt({ email: 'rup123@example.com', createdFrom: 'REVIEW_SYSTEM' })).toBe(true);
-      expect(isEmailVerificationExempt({ email: 'RUP_pilot@customdomain.org', createdFrom: 'REVIEW_SYSTEM' })).toBe(true);
-      expect(isEmailVerificationExempt({ email: 'rup.farmer@anything.io', createdFrom: 'review_system' })).toBe(true);
+  describe('isEmailVerificationExempt (Only Farmers & Coordinators Require Verification, Unless RUP from REVIEW_SYSTEM)', () => {
+    it('should return true when email starts with "rup" AND createdFrom is REVIEW_SYSTEM (even for FARMER or coordinators)', () => {
+      expect(isEmailVerificationExempt({ email: 'rup123@example.com', userRole: 'FARMER', createdFrom: 'REVIEW_SYSTEM' })).toBe(true);
+      expect(isEmailVerificationExempt({ email: 'RUP_pilot@customdomain.org', userRole: 'DISTRICT_COORDINATOR', createdFrom: 'REVIEW_SYSTEM' })).toBe(true);
+      expect(isEmailVerificationExempt({ email: 'rup.farmer@anything.io', userRole: 'FARMER', createdFrom: 'review_system' })).toBe(true);
       expect(isEmailVerificationExempt({ email: 'rup99@test.com', userRole: 'INTERNAL', createdFrom: 'REVIEW_SYSTEM' })).toBe(true);
     });
 
-    it('should return false for emails starting with "rup" (e.g. rupesh) when NOT created from REVIEW_SYSTEM and role is INTERNAL', () => {
-      expect(isEmailVerificationExempt({ email: 'rupesh@example.com', userRole: 'INTERNAL' })).toBe(false);
-      expect(isEmailVerificationExempt({ email: 'rup123@example.com', userRole: 'INTERNAL', createdFrom: undefined })).toBe(false);
-      expect(isEmailVerificationExempt({ email: 'rupa@example.com', userRole: 'INTERNAL', createdFrom: 'WEB_APP' })).toBe(false);
+    it('should return false for external roles (FARMER, coordinators) unless email starts with rup and createdFrom is REVIEW_SYSTEM', () => {
+      expect(isEmailVerificationExempt('someone@gmail.com', 'FARMER')).toBe(false);
+      expect(isEmailVerificationExempt('someone@customcorp.com', 'farmer')).toBe(false);
+      expect(isEmailVerificationExempt('lead@anydomain.net', 'district_coordinator')).toBe(false);
+      expect(isEmailVerificationExempt('field@domain.org', 'block_coordinator')).toBe(false);
+      expect(isEmailVerificationExempt('helper@domain.com', 'village_volunteer')).toBe(false);
+      expect(isEmailVerificationExempt({ email: 'rupesh@example.com', userRole: 'FARMER' })).toBe(false);
+      expect(isEmailVerificationExempt({ email: 'rup123@example.com', userRole: 'FARMER', createdFrom: undefined })).toBe(false);
+      expect(isEmailVerificationExempt({ email: 'rupa@example.com', userRole: 'FARMER', createdFrom: 'WEB_APP' })).toBe(false);
     });
 
-    it('should return true for external roles (FARMER, coordinators) regardless of email domain', () => {
-      expect(isEmailVerificationExempt('someone@gmail.com', 'FARMER')).toBe(true);
-      expect(isEmailVerificationExempt('someone@customcorp.com', 'farmer')).toBe(true);
-      expect(isEmailVerificationExempt('lead@anydomain.net', 'district_coordinator')).toBe(true);
-      expect(isEmailVerificationExempt('field@domain.org', 'block_coordinator')).toBe(true);
-      expect(isEmailVerificationExempt('helper@domain.com', 'village_volunteer')).toBe(true);
-    });
-
-    it('should return false for INTERNAL users unless email starts with rup and createdFrom is REVIEW_SYSTEM', () => {
-      expect(isEmailVerificationExempt('tester@gmail.com', 'INTERNAL')).toBe(false);
-      expect(isEmailVerificationExempt({ email: 'staff@anydomain.com', userRole: 'internal' })).toBe(false);
+    it('should return true for INTERNAL and other non-farmer/non-coordinator users', () => {
+      expect(isEmailVerificationExempt('tester@gmail.com', 'INTERNAL')).toBe(true);
+      expect(isEmailVerificationExempt({ email: 'staff@anydomain.com', userRole: 'internal' })).toBe(true);
+      expect(isEmailVerificationExempt({ email: 'abiramk0107@gmail.com', userRole: 'INTERNAL' })).toBe(true);
+      expect(isEmailVerificationExempt({ email: 'rupesh@example.com', userRole: 'INTERNAL' })).toBe(true);
       expect(isEmailVerificationExempt({ email: 'rup_internal@domain.com', userRole: 'INTERNAL', createdFrom: 'REVIEW_SYSTEM' })).toBe(true);
     });
 
     it('should not inspect or depend on email domains', () => {
       // Different domains with the same role yield identical exemption status
-      expect(isEmailVerificationExempt('farmer@gmail.com', 'FARMER')).toBe(true);
-      expect(isEmailVerificationExempt('farmer@annam.ai', 'FARMER')).toBe(true);
-      expect(isEmailVerificationExempt('staff@gmail.com', 'INTERNAL')).toBe(false);
-      expect(isEmailVerificationExempt('staff@annam.ai', 'INTERNAL')).toBe(false);
+      expect(isEmailVerificationExempt('farmer@gmail.com', 'FARMER')).toBe(false);
+      expect(isEmailVerificationExempt('farmer@annam.ai', 'FARMER')).toBe(false);
+      expect(isEmailVerificationExempt('staff@gmail.com', 'INTERNAL')).toBe(true);
+      expect(isEmailVerificationExempt('staff@annam.ai', 'INTERNAL')).toBe(true);
     });
   });
 });
