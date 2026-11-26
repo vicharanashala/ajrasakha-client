@@ -210,6 +210,7 @@ export type TUser = {
   userRole?: UserRoles;
   provider: string;
   emailVerified?: boolean;
+  emailVerifiedAt?: Date | string | null;
   rupId?: string;
   idOnTheSource?: string;
   createdFrom?: string;

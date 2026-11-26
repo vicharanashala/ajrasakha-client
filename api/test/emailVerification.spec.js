@@ -242,8 +242,12 @@ describe('Email Verification & Nodemailer Setup', () => {
         localStrategy._verify(req, 'test@example.com', 'validPassword123', (err, resultUser, info) => {
           expect(err).toBeNull();
           expect(resultUser.emailVerified).toBe(true);
+          expect(resultUser.emailVerifiedAt).toEqual(expect.any(Date));
           expect(info).toBeUndefined();
-          expect(mockUpdateUser).toHaveBeenCalledWith('user123', { emailVerified: true });
+          expect(mockUpdateUser).toHaveBeenCalledWith('user123', {
+            emailVerified: true,
+            emailVerifiedAt: expect.any(Date),
+          });
           resolve();
         });
       });
@@ -306,8 +310,12 @@ describe('Email Verification & Nodemailer Setup', () => {
         localStrategy._verify(req, 'rup123@example.com', 'validPassword123', (err, resultUser, info) => {
           expect(err).toBeNull();
           expect(resultUser.emailVerified).toBe(true);
+          expect(resultUser.emailVerifiedAt).toEqual(expect.any(Date));
           expect(info).toBeUndefined();
-          expect(mockUpdateUser).toHaveBeenCalledWith('rup_user_1', { emailVerified: true });
+          expect(mockUpdateUser).toHaveBeenCalledWith('rup_user_1', {
+            emailVerified: true,
+            emailVerifiedAt: expect.any(Date),
+          });
           resolve();
         });
       });
@@ -373,8 +381,12 @@ describe('Email Verification & Nodemailer Setup', () => {
         localStrategy._verify(req, 'rup_farmer@example.com', 'validPassword123', (err, resultUser, info) => {
           expect(err).toBeNull();
           expect(resultUser.emailVerified).toBe(true);
+          expect(resultUser.emailVerifiedAt).toEqual(expect.any(Date));
           expect(info).toBeUndefined();
-          expect(mockUpdateUser).toHaveBeenCalledWith('rup_farmer_1', { emailVerified: true });
+          expect(mockUpdateUser).toHaveBeenCalledWith('rup_farmer_1', {
+            emailVerified: true,
+            emailVerifiedAt: expect.any(Date),
+          });
           resolve();
         });
       });
@@ -406,8 +418,12 @@ describe('Email Verification & Nodemailer Setup', () => {
         localStrategy._verify(req, 'internal_staff@example.com', 'validPassword123', (err, resultUser, info) => {
           expect(err).toBeNull();
           expect(resultUser.emailVerified).toBe(true);
+          expect(resultUser.emailVerifiedAt).toEqual(expect.any(Date));
           expect(info).toBeUndefined();
-          expect(mockUpdateUser).toHaveBeenCalledWith('internal_user_1', { emailVerified: true });
+          expect(mockUpdateUser).toHaveBeenCalledWith('internal_user_1', {
+            emailVerified: true,
+            emailVerifiedAt: expect.any(Date),
+          });
           resolve();
         });
       });
@@ -447,6 +463,56 @@ describe('Email Verification & Nodemailer Setup', () => {
       expect(isEmailVerificationExempt('farmer@annam.ai', 'FARMER')).toBe(false);
       expect(isEmailVerificationExempt('staff@gmail.com', 'INTERNAL')).toBe(true);
       expect(isEmailVerificationExempt('staff@annam.ai', 'INTERNAL')).toBe(true);
+    });
+  });
+
+  describe('verifyEmail service creates emailVerifiedAt', () => {
+    it('should set emailVerified=true and emailVerifiedAt timestamp when token is verified', async () => {
+      const bcrypt = require('bcryptjs');
+
+      const mockUser = {
+        _id: 'user_verify_123',
+        email: 'verify_me@example.com',
+        emailVerified: false,
+      };
+
+      const plainToken = 'valid-token-123';
+      const hashedToken = bcrypt.hashSync(plainToken, 10);
+
+      const mockFindUser = jest.fn().mockResolvedValue(mockUser);
+      const mockFindToken = jest.fn().mockResolvedValue({
+        userId: 'user_verify_123',
+        token: hashedToken,
+      });
+      const mockUpdateUser = jest.fn().mockResolvedValue({
+        ...mockUser,
+        emailVerified: true,
+        emailVerifiedAt: new Date(),
+      });
+      const mockDeleteTokens = jest.fn().mockResolvedValue(true);
+
+      jest.doMock('~/models', () => ({
+        findUser: mockFindUser,
+        findToken: mockFindToken,
+        updateUser: mockUpdateUser,
+        deleteTokens: mockDeleteTokens,
+      }));
+
+      const { verifyEmail } = require('../server/services/AuthService');
+
+      const req = {
+        body: {
+          email: 'verify_me@example.com',
+          token: plainToken,
+        },
+      };
+
+      const result = await verifyEmail(req);
+      expect(result).toEqual({ message: 'Email verification was successful', status: 'success' });
+      expect(mockUpdateUser).toHaveBeenCalledWith('user_verify_123', {
+        emailVerified: true,
+        emailVerifiedAt: expect.any(Date),
+      });
     });
   });
 });

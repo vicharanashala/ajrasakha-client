@@ -35,6 +35,7 @@ export interface IUser extends Document {
   username?: string;
   email: string;
   emailVerified: boolean;
+  emailVerifiedAt?: Date | null;
   password?: string;
   avatar?: string;
   provider: string;
@@ -108,6 +109,7 @@ export interface UpdateUserRequest {
   role?: string;
   userRole?: UserRoles;
   emailVerified?: boolean;
+  emailVerifiedAt?: Date | null;
   avatar?: string;
   plugins?: string[];
   twoFactorEnabled?: boolean;
@@ -129,6 +131,7 @@ export interface UserFilterOptions extends CursorPaginationParams {
   role?: string;
   userRole?: UserRoles;
   emailVerified?: boolean;
+  emailVerifiedAt?: Date | null;
   provider?: string;
   twoFactorEnabled?: boolean;
   // External IDs

@@ -63,8 +63,10 @@ async function passportLogin(req, email, password, done) {
       }
     } else {
       if (!user.emailVerified) {
-        await updateUser(user._id, { emailVerified: true });
+        const emailVerifiedAt = new Date();
+        await updateUser(user._id, { emailVerified: true, emailVerifiedAt });
         user.emailVerified = true;
+        user.emailVerifiedAt = emailVerifiedAt;
       }
       if (user.expiresAt) {
         await updateUser(user._id, {});

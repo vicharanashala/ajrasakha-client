@@ -223,7 +223,10 @@ const verifyEmail = async (req) => {
     return new Error('Invalid or expired email verification token');
   }
 
-  const updatedUser = await updateUser(emailVerificationData.userId, { emailVerified: true });
+  const updatedUser = await updateUser(emailVerificationData.userId, {
+    emailVerified: true,
+    emailVerifiedAt: new Date(),
+  });
 
   if (!updatedUser) {
     logger.warn(`[verifyEmail] [User update failed] [Email: ${decodedEmail}]`);
@@ -307,6 +310,7 @@ const registerUser = async (user, additionalData = {}) => {
 
     if (isExempt) {
       newUserData.emailVerified = true;
+      newUserData.emailVerifiedAt = new Date();
     }
 
     const newUser = await createUser(newUserData, appConfig.balance, disableTTL, true);
@@ -325,7 +329,7 @@ const registerUser = async (user, additionalData = {}) => {
       }
       return { status: 200, message: genericVerificationMessage };
     } else {
-      await updateUser(newUserId, { emailVerified: true });
+      await updateUser(newUserId, { emailVerified: true, emailVerifiedAt: new Date() });
       return { status: 200, message: 'Registration successful' };
     }
   } catch (err) {

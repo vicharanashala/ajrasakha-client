@@ -91,6 +91,10 @@ const userSchema = new Schema<IUser>(
       required: true,
       default: false,
     },
+    emailVerifiedAt: {
+      type: Date,
+      default: null,
+    },
     password: {
       type: String,
       trim: true,

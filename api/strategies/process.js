@@ -95,6 +95,7 @@ const createSocialUser = async ({
     username,
     name,
     emailVerified,
+    ...(emailVerified ? { emailVerifiedAt: new Date() } : {}),
     userRole: UserRoles.FARMER,
   };
 
