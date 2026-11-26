@@ -61,15 +61,16 @@ describe('VerifyEmailBanner & isRupUser helper', () => {
       expect(isRupUser({ email: '  rupFarmer@domain.com  ', createdFrom: 'REVIEW_SYSTEM' })).toBe(true);
     });
 
-    it('returns false when user email starts with "rup" but createdFrom is NOT REVIEW_SYSTEM', () => {
-      expect(isRupUser({ email: 'rupesh@domain.com', userRole: 'INTERNAL' })).toBe(false);
-      expect(isRupUser({ email: 'rup123@domain.com', userRole: 'INTERNAL', createdFrom: undefined })).toBe(false);
-      expect(isRupUser({ email: 'rupa@domain.com', userRole: 'INTERNAL', createdFrom: 'WEB_APP' })).toBe(false);
+    it('returns false when user email starts with "rup" but createdFrom is NOT REVIEW_SYSTEM for FARMER', () => {
+      expect(isRupUser({ email: 'rupesh@domain.com', userRole: 'FARMER' })).toBe(false);
+      expect(isRupUser({ email: 'rup123@domain.com', userRole: 'FARMER', createdFrom: undefined })).toBe(false);
+      expect(isRupUser({ email: 'rupa@domain.com', userRole: 'FARMER', createdFrom: 'WEB_APP' })).toBe(false);
     });
 
-    it('returns false for normal non-rup email', () => {
-      expect(isRupUser({ email: 'john.doe@example.com' })).toBe(false);
-      expect(isRupUser({ email: 'internal.user@annam.ai' })).toBe(false);
+    it('returns false for normal non-rup email for FARMER', () => {
+      expect(isRupUser({ email: 'john.doe@example.com', userRole: 'FARMER' })).toBe(false);
+      expect(isRupUser({ email: 'farmer@annam.ai', userRole: 'FARMER' })).toBe(false);
+      expect(isRupUser({ email: 'someone@example.com' })).toBe(false);
     });
 
     it('returns true when user has rupId', () => {
@@ -80,8 +81,16 @@ describe('VerifyEmailBanner & isRupUser helper', () => {
       expect(isRupUser({ email: 'user@example.com', idOnTheSource: 'rup_source_99' })).toBe(true);
     });
 
-    it('returns true for external FARMER role', () => {
-      expect(isRupUser({ email: 'user@example.com', userRole: 'FARMER' })).toBe(true);
+    it('returns false for external roles (FARMER, coordinator) unless RUP from REVIEW_SYSTEM', () => {
+      expect(isRupUser({ email: 'user@example.com', userRole: 'FARMER' })).toBe(false);
+      expect(isRupUser({ email: 'user@example.com', userRole: 'DISTRICT_COORDINATOR' })).toBe(false);
+      expect(isRupUser({ email: 'user@example.com', userRole: 'BLOCK_COORDINATOR' })).toBe(false);
+      expect(isRupUser({ email: 'user@example.com', userRole: 'VILLAGE_VOLUNTEER' })).toBe(false);
+    });
+
+    it('returns true for INTERNAL users', () => {
+      expect(isRupUser({ email: 'internal_user@example.com', userRole: 'INTERNAL' })).toBe(true);
+      expect(isRupUser({ email: 'rupesh@example.com', userRole: 'INTERNAL' })).toBe(true);
     });
   });
 
@@ -122,17 +131,17 @@ describe('VerifyEmailBanner & isRupUser helper', () => {
     it('does not render for RUP email accounts createdFrom REVIEW_SYSTEM', () => {
       (AuthHooks.useAuthContext as jest.Mock).mockReturnValue({
         isAuthenticated: true,
-        user: { email: 'rup999@example.com', createdFrom: 'REVIEW_SYSTEM', emailVerified: false },
+        user: { email: 'rup999@example.com', userRole: 'FARMER', createdFrom: 'REVIEW_SYSTEM', emailVerified: false },
       });
 
       const { container } = render(<VerifyEmailBanner />);
       expect(container.firstChild).toBeNull();
     });
 
-    it('renders banner for users whose email starts with rup (e.g. rupesh) when NOT createdFrom REVIEW_SYSTEM', () => {
+    it('renders banner for FARMER users whose email starts with rup (e.g. rupesh) when NOT createdFrom REVIEW_SYSTEM', () => {
       (AuthHooks.useAuthContext as jest.Mock).mockReturnValue({
         isAuthenticated: true,
-        user: { email: 'rupesh@example.com', userRole: 'INTERNAL', emailVerified: false },
+        user: { email: 'rupesh@example.com', userRole: 'FARMER', emailVerified: false },
       });
 
       render(<VerifyEmailBanner />);
@@ -150,25 +159,25 @@ describe('VerifyEmailBanner & isRupUser helper', () => {
       expect(container.firstChild).toBeNull();
     });
 
-    it('does not render for external FARMER users', () => {
+    it('does not render for internal users (userRole=INTERNAL)', () => {
       (AuthHooks.useAuthContext as jest.Mock).mockReturnValue({
         isAuthenticated: true,
-        user: { email: 'farmer@example.com', userRole: 'FARMER', emailVerified: false },
+        user: { email: 'internal_user@example.com', userRole: 'INTERNAL', emailVerified: false },
       });
 
       const { container } = render(<VerifyEmailBanner />);
       expect(container.firstChild).toBeNull();
     });
 
-    it('renders banner for unverified non-RUP users', () => {
+    it('renders banner for unverified FARMER users', () => {
       (AuthHooks.useAuthContext as jest.Mock).mockReturnValue({
         isAuthenticated: true,
-        user: { email: 'internal_user@example.com', emailVerified: false },
+        user: { email: 'farmer@example.com', userRole: 'FARMER', emailVerified: false },
       });
 
       render(<VerifyEmailBanner />);
       expect(screen.getByTestId('verify-email-banner')).toBeInTheDocument();
-      expect(screen.getByText(/internal_user@example\.com/)).toBeInTheDocument();
+      expect(screen.getByText(/farmer@example\.com/)).toBeInTheDocument();
       expect(screen.getByTestId('resend-verification-button')).toBeInTheDocument();
       expect(screen.getByTestId('dismiss-verification-banner')).toBeInTheDocument();
     });
@@ -176,20 +185,20 @@ describe('VerifyEmailBanner & isRupUser helper', () => {
     it('calls resendEmailMutation when clicking Resend Email button', () => {
       (AuthHooks.useAuthContext as jest.Mock).mockReturnValue({
         isAuthenticated: true,
-        user: { email: 'internal_user@example.com', emailVerified: false },
+        user: { email: 'farmer@example.com', userRole: 'FARMER', emailVerified: false },
       });
 
       render(<VerifyEmailBanner />);
       const resendButton = screen.getByTestId('resend-verification-button');
       fireEvent.click(resendButton);
 
-      expect(mockMutate).toHaveBeenCalledWith({ email: 'internal_user@example.com' });
+      expect(mockMutate).toHaveBeenCalledWith({ email: 'farmer@example.com' });
     });
 
     it('hides banner when clicking dismiss button and sets sessionStorage', () => {
       (AuthHooks.useAuthContext as jest.Mock).mockReturnValue({
         isAuthenticated: true,
-        user: { email: 'internal_user@example.com', emailVerified: false },
+        user: { email: 'farmer@example.com', userRole: 'FARMER', emailVerified: false },
       });
 
       const { rerender } = render(<VerifyEmailBanner />);
@@ -207,7 +216,7 @@ describe('VerifyEmailBanner & isRupUser helper', () => {
 
       (AuthHooks.useAuthContext as jest.Mock).mockReturnValue({
         isAuthenticated: true,
-        user: { email: 'internal_user@example.com', emailVerified: false },
+        user: { email: 'farmer@example.com', userRole: 'FARMER', emailVerified: false },
       });
 
       const { container } = render(<VerifyEmailBanner />);

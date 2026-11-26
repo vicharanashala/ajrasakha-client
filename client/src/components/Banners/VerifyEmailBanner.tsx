@@ -6,11 +6,20 @@ import { useResendVerificationEmail, useGetStartupConfig } from '~/data-provider
 
 export interface UserVerificationProps {
   email?: string;
+  createdFrom?: string;
   rupId?: string;
   idOnTheSource?: string;
   userRole?: string;
+  role?: string;
   emailVerified?: boolean;
 }
+
+const EXTERNAL_USER_ROLES = [
+  'farmer',
+  'district_coordinator',
+  'block_coordinator',
+  'village_volunteer',
+];
 
 export const isRupUser = (user?: UserVerificationProps | null): boolean => {
   if (!user) {
@@ -20,7 +29,8 @@ export const isRupUser = (user?: UserVerificationProps | null): boolean => {
   const createdFrom = (user.createdFrom ?? '').toUpperCase().trim();
   const isFromReviewSystem = createdFrom === 'REVIEW_SYSTEM';
 
-  // Email starts with "rup" AND was created from the Review System -> EXEMPT
+  // 1. User email starts with "rup" AND was created from the Review System -> EXEMPT
+  // (applies even if the user is a farmer or coordinator)
   if (email.startsWith('rup') && isFromReviewSystem) {
     return true;
   }
@@ -30,10 +40,20 @@ export const isRupUser = (user?: UserVerificationProps | null): boolean => {
   if (user.idOnTheSource?.toLowerCase().trim().startsWith('rup')) {
     return true;
   }
-  if (user.userRole === 'FARMER') {
-    return true;
+
+  let rawRole = user.userRole || user.role;
+  if (!rawRole || rawRole.toUpperCase() === 'USER') {
+    rawRole = 'farmer';
   }
-  return false;
+  const uRole = rawRole.toLowerCase().trim();
+
+  // 2. Only farmers and coordinators require email verification -> NOT exempt
+  if (EXTERNAL_USER_ROLES.includes(uRole)) {
+    return false;
+  }
+
+  // 3. All other users (e.g. INTERNAL) do not require email verification -> EXEMPT
+  return true;
 };
 
 export const VerifyEmailBanner = () => {

@@ -8,7 +8,7 @@ describe('checkEmailVerified middleware', () => {
 
   beforeEach(() => {
     jest.resetModules();
-    process.env = { ...originalEnv };
+    process.env = { ...originalEnv, NODE_ENV: 'production' };
     req = {
       user: {
         email: 'user@example.com',
@@ -54,14 +54,31 @@ describe('checkEmailVerified middleware', () => {
     expect(res.status).not.toHaveBeenCalled();
   });
 
-  it('should call next() if user is exempt (e.g. FARMER role)', () => {
+  it('should call next() if user is exempt (e.g. INTERNAL role)', () => {
+    process.env.NODE_ENV = 'production';
     process.env.emailVerified = 'true';
-    req.user.userRole = 'FARMER';
+    req.user.userRole = 'INTERNAL';
     req.user.emailVerified = false;
 
     checkEmailVerified(req, res, next);
     expect(next).toHaveBeenCalled();
     expect(res.status).not.toHaveBeenCalled();
+  });
+
+  it('should block non-exempt unverified FARMER user and return 403', () => {
+    process.env.NODE_ENV = 'production';
+    process.env.emailVerified = 'true';
+    req.user.userRole = 'FARMER';
+    req.user.emailVerified = false;
+
+    checkEmailVerified(req, res, next);
+    expect(next).not.toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        code: 'EMAIL_NOT_VERIFIED',
+      }),
+    );
   });
 
   it('should call next() if user is exempt (rup email AND createdFrom REVIEW_SYSTEM)', () => {
