@@ -84,6 +84,7 @@ export interface IUser extends Document {
   }>;
   isVerified: boolean;
   lastActiveAt: Date;
+  createdFrom?: string;
 }
 
 export interface BalanceConfig {

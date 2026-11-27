@@ -1,6 +1,10 @@
 const { logger } = require('@librechat/data-schemas');
 const { generate2FATempToken } = require('~/server/services/twoFactorService');
 const {
+  isSessionRecoveryEligible,
+  generateSessionRecoveryTempToken,
+} = require('~/server/services/SessionRecoveryService');
+const {
   setAuthTokens,
   activeSessionMessage,
   ACTIVE_SESSION_EXISTS_CODE,
@@ -25,6 +29,15 @@ const loginController = async (req, res) => {
     return res.status(200).send({ token, user });
   } catch (err) {
     if (err?.code === ACTIVE_SESSION_EXISTS_CODE) {
+      if (req.user && isSessionRecoveryEligible(req.user)) {
+        const recoveryTempToken = generateSessionRecoveryTempToken(req.user._id, req.user.email);
+        return res.status(409).json({
+          message: activeSessionMessage,
+          sessionRecoveryEligible: true,
+          recoveryTempToken,
+          email: req.user.email,
+        });
+      }
       return res.status(409).json({ message: activeSessionMessage });
     }
     logger.error('[loginController]', err);

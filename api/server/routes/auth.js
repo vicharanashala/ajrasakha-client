@@ -17,6 +17,9 @@ const {
 const { verify2FAWithTempToken } = require('~/server/controllers/auth/TwoFactorAuthController');
 const { logoutController } = require('~/server/controllers/auth/LogoutController');
 const { loginController } = require('~/server/controllers/auth/LoginController');
+const {
+  sessionRecoveryRequestController,
+} = require('~/server/controllers/auth/SessionRecoveryController');
 const { getAppConfig } = require('~/server/services/Config');
 const middleware = require('~/server/middleware');
 const { Balance } = require('~/db/models');
@@ -61,6 +64,13 @@ router.post(
   middleware.checkBan,
   middleware.validatePasswordReset,
   resetPasswordController,
+);
+
+router.post(
+  '/session-recovery/request',
+  middleware.resetPasswordLimiter,
+  middleware.checkBan,
+  sessionRecoveryRequestController,
 );
 
 router.get('/2fa/enable', middleware.requireJwtAuth, enable2FA);
