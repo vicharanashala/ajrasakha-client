@@ -77,6 +77,34 @@ const isEmailVerificationExempt = (userOrEmail, userRole, role, createdFrom) => 
   // 3. All other users (e.g. INTERNAL) do not require email verification -> EXEMPT
   return true;
 };
+
+const DEFAULT_EMAIL_VERIFICATION_PERIOD_DAYS = 180; // ~6 months
+
+/**
+ * Checks whether an email verification timestamp is expired (older than 6 months / 180 days).
+ * If emailVerifiedAt is missing/null, falls back to fallbackDate (e.g. createdAt),
+ * or returns true (expired) if neither date exists.
+ *
+ * @param {Date | string | number | null | undefined} emailVerifiedAt
+ * @param {Date | string | number | null | undefined} [fallbackDate]
+ * @returns {boolean}
+ */
+const isEmailVerificationExpired = (emailVerifiedAt, fallbackDate) => {
+  const periodDays =
+    parseInt(process.env.EMAIL_VERIFICATION_PERIOD_DAYS, 10) ||
+    DEFAULT_EMAIL_VERIFICATION_PERIOD_DAYS;
+  const expiryWindowMs = periodDays * 24 * 60 * 60 * 1000;
+
+  const verifiedDate = emailVerifiedAt
+    ? new Date(emailVerifiedAt)
+    : (fallbackDate ? new Date(fallbackDate) : null);
+
+  if (!verifiedDate || isNaN(verifiedDate.getTime())) {
+    return true;
+  }
+
+  return Date.now() - verifiedDate.getTime() > expiryWindowMs;
+};
 const {
   findUser,
   findToken,
@@ -195,14 +223,20 @@ const verifyEmail = async (req) => {
   const { email, token } = req.body;
   const decodedEmail = decodeURIComponent(email);
 
-  const user = await findUser({ email: decodedEmail }, 'email _id emailVerified');
+  const user = await findUser(
+    { email: decodedEmail },
+    'email _id emailVerified emailVerifiedAt createdAt',
+  );
 
   if (!user) {
     logger.warn(`[verifyEmail] [User not found] [Email: ${decodedEmail}]`);
     return new Error('User not found');
   }
 
-  if (user.emailVerified) {
+  const isExpired =
+    user.emailVerified && isEmailVerificationExpired(user.emailVerifiedAt, user.createdAt);
+
+  if (user.emailVerified && !isExpired) {
     logger.info(`[verifyEmail] Email already verified [Email: ${decodedEmail}]`);
     return { message: 'Email already verified', status: 'success' };
   }
@@ -223,9 +257,11 @@ const verifyEmail = async (req) => {
     return new Error('Invalid or expired email verification token');
   }
 
-  const updatedUser = await updateUser(emailVerificationData.userId, {
+  const emailVerifiedAt = new Date();
+  const targetUserId = emailVerificationData.userId || user._id;
+  const updatedUser = await updateUser(targetUserId, {
     emailVerified: true,
-    emailVerifiedAt: new Date(),
+    emailVerifiedAt,
   });
 
   if (!updatedUser) {
@@ -608,14 +644,16 @@ const resendVerificationEmail = async (req) => {
       return { status: 200, message: 'Email verification is not enabled.' };
     }
 
-    const user = await findUser({ email }, 'email _id name emailVerified');
+    const user = await findUser({ email }, 'email _id name emailVerified emailVerifiedAt createdAt');
 
     if (!user) {
       logger.warn(`[resendVerificationEmail] [No user found] [Email: ${email}]`);
       return { status: 200, message: genericVerificationMessage };
     }
 
-    if (user.emailVerified) {
+    const isExpired = user.emailVerified && isEmailVerificationExpired(user.emailVerifiedAt, user.createdAt);
+
+    if (user.emailVerified && !isExpired) {
       return { status: 200, message: 'Email already verified.' };
     }
 
@@ -676,4 +714,6 @@ module.exports = {
   ACTIVE_SESSION_EXISTS_CODE,
   isEmailVerificationExempt,
   isEmailVerificationEnabled,
+  isEmailVerificationExpired,
+  DEFAULT_EMAIL_VERIFICATION_PERIOD_DAYS,
 };

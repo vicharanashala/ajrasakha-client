@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { VerifyEmailBanner, isRupUser } from '../VerifyEmailBanner';
+import { VerifyEmailBanner, isRupUser, isEmailVerificationExpired } from '../VerifyEmailBanner';
 import * as AuthHooks from '~/hooks/AuthContext';
 import * as LocalizationHooks from '~/hooks/useLocalize';
 import * as DataProvider from '~/data-provider';
@@ -105,14 +105,31 @@ describe('VerifyEmailBanner & isRupUser helper', () => {
       expect(container.firstChild).toBeNull();
     });
 
-    it('does not render if user is already verified (emailVerified === true)', () => {
+    it('does not render if user is already verified within 6 months', () => {
       (AuthHooks.useAuthContext as jest.Mock).mockReturnValue({
         isAuthenticated: true,
-        user: { email: 'user@example.com', emailVerified: true },
+        user: { email: 'user@example.com', emailVerified: true, emailVerifiedAt: new Date() },
       });
 
       const { container } = render(<VerifyEmailBanner />);
       expect(container.firstChild).toBeNull();
+    });
+
+    it('renders banner if user is marked emailVerified but emailVerifiedAt is older than 6 months', () => {
+      const sevenMonthsAgo = new Date(Date.now() - 210 * 24 * 60 * 60 * 1000);
+      (AuthHooks.useAuthContext as jest.Mock).mockReturnValue({
+        isAuthenticated: true,
+        user: {
+          email: 'farmer@example.com',
+          userRole: 'FARMER',
+          emailVerified: true,
+          emailVerifiedAt: sevenMonthsAgo,
+        },
+      });
+
+      render(<VerifyEmailBanner />);
+      expect(screen.getByTestId('verify-email-banner')).toBeInTheDocument();
+      expect(screen.getByText(/verification expired/i)).toBeInTheDocument();
     });
 
     it('does not render if email verification is disabled in startupConfig', () => {
@@ -221,6 +238,26 @@ describe('VerifyEmailBanner & isRupUser helper', () => {
 
       const { container } = render(<VerifyEmailBanner />);
       expect(container.firstChild).toBeNull();
+    });
+  });
+
+  describe('isEmailVerificationExpired helper', () => {
+    it('returns false when verified within 180 days', () => {
+      expect(isEmailVerificationExpired(new Date())).toBe(false);
+      expect(isEmailVerificationExpired(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))).toBe(false);
+    });
+
+    it('returns true when verified more than 180 days ago', () => {
+      expect(isEmailVerificationExpired(new Date(Date.now() - 200 * 24 * 60 * 60 * 1000))).toBe(true);
+    });
+
+    it('uses fallbackDate if emailVerifiedAt is missing', () => {
+      expect(isEmailVerificationExpired(null, new Date())).toBe(false);
+      expect(isEmailVerificationExpired(undefined, new Date(Date.now() - 200 * 24 * 60 * 60 * 1000))).toBe(true);
+    });
+
+    it('returns true if both are missing', () => {
+      expect(isEmailVerificationExpired(null)).toBe(true);
     });
   });
 });

@@ -10,6 +10,14 @@ import { useQueryClient } from '@tanstack/react-query';
 jest.mock('~/hooks/AuthContext');
 jest.mock('~/hooks/useLocalize');
 jest.mock('~/data-provider');
+const mockSetUser = jest.fn();
+jest.mock('recoil', () => {
+  const actualRecoil = jest.requireActual('recoil');
+  return {
+    ...actualRecoil,
+    useSetRecoilState: () => mockSetUser,
+  };
+});
 jest.mock('@tanstack/react-query', () => ({
   useQueryClient: jest.fn(),
 }));
@@ -27,6 +35,7 @@ describe('VerifyEmailModal', () => {
   const mockOnOpenChange = jest.fn();
   const mockInvalidateQueries = jest.fn();
   const mockFetchQuery = jest.fn();
+  const mockSetQueryData = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -66,6 +75,7 @@ describe('VerifyEmailModal', () => {
     (useQueryClient as jest.Mock).mockReturnValue({
       invalidateQueries: mockInvalidateQueries,
       fetchQuery: mockFetchQuery,
+      setQueryData: mockSetQueryData,
     });
   });
 
@@ -91,8 +101,8 @@ describe('VerifyEmailModal', () => {
     expect(mockMutate).toHaveBeenCalledWith({ email: 'devsvr18@gmail.com' });
   });
 
-  it('checks verification status and closes modal when verified', async () => {
-    mockFetchQuery.mockResolvedValueOnce({ emailVerified: true });
+  it('checks verification status and closes modal when verified within 6 months', async () => {
+    mockFetchQuery.mockResolvedValueOnce({ emailVerified: true, emailVerifiedAt: new Date() });
 
     render(<VerifyEmailModal open={true} onOpenChange={mockOnOpenChange} />);
 
@@ -102,6 +112,8 @@ describe('VerifyEmailModal', () => {
     await waitFor(() => {
       expect(mockInvalidateQueries).toHaveBeenCalled();
       expect(mockFetchQuery).toHaveBeenCalled();
+      expect(mockSetQueryData).toHaveBeenCalled();
+      expect(mockSetUser).toHaveBeenCalled();
       expect(mockShowToast).toHaveBeenCalledWith(
         expect.objectContaining({
           message: 'Email verified successfully!',
@@ -109,6 +121,29 @@ describe('VerifyEmailModal', () => {
         }),
       );
       expect(mockOnOpenChange).toHaveBeenCalledWith(false);
+    });
+  });
+
+  it('shows warning toast if email is verified but verification is expired (>6 months)', async () => {
+    const sevenMonthsAgo = new Date(Date.now() - 210 * 24 * 60 * 60 * 1000);
+    mockFetchQuery.mockResolvedValueOnce({
+      emailVerified: true,
+      emailVerifiedAt: sevenMonthsAgo,
+    });
+
+    render(<VerifyEmailModal open={true} onOpenChange={mockOnOpenChange} />);
+
+    const checkButton = screen.getByText("I've Verified");
+    fireEvent.click(checkButton);
+
+    await waitFor(() => {
+      expect(mockShowToast).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expect.stringContaining('expired'),
+          status: 'warning',
+        }),
+      );
+      expect(mockOnOpenChange).not.toHaveBeenCalledWith(false);
     });
   });
 

@@ -1,2 +1,2 @@
 export { Banner } from './Banner';
-export { VerifyEmailBanner, isRupUser } from './VerifyEmailBanner';
+export { VerifyEmailBanner, isRupUser, isEmailVerificationExpired } from './VerifyEmailBanner';

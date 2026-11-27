@@ -2,6 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { Spinner, ThemeSelector } from '@librechat/client';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Mail } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
+import { QueryKeys } from 'librechat-data-provider';
+import { useSetRecoilState } from 'recoil';
+import store from '~/store';
 import { useVerifyEmailMutation, useResendVerificationEmail } from '~/data-provider';
 import { useLocalize } from '~/hooks';
 
@@ -157,6 +161,8 @@ const LoadingAnimation = () => (
 function VerifyEmail() {
   const navigate = useNavigate();
   const localize = useLocalize();
+  const queryClient = useQueryClient();
+  const setUser = useSetRecoilState(store.user);
   const [params] = useSearchParams();
 
   const [status, setStatus] = useState<VerificationState>('loading');
@@ -168,8 +174,18 @@ function VerifyEmail() {
   const email = useMemo(() => params.get('email') || '', [params]);
 
   const verifyEmailMutation = useVerifyEmailMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       setStatus('success');
+      try {
+        await queryClient.invalidateQueries([QueryKeys.user]);
+        const updatedUser = await queryClient.fetchQuery([QueryKeys.user]);
+        if (updatedUser) {
+          queryClient.setQueryData([QueryKeys.user], updatedUser);
+          setUser(updatedUser);
+        }
+      } catch {
+        // User may not be logged in or session expired
+      }
     },
     onError: () => {
       setErrorMessage(String(localize('com_auth_email_verification_failed')));

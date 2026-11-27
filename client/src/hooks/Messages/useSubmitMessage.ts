@@ -10,7 +10,7 @@ import {
   useUserTermsQuery,
   useGetStartupConfig,
 } from '~/data-provider';
-import { isRupUser } from '~/components/Banners';
+import { isRupUser, isEmailVerificationExpired } from '~/components/Banners';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
 
@@ -45,10 +45,12 @@ export default function useSubmitMessage() {
         return console.warn('No data provided to submitMessage');
       }
 
-      // Block submission if user is unverified and not exempt (non-RUP)
+      // Block submission if user is unverified or verification expired (>6 months) and not exempt (non-RUP)
       const isExempt = isRupUser(user);
       const isVerificationRequired = !isExempt && startupConfig?.emailVerificationEnabled !== false;
-      if (user && !user.emailVerified && isVerificationRequired) {
+      const isExpired =
+        user?.emailVerified === true && isEmailVerificationExpired(user?.emailVerifiedAt, user?.createdAt);
+      if (user && (!user.emailVerified || isExpired) && isVerificationRequired) {
         setShowVerifyEmailModal(true);
         return;
       }

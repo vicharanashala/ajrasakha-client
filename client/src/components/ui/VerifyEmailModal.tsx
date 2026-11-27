@@ -11,9 +11,12 @@ import {
 } from '@librechat/client';
 import { Mail, CheckCircle2, RefreshCw } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
+import { useSetRecoilState } from 'recoil';
 import { QueryKeys } from 'librechat-data-provider';
+import store from '~/store';
 import { useAuthContext, useLocalize } from '~/hooks';
 import { useResendVerificationEmail, useGetUserQuery } from '~/data-provider';
+import { isEmailVerificationExpired } from '~/components/Banners';
 import { cn } from '~/utils';
 
 const ACTION_BUTTON_BASE = cn(
@@ -32,16 +35,25 @@ interface VerifyEmailModalProps {
 export default function VerifyEmailModal({ open, onOpenChange }: VerifyEmailModalProps) {
   const localize = useLocalize();
   const queryClient = useQueryClient();
+  const setUser = useSetRecoilState(store.user);
   const { user } = useAuthContext();
   const { showToast } = useToastContext();
   const [sentSuccess, setSentSuccess] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
 
+  const getTranslation = (key: string, fallback: string): string => {
+    const text = String(localize(key as any));
+    return !text || text === key ? fallback : text;
+  };
+
   const resendEmailMutation = useResendVerificationEmail({
     onSuccess: () => {
       setSentSuccess(true);
       showToast({
-        message: localize('com_auth_email_resent_success') || 'Verification email sent successfully.',
+        message: getTranslation(
+          'com_auth_email_resent_success',
+          'Verification email sent successfully.',
+        ),
         status: 'success',
       });
     },
@@ -62,22 +74,40 @@ export default function VerifyEmailModal({ open, onOpenChange }: VerifyEmailModa
     resendEmailMutation.mutate({ email: user.email });
   };
 
+  const isExpired =
+    user?.emailVerified === true && isEmailVerificationExpired(user?.emailVerifiedAt, user?.createdAt);
+
   const handleCheckVerification = async () => {
     setIsChecking(true);
     try {
       await queryClient.invalidateQueries([QueryKeys.user]);
       const updatedUser = await queryClient.fetchQuery([QueryKeys.user]);
-      if (updatedUser?.emailVerified === true) {
+      const isStillExpired =
+        updatedUser?.emailVerified === true &&
+        isEmailVerificationExpired(updatedUser?.emailVerifiedAt, updatedUser?.createdAt);
+
+      if (updatedUser?.emailVerified === true && !isStillExpired) {
+        queryClient.setQueryData([QueryKeys.user], updatedUser);
+        setUser(updatedUser);
         showToast({
-          message: localize('com_auth_email_verification_success') || 'Email verified successfully!',
+          message: getTranslation(
+            'com_auth_email_verification_success',
+            'Email verified successfully!',
+          ),
           status: 'success',
         });
         onOpenChange(false);
       } else {
         showToast({
-          message:
-            localize('com_auth_email_verification_still_unverified') ||
-            'Email is not verified yet. Please check your inbox and click the verification link.',
+          message: isStillExpired
+            ? getTranslation(
+                'com_auth_email_verification_still_expired',
+                'Email verification has expired (required every 6 months). Please click the new verification link sent to your email.',
+              )
+            : getTranslation(
+                'com_auth_email_verification_still_unverified',
+                'Email is not verified yet. Please check your inbox and click the verification link.',
+              ),
           status: 'warning',
         });
       }
@@ -108,11 +138,18 @@ export default function VerifyEmailModal({ open, onOpenChange }: VerifyEmailModa
             </span>
             <div className="flex min-w-0 flex-col gap-1.5">
               <OGDialogTitle className="text-center text-lg font-semibold text-text-primary sm:text-xl">
-                {localize('com_auth_email_verification_required') || 'Email Verification Required'}
+                {getTranslation('com_auth_email_verification_required', 'Email Verification Required')}
               </OGDialogTitle>
               <OGDialogDescription className="text-center text-sm leading-relaxed text-text-secondary">
-                {localize('com_auth_email_verification_submit_blocked') ||
-                  'You must verify your email address before submitting questions. Please check your inbox or resend the verification email.'}
+                {isExpired
+                  ? getTranslation(
+                      'com_auth_email_verification_expired_prompt',
+                      'Your email verification has expired (required every 6 months). Please check your inbox or resend the verification email to continue asking questions.',
+                    )
+                  : getTranslation(
+                      'com_auth_email_verification_submit_blocked',
+                      'You must verify your email address before submitting questions. Please check your inbox or resend the verification email.',
+                    )}
               </OGDialogDescription>
             </div>
           </OGDialogHeader>
@@ -131,7 +168,7 @@ export default function VerifyEmailModal({ open, onOpenChange }: VerifyEmailModa
             <div className="mt-3 flex items-center justify-center gap-1.5 text-xs font-medium text-green-700 dark:text-green-400">
               <CheckCircle2 className="size-4 shrink-0" aria-hidden="true" />
               <span>
-                {localize('com_auth_email_resent_success') || 'Verification email sent! Please check your inbox.'}
+                {getTranslation('com_auth_email_resent_success', 'Verification email sent! Please check your inbox.')}
               </span>
             </div>
           )}
@@ -159,7 +196,7 @@ export default function VerifyEmailModal({ open, onOpenChange }: VerifyEmailModa
                 <span>Sending...</span>
               </span>
             ) : (
-              localize('com_auth_email_resend_link') || 'Resend Email'
+              getTranslation('com_auth_email_resend_link', 'Resend Email')
             )}
           </button>
 
@@ -180,7 +217,7 @@ export default function VerifyEmailModal({ open, onOpenChange }: VerifyEmailModa
                 <span>Checking...</span>
               </span>
             ) : (
-              localize('com_auth_email_verification_check_button') || "I've Verified"
+              getTranslation('com_auth_email_verification_check_button', "I've Verified")
             )}
           </button>
 
@@ -193,7 +230,7 @@ export default function VerifyEmailModal({ open, onOpenChange }: VerifyEmailModa
               'hover:bg-surface-hover hover:text-text-primary focus-visible:ring-border-light',
             )}
           >
-            {localize('com_ui_cancel') || 'Cancel'}
+            {getTranslation('com_ui_cancel', 'Cancel')}
           </button>
         </div>
       </OGDialogContent>

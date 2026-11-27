@@ -10,7 +10,7 @@ const isEmailVerificationEnabled = () => {
 };
 const { Strategy: PassportLocalStrategy } = require('passport-local');
 const { findUser, comparePassword, updateUser } = require('~/models');
-const { isEmailVerificationExempt } = require('~/server/services/AuthService');
+const { isEmailVerificationExempt, isEmailVerificationExpired } = require('~/server/services/AuthService');
 const { loginSchema } = require('./validators');
 
 // Unix timestamp for 2024-06-07 15:20:18 Eastern Time
@@ -54,11 +54,18 @@ async function passportLogin(req, email, password, done) {
     const verificationRequired = !isExempt && isEmailVerificationEnabled();
 
     if (verificationRequired) {
-      if (!user.emailVerified) {
-        logError('Passport Local Strategy - Email not verified', { email });
+      const isExpired = user.emailVerified && isEmailVerificationExpired(user.emailVerifiedAt, user.createdAt);
+      if (!user.emailVerified || isExpired) {
+        if (isExpired) {
+          await updateUser(user._id, { emailVerified: false });
+          user.emailVerified = false;
+        }
+        logError('Passport Local Strategy - Email not verified', { email, isExpired });
         logger.error(`[Login] [Login failed] [Username: ${email}] [Request-IP: ${req.ip}]`);
         return done(null, user, {
-          message: 'Email not verified. Please check your inbox for the verification link.',
+          message: isExpired
+            ? 'Your email verification has expired. Verification is required every 6 months. Please check your inbox or resend the verification link.'
+            : 'Email not verified. Please check your inbox for the verification link.',
         });
       }
     } else {

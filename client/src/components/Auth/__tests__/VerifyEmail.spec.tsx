@@ -12,6 +12,20 @@ jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn(),
   useSearchParams: jest.fn(),
 }));
+jest.mock('@tanstack/react-query', () => ({
+  useQueryClient: jest.fn(() => ({
+    invalidateQueries: jest.fn(),
+    fetchQuery: jest.fn().mockResolvedValue({ emailVerified: true }),
+    setQueryData: jest.fn(),
+  })),
+}));
+jest.mock('recoil', () => {
+  const actualRecoil = jest.requireActual('recoil');
+  return {
+    ...actualRecoil,
+    useSetRecoilState: () => jest.fn(),
+  };
+});
 jest.mock('@librechat/client', () => ({
   Spinner: ({ className }: { className?: string }) => <div data-testid="mock-spinner" className={className} />,
   ThemeSelector: () => <div data-testid="mock-theme-selector" />,

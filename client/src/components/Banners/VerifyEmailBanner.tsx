@@ -12,6 +12,8 @@ export interface UserVerificationProps {
   userRole?: string;
   role?: string;
   emailVerified?: boolean;
+  emailVerifiedAt?: Date | string | null;
+  createdAt?: Date | string;
 }
 
 const EXTERNAL_USER_ROLES = [
@@ -20,6 +22,25 @@ const EXTERNAL_USER_ROLES = [
   'block_coordinator',
   'village_volunteer',
 ];
+
+const SIX_MONTHS_MS = 180 * 24 * 60 * 60 * 1000;
+
+export const isEmailVerificationExpired = (
+  emailVerifiedAt?: Date | string | null,
+  fallbackDate?: Date | string | null,
+): boolean => {
+  const verifiedDate = emailVerifiedAt
+    ? new Date(emailVerifiedAt)
+    : fallbackDate
+      ? new Date(fallbackDate)
+      : null;
+
+  if (!verifiedDate || isNaN(verifiedDate.getTime())) {
+    return true;
+  }
+
+  return Date.now() - verifiedDate.getTime() > SIX_MONTHS_MS;
+};
 
 export const isRupUser = (user?: UserVerificationProps | null): boolean => {
   if (!user) {
@@ -62,6 +83,12 @@ export const VerifyEmailBanner = () => {
   const { user, isAuthenticated } = useAuthContext();
   const { data: startupConfig } = useGetStartupConfig();
   const bannerRef = React.useRef<HTMLDivElement>(null);
+
+  const getTranslation = (key: string, fallback: string): string => {
+    const text = String(localize(key as any));
+    return !text || text === key ? fallback : text;
+  };
+
   const [isDismissed, setIsDismissed] = useState<boolean>(() => {
     try {
       return sessionStorage.getItem('dismiss_verify_email_banner') === 'true';
@@ -101,7 +128,10 @@ export const VerifyEmailBanner = () => {
     onSuccess: () => {
       setSentSuccess(true);
       showToast({
-        message: localize('com_auth_email_resent_success') || 'Verification email sent successfully.',
+        message: getTranslation(
+          'com_auth_email_resent_success',
+          'Verification email sent successfully.',
+        ),
         status: 'success',
       });
     },
@@ -123,11 +153,14 @@ export const VerifyEmailBanner = () => {
     return null;
   }
 
-  if (user.emailVerified === true) {
+  if (isRupUser(user as UserVerificationProps)) {
     return null;
   }
 
-  if (isRupUser(user as UserVerificationProps)) {
+  const isExpired =
+    user.emailVerified === true && isEmailVerificationExpired(user.emailVerifiedAt, user.createdAt);
+
+  if (user.emailVerified === true && !isExpired) {
     return null;
   }
 
@@ -164,16 +197,28 @@ export const VerifyEmailBanner = () => {
         <span className="truncate">
           {sentSuccess ? (
             <span className="font-medium text-green-700 dark:text-green-300">
-              {localize('com_auth_email_resent_success') || 'Verification email resent! Please check your inbox.'}
+              {getTranslation(
+                'com_auth_email_resent_success',
+                'Verification email resent! Please check your inbox.',
+              )}
             </span>
           ) : (
             <>
               <span className="font-medium">
-                {localize('com_auth_email_address') || 'Email'} ({user.email}) is not verified.
+                {isExpired
+                  ? `${getTranslation('com_auth_email_address', 'Email')} (${user.email}) verification expired.`
+                  : `${getTranslation('com_auth_email_address', 'Email')} (${user.email}) is not verified.`}
               </span>{' '}
               <span className="hidden sm:inline">
-                {localize('com_auth_email_verification_banner_prompt') ||
-                  'Please verify your email address to secure your account.'}
+                {isExpired
+                  ? getTranslation(
+                      'com_auth_email_verification_banner_expired',
+                      'Verification is required every 6 months. Please re-verify your email address.',
+                    )
+                  : getTranslation(
+                      'com_auth_email_verification_banner_prompt',
+                      'Please verify your email address to secure your account.',
+                    )}
               </span>
             </>
           )}
@@ -194,7 +239,7 @@ export const VerifyEmailBanner = () => {
             {resendEmailMutation.isLoading ? (
               <Spinner className="size-3.5" />
             ) : (
-              localize('com_auth_email_resend_link') || 'Resend Email'
+              getTranslation('com_auth_email_resend_link', 'Resend Email')
             )}
           </Button>
         )}

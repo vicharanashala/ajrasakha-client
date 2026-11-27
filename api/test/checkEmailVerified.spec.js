@@ -45,13 +45,32 @@ describe('checkEmailVerified middleware', () => {
     expect(res.status).not.toHaveBeenCalled();
   });
 
-  it('should call next() if user email is already verified', () => {
+  it('should call next() if user email is already verified within 6 months', () => {
     process.env.emailVerified = 'true';
     req.user.emailVerified = true;
+    req.user.emailVerifiedAt = new Date();
 
     checkEmailVerified(req, res, next);
     expect(next).toHaveBeenCalled();
     expect(res.status).not.toHaveBeenCalled();
+  });
+
+  it('should block with 403 EMAIL_VERIFICATION_EXPIRED if emailVerifiedAt is older than 6 months', () => {
+    process.env.emailVerified = 'true';
+    const sevenMonthsAgo = new Date(Date.now() - 7 * 30 * 24 * 60 * 60 * 1000);
+    req.user.emailVerified = true;
+    req.user.emailVerifiedAt = sevenMonthsAgo;
+    req.user.userRole = 'FARMER';
+
+    checkEmailVerified(req, res, next);
+    expect(next).not.toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        code: 'EMAIL_VERIFICATION_EXPIRED',
+        message: expect.stringContaining('every 6 months'),
+      }),
+    );
   });
 
   it('should call next() if user is exempt (e.g. INTERNAL role)', () => {

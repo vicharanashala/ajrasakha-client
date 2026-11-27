@@ -1,5 +1,9 @@
 const nodemailer = require('nodemailer');
-const { isEmailVerificationExempt, isEmailVerificationEnabled } = require('../server/services/AuthService');
+const {
+  isEmailVerificationExempt,
+  isEmailVerificationEnabled,
+  isEmailVerificationExpired,
+} = require('../server/services/AuthService');
 const sendEmail = require('../server/utils/sendEmail');
 
 describe('Email Verification & Nodemailer Setup', () => {
@@ -193,6 +197,7 @@ describe('Email Verification & Nodemailer Setup', () => {
         email: 'test@example.com',
         password: 'hashed-password',
         emailVerified: true,
+        emailVerifiedAt: new Date(),
         isVerified: false,
       };
 
@@ -253,7 +258,7 @@ describe('Email Verification & Nodemailer Setup', () => {
       });
     });
 
-    it('should permit login when emailVerified=true and user is already emailVerified', async () => {
+    it('should permit login when emailVerified=true and user is already emailVerified within 6 months', async () => {
       process.env.emailVerified = 'true';
       const localStrategy = require('../strategies/localStrategy')();
 
@@ -262,6 +267,7 @@ describe('Email Verification & Nodemailer Setup', () => {
         email: 'test@example.com',
         password: 'hashed-password',
         emailVerified: true,
+        emailVerifiedAt: new Date(),
         isVerified: true,
       };
 
@@ -279,6 +285,41 @@ describe('Email Verification & Nodemailer Setup', () => {
           expect(resultUser).toEqual(user);
           expect(info).toBeUndefined();
           expect(mockUpdateUser).not.toHaveBeenCalled();
+          resolve();
+        });
+      });
+    });
+
+    it('should reject login and update emailVerified=false when emailVerifiedAt is older than 6 months', async () => {
+      process.env.emailVerified = 'true';
+      const localStrategy = require('../strategies/localStrategy')();
+
+      const sevenMonthsAgo = new Date(Date.now() - 7 * 30 * 24 * 60 * 60 * 1000);
+      const user = {
+        _id: 'user123',
+        email: 'farmer@example.com',
+        password: 'hashed-password',
+        userRole: 'FARMER',
+        emailVerified: true,
+        emailVerifiedAt: sevenMonthsAgo,
+        isVerified: true,
+      };
+
+      mockFindUser.mockResolvedValue(user);
+      mockComparePassword.mockResolvedValue(true);
+      mockUpdateUser.mockResolvedValue({ ...user, emailVerified: false });
+
+      const req = {
+        body: { email: 'farmer@example.com', password: 'validPassword123' },
+        ip: '127.0.0.1',
+      };
+
+      await new Promise((resolve) => {
+        localStrategy._verify(req, 'farmer@example.com', 'validPassword123', (err, resultUser, info) => {
+          expect(err).toBeNull();
+          expect(info).toBeDefined();
+          expect(info.message).toContain('expired');
+          expect(mockUpdateUser).toHaveBeenCalledWith('user123', { emailVerified: false });
           resolve();
         });
       });
@@ -513,6 +554,118 @@ describe('Email Verification & Nodemailer Setup', () => {
         emailVerified: true,
         emailVerifiedAt: expect.any(Date),
       });
+    });
+
+    it('should re-verify and update emailVerifiedAt when user has emailVerified=true but verification has expired (>6 months)', async () => {
+      const bcrypt = require('bcryptjs');
+      const sevenMonthsAgo = new Date(Date.now() - 210 * 24 * 60 * 60 * 1000);
+
+      const mockExpiredUser = {
+        _id: 'user_verify_expired',
+        email: 'expired_user@example.com',
+        emailVerified: true,
+        emailVerifiedAt: sevenMonthsAgo,
+      };
+
+      const plainToken = 'valid-token-expired-user';
+      const hashedToken = bcrypt.hashSync(plainToken, 10);
+
+      const mockFindUser = jest.fn().mockResolvedValue(mockExpiredUser);
+      const mockFindToken = jest.fn().mockResolvedValue({
+        userId: 'user_verify_expired',
+        token: hashedToken,
+      });
+      const mockUpdateUser = jest.fn().mockResolvedValue({
+        ...mockExpiredUser,
+        emailVerified: true,
+        emailVerifiedAt: new Date(),
+      });
+      const mockDeleteTokens = jest.fn().mockResolvedValue(true);
+
+      jest.resetModules();
+      jest.doMock('~/models', () => ({
+        findUser: mockFindUser,
+        findToken: mockFindToken,
+        updateUser: mockUpdateUser,
+        deleteTokens: mockDeleteTokens,
+      }));
+
+      const { verifyEmail } = require('../server/services/AuthService');
+
+      const req = {
+        body: {
+          email: 'expired_user@example.com',
+          token: plainToken,
+        },
+      };
+
+      const result = await verifyEmail(req);
+      expect(result).toEqual({ message: 'Email verification was successful', status: 'success' });
+      expect(mockUpdateUser).toHaveBeenCalledWith('user_verify_expired', {
+        emailVerified: true,
+        emailVerifiedAt: expect.any(Date),
+      });
+    });
+
+    it('should return already verified without checking token when user has emailVerified=true and is NOT expired', async () => {
+      const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      const mockValidUser = {
+        _id: 'user_verify_valid',
+        email: 'valid_user@example.com',
+        emailVerified: true,
+        emailVerifiedAt: oneMonthAgo,
+      };
+
+      const mockFindUser = jest.fn().mockResolvedValue(mockValidUser);
+      const mockFindToken = jest.fn();
+      const mockUpdateUser = jest.fn();
+
+      jest.resetModules();
+      jest.doMock('~/models', () => ({
+        findUser: mockFindUser,
+        findToken: mockFindToken,
+        updateUser: mockUpdateUser,
+      }));
+
+      const { verifyEmail } = require('../server/services/AuthService');
+
+      const req = {
+        body: {
+          email: 'valid_user@example.com',
+          token: 'some-token',
+        },
+      };
+
+      const result = await verifyEmail(req);
+      expect(result).toEqual({ message: 'Email already verified', status: 'success' });
+      expect(mockFindToken).not.toHaveBeenCalled();
+      expect(mockUpdateUser).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('isEmailVerificationExpired (6-Month Rule)', () => {
+    it('should return false if verification date is recent (e.g. today or 1 month ago)', () => {
+      const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      expect(isEmailVerificationExpired(new Date())).toBe(false);
+      expect(isEmailVerificationExpired(oneMonthAgo)).toBe(false);
+    });
+
+    it('should return true if verification date is older than 180 days (6 months)', () => {
+      const sevenMonthsAgo = new Date(Date.now() - 210 * 24 * 60 * 60 * 1000);
+      expect(isEmailVerificationExpired(sevenMonthsAgo)).toBe(true);
+    });
+
+    it('should use fallbackDate when emailVerifiedAt is null/undefined', () => {
+      const recentDate = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000);
+      const oldDate = new Date(Date.now() - 200 * 24 * 60 * 60 * 1000);
+
+      expect(isEmailVerificationExpired(null, recentDate)).toBe(false);
+      expect(isEmailVerificationExpired(undefined, oldDate)).toBe(true);
+    });
+
+    it('should return true if neither emailVerifiedAt nor fallbackDate is provided', () => {
+      expect(isEmailVerificationExpired(null)).toBe(true);
+      expect(isEmailVerificationExpired(undefined)).toBe(true);
     });
   });
 });
