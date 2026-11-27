@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { logger } = require('@librechat/data-schemas');
 const { checkEmailConfig } = require('@librechat/api');
-const { createToken, deleteTokens, findToken } = require('~/models');
+const { createToken, deleteTokens, findToken, findUser, deleteAllUserSessions } = require('~/models');
+const { setAuthTokens } = require('~/server/services/AuthService');
 const { sendEmail } = require('~/server/utils');
 
 const ELIGIBLE_ROLES = new Set([
@@ -158,6 +159,122 @@ const requestSessionRecovery = async (user) => {
   };
 };
 
+/**
+ * Verifies a session recovery token, invalidates previous sessions,
+ * and sets up a new session on the current requesting device.
+ *
+ * @param {object} params
+ * @param {string} params.token - The raw token from the verification link
+ * @param {string} params.userId - The user ID from the verification link
+ * @param {ServerResponse} params.res - Express response object for setting auth cookies
+ * @returns {Promise<{ message: string, token: string, user: object }>}
+ */
+const verifySessionRecovery = async ({ token, userId, res }) => {
+  if (!token || !userId) {
+    const error = new Error('Token and userId are required');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const mongoose = require('mongoose');
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    const error = new Error('Invalid userId format');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const user = await findUser({ _id: userId });
+  if (!user) {
+    const error = new Error('User not found');
+    error.statusCode = 404;
+    throw error;
+  }
+
+  // Security check: Must meet eligibility conditions
+  if (!isSessionRecoveryEligible(user)) {
+    const error = new Error('Account is not eligible for session recovery');
+    error.statusCode = 403;
+    throw error;
+  }
+
+  const Token = mongoose.models.Token;
+
+  // Find the token document for this user of type session_recovery
+  const tokenDoc = await Token.findOne({
+    userId: user._id,
+    type: 'session_recovery',
+  }).sort({ createdAt: -1 });
+
+  if (!tokenDoc) {
+    const error = new Error('Invalid or expired verification token');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Validate usage status
+  if (tokenDoc.used) {
+    const error = new Error('Verification link has already been used');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Validate expiry
+  if (tokenDoc.expiresAt && new Date() > new Date(tokenDoc.expiresAt)) {
+    await deleteTokens({ userId: user._id, type: 'session_recovery' });
+    const error = new Error('Verification link has expired. Please request a new one');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Validate token hash
+  const isValid = bcrypt.compareSync(token, tokenDoc.token);
+  if (!isValid) {
+    const error = new Error('Invalid verification token');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Atomic consumption: prevent token reuse & concurrent verification
+  const claimedToken = await Token.findOneAndUpdate(
+    { _id: tokenDoc._id, used: { $ne: true } },
+    { $set: { used: true, usedAt: new Date() } },
+    { new: true },
+  );
+
+  if (!claimedToken) {
+    // Another concurrent request already claimed this token
+    const error = new Error('Verification link has already been used or is currently being verified');
+    error.statusCode = 409;
+    throw error;
+  }
+
+  // Invalidate previous session only after successful verification
+  await deleteAllUserSessions(user._id);
+
+  // Clean up any remaining session recovery tokens for this user
+  await deleteTokens({ userId: user._id, type: 'session_recovery' });
+
+  // Create new session for this requesting device
+  const authToken = await setAuthTokens(user._id, res);
+
+  const userData = user.toObject ? user.toObject() : { ...user };
+  delete userData.__v;
+  delete userData.password;
+  delete userData.totpSecret;
+  delete userData.backupCodes;
+  userData.id = user._id.toString();
+
+  logger.info(
+    `[SessionRecovery] Session successfully recovered for user ${user._id} (${user.email}). Previous sessions cleared, new session established.`,
+  );
+
+  return {
+    message: 'Session recovered successfully',
+    token: authToken,
+    user: userData,
+  };
+};
+
 module.exports = {
   ELIGIBLE_ROLES,
   isSessionRecoveryEligible,
@@ -165,4 +282,5 @@ module.exports = {
   verifySessionRecoveryTempToken,
   generateSessionRecoveryToken,
   requestSessionRecovery,
+  verifySessionRecovery,
 };

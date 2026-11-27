@@ -19,6 +19,7 @@ const { logoutController } = require('~/server/controllers/auth/LogoutController
 const { loginController } = require('~/server/controllers/auth/LoginController');
 const {
   sessionRecoveryRequestController,
+  sessionRecoveryVerifyController,
 } = require('~/server/controllers/auth/SessionRecoveryController');
 const { getAppConfig } = require('~/server/services/Config');
 const middleware = require('~/server/middleware');
@@ -71,6 +72,13 @@ router.post(
   middleware.resetPasswordLimiter,
   middleware.checkBan,
   sessionRecoveryRequestController,
+);
+
+router.post(
+  '/session-recovery/verify',
+  middleware.loginLimiter,
+  middleware.checkBan,
+  sessionRecoveryVerifyController,
 );
 
 router.get('/2fa/enable', middleware.requireJwtAuth, enable2FA);

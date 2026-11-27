@@ -1,8 +1,10 @@
 const {
   sessionRecoveryRequestController,
+  sessionRecoveryVerifyController,
 } = require('./SessionRecoveryController');
 const {
   generateSessionRecoveryTempToken,
+  verifySessionRecovery,
 } = require('~/server/services/SessionRecoveryService');
 
 jest.mock('~/models', () => ({
@@ -19,6 +21,7 @@ jest.mock('~/server/services/SessionRecoveryService', () => {
       success: true,
       message: 'Verification link sent to your registered email address.',
     }),
+    verifySessionRecovery: jest.fn(),
   };
 });
 
@@ -190,5 +193,57 @@ describe('SessionRecoveryController', () => {
     expect(comparePassword).toHaveBeenCalledWith(mockUser, 'password123');
     expect(requestSessionRecovery).toHaveBeenCalledWith(mockUser);
     expect(res.status).toHaveBeenCalledWith(200);
+  });
+
+  describe('sessionRecoveryVerifyController', () => {
+    it('should return 400 if token or userId is missing', async () => {
+      req.body = { token: 'some-token' };
+      await sessionRecoveryVerifyController(req, res);
+      expect(res.status).toHaveBeenCalledWith(400);
+
+      req.body = { userId: 'some-user-id' };
+      await sessionRecoveryVerifyController(req, res);
+      expect(res.status).toHaveBeenCalledWith(400);
+    });
+
+    it('should handle service error and return appropriate status code', async () => {
+      req.body = {
+        token: 'test-token',
+        userId: '507f1f77bcf86cd799439011',
+      };
+
+      const customError = new Error('Verification link has expired');
+      customError.statusCode = 400;
+      verifySessionRecovery.mockRejectedValue(customError);
+
+      await sessionRecoveryVerifyController(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ message: 'Verification link has expired' });
+    });
+
+    it('should handle successful verification and return result', async () => {
+      req.body = {
+        token: 'valid-token',
+        userId: '507f1f77bcf86cd799439011',
+      };
+
+      const successResult = {
+        message: 'Session recovered successfully',
+        token: 'new-jwt-token',
+        user: { id: '507f1f77bcf86cd799439011', email: 'farmer@example.com' },
+      };
+      verifySessionRecovery.mockResolvedValue(successResult);
+
+      await sessionRecoveryVerifyController(req, res);
+
+      expect(verifySessionRecovery).toHaveBeenCalledWith({
+        token: 'valid-token',
+        userId: '507f1f77bcf86cd799439011',
+        res,
+      });
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(successResult);
+    });
   });
 });

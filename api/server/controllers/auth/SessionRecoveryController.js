@@ -4,6 +4,7 @@ const {
   isSessionRecoveryEligible,
   verifySessionRecoveryTempToken,
   requestSessionRecovery,
+  verifySessionRecovery,
 } = require('~/server/services/SessionRecoveryService');
 
 /**
@@ -88,6 +89,36 @@ const sessionRecoveryRequestController = async (req, res) => {
   }
 };
 
+/**
+ * Controller to handle verification of a session recovery token and session replacement.
+ *
+ * @param {ServerRequest} req
+ * @param {ServerResponse} res
+ */
+const sessionRecoveryVerifyController = async (req, res) => {
+  try {
+    const { token, userId } = req.body;
+
+    if (!token || !userId) {
+      return res.status(400).json({ message: 'Token and userId are required.' });
+    }
+
+    const result = await verifySessionRecovery({ token, userId, res });
+    return res.status(200).json(result);
+  } catch (error) {
+    const statusCode = error.statusCode || 500;
+    if (statusCode < 500) {
+      logger.warn(`[sessionRecoveryVerifyController] ${error.message}`);
+    } else {
+      logger.error('[sessionRecoveryVerifyController]', error);
+    }
+    return res
+      .status(statusCode)
+      .json({ message: error.message || 'Failed to verify session recovery.' });
+  }
+};
+
 module.exports = {
   sessionRecoveryRequestController,
+  sessionRecoveryVerifyController,
 };

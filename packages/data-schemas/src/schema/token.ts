@@ -29,6 +29,13 @@ const tokenSchema: Schema<IToken> = new Schema({
     type: Date,
     required: true,
   },
+  used: {
+    type: Boolean,
+    default: false,
+  },
+  usedAt: {
+    type: Date,
+  },
   metadata: {
     type: Map,
     of: Schema.Types.Mixed,
