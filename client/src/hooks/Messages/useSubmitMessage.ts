@@ -8,7 +8,9 @@ import {
   useUpdateFarmerPlatformMutation,
   useUpdateFarmerLastActiveAt,
   useUserTermsQuery,
+  useGetStartupConfig,
 } from '~/data-provider';
+import { isRupUser, isEmailVerificationExpired } from '~/components/Banners';
 import { useLocalize } from '~/hooks';
 import store from '~/store';
 
@@ -25,9 +27,11 @@ export default function useSubmitMessage() {
   // logged in) so an example-question tap can always read the farmer's state regardless of
   // whether the ToS-modal feature flag is on.
   const { data: termsData } = useUserTermsQuery({ enabled: !!user });
+  const { data: startupConfig } = useGetStartupConfig();
   const autoSendPrompts = useRecoilValue(store.autoSendPrompts);
   const [activePrompt, setActivePrompt] = useRecoilState(store.activePromptByIndex(index));
   const [showFeedbackReminder, setShowFeedbackReminder] = useRecoilState(store.showFeedbackReminder);
+  const setShowVerifyEmailModal = useSetRecoilState(store.showVerifyEmailModal);
   const setPendingNewConversation = useRecoilState(store.pendingNewConversation)[1];
   const [isRequiredFeedback] = useRecoilState(store.isRequiredFeedback);
   const setFeedbackSkipCount = useSetRecoilState(store.feedbackSkipCount);
@@ -39,6 +43,16 @@ export default function useSubmitMessage() {
     ) => {
       if (!data) {
         return console.warn('No data provided to submitMessage');
+      }
+
+      // Block submission if user is unverified or verification expired (>6 months) and not exempt (non-RUP)
+      const isExempt = isRupUser(user);
+      const isVerificationRequired = !isExempt && startupConfig?.emailVerificationEnabled !== false;
+      const isExpired =
+        user?.emailVerified === true && isEmailVerificationExpired(user?.emailVerifiedAt, user?.createdAt);
+      if (user && (!user.emailVerified || isExpired) && isVerificationRequired) {
+        setShowVerifyEmailModal(true);
+        return;
       }
 
       // Block submission if feedback is required — Recoil state is synced from the API via MessagesViewContext
@@ -104,6 +118,9 @@ export default function useSubmitMessage() {
       isRequiredFeedback,
       termsData,
       localize,
+      user,
+      startupConfig,
+      setShowVerifyEmailModal,
     ],
   );
 

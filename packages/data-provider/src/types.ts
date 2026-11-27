@@ -209,6 +209,11 @@ export type TUser = {
   role: string;
   userRole?: UserRoles;
   provider: string;
+  emailVerified?: boolean;
+  emailVerifiedAt?: Date | string | null;
+  rupId?: string;
+  idOnTheSource?: string;
+  createdFrom?: string;
   plugins?: string[];
   twoFactorEnabled?: boolean;
   backupCodes?: TBackupCode[];

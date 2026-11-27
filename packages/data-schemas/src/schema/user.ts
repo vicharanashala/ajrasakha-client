@@ -91,6 +91,10 @@ const userSchema = new Schema<IUser>(
       required: true,
       default: false,
     },
+    emailVerifiedAt: {
+      type: Date,
+      default: null,
+    },
     password: {
       type: String,
       trim: true,
@@ -226,6 +230,9 @@ const userSchema = new Schema<IUser>(
     isVerified: {
       type: Boolean,
       default: false,
+    },
+    createdFrom: {
+      type: String,
     },
   },
   { timestamps: true },

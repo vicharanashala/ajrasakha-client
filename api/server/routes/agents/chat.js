@@ -7,6 +7,7 @@ const {
   validateConvoAccess,
   buildEndpointOption,
   canAccessAgentFromBody,
+  checkEmailVerified,
 } = require('~/server/middleware');
 const { denyRestrictedChatActions } = require('~/server/middleware/restrictConversationActions');
 const { initializeClient } = require('~/server/services/Endpoints/agents');
@@ -27,6 +28,7 @@ const checkAgentResourceAccess = canAccessAgentFromBody({
 });
 
 router.use(moderateText);
+router.use(checkEmailVerified);
 router.use(checkAgentAccess);
 router.use(checkAgentResourceAccess);
 router.use(validateConvoAccess);

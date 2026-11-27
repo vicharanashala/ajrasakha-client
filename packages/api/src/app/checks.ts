@@ -2,7 +2,7 @@ import { logger, webSearchKeys } from '@librechat/data-schemas';
 import { Constants, extractVariableName } from 'librechat-data-provider';
 import type { TCustomConfig } from 'librechat-data-provider';
 import type { AppConfig } from '@librechat/data-schemas';
-import { isEnabled, checkEmailConfig } from '~/utils';
+import { isEnabled, checkEmailConfig, isEmailVerificationEnabled } from '~/utils';
 import { handleRateLimits } from './limits';
 
 const secretDefaults = {
@@ -128,6 +128,18 @@ export function checkVariables() {
   });
 
   checkPasswordReset();
+  checkEmailVerification();
+}
+
+function checkEmailVerification() {
+  const emailVerificationEnabled = isEmailVerificationEnabled();
+  const emailConfigured = checkEmailConfig();
+
+  if (emailVerificationEnabled && !emailConfigured) {
+    logger.warn(
+      'Email verification is enabled with emailVerified but email service is not configured. Users will not receive verification emails.'
+    );
+  }
 }
 
 /**

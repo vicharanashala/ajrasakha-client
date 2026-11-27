@@ -73,6 +73,10 @@ export function createUserMethods(mongoose: typeof import('mongoose')) {
       delete userData.expiresAt;
     }
 
+    if (userData.emailVerified === true && !userData.emailVerifiedAt) {
+      userData.emailVerifiedAt = new Date();
+    }
+
     const user = await User.create(userData);
 
     // If balance is enabled, create or update a balance record for the user
@@ -120,6 +124,9 @@ export function createUserMethods(mongoose: typeof import('mongoose')) {
    */
   async function updateUser(userId: string, updateData: Partial<IUser>): Promise<IUser | null> {
     const User = mongoose.models.User;
+    if (updateData.emailVerified === true && !updateData.emailVerifiedAt) {
+      updateData.emailVerifiedAt = new Date();
+    }
     const updateOperation = {
       $set: updateData,
       $unset: { expiresAt: '' }, // Remove the expiresAt field to prevent TTL

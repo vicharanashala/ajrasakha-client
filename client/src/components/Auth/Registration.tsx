@@ -126,7 +126,7 @@ const Registration: React.FC = () => {
           role="alert"
         >
           {localize(
-            startupConfig?.emailEnabled
+            startupConfig?.emailEnabled && registerUser.data?.message !== 'Registration successful'
               ? 'com_auth_registration_success_generic'
               : 'com_auth_registration_success_insecure',
           ) +

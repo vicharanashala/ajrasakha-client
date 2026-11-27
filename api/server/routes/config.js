@@ -1,6 +1,13 @@
 const express = require('express');
 const { logger } = require('@librechat/data-schemas');
-const { isEnabled, getBalanceConfig } = require('@librechat/api');
+const { isEnabled, getBalanceConfig, isEmailVerificationEnabled: checkEmailVerification } = require('@librechat/api');
+
+const isEmailVerificationEnabled = () => {
+  if (typeof checkEmailVerification === 'function') {
+    return checkEmailVerification();
+  }
+  return isEnabled(process.env.emailVerified ?? process.env.EMAIL_VERIFIED);
+};
 const { Constants, CacheKeys, defaultSocialLogins } = require('librechat-data-provider');
 const { getLdapConfig } = require('~/server/services/Config/ldap');
 const { getAppConfig } = require('~/server/services/Config/app');
@@ -81,11 +88,14 @@ router.get('/', async function (req, res) {
       emailLoginEnabled,
       registrationEnabled: !ldap?.enabled && isEnabled(process.env.ALLOW_REGISTRATION),
       socialLoginEnabled: isEnabled(process.env.ALLOW_SOCIAL_LOGIN),
+      emailVerificationEnabled: isEmailVerificationEnabled(),
       emailEnabled:
-        (!!process.env.EMAIL_SERVICE || !!process.env.EMAIL_HOST) &&
-        !!process.env.EMAIL_USERNAME &&
-        !!process.env.EMAIL_PASSWORD &&
-        !!process.env.EMAIL_FROM,
+        isEmailVerificationEnabled() &&
+        (((!!process.env.EMAIL_SERVICE || !!process.env.EMAIL_HOST) &&
+          !!process.env.EMAIL_USERNAME &&
+          !!process.env.EMAIL_PASSWORD &&
+          !!process.env.EMAIL_FROM) ||
+          (!!process.env.MAILGUN_API_KEY && !!process.env.MAILGUN_DOMAIN)),
       passwordResetEnabled,
       showBirthdayIcon:
         isBirthday() ||

@@ -3,6 +3,7 @@ const validateRegistration = require('./validateRegistration');
 const buildEndpointOption = require('./buildEndpointOption');
 const validateMessageReq = require('./validateMessageReq');
 const checkDomainAllowed = require('./checkDomainAllowed');
+const checkEmailVerified = require('./checkEmailVerified');
 const requireLocalAuth = require('./requireLocalAuth');
 const canDeleteAccount = require('./canDeleteAccount');
 const accessResources = require('./accessResources');
@@ -43,6 +44,7 @@ module.exports = {
   canDeleteAccount,
   configMiddleware,
   checkDomainAllowed,
+  checkEmailVerified,
   validateMessageReq,
   buildEndpointOption,
   validateRegistration,
