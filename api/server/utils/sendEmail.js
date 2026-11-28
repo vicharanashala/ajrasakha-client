@@ -94,7 +94,10 @@ const sendEmail = async ({ email, subject, payload, template, throwError = true 
   try {
     const { content: source } = await readFileAsString(path.join(__dirname, 'emails', template));
     const compiledTemplate = handlebars.compile(source);
-    const html = compiledTemplate(payload);
+    const logoUrl =
+      payload.logoUrl ||
+      `${(process.env.DOMAIN_CLIENT || '').replace(/\/+$/, '')}/assets/annam-logo.png`;
+    const html = compiledTemplate({ ...payload, logoUrl });
 
     // Prepare common email data
     const fromName = process.env.EMAIL_FROM_NAME || process.env.APP_TITLE;
