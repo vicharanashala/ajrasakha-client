@@ -7,6 +7,7 @@ import {
   ApiErrorWatcher,
   TwoFactorScreen,
   RequestPasswordReset,
+  SessionRecoveryVerify,
 } from '~/components/Auth';
 import { MarketplaceProvider } from '~/components/Agents/MarketplaceContext';
 import AgentMarketplace from '~/components/Agents/Marketplace';
@@ -81,6 +82,10 @@ export const router = createBrowserRouter(
       element: <AuthLayout />,
       errorElement: <RouteErrorBoundary />,
       children: [
+        {
+          path: 'session-recovery/verify',
+          element: <SessionRecoveryVerify />,
+        },
         {
           path: '/',
           element: <LoginLayout />,

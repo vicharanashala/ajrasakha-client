@@ -213,7 +213,7 @@ export function createSessionMethods(mongoose: typeof import('mongoose')) {
    * Deletes all sessions for a user
    */
   async function deleteAllUserSessions(
-    userId: string | { userId: string },
+    userId: string | mongoose.Types.ObjectId | { userId: string },
     options: t.DeleteAllSessionsOptions = {},
   ): Promise<{ deletedCount?: number }> {
     try {
@@ -222,8 +222,16 @@ export function createSessionMethods(mongoose: typeof import('mongoose')) {
         throw new SessionError('User ID is required', 'INVALID_USER_ID');
       }
 
-      const userIdString =
-        typeof userId === 'object' && userId !== null ? userId.userId : (userId as string);
+      let userIdString: string;
+      if (typeof userId === 'object' && userId !== null) {
+        if ('userId' in userId && typeof (userId as { userId: string }).userId === 'string') {
+          userIdString = (userId as { userId: string }).userId;
+        } else {
+          userIdString = userId.toString();
+        }
+      } else {
+        userIdString = userId as string;
+      }
 
       if (!mongoose.Types.ObjectId.isValid(userIdString)) {
         throw new SessionError('Invalid user ID format', 'INVALID_USER_ID_FORMAT');

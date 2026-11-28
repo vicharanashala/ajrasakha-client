@@ -9,11 +9,12 @@ import { useAuthContext } from '~/hooks/AuthContext';
 import { getLoginError } from '~/utils';
 import { useLocalize } from '~/hooks';
 import LoginForm from './LoginForm';
+import SessionRecoveryPrompt from './SessionRecoveryPrompt';
 
 function Login() {
   const localize = useLocalize();
   const { showToast } = useToastContext();
-  const { error, setError, login } = useAuthContext();
+  const { error, setError, login, sessionRecoveryData } = useAuthContext();
   const { startupConfig } = useOutletContext<TLoginLayoutContext>();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -95,6 +96,12 @@ function Login() {
             ? error
             : localize(getLoginError(error))}
         </ErrorMessage>
+      )}
+      {sessionRecoveryData?.eligible && (
+        <SessionRecoveryPrompt
+          recoveryTempToken={sessionRecoveryData.recoveryTempToken}
+          email={sessionRecoveryData.email}
+        />
       )}
       {startupConfig?.emailLoginEnabled === true && (
         <LoginForm

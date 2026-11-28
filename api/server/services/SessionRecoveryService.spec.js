@@ -467,7 +467,7 @@ describe('SessionRecoveryService', () => {
       );
 
       // 2. Verify previous session was invalidated
-      expect(deleteAllUserSessions).toHaveBeenCalledWith(validUserId);
+      expect(deleteAllUserSessions).toHaveBeenCalledWith({ userId: validUserId.toString() });
 
       // 3. Verify tokens cleaned up
       expect(deleteTokens).toHaveBeenCalledWith({

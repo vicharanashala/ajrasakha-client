@@ -132,18 +132,24 @@ const requestSessionRecovery = async (user) => {
 
   const emailEnabled = checkEmailConfig();
   if (emailEnabled) {
-    await sendEmail({
-      email: user.email,
-      subject: 'Session Recovery - Verify Your Account',
-      payload: {
-        appName: process.env.APP_TITLE || 'Ajrasakha',
-        name: user.name || user.username || user.email,
-        verificationLink,
-        year: new Date().getFullYear(),
-      },
-      template: 'sessionRecovery.handlebars',
-    });
-    logger.info(`[SessionRecovery] Verification email sent. [Email: ${user.email}] [ID: ${user._id}]`);
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'Session Recovery - Verify Your Account',
+        payload: {
+          appName: process.env.APP_TITLE || 'Ajrasakha',
+          name: user.name || user.username || user.email,
+          verificationLink,
+          year: new Date().getFullYear(),
+        },
+        template: 'sessionRecovery.handlebars',
+      });
+      logger.info(`[SessionRecovery] Verification email sent. [Email: ${user.email}] [ID: ${user._id}]`);
+    } catch (emailErr) {
+      logger.error(`[SessionRecovery] Failed to send verification email to ${user.email}: ${emailErr.message}`, emailErr);
+      logger.info(`[SessionRecovery] Verification link: ${verificationLink}`);
+      throw new Error(`Failed to send email (${emailErr.message}). Check SMTP configuration or server logs for the verification link.`);
+    }
   } else {
     logger.info(`[SessionRecovery] Email disabled. Verification link issued: ${verificationLink}`);
     return {
@@ -249,7 +255,7 @@ const verifySessionRecovery = async ({ token, userId, res }) => {
   }
 
   // Invalidate previous session only after successful verification
-  await deleteAllUserSessions(user._id);
+  await deleteAllUserSessions({ userId: user._id.toString() });
 
   // Clean up any remaining session recovery tokens for this user
   await deleteTokens({ userId: user._id, type: 'session_recovery' });

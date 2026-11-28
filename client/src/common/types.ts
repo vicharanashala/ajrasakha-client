@@ -453,8 +453,24 @@ export type ToolDialogProps = {
   setIsOpen: (open: boolean) => void;
 };
 
+export type TSessionRecoveryData = {
+  eligible: boolean;
+  recoveryTempToken?: string;
+  email?: string;
+};
+
 export type TResError = {
-  response: { status?: number; data: { message: string; errorCode?: string; code?: string } };
+  response: {
+    status?: number;
+    data: {
+      message: string;
+      errorCode?: string;
+      code?: string;
+      sessionRecoveryEligible?: boolean;
+      recoveryTempToken?: string;
+      email?: string;
+    };
+  };
   message: string;
 };
 
@@ -469,6 +485,9 @@ export type TAuthContext = {
   logout: (redirect?: string) => void;
   setError: React.Dispatch<React.SetStateAction<string | undefined>>;
   roles?: Record<string, t.TRole | null | undefined>;
+  sessionRecoveryData?: TSessionRecoveryData | null;
+  setSessionRecoveryData?: React.Dispatch<React.SetStateAction<TSessionRecoveryData | null>>;
+  setUserContext?: (userContext: TUserContext) => void;
 };
 
 export type TUserContext = {

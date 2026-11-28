@@ -495,6 +495,30 @@ export type TRequestPasswordResetResponse = {
   message?: string;
 };
 
+export type TRequestSessionRecovery = {
+  recoveryTempToken?: string;
+  email?: string;
+  password?: string;
+};
+
+export type TRequestSessionRecoveryResponse = {
+  success?: boolean;
+  message: string;
+  link?: string;
+  noConflict?: boolean;
+};
+
+export type TVerifySessionRecovery = {
+  token: string;
+  userId: string;
+};
+
+export type TVerifySessionRecoveryResponse = {
+  message: string;
+  token: string;
+  user: TUser;
+};
+
 /**
  * Represents the response from the import endpoint.
  */

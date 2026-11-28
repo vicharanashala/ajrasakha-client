@@ -152,6 +152,10 @@ export const requestPasswordReset = () => `${BASE_URL}/api/auth/requestPasswordR
 
 export const resetPassword = () => `${BASE_URL}/api/auth/resetPassword`;
 
+export const sessionRecoveryRequest = () => `${BASE_URL}/api/auth/session-recovery/request`;
+
+export const sessionRecoveryVerify = () => `${BASE_URL}/api/auth/session-recovery/verify`;
+
 export const verifyEmail = () => `${BASE_URL}/api/user/verify`;
 
 // Auth page URLs (for client-side navigation and redirects)

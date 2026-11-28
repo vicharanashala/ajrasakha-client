@@ -85,7 +85,9 @@ const sessionRecoveryRequestController = async (req, res) => {
     return res.status(200).json(result);
   } catch (error) {
     logger.error('[sessionRecoveryRequestController]', error);
-    return res.status(500).json({ message: 'Failed to process session recovery request.' });
+    return res.status(500).json({
+      message: error.message || 'Failed to process session recovery request.',
+    });
   }
 };
 

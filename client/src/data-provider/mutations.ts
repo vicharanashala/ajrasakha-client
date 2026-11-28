@@ -1042,6 +1042,52 @@ export const useResendVerificationEmail = (
 };
 
 /**
+ * Hook for requesting session recovery verification email
+ */
+export const useSessionRecoveryRequestMutation = (
+  options?: t.MutationOptions<
+    t.TRequestSessionRecoveryResponse,
+    t.TRequestSessionRecovery,
+    unknown,
+    unknown
+  >,
+): UseMutationResult<
+  t.TRequestSessionRecoveryResponse,
+  unknown,
+  t.TRequestSessionRecovery,
+  unknown
+> => {
+  return useMutation({
+    mutationFn: (variables: t.TRequestSessionRecovery) =>
+      dataService.requestSessionRecovery(variables),
+    ...(options || {}),
+  });
+};
+
+/**
+ * Hook for verifying session recovery token and replacing session
+ */
+export const useSessionRecoveryVerifyMutation = (
+  options?: t.MutationOptions<
+    t.TVerifySessionRecoveryResponse,
+    t.TVerifySessionRecovery,
+    unknown,
+    unknown
+  >,
+): UseMutationResult<
+  t.TVerifySessionRecoveryResponse,
+  unknown,
+  t.TVerifySessionRecovery,
+  unknown
+> => {
+  return useMutation({
+    mutationFn: (variables: t.TVerifySessionRecovery) =>
+      dataService.verifySessionRecovery(variables),
+    ...(options || {}),
+  });
+};
+
+/**
  * Hook for requesting admin verification for pending accounts.
  */
 export const useRequestVerificationMutation = (
