@@ -20,7 +20,7 @@ import {
   useLogoutUserMutation,
   useRefreshTokenMutation,
 } from '~/data-provider';
-import { TAuthConfig, TUserContext, TAuthContext, TResError } from '~/common';
+import { TAuthConfig, TUserContext, TAuthContext, TResError, TSessionRecoveryData } from '~/common';
 import useTimeout from './useTimeout';
 import store from '~/store';
 import { useToastContext } from '@librechat/client';
@@ -56,6 +56,7 @@ const AuthContextProvider = ({
   const [user, setUser] = useRecoilState(store.user);
   const [token, setToken] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | undefined>(undefined);
+  const [sessionRecoveryData, setSessionRecoveryData] = useState<TSessionRecoveryData | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const logoutRedirectRef = useRef<string | undefined>(undefined);
 
@@ -118,6 +119,7 @@ const AuthContextProvider = ({
   const loginUser = useLoginUserMutation({
     onSuccess: (data: t.TLoginResponse) => {
       const { user, token, twoFAPending, tempToken } = data;
+      setSessionRecoveryData(null);
       if (twoFAPending) {
         // Redirect to the two-factor authentication route.
         navigate(`/login/2fa?tempToken=${tempToken}`, { replace: true });
@@ -141,6 +143,17 @@ const AuthContextProvider = ({
       if(errorCode === 'ERR_ADMIN_VERIFICATION_PENDING'){
         showToast({ message:localize('com_auth_error_login_admin_verfication') , status: 'error' });
       }
+
+      if (errorData?.sessionRecoveryEligible) {
+        setSessionRecoveryData({
+          eligible: true,
+          recoveryTempToken: errorData.recoveryTempToken,
+          email: errorData.email,
+        });
+      } else {
+        setSessionRecoveryData(null);
+      }
+
       doSetError(errorMsg);
       navigate('/login', { replace: true });
     },
@@ -301,9 +314,12 @@ const AuthContextProvider = ({
       },
       isAuthenticated,
       isInitializing,
+      sessionRecoveryData,
+      setSessionRecoveryData,
+      setUserContext,
     }),
 
-    [user, error, isAuthenticated, isInitializing, token, userRole, adminRole],
+    [user, error, isAuthenticated, isInitializing, token, userRole, adminRole, sessionRecoveryData, setUserContext],
   );
 
   return <AuthContext.Provider value={memoedValue}>{children}</AuthContext.Provider>;

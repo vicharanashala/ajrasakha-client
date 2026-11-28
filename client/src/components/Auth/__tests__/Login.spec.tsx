@@ -119,6 +119,10 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+beforeEach(() => {
+  localStorage.setItem('lang_selected', 'true');
+});
+
 test('renders login form', () => {
   const { getByLabelText, getByRole } = setup();
   expect(getByLabelText(/email/i)).toBeInTheDocument();

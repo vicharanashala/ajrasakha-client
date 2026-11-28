@@ -55,6 +55,14 @@ export function createTokenMethods(mongoose: typeof import('mongoose')) {
   async function deleteTokens(query: TokenQuery): Promise<TokenDeleteResult> {
     try {
       const Token = mongoose.models.Token;
+
+      if (query.userId !== undefined && query.type !== undefined) {
+        return await Token.deleteMany({
+          userId: query.userId,
+          type: query.type,
+        });
+      }
+
       const conditions = [];
 
       if (query.userId !== undefined) {
@@ -68,6 +76,9 @@ export function createTokenMethods(mongoose: typeof import('mongoose')) {
       }
       if (query.identifier !== undefined) {
         conditions.push({ identifier: query.identifier });
+      }
+      if (query.type !== undefined) {
+        conditions.push({ type: query.type });
       }
 
       /**
@@ -106,6 +117,9 @@ export function createTokenMethods(mongoose: typeof import('mongoose')) {
       }
       if (query.identifier) {
         conditions.push({ identifier: query.identifier });
+      }
+      if (query.type) {
+        conditions.push({ type: query.type });
       }
 
       const token = await Token.findOne({ $and: conditions }, null, options).lean();

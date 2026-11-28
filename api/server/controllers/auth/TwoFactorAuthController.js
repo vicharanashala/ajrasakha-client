@@ -10,6 +10,10 @@ const {
   activeSessionMessage,
   ACTIVE_SESSION_EXISTS_CODE,
 } = require('~/server/services/AuthService');
+const {
+  isSessionRecoveryEligible,
+  generateSessionRecoveryTempToken,
+} = require('~/server/services/SessionRecoveryService');
 const { getUserById } = require('~/models');
 
 /**
@@ -58,6 +62,15 @@ const verify2FAWithTempToken = async (req, res) => {
     return res.status(200).json({ token: authToken, user: userData });
   } catch (err) {
     if (err?.code === ACTIVE_SESSION_EXISTS_CODE) {
+      if (user && isSessionRecoveryEligible(user)) {
+        const recoveryTempToken = generateSessionRecoveryTempToken(user._id, user.email);
+        return res.status(409).json({
+          message: activeSessionMessage,
+          sessionRecoveryEligible: true,
+          recoveryTempToken,
+          email: user.email,
+        });
+      }
       return res.status(409).json({ message: activeSessionMessage });
     }
     logger.error('[verify2FAWithTempToken]', err);

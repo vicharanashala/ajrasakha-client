@@ -142,6 +142,18 @@ export const resetPassword = (payload: t.TResetPassword) => {
   return request.post(endpoints.resetPassword(), payload);
 };
 
+export const requestSessionRecovery = (
+  payload: t.TRequestSessionRecovery,
+): Promise<t.TRequestSessionRecoveryResponse> => {
+  return request.post(endpoints.sessionRecoveryRequest(), payload);
+};
+
+export const verifySessionRecovery = (
+  payload: t.TVerifySessionRecovery,
+): Promise<t.TVerifySessionRecoveryResponse> => {
+  return request.post(endpoints.sessionRecoveryVerify(), payload);
+};
+
 export const verifyEmail = (payload: t.TVerifyEmail): Promise<t.VerifyEmailResponse> => {
   return request.post(endpoints.verifyEmail(), payload);
 };

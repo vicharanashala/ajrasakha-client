@@ -8,6 +8,8 @@ export interface IToken extends Document {
   token: string;
   createdAt: Date;
   expiresAt: Date;
+  used?: boolean;
+  usedAt?: Date;
   metadata?: Map<string, unknown>;
 }
 
@@ -26,6 +28,7 @@ export interface TokenQuery {
   token?: string;
   email?: string;
   identifier?: string;
+  type?: string;
 }
 
 export interface TokenUpdateData {

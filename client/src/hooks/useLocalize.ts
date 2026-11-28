@@ -17,5 +17,6 @@ export default function useLocalize() {
     }
   }, [lang, i18n]);
 
-  return (phraseKey: TranslationKeys, options?: TOptions) => t(phraseKey, options);
+  return (phraseKey: TranslationKeys, options?: TOptions): string =>
+    t(phraseKey, options) as string;
 }

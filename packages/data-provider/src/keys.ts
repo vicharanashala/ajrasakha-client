@@ -94,4 +94,6 @@ export enum MutationKeys {
   updateMemoryPreferences = 'updateMemoryPreferences',
   acceptSecondTerms = 'acceptSecondTerms',
   saveFarmerProfile = 'saveFarmerProfile',
+  sessionRecoveryRequest = 'sessionRecoveryRequest',
+  sessionRecoveryVerify = 'sessionRecoveryVerify',
 }
